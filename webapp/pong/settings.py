@@ -95,11 +95,6 @@ WSGI_APPLICATION = 'pong.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': 'transdb',
-        # 'USER': 'maiman-m',
-        # 'PASSWORD': '12345',
-        # 'HOST': 'localhost',
-        # 'PORT': '5432',
         'NAME': config('TRANSDB_NAME'),
         'USER': config('TRANSDB_USER'),
         'PASSWORD': config('TRANSDB_PASSWORD'),
