@@ -43,60 +43,13 @@ async function form_forgot(obj)
 	return true;
 }
 
-/*=================================================================*/
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Check if this cookie string begins with the name we want
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-/*=================================================================*/
-
 async function form_submitBtn(obj)
 {
 	obj.addEventListener('click', async (event) => {
 		console.log('submit-btn clicked');
 		event.preventDefault();
-        /*=================================================================*/
-        const email = document.getElementById('login__input-email').value;
-        const password = document.getElementById('login__input-password').value
-
-        try {
-            const csrfToken = await getCookie('csrftoken');
-            const response = await fetch('/api/login/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify({
-                    email: email,
-                    password: password
-                })
-            });
-
-            const data = await response.json()
-            if (response.ok) {
-                console.log('Login successful: %s is authorized', data.user);
-
-                await MEDIA.clear();
-                await HOMEPAGE.build();
-            } else {
-                console.error('Login failed: %s is unauthorized', data.email);
-            }
-        } catch (error) {
-            console.error('Login error occurred:', error);
-        }
-        /*=================================================================*/
+		await MEDIA.clear();
+		await HOMEPAGE.build();
 	});
 
 	return true;
