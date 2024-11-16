@@ -29,6 +29,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# maiman-m: for allauth registration
+SITE_ID = 1
 
 # Application definition
 
@@ -167,11 +169,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # maiman-m: add SMTP config for email verification
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS')
-EMAIL_PORT = config('EMAIL_PORT')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+#EMAIL_HOST = config('EMAIL_HOST')
+#EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+#EMAIL_PORT = config('EMAIL_PORT')
+#EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+#EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+#DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 # maiman-m: add django-allauth settings for mandatory email verification on sign-up and allow password reset
+#ACCOUNT_EMAIL_REQUIRED = True
+#ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
+#EMAIL_CONFIRM_REDIRECT_BASE_URL = 'http://localhost:3000/email/confirm/'
+
+#PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = 'http://localhost:3000/password-reset/confirm/'
