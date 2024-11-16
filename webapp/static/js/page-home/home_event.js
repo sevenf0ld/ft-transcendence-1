@@ -99,13 +99,44 @@ async function settings_btn(obj)
 	return true;
 }
 
+/*=================================================================*/
+function getCookie(name) {
+	let cookieValue = null;
+	if (document.cookie && document.cookie !== '') {
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.substring(0, name.length + 1) === (name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
+			}
+		}
+	}
+	return cookieValue;
+}
+/*=================================================================*/
+
 async function logout_btn(obj)
 {
 	obj.addEventListener('click', async function(e)
 	{
 		console.log('logout-btn clicked');
-        await MEDIA.clear();
-        await LOGINPAGE.build();
+		/*=================================================================*/
+		const csrfToken = await getCookie('csrftoken');
+		const response = await fetch('/api/logout/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrfToken
+			}
+		});
+		if (response.ok) {
+			console.log('Logout successful.');
+			await MEDIA.clear();
+			await LOGINPAGE.build();
+		} else {
+			console.error('Logout failed.');
+		}
 		return true;
 	});
 	return true;

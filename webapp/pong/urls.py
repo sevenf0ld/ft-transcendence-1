@@ -25,7 +25,11 @@ urlpatterns = [
 from django.urls import include
 
 urlpatterns += [
-    path('', include('frontend.urls'))
+    path('', include('frontend.urls')),
+    # dj-rest-auth
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    # django-allauth (registration)
+    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
 ]
 
 from django.conf import settings
