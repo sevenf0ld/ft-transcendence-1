@@ -2,6 +2,9 @@
 @import "./toolkit/reset.css";
 @import "./toolkit/fonts.css";
 
+@import "./page-home/home-page_core.css";
+@import "./page-login/login-page_core.css";
+
 /* -------------------------------------------------- */
 /* core */
 /* -------------------------------------------------- */
