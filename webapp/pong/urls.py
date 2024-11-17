@@ -22,13 +22,19 @@ urlpatterns = [
 ]
 
 # maiman-m: add frontend url
-from django.urls import include
+from django.urls import include, re_path
+from allauth.account.views import confirm_email
 
 urlpatterns += [
     path('', include('frontend.urls')),
     # dj-rest-auth
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
-    # django-allauth (registration)
+    # django-allauth (registration & confirmation)
+    re_path(
+        r'registration/account-confirm-email/(?P<key>[-:\w]+)/',
+        confirm_email,
+        name='account_confirm_email',
+    ),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
 ]
 

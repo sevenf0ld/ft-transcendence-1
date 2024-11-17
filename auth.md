@@ -15,7 +15,7 @@
         - better control over token expiration and rotation
         - not stored in databases so there is no server-side session storage
         - issues and signed with a secret key with a set expiry date
-- [drf auth 3rd part part 1](https://www.django-rest-framework.org/api-guide/authentication/#third-party-packages)
+- [drf auth 3rd party part 1](https://www.django-rest-framework.org/api-guide/authentication/#third-party-packages)
     - [django-rest-knox](https://jazzband.github.io/django-rest-knox/)
         - mentions SPA but there is only login and logout views, none for registration or password reset
     - [djoser](https://github.com/sunscrapers/djoser)
@@ -25,13 +25,15 @@
         - has login, logout, jwt support, registration and password reset
         - [example by testdriven](https://testdriven.io/blog/django-rest-auth/)
         - [example with postman and jwt](https://medium.com/@michal.drozdze/django-rest-apis-with-jwt-authentication-using-dj-rest-auth-781a536dfb49)
+        - [example with django api](https://medium.com/@alashimuyiwa/authentication-with-dj-rest-auth-79a7c92b8365)
     - [django-reset-authemail](https://github.com/celiao/django-rest-authemail)
         - has signup, email verification, update, login, logout, password reset and user detail but for abstract user model
 - [drf auth 3rd party part 2](https://testdriven.io/blog/django-rest-auth/)
 - [drf token auth](https://medium.com/django-unleashed/token-based-authentication-and-authorization-in-django-rest-framework-user-and-permissions-347c7cc472e9)
     - ISSUE: says tokens are stateless and need not query db
 - [drf token auth vs drf jwt](https://stackoverflow.com/a/40495728)
-#### dj-rest-auth implementation
+
+### dj-rest-auth implementation
 - refer to [apps structure](https://dj-rest-auth.readthedocs.io/en/latest/introduction.html) to import views
 - refer to [serializers in configurations](https://dj-rest-auth.readthedocs.io/en/latest/configuration.html) to get an idea of view names
 - refer to [endpoints](https://dj-rest-auth.readthedocs.io/en/latest/api_endpoints.html) to get api paths, expected params and outputs
@@ -62,5 +64,28 @@
 - findings:
     - providing a first param for path in urls does not override existing dj-rest-auth api paths (/api/login/ == /dj-rest-auth/login/)
 
-### 42 oauth 2.0https://dj-rest-auth.readthedocs.io/en/latest/index.html)u
+### dj-allauth implementation
+- refer to [configuration](https://docs.allauth.org/en/latest/account/configuration.html) for information on default account-related settings
+- refer to [email](https://docs.allauth.org/en/latest/common/email.html) for subject and content modifications
+- note:
+    - enable email verfication to disable automatic login upon successful registration as per [documentation](https://docs.allauth.org/en/latest/account/signals.html) or [source code](https://github.com/pennersr/django-allauth/blob/main/allauth/account/signals.py#L10)
+    - modify site
+        ```
+        >>> from django.contrib.sites.models import Site
+        >>> site = Site.objects.get(id=1)
+        >>> site.name = "FT_PONG"
+        >>> site.domain = "ftpong.co"
+        >>> site.save()
+        ```
+    - `send_mail` not found in [DefaultAdapter](https://docs.allauth.org/en/latest/account/adapter.html#allauth.account.adapter.DefaultAccountAdapter)
+    - [email verification using dj-rest-auth which in turn uses django-allauth](https://medium.com/@michal.drozdze/django-rest-framework-jwt-authentication-sign-up-api-with-email-confirmation-0cfc6054ce8e)
+        - email verification as per [registration/verify-email](https://dj-rest-auth.readthedocs.io/en/latest/api_endpoints.html#registration)
+        - import [function](https://stackoverflow.com/a/48090640) instead of view in project root urls
+
+### 42 oauth 2.0
 - third party package as per drf api guide: [django oauth toolkit](https://django-oauth-toolkit.readthedocs.io/en/latest/)
+
+### jwt
+- [jwt using dj-rest-auth](https://medium.com/@michal.drozdze/django-rest-apis-with-jwt-authentication-using-dj-rest-auth-781a536dfb49)
+
+### 2fa (authenticator app)

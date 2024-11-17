@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from .import views
 from dj_rest_auth.views import (
     LoginView,
@@ -7,6 +7,7 @@ from dj_rest_auth.views import (
 )
 from dj_rest_auth.registration.views import (
     RegisterView,
+    VerifyEmailView,
 )
 
 app_name = 'frontend'
@@ -17,4 +18,5 @@ urlpatterns = [
     path('api/logout/', LogoutView.as_view()),
     path('api/user/', UserDetailsView.as_view()),
     path('api/registration/', RegisterView.as_view()),
+    path('registration/account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
 ]
