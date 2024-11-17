@@ -83,6 +83,8 @@ async function build()
 	MEDIA_OBJ.media.innerHTML = template;
 	//await STYLES.build();
 	await EVENTS.build();
+
+	return true;
 }
 // -------------------------------------------------- //
 // export

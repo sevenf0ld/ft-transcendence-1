@@ -69,6 +69,8 @@ async function build()
 	await form_submitBtn(btn2);
 	await intra_btn(btn3);
 	await signup_btn(btn4);
+
+	return true;
 }
 
 // -------------------------------------------------- //

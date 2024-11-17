@@ -1,21 +1,35 @@
+/* library */
 @import "./toolkit/bootstrap.min.css";
 @import "./toolkit/reset.css";
 @import "./toolkit/fonts.css";
+/* common-styles */
+@import "./common/button.css";
+@import "./common/layout.css";
+/* views */
+@import "./forgetpass.css";
+@import "./home.css";
+@import "./livechat.css";
+@import "./local-pve.css";
+@import "./local-pvp.css";
+@import "./local-tour.css";
+@import "./login.css";
+@import "./profile.css";
+@import "./register.css";
+@import "./remo-pvp.css";
+@import "./remo-tour.css";
 
 /* -------------------------------------------------- */
 /* core */
 /* -------------------------------------------------- */
 :root {
-	/* colors */
-	--cor-main-chat: #c8c40b;
-	--cor-main-dark: #212529;
-	--cor-main-dark-heavy: #1c1f23;
-	--cor-main-dark-placeholder: #1e2226;
-	--cor-main-light: #e8edf2;
-	--cor-main-grey: #dee2e6;
-	--cor-main-grey-placeholder: #24292d;
-	--cor-online: #00ff00;
-	--cor-offline: #636363;
+	/* theme */
+	--cor-1: #212529; /* boostrap-dark */
+	--cor-2: #e8edf2; /* boostrap-light */
+	--cor-3: #BAA898; /* khaki */
+	/* text */
+	--txt-1: white;
+	--txt-2: #212529; /* boostrap-dark */ 
+	--txt-3: #b7b8b9; /* placeholder-grey */
 }
 
 html,
@@ -24,46 +38,8 @@ body
 	width: 100vw;
 	height: 100vh;
 	user-select: none;
-	color: var(--cor-main-light);
-	background-color: var(--cor-main-dark);
+	color: var(--txt-1);
+	box-sizing: border-box;
+	background-color: var(--cor-1);
 	font-family: 'Noto Sans JP' ,sans-serif;
-}
-
-/* -------------------------------------------------- */
-/* text-style */
-/* -------------------------------------------------- */
-.truncate {
-  width: 150px;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* -------------------------------------------------- */
-/* buttons */
-/* -------------------------------------------------- */
-.my-btn-primary {
-	border: none;
-	padding: 1rem 1.5rem;
-	border-radius: 6px;
-	color: var(--cor-main-light);
-	background: var(--cor-main-dark);
-	box-shadow:  7px 7px 14px #1d2024,
-				 -7px -7px 14px #252a2e;
-}
-
-.my-btn-primary:hover {
-	border-radius: 6px;
-	background: linear-gradient(145deg, #23282c, #1e2125);
-	box-shadow:  7px 7px 14px #1d2024,
-				 -7px -7px 14px #252a2e;
-}
-
-.my-btn-primary:active {
-	color: #2f353a;
-	border-radius: 6px;
-	background: #212529;
-	box-shadow: inset 7px 7px 14px #1d2024,
-				inset -7px -7px 14px #252a2e;
 }

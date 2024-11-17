@@ -47,6 +47,8 @@ async function build()
 
 	await register_btn(btn);
 	await back_to_login_btn(btn2);
+
+	return true;
 }
 
 // -------------------------------------------------- //
