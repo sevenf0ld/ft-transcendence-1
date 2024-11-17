@@ -34,6 +34,34 @@ async function form_submitBtn(obj)
 {
 	obj.addEventListener('click', async (event) => {
 		console.log('submit-button clicked');
+		/*=================================================================*/
+		event.preventDefault();
+		const username = document.getElementById('username').value;
+		const password = document.getElementById('password').value;
+		try {
+			const csrfToken = await COOKIE.getCookie('csrftoken');
+			const response = await fetch('/api/login/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrfToken
+				},
+				body: JSON.stringify({
+					username: username,
+					password: password,
+				})
+			});
+			const data = await response.json();
+			if (response.ok) {
+				console.log('Login successful: logged-in as %s.', username);
+				await MEDIA.build();
+			} else {
+				console.error('Login failed: %s is unauthorized.', username);
+			}
+		} catch (error) {
+			console.error('Login failed.' + error);
+		}
+		/*=================================================================*/
 	});
 
 	return true;

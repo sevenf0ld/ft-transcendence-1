@@ -25,6 +25,37 @@ async function register_btn(obj)
 {
 	obj.addEventListener('click', async (event) => {
 		console.log('register-button clicked');
+		/*=================================================================*/
+		event.preventDefault();
+		const username = document.getElementById('username').value;
+		const email = document.getElementById('email').value;
+		const password = document.getElementById('password').value;
+		const password_confirm = document.getElementById('password_confirm').value;
+		try {
+			const csrfToken = await COOKIE.getCookie('csrftoken');
+			const response = await fetch('/api/registration/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrfToken
+				},
+				body: JSON.stringify({
+					username: username,
+					email: email,
+					password1: password,
+					password2: password_confirm
+				})
+			});
+			const data = await response.json();
+			if (response.ok) {
+				console.log('Registration successful.');
+			} else {
+				console.error('Registration failed (not 200).');
+			}
+		} catch (error) {
+			console.error('Registration failed' + error);
+		}
+		/*=================================================================*/
 	});
 
 	return true;
