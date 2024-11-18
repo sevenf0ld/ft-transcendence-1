@@ -14,7 +14,7 @@
 async function title()
 {
 	const title = document.querySelector('title');
-	title.innerHTML = '42PONG | SIGN IN';
+	title.innerHTML = '42Pong | Sign In';
 
 	return true;
 }
@@ -42,6 +42,7 @@ async function card_header()
 
 	card_header.classList.add(
 		'custom-login-card__header',
+		'text-center',
 	);
 
 	return true;
