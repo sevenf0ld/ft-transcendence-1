@@ -34,6 +34,7 @@ async function form_submitBtn(obj)
 {
 	obj.addEventListener('click', async (event) => {
 		console.log('submit-button clicked');
+		HOME.build();
 	});
 
 	return true;
