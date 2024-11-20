@@ -19,4 +19,6 @@ urlpatterns = [
     path('api/user/', UserDetailsView.as_view()),
     path('api/registration/', RegisterView.as_view()),
     path('registration/account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
+    # /dj-rest-auth/token/refresh/
+    # /dj-rest-auth/token/verify/
 ]

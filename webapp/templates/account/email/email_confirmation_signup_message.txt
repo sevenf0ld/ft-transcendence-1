@@ -1,6 +1,6 @@
 Greetings {{ user.username }}!
 
-Please click the link below to confirm your email address for ft_pong.co:
+Please click the link below to confirm your email address for ftpong.com:
 
 [Confirm: {{ activate_url }}]
 

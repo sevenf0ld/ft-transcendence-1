@@ -62,7 +62,7 @@
     - frontend must change email to username (issue #12)
     - testing via curl shows login is successful
 - findings:
-    - providing a first param for path in urls does not override existing dj-rest-auth api paths (/api/login/ == /dj-rest-auth/login/)
+    - providing a first param for path in urls does not override existing dj-rest-auth api paths (/api/login/ == /dj-rest-auth/login/) because root registers /dj-rest-auth/ whereas app registers /api/
 
 ### dj-allauth implementation
 - refer to [configuration](https://docs.allauth.org/en/latest/account/configuration.html) for information on default account-related settings
@@ -84,8 +84,36 @@
 
 ### 42 oauth 2.0
 - third party package as per drf api guide: [django oauth toolkit](https://django-oauth-toolkit.readthedocs.io/en/latest/)
+- social authentication with [django-allauth](https://www.webforefront.com/django/setupdjangosocialauthentication.html)
 
 ### jwt
-- [jwt using dj-rest-auth](https://medium.com/@michal.drozdze/django-rest-apis-with-jwt-authentication-using-dj-rest-auth-781a536dfb49)
+- jwt is [not controversial](https://medium.com/geekculture/jwt-authentication-in-django-part-1-implementing-the-backend-b7c58ab9431b)
+- jwt using [dj-rest-auth](https://medium.com/@michal.drozdze/django-rest-apis-with-jwt-authentication-using-dj-rest-auth-781a536dfb49)
+- [discussion](https://www.reddit.com/r/django/comments/i72pyf/why_should_i_prefer_jwt_authentication_over_token/) on statelessness, database queries and jwt antipatterns
+- [jwt vs cookies](https://stackoverflow.com/q/37582444)
+- refer to [settings](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html) for simplejwt config
+- refer to [configuration](https://dj-rest-auth.readthedocs.io/en/latest/configuration.html#configuration) for dj-rest-auth jwt config
+- store jwt tokens in a `httpOnly` cookie instead of LocalStorage or regular cookies
+- note:
+    - solution: either temporarily downgrade to 3.11 or fix [AttributeError: module 'ssl' has no attribute 'wrap_socket'](https://github.com/eventlet/eventlet/issues/795#issuecomment-1806126264) `find ~/.local/lib/python3.12/site-packages -name "runsslserver.py"`
+    - edit:
+        ```
+        class SecureHTTPServer(ThreadedWSGIServer):
+            #def __init__(self, address, handler_cls, certificate, key, ipv6=False):
+            #    super(SecureHTTPServer, self).__init__(address, handler_cls, ipv6=ipv6)
+            #    self.socket = ssl.wrap_socket(self.socket, certfile=certificate,
+            #                                  keyfile=key, server_side=True,
+            #                                  ssl_version=_ssl_version,
+            #                                  cert_reqs=ssl.CERT_NONE)
+            def __init__(self, address, handler_cls, certificate, key, ipv6=False):
+                super(SecureHTTPServer, self).__init__(address, handler_cls, ipv6=ipv6)
+                context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+                context.load_cert_chain(certfile=certificate, keyfile=key)
+                self.socket = context.wrap_socket(self.socket, server_side=True)
+        ```
+
 
 ### 2fa (authenticator app)
+
+## middleware
+- middleware [types and explanations](https://www.webforefront.com/django/middlewaredjango.html)
