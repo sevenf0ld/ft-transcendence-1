@@ -7,6 +7,7 @@
 // -------------------------------------------------- //
 import * as MEDIA from '../utils/media.js';
 import * as COOKIE from '../utils/cookie.js';
+import * as FORMVALI from '../utils/form-vali.js';
 import * as FORGETPASS from '../view-forgetpass/template.js';
 import * as HOME from '../view-home/template.js';
 import * as LIVECHAT from '../view-livechat/template.js';
@@ -24,7 +25,13 @@ import * as REMOTOUR from '../view-remo-tour/template.js';
 async function register_btn(obj)
 {
 	obj.addEventListener('click', async (event) => {
-		console.log('register-button clicked');
+		if (await FORMVALI.run_register() === false)
+		{
+			event.preventDefault();
+			return false;
+		}
+		else
+			console.log('register-button clicked');
 	});
 
 	return true;

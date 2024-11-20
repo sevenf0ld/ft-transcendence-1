@@ -9,6 +9,7 @@ import * as STYLES from './styles.js';
 // -------------------------------------------------- //
 import * as MEDIA from '../utils/media.js';
 import * as COOKIE from '../utils/cookie.js';
+import * as FORMVALI from '../utils/form-vali.js';
 import * as FORGETPASS from '../view-forgetpass/template.js';
 import * as HOME from '../view-home/template.js';
 import * as LIVECHAT from '../view-livechat/template.js';

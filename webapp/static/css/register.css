@@ -28,7 +28,7 @@
 /* -------------------------------------------------- */
 .custom-register-card__form
 {
-	gap: 0.5rem;
+	gap: 1rem;
 }
 
 .custom-register-card__formdiv
@@ -48,6 +48,15 @@
 	background-color: var(--cor-1);
 }
 
+#err_signup_1,
+#err_signup_2,
+#err_signup_3,
+#err_signup_4
+{
+	font-size: 0.75rem;
+	color: red;
+}
+
 /* -------------------------------------------------- */
 /* back-to-login-btn
 /* -------------------------------------------------- */
@@ -57,4 +66,5 @@
 	cursor: pointer;
 	margin: auto;
 	align-self: center;
+	text-decoration: none;
 }

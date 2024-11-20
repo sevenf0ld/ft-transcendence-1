@@ -87,6 +87,17 @@ async function form()
 		);
 	});
 
+	// error message of form
+	const error = document.querySelectorAll(
+		'.custom-register-card__formdiv > p'
+	);
+
+	error.forEach((error) => {
+		error.classList.add(
+			'truncate',
+		);
+	});
+
 	// submit button
 	const submit_button = document.querySelector(
 		'.custom-register-card__form > button'
@@ -96,7 +107,7 @@ async function form()
 		'custom-btn-dark',
 		'btn',
 		'no-hover',
-		'mt-4',
+		'mt-2',
 	);
 
 	return true;
