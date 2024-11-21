@@ -93,7 +93,6 @@ MIDDLEWARE = [
 # maiman-m: enable drf authentication
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        #'rest_framework.authentication.TokenAuthentication',
         # simple jwt authentication
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ],
@@ -103,30 +102,15 @@ REST_FRAMEWORK = {
 }
 
 # maiman-m: add dj-rest-auth jwt support to enable jwt authentication
-#REST_AUTH = {
-#    'LOGOUT_ON_PASSWORD_CHANGE': True,
-#    'SESSION_LOGIN': False,
-#    'USE_JWT': True,
-#    'JWT_AUTH_COOKIE': 'jwt-access',
-#    'JWT_AUTH_REFRESH_COOKIE': 'jwt-refresh',
-#}
-
-# geek guide
-#REST_SESSION_LOGIN = False
-#REST_USE_JWT = True
-#JWT_AUTH_COOKIE = 'jwt-access'
-#JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh'
-#JWT_AUTH_SECURE = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = ['https://ftpong.com'] # apex domain
 REST_AUTH = {
-    #'LOGOUT_ON_PASSWORD_CHANGE': True,
+    'LOGOUT_ON_PASSWORD_CHANGE': True,
     'SESSION_LOGIN': False,
     'USE_JWT': True,
     'JWT_AUTH_COOKIE': 'jwt-access',
     'JWT_AUTH_REFRESH_COOKIE': 'jwt-refresh',
     'JWT_AUTH_SECURE': True,
-    #'JWT_AUTH_HTTPONLY': False, # refresh token will be sent in response and client-side js can access the cookie else it is left empty
 }
 
 # djangorestframework-simplejwt
@@ -136,19 +120,6 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
-
-# michal guide
-#from datetime import timedelta
-#SIMPLE_JWT = {
-#    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
-#    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-#}
-#REST_AUTH = {
-#    "USE_JWT": True,
-#    "JWT_AUTH_COOKIE": "_auth",
-#    "JWT_AUTH_REFRESH_COOKIE": "_refresh",
-#    "JWT_AUTH_HTTPONLY": False,
-#}
 
 ROOT_URLCONF = 'pong.urls'
 

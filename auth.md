@@ -38,25 +38,25 @@
 - refer to [serializers in configurations](https://dj-rest-auth.readthedocs.io/en/latest/configuration.html) to get an idea of view names
 - refer to [endpoints](https://dj-rest-auth.readthedocs.io/en/latest/api_endpoints.html) to get api paths, expected params and outputs
 - for registration using django-allauth, must configure [SITE ID](https://stackoverflow.com/a/48124662) and SMTP
-- login tests:
-    - `curl -X POST -H "Content-type: application/json" -d '{ "username": "abc", "password": "ABC!@#123"}' "http://localhost:8000/api/login/"` returns a key
-    - `curl -X POST -H "Content-type: application/json" -d '{ "email": "abc@example.com", "password": "ABC!@#123"}' "http://localhost:8000/api/login/"` demands for a username
-    - `curl -X POST -H "Content-type: application/json" -d '{ "username": "abc", "password": "wrong"}' "http://localhost:8000/api/login/"` rejects due to invalid credentials
-    - `curl -X GET -H "Authorization: Token 63df6770194a550498e986dffcb81fe97fa7c802" -H "Content-type: application/json" "http://localhost:8000/api/user/"` for user details
+- login tests (token authentication):
+    - `curl -X POST -H "Content-type: application/json" -d '{ "username": "someone", "password": "SOME!@#123"}' "https://localhost:8000/api/login/"` returns a key
+    - `curl -X POST -H "Content-type: application/json" -d '{ "email": "email@domain.com", "password": "SOME!@#123"}' "https://localhost:8000/api/login/"` demands for a username
+    - `curl -X POST -H "Content-type: application/json" -d '{ "username": "SOME", "password": "password"}' "https://localhost:8000/api/login/"` rejects due to invalid credentials
+    - `curl -X GET -H "Authorization: Token 63df6770194a550498e986dffcb81fe97fa7c802" -H "Content-type: application/json" "https://localhost:8000/api/user/"` for user details
         ```
         >>> from rest_framework.authtoken.models import Token
         >>> token = Token.objects.get(key="63df6770194a550498e986dffcb81fe97fa7c802")
         >>> print(token.user)
-            abc
+            someone
         ```
 - logout tests:
-    - `curl -X POST -H "Authorization: Token 63df6770194a550498e986dffcb81fe97fa7c802" -H "Content-type: application/json" "http://localhost:8000/api/logout/"` is successful
+    - `curl -X POST -H "Authorization: Token 63df6770194a550498e986dffcb81fe97fa7c802" -H "Content-type: application/json" "https://localhost:8000/api/logout/"` is successful
 - registration tests:
     - `curl -X POST -H "Content-type: application/json" -d '{
-      "username": "isabella",
-      "email": "isabellaaimanmak@gmail.com",
-      "password1": "ISA!@#123",
-      "password2": "ISA!@#123"
+      "username": "someone",
+      "email": "email@domain.com",
+      "password1": "SOME!@#123",
+      "password2": "SOME!@#123"
       }' 'http://localhost:8000/api/registration/'`
 - note:
     - frontend must change email to username (issue #12)
@@ -117,7 +117,15 @@
 - [jwt vs cookies, xss vs csrf](https://stackoverflow.com/q/37582444)
 - refer to [settings](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html) for simplejwt config
 - refer to [configuration](https://dj-rest-auth.readthedocs.io/en/latest/configuration.html#configuration) for dj-rest-auth jwt config
-
+- tests:
+    1. log in
+        - `curl -X POST -H "Content-type: application/json" -d '{ "username": "someone", "password": "SOME!@#123"}' "https://localhost:8000/api/login/" --insecure`
+        - `{"access":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyMTczOTY3LCJpYXQiOjE3MzIxNzAzNjcsImp0aSI6IjVhZmJjY2Q5ZDJiNDQ2YWM5YzMyZTQyZTZhMzU4YmE3IiwidXNlcl9pZCI6NzJ9.HlolAfk0dQjjN0Wt0y2qL562XmW10a7efiaI5RIB1tY","refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczMjI1Njc2NywiaWF0IjoxNzMyMTcwMzY3LCJqdGkiOiIyYjlmOTM0YjM4ZWQ0NTAyOWYyYTExNjRiMDFhZTk0ZSIsInVzZXJfaWQiOjcyfQ.1KR3cDeQZZS-E6EFstfbBQib9u3u3zV2tkv1tG_2AQQ","user":{"pk":72,"username":"someone","email":"email@domain.com","first_name":"","last_name":""}}`
+    2. refresh token
+        - `curl -X POST https://localhost:8000/dj-rest-auth/token/refresh/ --insecure`
+        - `{"detail":"No valid refresh token found.","code":"token_not_valid"}`
+        - `curl -X POST -d "refresh=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczMjI1NjY4MywiaWF0IjoxNzMyMTcwMjgzLCJqdGkiOiJkZmI4N2Q3NDhhMDQ0ZWJiODk2YTYxMTM4YzdjZWFiZSIsInVzZXJfaWQiOjcyfQ.gmeO7NMHKXnaZdWsUhypAy0FEZ4eOXO10a64iZ4539w" https://localhost:8000/dj-rest-auth/token/refresh/ --insecure`
+        - `{"access":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyMTczOTg1LCJpYXQiOjE3MzIxNzAyODMsImp0aSI6IjE5ZTMxZDE0N2NlNjRmMzBiZTVjYWY2ODc3YzQ0ODNlIiwidXNlcl9pZCI6NzJ9.JgUwfJ3s81PL55yqsqE48_DyxtaaKYveHBrl0jaQAcU","access_expiration":"2024-11-21T07:26:25.385883Z"}`
 
 ### 2fa (authenticator app)
 
