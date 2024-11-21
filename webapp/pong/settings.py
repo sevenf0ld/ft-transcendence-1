@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-(y+&u$qj$@+-$hn3kes!%*u*(5w%wwlw*6235b2x+9o@1_trp$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ftpong.com', 'api.ftpong.com']
 
 # maiman-m: for allauth registration
 SITE_ID = 1
@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    # geek guide
+    'sslserver',
 ]
 
 # maiman-m: add django-allauth settings for mandatory email verification on sign-up and allow password reset (prevents user_logged_in signal to follow user_signed_up)
@@ -65,13 +67,13 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'http://localhost:8000'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'https://ftpong.com:8000'
 #ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL
 #ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[FT_PONG] ' # 42PONG
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 #ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD
-ACCOUNT_SIGNUP_REDIRECT_URL = 'http://localhost:8000'
+ACCOUNT_SIGNUP_REDIRECT_URL = 'https://ftpong.com:8000'
 ACCOUNT_USERNAME_MIN_LENGTH = 3
 
 MIDDLEWARE = [
@@ -84,16 +86,39 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # django-allauth for standard registration
     'allauth.account.middleware.AccountMiddleware',
+    # refresh token in body instead of header
+    'pong.middleware.MoveJWTRefreshCookieIntoTheBody',
 ]
 
 # maiman-m: enable drf authentication
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        # simple jwt authentication
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+}
+
+# maiman-m: add dj-rest-auth jwt support to enable jwt authentication
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = ['https://ftpong.com'] # apex domain
+REST_AUTH = {
+    'LOGOUT_ON_PASSWORD_CHANGE': True,
+    'SESSION_LOGIN': False,
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'jwt-access',
+    'JWT_AUTH_REFRESH_COOKIE': 'jwt-refresh',
+    'JWT_AUTH_SECURE': True,
+}
+
+# djangorestframework-simplejwt
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 ROOT_URLCONF = 'pong.urls'
