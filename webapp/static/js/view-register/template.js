@@ -9,6 +9,7 @@ import * as STYLES from './styles.js';
 // -------------------------------------------------- //
 import * as MEDIA from '../utils/media.js';
 import * as COOKIE from '../utils/cookie.js';
+import * as FORMVALI from '../utils/form-vali.js';
 import * as FORGETPASS from '../view-forgetpass/template.js';
 import * as HOME from '../view-home/template.js';
 import * as LIVECHAT from '../view-livechat/template.js';
@@ -34,7 +35,7 @@ async function build()
 	const template = `
 	<div>
 		<p> SIGN UP </p>
-		<form>
+		<form id="signup_form">
 			<div>
 				<label for="username">Username</label><input
 					type="text"
@@ -77,12 +78,14 @@ async function build()
 			</div>
 			<button id="btn_register" type="submit">Submit</button>
 		</form>
-		<button id="btn_back_to_login">Back to Login</button>
+		<a id="btn_back_to_login">Back to Login</a>
 	</div>
 	`;
 	MEDIA_OBJ.media.innerHTML = template;
-	//await STYLES.build();
+	await STYLES.build();
 	await EVENTS.build();
+
+	return true;
 }
 // -------------------------------------------------- //
 // export

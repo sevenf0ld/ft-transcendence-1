@@ -9,6 +9,7 @@ import * as STYLES from './styles.js';
 // -------------------------------------------------- //
 import * as MEDIA from '../utils/media.js';
 import * as COOKIE from '../utils/cookie.js';
+import * as FORMVALI from '../utils/form-vali.js';
 import * as FORGETPASS from '../view-forgetpass/template.js';
 import * as HOME from '../view-home/template.js';
 import * as LIVECHAT from '../view-livechat/template.js';
@@ -60,11 +61,11 @@ async function build()
 		</form>
 		<div>
 			<hr>
-			<span> or continue with </span>
+			<span> or continue </span>
 			<hr>
 		</div>
 		<button id="btn_intra">
-			<span> [42] </span>
+			<span> (42) </span>
 			<span> Login with intra </span>
 		</button>
 		<div> 
@@ -74,8 +75,10 @@ async function build()
 	</div>
 	`;
 	MEDIA_OBJ.media.innerHTML = template;
-	//await STYLES.build();
+	await STYLES.build();
 	await EVENTS.build();
+
+	return true;
 }
 // -------------------------------------------------- //
 // export

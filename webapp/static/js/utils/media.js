@@ -35,6 +35,8 @@ async function style_media()
 		'h-100',
 		'w-100'
 	);
+
+	return true;
 }
 
 async function style_image()
@@ -46,6 +48,8 @@ async function style_image()
 		'w-50'
 	);
 	img.style.maxWidth = '25rem';
+
+	return true;
 }
 
 async function build()
@@ -63,6 +67,8 @@ async function build()
 	body.innerHTML = template;
 	await style_media();
 	await style_image();
+
+	return true;
 }
 
 async function get()

@@ -7,6 +7,7 @@
 // -------------------------------------------------- //
 import * as MEDIA from '../utils/media.js';
 import * as COOKIE from '../utils/cookie.js';
+import * as FORMVALI from '../utils/form-vali.js';
 import * as FORGETPASS from '../view-forgetpass/template.js';
 import * as HOME from '../view-home/template.js';
 import * as LIVECHAT from '../view-livechat/template.js';
@@ -54,7 +55,7 @@ async function form_submitBtn(obj)
 			const data = await response.json();
 			if (response.ok) {
 				console.log('Login successful: logged-in as %s.', username);
-				await MEDIA.build();
+				await HOME.build();
 			} else {
 				console.error('Login failed: %s is unauthorized.', username);
 			}
@@ -97,6 +98,8 @@ async function build()
 	await form_submitBtn(btn2);
 	await intra_btn(btn3);
 	await signup_btn(btn4);
+
+	return true;
 }
 
 // -------------------------------------------------- //
