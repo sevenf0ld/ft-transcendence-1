@@ -1,0 +1,185 @@
+/* -------------------------------------------------- */
+/* main
+/* -------------------------------------------------- */
+main
+{
+	flex: 1;
+	font-family: 'Kalam', cursive;
+}
+
+/* -------------------------------------------------- */
+/*  container
+/* -------------------------------------------------- */
+.custom-page-width
+{
+	width:1300px;
+}
+
+.custom-body-card
+{
+	height: 700px;
+	border-radius: 50px;
+	background-color: var(--cor-1);
+	box-shadow:  50px 50px 100px #0d0f10,
+				 -50px -50px 100px #353b42;
+}
+
+/* -------------------------------------------------- */
+/*  left-panel
+/* -------------------------------------------------- */
+main #left-panel
+{
+	flex: 1;
+	gap: 1rem;
+}
+
+.custom-pfp
+{
+	height: 125px;
+	width: 125px;
+	border-radius: 50%;
+}
+
+.custom-username
+{
+	max-width: 125px;
+	font-weight: bold;
+}
+
+#left-panel .custom-btn-group
+{
+	flex: 1;
+	gap: 1rem;
+}
+
+/* -------------------------------------------------- */
+/*  middle-panel
+/* -------------------------------------------------- */
+main #middle-panel
+{
+	flex: 5;
+}
+
+#middle-panel > #mid-panel-top
+{
+	flex: 3;
+}
+
+#mid-panel-top > #board-title
+{
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+#mid-panel-top > #game-board-div
+{
+	width: 800px;
+	height: 320px;
+	gap: 1rem;
+	border-radius: 27px;
+	background: #212529;
+	box-shadow: inset 8px 8px 16px #1c1f23,
+				inset -8px -8px 16px #262b2f;
+}
+
+#middle-panel-top .custom-btn-group
+{
+	flex: 1;
+}
+
+#middle-panel > #mid-panel-bot
+{
+	flex: 2;
+	gap: 20px;
+}
+
+#mid-panel-bot > .custom-bottom-left
+{
+	width: 240px;
+	border-radius: 27px;
+	background-color: var(--cor-4);
+}
+
+#mid-panel-bot > .custom-bottom-right
+{
+	width: 540px;
+	border-radius: 27px;
+	background-color: var(--cor-4);
+}
+
+/* home-board-display */
+#mid-panel-top > #game-board-div > .custom-board-home
+{
+	padding: 3rem;
+	display: flex;
+}
+
+.custom-board-home .board-home-left
+{
+	flex: 2;
+	gap: 2rem;
+	padding: 4.5rem;
+}
+
+.custom-board-home .board-home-left h3
+{
+	font-size: 1.5rem;
+}
+
+.custom-board-home .board-home-left .custom-btn-group
+{
+	display: flex;
+	gap: 1.5rem;
+}
+
+.custom-board-home .board-home-left .custom-dis-group button
+{
+}
+
+.custom-board-home .custom-dis-group
+{
+	gap: 1rem;
+}
+
+.custom-board-home .board-home-right
+{
+	flex: 1;
+}
+
+.board-home-right > img
+{
+	height: 200px;
+	width: 200px;
+	border-radius: 50%;
+}
+
+/* -------------------------------------------------- */
+/*  right-panel
+/* -------------------------------------------------- */
+main #right-panel
+{
+	flex: 1;
+}
+
+/* -------------------------------------------------- */
+/* header-footer
+/* -------------------------------------------------- */
+header, footer
+{
+	font-family: 'Caveat', cursive;
+	background-color: var(--cor-1);
+}
+
+header h1
+{
+	width: fit-content;
+	cursor: pointer;
+	user-select: none;
+}
+
+footer #copy
+{
+	font-size: 1.1rem;
+	font-weight: bold;
+}
+

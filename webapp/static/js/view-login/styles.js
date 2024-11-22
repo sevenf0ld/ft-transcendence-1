@@ -11,7 +11,7 @@
 // -------------------------------------------------- //
 // main-function
 // -------------------------------------------------- //
-async function title()
+async function page_title()
 {
 	const title = document.querySelector('title');
 	title.innerHTML = '42Pong | Sign In';
@@ -193,7 +193,7 @@ async function signup()
 
 async function build()
 {
-	await title();
+	await page_title();
 	await main_card();
 	await card_header();
 	await form();
