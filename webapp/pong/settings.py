@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'friends.apps.FriendsConfig',
     'games.apps.GamesConfig',
     'frontend.apps.FrontendConfig',
+    'user_auth.apps.UserAuthConfig',
     # drf
     'rest_framework',
     'rest_framework.authtoken',

@@ -27,6 +27,7 @@ from allauth.account.views import confirm_email
 
 urlpatterns += [
     path('', include('frontend.urls')),
+    path('', include('user_auth.urls')),
     # dj-rest-auth
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     # django-allauth (registration & confirmation)
