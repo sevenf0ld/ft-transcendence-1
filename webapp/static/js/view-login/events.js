@@ -60,7 +60,7 @@ async function form_submitBtn(obj)
 				console.error('Login failed: %s is unauthorized.', username);
 			}
 		} catch (error) {
-			console.error('Login failed.' + error);
+			console.error('Login failed.' + error.message);
 		}
 		/*=================================================================*/
 	});
@@ -68,10 +68,91 @@ async function form_submitBtn(obj)
 	return true;
 }
 
+/*=================================================================*/
+// protect against csrf and prevent malicious parties from redirecting to the callback
+function generate_state() {
+	const length = 52;
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+	localStorage.setItem('intra_state', result);
+    return result;
+}
+/*=================================================================*/
+
+/*=================================================================*/
+// 42 Intra API
+const authorization_server = 'https://api.intra.42.fr/oauth/authorize';
+const token_endpoint = 'https://api.intra.42.fr/oauth/token';
+
+// OAuth 2.0
+const client_id = encodeURIComponent('u-s4t2ud-ebe5aa4d1068dc430477ebc2acfd2e267c8b3446ac0a5744cf8febc47aec5b8b');
+const redirect_uri = encodeURIComponent('https://ftpong.com:8000');
+const response_type = 'code';
+const scope = 'public';
+const grant_type = 'authorization_code';
+const client_secret = encodeURIComponent('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');
+/*=================================================================*/
+
+/*=================================================================*/
+document.addEventListener('DOMContentLoaded', async function (event) {
+	// parse GET query string upon authorization and redirection
+	const url_params = new Proxy(new URLSearchParams(window.location.search), {
+		get: (keys, value) => keys.get(value)
+	});
+	const url_code = decodeURIComponent(url_params.code);
+	const url_state= decodeURIComponent(url_params.state);
+	const state = localStorage.getItem('intra_state');
+
+	// protect against csrf and prevent malicious parties from redirecting to the callback - should be server-side
+	// OAuth 2.0 Authorization Grant: exchange of an authorization code with an access token
+	if (url_state === state)
+	{
+		const exchange_link = token_endpoint + '?grant_type=' + grant_type
+			+ '&code=' + url_code
+			+ '&redirect_uri=' + redirect_uri
+			+ '&client_id=' + client_id
+			+ '&client_secret=' + client_secret
+			+ '&state=' + state;
+
+		// POST request to token endpoint
+		const response = await fetch(exchange_link, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+		});
+		const data = await response.json();
+		if (response.ok) {
+			console.log('Exchange successful.');
+		} else {
+			console.error('Exchange failed.');
+		}
+	}
+});
+/*=================================================================*/
+
 async function intra_btn(obj)
 {
 	obj.addEventListener('click', async (event) => {
 		console.log('intra-button clicked');
+		/*=================================================================*/
+		event.preventDefault();
+		// OAuth 2.0 Authorization Grant: authorization request initiation
+		const authorization_request_link = authorization_server + '?response_type=' + response_type
+			+ '&client_id=' + client_id
+			+ '&redirect_uri=' + redirect_uri
+			+ '&scope=' + scope
+			+ '&state=' + encodeURIComponent(generate_state());
+
+		// REDIRECT to authorization server (do not encode)
+		location.href = authorization_request_link;
+		/*=================================================================*/
 	});
 
 	return true;

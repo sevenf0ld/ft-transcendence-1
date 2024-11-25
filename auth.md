@@ -15,7 +15,7 @@
         - better control over token expiration and rotation
         - not stored in databases so there is no server-side session storage
         - issues and signed with a secret key with a set expiry date
-- [drf auth 3rd party part 1](https://www.django-rest-framework.org/api-guide/authentication/#third-party-packages)
+- [drf auth 3rd party packages](https://www.django-rest-framework.org/api-guide/authentication/#third-party-packages)
     - [django-rest-knox](https://jazzband.github.io/django-rest-knox/)
         - mentions SPA but there is only login and logout views, none for registration or password reset
     - [djoser](https://github.com/sunscrapers/djoser)
@@ -28,7 +28,6 @@
         - [example with django api](https://medium.com/@alashimuyiwa/authentication-with-dj-rest-auth-79a7c92b8365)
     - [django-reset-authemail](https://github.com/celiao/django-rest-authemail)
         - has signup, email verification, update, login, logout, password reset and user detail but for abstract user model
-- [drf auth 3rd party part 2](https://testdriven.io/blog/django-rest-auth/)
 - [drf token auth](https://medium.com/django-unleashed/token-based-authentication-and-authorization-in-django-rest-framework-user-and-permissions-347c7cc472e9)
     - ISSUE: says tokens are stateless and need not query db
 - [drf token auth vs drf jwt](https://stackoverflow.com/a/40495728)
@@ -82,10 +81,6 @@
         - email verification as per [registration/verify-email](https://dj-rest-auth.readthedocs.io/en/latest/api_endpoints.html#registration)
         - import [function](https://stackoverflow.com/a/48090640) instead of view in project root urls
 
-### 42 oauth 2.0
-- third party package as per drf api guide: [django oauth toolkit](https://django-oauth-toolkit.readthedocs.io/en/latest/)
-- social authentication with [django-allauth](https://www.webforefront.com/django/setupdjangosocialauthentication.html)
-
 ### jwt
 - jwt is [not controversial](https://medium.com/geekculture/jwt-authentication-in-django-part-1-implementing-the-backend-b7c58ab9431b)
     - store jwt tokens in a [httpOnly](https://stackoverflow.com/a/44869686) cookie instead of LocalStorage or regular cookies
@@ -95,6 +90,7 @@
     - set [httpOnly](https://stackoverflow.com/q/3529695) in django
     - cookies [not stored](https://stackoverflow.com/q/42188260)
     - refer to [block access to cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#block_access_to_your_cookies)
+    - [separates backend from frontend](https://fractalideas.com/blog/making-react-and-django-play-well-together-single-page-app-model/) and mentions CORS
     - note:
         - solution: either temporarily downgrade to 3.11 or fix [AttributeError: module 'ssl' has no attribute 'wrap_socket'](https://github.com/eventlet/eventlet/issues/795#issuecomment-1806126264) `find ~/.local/lib/python3.12/site-packages -name "runsslserver.py"`
         - edit:
@@ -112,7 +108,7 @@
                     context.load_cert_chain(certfile=certificate, keyfile=key)
                     self.socket = context.wrap_socket(self.socket, server_side=True)
             ```
-- jwt using [dj-rest-auth](https://medium.com/@michal.drozdze/django-rest-apis-with-jwt-authentication-using-dj-rest-auth-781a536dfb49)
+- jwt using [dj-rest-auth and authorization header](https://medium.com/@michal.drozdze/django-rest-apis-with-jwt-authentication-using-dj-rest-auth-781a536dfb49) instead of session cookies
 - [discussion](https://www.reddit.com/r/django/comments/i72pyf/why_should_i_prefer_jwt_authentication_over_token/) on statelessness, database queries and jwt antipatterns
 - [jwt vs cookies, xss vs csrf](https://stackoverflow.com/q/37582444)
 - refer to [settings](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html) for simplejwt config
@@ -126,6 +122,41 @@
         - `{"detail":"No valid refresh token found.","code":"token_not_valid"}`
         - `curl -X POST -d "refresh=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczMjI1NjY4MywiaWF0IjoxNzMyMTcwMjgzLCJqdGkiOiJkZmI4N2Q3NDhhMDQ0ZWJiODk2YTYxMTM4YzdjZWFiZSIsInVzZXJfaWQiOjcyfQ.gmeO7NMHKXnaZdWsUhypAy0FEZ4eOXO10a64iZ4539w" https://localhost:8000/dj-rest-auth/token/refresh/ --insecure`
         - `{"access":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMyMTczOTg1LCJpYXQiOjE3MzIxNzAyODMsImp0aSI6IjE5ZTMxZDE0N2NlNjRmMzBiZTVjYWY2ODc3YzQ0ODNlIiwidXNlcl9pZCI6NzJ9.JgUwfJ3s81PL55yqsqE48_DyxtaaKYveHBrl0jaQAcU","access_expiration":"2024-11-21T07:26:25.385883Z"}`
+
+### 42 oauth 2.0
+- [all on 2.0](https://www.oauth.com/)
+- [42 webapp flow](https://api.intra.42.fr/apidoc/guides/web_application_flow)
+    - [extension of the authorization grant in SPAs](https://www.oauth.com/oauth2-servers/single-page-apps/)
+    - [how does client secrets come into play](https://stackoverflow.com/a/39295543)
+- oauth and [authorization flow](https://stackoverflow.com/a/27051810)
+- the different [grants](https://stackoverflow.com/a/27575242) in oauth2
+- 3rd party options
+    - as per [drf auth 3rd party](https://www.django-rest-framework.org/api-guide/authentication/#third-party-packages)
+        - [django-oauth-toolkit](https://django-oauth-toolkit.readthedocs.io/en/latest/)
+            - recommended by drf for 2.0
+            - [explanation and guide](https://princeigwe.medium.com/a-guide-to-oauth2-0-authorization-with-django-rest-framework-521c36c8cb18)
+        - [drf-oauth](https://jpadilla.github.io/django-rest-framework-oauth/authentication/#oauth2authentication)
+            - was part of drf but is now 3rd party
+        - [drf-social-oauth2](https://drf-social-oauth2.readthedocs.io/en/latest/integration.html)
+            - tokens are JWTed
+            - [set up new app](https://drf-social-oauth2.readthedocs.io/en/latest/application.html#setting-up-a-new-application)
+            - too difficult via admin panel
+    - others
+        - [django-allauth](https://docs.allauth.org/en/latest/socialaccount/index.html)
+            - [social authentication example](https://www.webforefront.com/django/setupdjangosocialauthentication.html)
+            - [custom gitea provider](https://github.com/pennersr/django-allauth/blob/main/allauth/socialaccount/providers/gitea/views.py)
+        - [django-oauth2-provider](https://django-oauth2-provider.readthedocs.io/en/latest/getting_started.html#configuration)
+- note (js):
+    - [redirect](https://stackoverflow.com/a/11690095)
+    - [generate random long string](https://stackoverflow.com/a/1349426)
+    - [encode uri](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI)
+        - encode components but not the link or it will result in invalid uri
+    - [detect if a page has been fully loaded after a redirection](https://stackoverflow.com/a/1033448)
+        - [DOMContentLoaded vs load events](https://developer.mozilla.org/en-US/docs/Web/API/Document/DOMContentLoaded_event)
+    - [parse query strings](https://stackoverflow.com/a/901144)
+    - [map vs object](https://stackoverflow.com/a/18541990)
+    - [create dictionaries](https://stackoverflow.com/q/7196212)
+    - [store in webstorage](https://stackoverflow.com/a/19211793)
 
 ### 2fa (authenticator app)
 
