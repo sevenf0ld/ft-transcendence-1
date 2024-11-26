@@ -113,24 +113,33 @@ document.addEventListener('DOMContentLoaded', async function (event) {
 	// OAuth 2.0 Authorization Grant: exchange of an authorization code with an access token
 	if (url_state === state)
 	{
-		const exchange_link = token_endpoint + '?grant_type=' + grant_type
-			+ '&code=' + url_code
-			+ '&redirect_uri=' + redirect_uri
-			+ '&client_id=' + client_id
-			+ '&client_secret=' + client_secret
-			+ '&state=' + state;
+		//const exchange_link = token_endpoint + '?grant_type=' + grant_type
+		//	+ '&code=' + url_code
+		//	+ '&redirect_uri=' + redirect_uri
+		//	+ '&client_id=' + client_id
+		//	+ '&client_secret=' + client_secret
+		//	+ '&state=' + state;
 
 		// POST request to token endpoint
-		const response = await fetch(exchange_link, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-		});
-		const data = await response.json();
-		if (response.ok) {
-			console.log('Exchange successful.');
-		} else {
+		try {
+			const csrfToken = await COOKIE.getCookie('csrftoken');
+			const response = await fetch('/api/forty-two-login/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrfToken
+				},
+				body: JSON.stringify({
+					code: url_code
+				})
+			});
+			const data = await response.json();
+			if (response.ok) {
+				console.log('Exchange successful.');
+			} else {
+				console.error('Exchange failed.');
+			}
+		} catch (error) {
 			console.error('Exchange failed.');
 		}
 	}

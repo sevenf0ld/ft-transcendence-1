@@ -135,6 +135,19 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+# django-allauth for social accounts
+SOCIALACCOUNT_PROVIDERS = {
+    'fortytwo': {
+        'APP': {
+            'client_id': config('CLIENT_ID'),
+            'secret': config('CLIENT_SECRET'),
+            'key': ''
+        }
+    }
+}
+#SOCIALACCOUNT_ADAPTER = 'social_auth.adapter.FortyTwoSocialAccountAdapter'
+FORTYTWO_URL = 'https://api.intra.42.fr/'
+
 ROOT_URLCONF = 'pong.urls'
 
 TEMPLATES = [
@@ -199,6 +212,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     # drf-social-oauth2
     #'drf_social_oauth2.backends.DjangoOAuth2',
+    # django-allauth for social accounts
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 # Internationalization
