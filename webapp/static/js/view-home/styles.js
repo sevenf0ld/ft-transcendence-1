@@ -59,7 +59,7 @@ async function main()
 
 	// main's main container
 	const container = document.querySelector(
-		'.custom-body-card'
+		'.ct-main'
 	);
 
 	container.classList.add(
@@ -75,7 +75,7 @@ async function main()
 	btns.forEach(
 		(btn) => {
 			btn.classList.add(
-				'custom-btn-neau'
+				'ct-btn-neau'
 			);
 		}
 	);
@@ -87,7 +87,7 @@ async function main_left_panel()
 {
 	//left panel
 	const left_panel = document.querySelector(
-		'main #left-panel'
+		'.ct-main > .ct-main-lpanel'
 	);
 
 	left_panel.classList.add(
@@ -100,7 +100,7 @@ async function main_left_panel()
 
 	// profile picture
 	const pfp = document.querySelector(
-		'.custom-pfp'
+		'.ct-lpanel-pfp'
 	);
 
 	pfp.setAttribute(
@@ -110,17 +110,76 @@ async function main_left_panel()
 
 	// username
 	const username = document.querySelector(
-		'.custom-username'
+		'.ct-lpanel-username'
 	);
 	username.classList.add(
 		'h5',
 		'truncate',
 	);
-	//hover popup as a tooltip
+
+	// username - hover popup as a tooltip
 	const name = username.innerHTML;
 	username.setAttribute(
 		'title',
 		`${name}`
+	);
+
+	// stats
+	const stats = document.querySelector(
+		'.ct-lpanel-stats'
+	);
+
+	stats.classList.add(
+		'w-100',
+		'd-flex',
+		'flex-column',
+	);
+
+	const stats_mid = document.querySelector(
+		'.ct-stats-mid'
+	);
+
+	stats_mid.classList.add(
+		'd-flex',
+		'justify-content-center',
+		'align-items-center',
+	);
+
+	const stats_mid_container = document.querySelectorAll(
+		'.ct-mid-container'
+	);
+
+	stats_mid_container.forEach(
+		(container) => {
+			container.classList.add(
+				'h-100',
+				'd-flex',
+				'flex-column',
+				'text-center',
+			);
+		}
+	);
+
+	const stats_bot = document.querySelector(
+		'.ct-stats-bot'
+	);
+
+	stats_bot.classList.add(
+		'd-flex',
+	);
+
+	const stats_bot_container = document.querySelectorAll(
+		'.ct-bot-left, .ct-bot-right'
+	);
+
+	stats_bot_container.forEach(
+		(container) => {
+			container.classList.add(
+				'd-flex',
+				'flex-column',
+				'text-center',
+			);
+		}
 	);
 
 	//history button
@@ -134,7 +193,7 @@ async function main_left_panel()
 
 	// bottom button group
 	const btn_group = document.querySelector(
-		'#left-panel .custom-btn-group'
+		'.ct-lpanel-btns'
 	);
 
 	btn_group.classList.add(
@@ -151,7 +210,7 @@ async function main_midle_panel()
 {
 	// middle panel
 	const main = document.querySelector(
-		'main #middle-panel'
+		'.ct-main-mpanel'
 	);
 
 	main.classList.add(
@@ -161,7 +220,7 @@ async function main_midle_panel()
 
 	// top container
 	const top_container = document.querySelector(
-		'#middle-panel #mid-panel-top'
+		'.ct-mpanel-top'
 	);
 
 	top_container.classList.add(
@@ -171,8 +230,9 @@ async function main_midle_panel()
 		'align-items-center',
 	);
 
+	// top title
 	const top_title = document.querySelector(
-		'#mid-panel-top #board-title'
+		'.ct-mpanel-top > .ct-top-title'
 	);
 
 	top_title.classList.add(
@@ -181,63 +241,56 @@ async function main_midle_panel()
 		'text-center',
 	);
 
-	// top container > custom-board-home
+	// top board
 	const home_board = document.querySelector(
-		'#mid-panel-top .custom-board-home'
+		'.ct-mpanel-top > .ct-top-board'
 	);
 
 	home_board.classList.add(
-		'w-100',
+	);
+
+	// top board - home element
+	const home = document.querySelector(
+		'.ct-board-home'
+	);
+
+	home.classList.add(
 		'h-100',
 		'd-flex',
-	);
-
-	const home_board_left = document.querySelector(
-		'#mid-panel-top .board-home-left'
-	);
-
-	home_board_left.classList.add(
-		'd-flex',
 		'flex-column',
-		'justify-content-center',
+		'justify-content-around',
 	);
 
-	const dis_group = document.querySelectorAll(
-		'.custom-dis-group'
+	const home_section = document.querySelectorAll(
+		'.ct-board-home > .ct-home-section'
 	);
 
-	dis_group.forEach(
-		(group) => {
-			group.classList.add(
+	home_section.forEach(
+		(section) => {
+			section.classList.add(
 				'd-flex',
 				'flex-column',
+				'justify-content-center',
+				'align-items-center',
 			);
 		}
 	);
 
-	const home_board_right = document.querySelector(
-		'#mid-panel-top .board-home-right'
+	const section_btns = document.querySelectorAll(
+		'.ct-home-section > .ct-section-btns'
 	);
 
-	home_board_right.classList.add(
-		'd-flex',
-		'flex-column',
-		'justify-content-center',
-		'align-items-center',
-	);
-
-	const home_board_right_img = document.querySelector(
-		'#mid-panel-top .board-home-right img'
-	);
-
-	home_board_right_img.setAttribute(
-		'src',
-		'/static/assets/images/home-board.gif'
+	section_btns.forEach(
+		(btns) => {
+			btns.classList.add(
+				'd-flex',
+			);
+		}
 	);
 
 	// bottom container
 	const bot_container = document.querySelector(
-		'#middle-panel #mid-panel-bot'
+		'.ct-mpanel-bottom'
 	);
 
 	bot_container.classList.add(
@@ -245,26 +298,78 @@ async function main_midle_panel()
 		'justify-content-center',
 	);
 
+	// bottom container - left
 	const bot_left = document.querySelector(
-		'#mid-panel-bot .custom-bottom-left'
+		'.ct-mpanel-bottom > .ct-bottom-left'
 	);
 
 	bot_left.classList.add(
 		'h-100',
+		'd-flex',
+		'justify-content-center',
+		'align-items-center',
 	);
 
+	// bottom container - right
 	const bot_right = document.querySelector(
-		'#mid-panel-bot .custom-bottom-right'
+		'.ct-mpanel-bottom > .ct-bottom-right'
 	);
 
 	bot_right.classList.add(
 		'h-100',
+		'd-flex',
+		'justify-content-center',
+		'align-items-center',
 	);
 
+	return true;
+}
+
+async function main_right_panel()
+{
+	const right_panel = document.querySelector(
+		'.ct-main > .ct-main-rpanel'
+	);
+
+	right_panel.classList.add(
+		'd-flex',
+		'flex-column',
+	);
+
+	const title = document.querySelector(
+		'.ct-main-rpanel > .ct-rpanel-title'
+	);
+
+	title.classList.add(
+		'h3',
+		'py-2',
+		'text-center',
+	);
+
+	const body = document.querySelector(
+		'.ct-main-rpanel > .ct-rpanel-list'
+	);
+
+	body.classList.add(
+		'd-flex',
+		'justify-content-center',
+		'align-items-center',
+	);
+
+	const btn = document.querySelector(
+		'#btn_add'
+	);
+
+	btn.classList.add(
+		'w-100',
+	);
+
+	return true;
 }
 
 async function footer()
 {
+	// footer
 	const f = document.querySelector(
 		'footer'
 	);
@@ -277,13 +382,15 @@ async function footer()
 		'align-items-center',
 	);
 
+	// the copyrigth text
 	const copy = document.querySelector(
-		'footer #copy'
+		'footer p'
 	);
 
 	copy.classList.add(
 		'py-3',
 	);
+
 	return true;
 }
 
@@ -294,6 +401,7 @@ async function build()
 	await main();
 	await main_left_panel();
 	await main_midle_panel();
+	await main_right_panel();
 	await footer();
 
 	return true;

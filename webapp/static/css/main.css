@@ -1,3 +1,4 @@
+/* file : main.css */
 /* library */
 @import "./toolkit/bootstrap.min.css";
 @import "./toolkit/reset.css";
@@ -31,6 +32,10 @@
 	--txt-1: white;
 	--txt-2: #212529; /* boostrap-dark */ 
 	--txt-3: #b7b8b9; /* placeholder-grey */
+	--txt-4: #333a40; /* placeholder-light-grey */
+	/* stat-dashboard */
+	--stat-1: #78797b; /* light-grey */
+	--stat-2: #1b1e22; /* dark-grey */
 }
 
 html,

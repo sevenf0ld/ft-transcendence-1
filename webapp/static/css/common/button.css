@@ -1,7 +1,8 @@
+/* file : button.css */
 /* -------------------------------------------------- */
 /* neumorphism button */
 /* -------------------------------------------------- */
-.custom-btn-neau
+.ct-btn-neau
 {
 	border: none;
 	padding: 1rem 1.5rem;
@@ -12,7 +13,7 @@
 				 -7px -7px 14px #252a2e;
 }
 
-.custom-btn-neau:hover
+.ct-btn-neau:hover
 {
 	border-radius: 6px;
 	background: linear-gradient(145deg, #23282c, #1e2125);
@@ -20,7 +21,7 @@
 				 -7px -7px 14px #252a2e;
 }
 
-.custom-btn-neau:active
+.ct-btn-neau:active
 {
 	color: #2f353a;
 	border-radius: 6px;

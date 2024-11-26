@@ -33,10 +33,10 @@ async function build()
 	const MEDIA_OBJ = await MEDIA.get()
 
 	const template = `
-	<div>
-		<p> 42PONG - SIGN IN </p>
-		<form>
-			<div>
+	<div class="ct-login">
+		<p class="ct-login-header">42PONG - SIGN IN</p>
+		<form class="ct-login-form">
+			<div class="ct-form-group">
 				<label for="username">Username</label><input
 					type="text"
 					id="username"
@@ -45,7 +45,7 @@ async function build()
 					required
 				>
 			</div>
-			<div>
+			<div class="ct-form-group">
 				<label for="password">Password</label><input
 					type="password"
 					id="password"
@@ -54,7 +54,7 @@ async function build()
 					required
 				>
 			</div>
-			<div>
+			<div class="ct-btn-forgot">
 				<a id="btn_forgot" href="#">Forgot Password?</a>
 			</div>
 			<button id="btn_login" type="submit">Sign In</button>

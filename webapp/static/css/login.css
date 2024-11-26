@@ -1,7 +1,8 @@
+/* file : login.css */
 /* -------------------------------------------------- */
 /* card
 /* -------------------------------------------------- */
-.custom-login-card
+.ct-login
 {
 	gap: 1rem;
 	width: 24rem;
@@ -16,7 +17,7 @@
 /* -------------------------------------------------- */
 /* card/title */
 /* -------------------------------------------------- */
-.custom-login-card__header
+.ct-login-header
 {
 	font-size: 2rem;
 	font-weight: bold;
@@ -27,30 +28,30 @@
 /* -------------------------------------------------- */
 /* card/form */
 /* -------------------------------------------------- */
-.custom-login-card__form
+.ct-login-form
 {
 	gap: 1rem;
 }
 
-.custom-login-card__formdiv
+.ct-login-form > .ct-form-group
 {
 	gap: 0.5rem;
 	color: var(--cor-1);
 }
 
-.custom-login-card__formdiv > input::placeholder
+.ct-form-group > input::placeholder
 {
 	color: var(--txt-3);
 }
 
-.custom-login-card__formforgot > #btm_forgot
+#btm_forgot
 {
 	gap: 0.5rem;
 	color: var(--cor-2);
 	background-color: var(--cor-1);
 }
 
-.custom-login-card__form > button.btn.custom-btn-dark
+.ct-login-form > button.btn.ct-btn-dark
 {
 	color: var(--txt-1);
 	background-color: var(--cor-1);
@@ -60,7 +61,7 @@
 /* -------------------------------------------------- */
 /* card/divider */
 /* -------------------------------------------------- */
-.custom-login-card > div:nth-child(3) > hr
+.ct-login-card > div:nth-child(3) > hr
 {
 	height: 2px;
 	background-color: var(--cor-main-dark);
@@ -84,7 +85,7 @@
 /* sign-up */
 /* -------------------------------------------------- */
 /* last child */
-.custom-login-card > div:last-child > a
+.ct-login-card > div:last-child > a
 {
 	text-decoration: none;
 }

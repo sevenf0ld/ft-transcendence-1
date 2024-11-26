@@ -21,10 +21,11 @@ async function page_title()
 
 async function main_card()
 {
-	const card = document.querySelector('#media > div:nth-child(1)');
+	const card = document.querySelector(
+		'.ct-login'
+	);
 
 	card.classList.add(
-		'custom-login-card',
 		'd-flex',
 		'flex-column',
 		'px-5',
@@ -37,11 +38,10 @@ async function main_card()
 async function card_header()
 {
 	const card_header = document.querySelector(
-		'.custom-login-card > p:nth-child(1)'
+		'.ct-login-header'
 	);
 
 	card_header.classList.add(
-		'custom-login-card__header',
 		'text-center',
 	);
 
@@ -52,24 +52,21 @@ async function form()
 {
 	// entire-form
 	const form = document.querySelector(
-		'.custom-login-card > form:nth-child(2)'
+		'.ct-login-form'
 	);
 
 	form.classList.add(
-		'custom-login-card__form',
 		'd-flex',
 		'flex-column',
 	);
 
-	// input-div(s) that contain 1 label and 1 input
-	// selector : select first two children of form
+	// form-group that contain 1 label and 1 input
 	const formdiv = document.querySelectorAll(
-		'.custom-login-card__form > div:nth-child(-n+2)'
+		'.ct-login-form > .ct-form-group'
 	);
 
 	formdiv.forEach((group) => {
 		group.classList.add(
-			'custom-login-card__formdiv',
 			'd-flex',
 			'flex-column',
 		);
@@ -77,7 +74,7 @@ async function form()
 
 	// formdiv's input
 	const input = document.querySelectorAll(
-		'.custom-login-card__formdiv > input'
+		'.ct-form-group > input'
 	);
 
 	input.forEach((input) => {
@@ -89,18 +86,16 @@ async function form()
 	});
 
 	// forget-password
-	// selector : select third child of form
 	const forget_password = document.querySelector(
-		'.custom-login-card__form > div:nth-child(3)'
+		'.ct-login-form > .ct-btn-forgot'
 	);
 
 	forget_password.classList.add(
-		'custom-login-card__formforgot',
 		'text-end',
 	);
 
 	const forget_password_link = document.querySelector(
-		'.custom-login-card__formforgot > a'
+		'.ct-btn-forgot > a'
 	);
 
 	forget_password_link.classList.add(
@@ -111,11 +106,11 @@ async function form()
 
 	// submit-button
 	const submit_button = document.querySelector(
-		'.custom-login-card__form > button'
+		'.ct-login-form > button'
 	);
 
 	submit_button.classList.add(
-		'custom-btn-dark',
+		'ct-btn-dark',
 		'btn',
 		'no-hover',
 	);
@@ -127,7 +122,7 @@ async function divider()
 {
 	// divider-container
 	const container = document.querySelector(
-		'.custom-login-card > div:nth-child(3)'
+		'.ct-login > div:nth-child(3)'
 	);
 
 	container.classList.add(
@@ -137,7 +132,7 @@ async function divider()
 
 	// divider-line
 	const divider = document.querySelectorAll(
-		'.custom-login-card > div:nth-child(3) > hr'
+		'.ct-login > div:nth-child(3) > hr'
 	);
 
 	divider.forEach((divider) => {
@@ -148,7 +143,7 @@ async function divider()
 
 	// divider-text
 	const divider_text = document.querySelector(
-		'.custom-login-card > div:nth-child(3) > span:nth-child(2)'
+		'.ct-login > div:nth-child(3) > span:nth-child(2)'
 	);
 
 	divider_text.classList.add(
@@ -179,7 +174,7 @@ async function intra_btn()
 async function signup()
 {
 	const sign_up_div = document.querySelector(
-		'.custom-login-card > div:last-child'
+		'.ct-login > div:last-child'
 	);
 
 	sign_up_div.classList.add(
