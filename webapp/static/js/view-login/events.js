@@ -109,20 +109,12 @@ document.addEventListener('DOMContentLoaded', async function (event) {
 	const url_state= decodeURIComponent(url_params.state);
 	const state = localStorage.getItem('intra_state');
 
-	// protect against csrf and prevent malicious parties from redirecting to the callback - should be server-side
-	// OAuth 2.0 Authorization Grant: exchange of an authorization code with an access token
+	// protect against csrf and prevent malicious parties from redirecting to the callback
 	if (url_state === state)
 	{
-		//const exchange_link = token_endpoint + '?grant_type=' + grant_type
-		//	+ '&code=' + url_code
-		//	+ '&redirect_uri=' + redirect_uri
-		//	+ '&client_id=' + client_id
-		//	+ '&client_secret=' + client_secret
-		//	+ '&state=' + state;
-
-		// POST request to token endpoint
 		try {
 			const csrfToken = await COOKIE.getCookie('csrftoken');
+			// OAuth 2.0 Authorization Grant: authorization code and access token exchange
 			const response = await fetch('/api/forty-two-login/', {
 				method: 'POST',
 				headers: {
@@ -136,6 +128,7 @@ document.addEventListener('DOMContentLoaded', async function (event) {
 			const data = await response.json();
 			if (response.ok) {
 				console.log('Exchange successful.');
+				await HOME.build();
 			} else {
 				console.error('Exchange failed.');
 			}

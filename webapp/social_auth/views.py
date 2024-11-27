@@ -10,7 +10,11 @@ from allauth.socialaccount.providers.oauth2.views import (
 )
 #from .provider import FortyTwoProvider
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from dj_rest_auth.registration.views import SocialLoginView
+from dj_rest_auth.registration.views import (
+    SocialLoginView,
+    SocialConnectView
+)
+from .serializers import CustomSocialLoginSerializer
 
 class FortyTwoOAuth2Adapter(OAuth2Adapter):
     #provider_id = FortyTwoProvider.id
@@ -37,7 +41,16 @@ class FortyTwoOAuth2Adapter(OAuth2Adapter):
 oauth2_login = OAuth2LoginView.adapter_view(FortyTwoOAuth2Adapter)
 oauth2_callback = OAuth2CallbackView.adapter_view(FortyTwoOAuth2Adapter)
 
+class CustomSocialLoginView(SocialLoginView):
+    serializer_class = CustomSocialLoginSerializer
+
+#class FortyTwoLogin(CustomSocialLoginView):
 class FortyTwoLogin(SocialLoginView):
+    adapter_class = FortyTwoOAuth2Adapter
+    callback_url = 'https://ftpong.com:8000'
+    client_class = OAuth2Client
+
+class FortyTwoConnect(SocialConnectView):
     adapter_class = FortyTwoOAuth2Adapter
     callback_url = 'https://ftpong.com:8000'
     client_class = OAuth2Client

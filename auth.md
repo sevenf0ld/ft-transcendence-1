@@ -143,13 +143,14 @@
             - too difficult via admin panel
     - others
         - [django-allauth](https://docs.allauth.org/en/latest/socialaccount/index.html)
+            - manually register [access token](https://medium.com/codex/google-sign-in-rest-api-with-python-social-auth-and-django-rest-framework-4d087cd6d47f)
             - [social authentication example](https://www.webforefront.com/django/setupdjangosocialauthentication.html)
             - [custom gitea provider](https://github.com/pennersr/django-allauth/tree/main/allauth/socialaccount/providers/gitea)
             - refer to [default adapter](https://github.com/pennersr/django-allauth/blob/main/allauth/socialaccount/adapter.py) which probably is not necessary because there is an adapter in views for other socials
-            - manually register [access token](https://medium.com/codex/google-sign-in-rest-api-with-python-social-auth-and-django-rest-framework-4d087cd6d47f)
             - refer to [dj-rest-auth](https://dj-rest-auth.readthedocs.io/en/latest/installation.html#social-authentication-optional) for SocialLoginView
-            - refer to `allauth/socialaccount/providers/oauth2/views.py` for the functions
             - [allow social account to be pong account](https://stackoverflow.com/questions/19354009/django-allauth-social-login-automatically-linking-social-site-profiles-using-th)
+            - [link social account to django account](https://stackoverflow.com/q/28897220)
+            - look into [dj-rest-auth](https://github.com/Tivix/django-rest-auth/issues/409) SocialConnectView
         - [django-oauth2-provider](https://django-oauth2-provider.readthedocs.io/en/latest/getting_started.html#configuration)
 - note (js):
     - [redirect](https://stackoverflow.com/a/11690095)
