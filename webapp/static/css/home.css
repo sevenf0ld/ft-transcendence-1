@@ -119,20 +119,20 @@ main
 .ct-main-mpanel > .ct-mpanel-bottom
 {
 	flex: 2;
-	gap: 20px;
+	gap: 15px;
 }
 
 .ct-mpanel-bottom > .ct-bottom-left
 {
-	width: 240px;
-	border-radius: 27px;
+	width: 245px;
+	border-radius: 7px;
 	background-color: var(--cor-4);
 }
 
 .ct-mpanel-bottom > .ct-bottom-right
 {
 	width: 540px;
-	border-radius: 27px;
+	border-radius: 7px;
 	background-color: var(--cor-4);
 }
 

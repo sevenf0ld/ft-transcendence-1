@@ -112,8 +112,8 @@ async function build()
 				<img class="ct-lpanel-pfp"></img>
 				<h2 class="ct-lpanel-username">JLIAW</h2>
 				<div class="ct-lpanel-stats"></div>
+				<button id="btn_history">Match History</button>
 				<div class="ct-lpanel-btns">
-					<button id="btn_history">History</button>
 					<button id="btn_settings">Settings</button>
 					<button id="btn_logout">Logout</button>
 				</div>
