@@ -41,7 +41,7 @@ async function form_submitBtn(obj)
 		const password = document.getElementById('password').value;
 		try {
 			const csrfToken = await COOKIE.getCookie('csrftoken');
-			const response = await fetch('/api/login/', {
+			const response = await fetch('/api/send-otp/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
