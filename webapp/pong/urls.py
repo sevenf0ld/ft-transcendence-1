@@ -37,6 +37,11 @@ urlpatterns += [
         name='account_confirm_email',
     ),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
+    # drf-social-oauth2
+    #re_path(r'^auth/', include('drf_social_oauth2.urls', namespace='drf')),
+    # django-allauth (forty two social account)
+    path('accounts/', include('allauth.urls')),
+    path('', include('social_auth.urls')),
 ]
 
 from django.conf import settings
