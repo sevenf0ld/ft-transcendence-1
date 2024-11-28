@@ -6,6 +6,7 @@
 /* common-styles */
 @import "./common/button.css";
 @import "./common/layout.css";
+@import "./common/modal.css";
 /* views */
 @import "./forgetpass.css";
 @import "./home.css";

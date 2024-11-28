@@ -20,7 +20,7 @@ import * as REMOPVP from './view-remo-pvp/template.js';
 import * as REMOTOUR from './view-remo-tour/template.js';
 
 // -------------------------------------------------- //
-// main-function
+// main-functions
 // -------------------------------------------------- //
 async function main()
 {

@@ -8,23 +8,12 @@ import * as STYLES from './styles.js';
 // Importing-external
 // -------------------------------------------------- //
 import * as MEDIA from '../utils/media.js';
-import * as COOKIE from '../utils/cookie.js';
-import * as FORGETPASS from '../view-forgetpass/template.js';
-import * as HOME from '../view-home/template.js';
-import * as LIVECHAT from '../view-livechat/template.js';
-import * as LOCALPVE from '../view-local-pve/template.js';
-import * as LOCALPVP from '../view-local-pvp/template.js';
-import * as LOCALTOUR from '../view-local-tour/template.js';
-import * as LOGIN from '../view-login/template.js';
-import * as PROFILE from '../view-profile/template.js';
-import * as REGISTER from '../view-register/template.js';
-import * as REMOPVP from '../view-remo-pvp/template.js';
-import * as REMOTOUR from '../view-remo-tour/template.js';
+import * as SETTINGS_MODAL from '../view-settings/template.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// main-function
+// main-functions
 // -------------------------------------------------- //
 async function insert_board_home()
 {
@@ -114,7 +103,13 @@ async function build()
 				<div class="ct-lpanel-stats"></div>
 				<button id="btn_history">Match History</button>
 				<div class="ct-lpanel-btns">
-					<button id="btn_settings">Settings</button>
+					<button
+						id="btn_settings"
+						data-bs-toggle="modal"
+						data-bs-target="#modal-settings"
+					>
+						Settings
+					</button>
 					<button id="btn_logout">Logout</button>
 				</div>
 			</div>
@@ -152,6 +147,9 @@ async function build()
 	await insert_board_home();
 	await STYLES.build();
 	await EVENTS.build();
+
+	//insert hidden modals
+	await SETTINGS_MODAL.build();
 
 	return true;
 }

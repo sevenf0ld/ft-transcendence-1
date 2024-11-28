@@ -1,7 +1,9 @@
-// file : cookie.js
+// file : template.js (view-add-friends)
 // -------------------------------------------------- //
 // Importing-internal
 // -------------------------------------------------- //
+import * as EVENTS from './events.js';
+import * as STYLES from './styles.js';
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
@@ -11,27 +13,16 @@
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-async function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '')
-	{
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++)
-		{
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '='))
-			{
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
+async function build()
+{
+	await STYLES.build();
+	await EVENTS.build();
 
+	return true;
+}
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
 export {
-	getCookie
+	build,
 };

@@ -9,7 +9,7 @@
 // developer notes
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// main-function
+// main-functions
 // -------------------------------------------------- //
 async function page_title()
 {
@@ -201,6 +201,16 @@ async function main_left_panel()
 		'flex-column',
 		'justify-content-end',
 		'w-100',
+	);
+
+	// setting button
+	const btn_settings = document.querySelector(
+		'#btn_settings'
+	);
+
+	btn_settings.setAttribute(
+		'data-toggle',
+		'modal'
 	);
 
 	return true;

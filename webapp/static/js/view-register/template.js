@@ -25,7 +25,7 @@ import * as REMOTOUR from '../view-remo-tour/template.js';
 // developer notes
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// main-function
+// main-functions
 // -------------------------------------------------- //
 async function build()
 {

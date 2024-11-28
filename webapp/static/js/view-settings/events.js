@@ -1,37 +1,24 @@
-// file : cookie.js
+// file : events.js (view-settings)
 // -------------------------------------------------- //
 // Importing-internal
 // -------------------------------------------------- //
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
+import * as HOME from '../view-home/template.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-async function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '')
-	{
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++)
-		{
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '='))
-			{
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
+async function build()
+{
+	return true;
 }
-
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
 export {
-	getCookie
+	build
 };

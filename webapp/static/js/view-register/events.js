@@ -22,6 +22,9 @@ import * as REMOTOUR from '../view-remo-tour/template.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// -------------------------------------------------- //
+// main-functions
+// -------------------------------------------------- //
 async function register_btn(obj)
 {
 	obj.addEventListener('click', async (event) => {
