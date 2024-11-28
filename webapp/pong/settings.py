@@ -148,6 +148,7 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_ADAPTER = 'social_auth.adapter.FortyTwoSocialAccountAdapter'
 FORTYTWO_URL = 'https://api.intra.42.fr/'
 #SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ROOT_URLCONF = 'pong.urls'
 

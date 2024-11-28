@@ -9,6 +9,7 @@ from dj_rest_auth.registration.views import (
     RegisterView,
     VerifyEmailView,
 )
+from .views import CustomRegisterView
 
 app_name = 'user_auth'
 
@@ -16,7 +17,8 @@ urlpatterns = [
     path('api/login/', LoginView.as_view()),
     path('api/logout/', LogoutView.as_view()),
     path('api/user/', UserDetailsView.as_view()),
-    path('api/registration/', RegisterView.as_view()),
+    #path('api/registration/', RegisterView.as_view()),
+    path('api/registration/', CustomRegisterView.as_view()),
     path('registration/account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
     # /dj-rest-auth/token/refresh/
     # /dj-rest-auth/token/verify/
