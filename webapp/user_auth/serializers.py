@@ -1,7 +1,8 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
-#from django.core.exceptions import MultipleObjectsReturned
+from dj_rest_auth.serializers import LoginSerializer
+from mfa_email.models import MfaEmail
 
 try:
     from allauth.account import app_settings as allauth_account_settings
@@ -19,13 +20,14 @@ class CustomRegisterSerializer(RegisterSerializer):
                 raise serializers.ValidationError(
                     ('A user is already registered with this e-mail address.'),
                 )
-        #try:
-        #    existing_email = User.objects.get(email=email)
-        #except MultipleObjectsReturned:
-        #    existing_email = User.objects.filter(email=email).first()
-        #    if existing_email:
-        #        raise serializers.ValidationError('A user is already registered with this e-mail address. (django email)')
         existing_email = User.objects.filter(email=email).first()
         if existing_email:
             raise serializers.ValidationError('A user is already registered with this e-mail address.')
         return email
+
+# dj_rest_auth/serializers.py
+class CustomLoginSerializer(LoginSerializer):
+    pass
+    #mfa_enabled = serializers.BooleanField(required=False)
+    #mfa_otp = serializers.CharField(required=False, allow_blank=True)
+    #mfa_expiry = serializers.DateTimeField(required=False)

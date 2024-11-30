@@ -21,26 +21,34 @@ def generate_random_digits(n=6):
 @permission_classes([AllowAny])
 def send_otp(request):
     username = request.data.get('username')
-    password = request.data.get('password')
     user_data = User.objects.get(username=username)
     email = user_data.email
 
-    user = authenticate(request, username=username, password=password)
+    mfa_user = MfaEmail.objects.create(user=user_data)
+    mfa_user.otp = generate_random_digits()
+    #mfa_user.otp_expiry_time = timezone.localtime(timezone.now()) + timedelta(hours=1)
+    mfa_user.otp_expiry_time = timezone.now() + timedelta(hours=1)
+    mfa_user.save()
 
-    if user is not None:
-        mfa_user = MfaEmail.objects.create(user=user)
-        mfa_user.otp = generate_random_digits()
-        mfa_user.otp_expiry_time = timezone.now() + timedelta(hours=1)
-        mfa_user.save()
+    send_mail(
+        '[FT_PONG] Verify the OTP',
+        f'Your OTP code is: {mfa_user.otp}',
+        'team@ftpong.com',
+        [email],
+        fail_silently=False,
+    )
 
-        send_mail(
-            'FT_PONG OTP',
-            f'Your OTP code is: {mfa_user.otp}',
-            'team@ftpong.com',
-            [email],
-            fail_silently=False,
-        )
+    return Response({'detail': 'OTP sent successfully.'}, status=status.HTTP_200_OK)
 
-        return Response({'detail': 'OTP code sent successfully.'}, status=status.HTTP_200_OK)
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def verify_otp(request):
+    username = request.data.get('username')
+    otp_code = request.data.get('otp')
+    user_data = User.objects.get(username=username)
 
-    return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+    mfa_user = MfaEmail.objects.filter(user=user_data).last()
+    if mfa_user.otp == otp_code and
+        mfa_user.otp_expiry_time < timezone.now():
+        return Response({'detail': 'OTP verification success.'}, status=status.HTTP_200_OK)
+    return Response({'detail': 'OTP verification failed.'}, status=status.HTTP_401_UNAUTHORIZED)

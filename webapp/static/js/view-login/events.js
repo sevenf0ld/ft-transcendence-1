@@ -41,7 +41,7 @@ async function form_submitBtn(obj)
 		const password = document.getElementById('password').value;
 		try {
 			const csrfToken = await COOKIE.getCookie('csrftoken');
-			const response = await fetch('/api/send-otp/', {
+			const phase_one_response = await fetch('/api/login/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -50,17 +50,61 @@ async function form_submitBtn(obj)
 				body: JSON.stringify({
 					username: username,
 					password: password,
+					phase: 'one',
 				})
 			});
-			const data = await response.json();
-			if (response.ok) {
-				console.log('Login successful: logged-in as %s.', username);
+			const phase_one_data = await phase_one_response.json();
+			if (phase_one_response.status == 200) {
 				await HOME.build();
+			} else if (phase_one_response.status == 202) {
+				if (phase_one_data.mfa) {
+					console.log('First phase of login successful: Credentials are valid.');
+					const csrfToken = await COOKIE.getCookie('csrftoken');
+					const phase_two_response = await fetch('/api/login-phase-two/', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-CSRFToken': csrfToken
+						},
+						body: JSON.stringify({
+							username: username,
+							phase: 'two',
+							//otp: otp_prompt,
+						})
+					});
+					const phase_two_data = await phase_two_response.json();
+					if (phase_two_response.status == 200) {
+						console.log('Second phase of login successful: OTP sent to %s\'s email.', username);
+						// use parseInt instead? and check for isNaN
+						const otp_prompt = await Number(prompt("Enter the OTP sent to your registered email."));
+						console.log(otp_prompt);
+
+						const csrfToken = await COOKIE.getCookie('csrftoken');
+						const phase_three_response = await fetch('/api/login-phase-three/', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								//'X-CSRFToken': csrfToken
+							},
+							body: JSON.stringify({
+								username: username,
+								phase: 'three',
+								otp: otp_prompt,
+							})
+						});
+						const phase_three_data = await phase_three_response.json();
+						if (phase_three_response.status == 200) {
+							console.log('Third and final phase of login successful: logged-in as %s.', username);
+							await HOME.build();
+						}
+
+					}
+				}
 			} else {
-				console.error('Login failed: %s is unauthorized.', username);
+				console.error('First phase of login failed: ', username);
 			}
 		} catch (error) {
-			console.error('Login failed.' + error.message);
+			console.error('Login failed.');
 		}
 		/*=================================================================*/
 	});
