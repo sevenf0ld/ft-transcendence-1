@@ -43,7 +43,29 @@ async function logout_btn(obj)
 {
 	obj.addEventListener('click', async (event) => {
 		console.log('logout_btn');
-		LOGIN.build();
+		/*=================================================================*/
+		event.preventDefault();
+		try {
+			const csrfToken = await COOKIE.getCookie('csrftoken');
+			const response = await fetch('/api/logout/', {
+				method: 'POST',
+				headers: {
+					'X-CSRFToken': csrfToken
+				}
+			});
+			const data = await response.json();
+			if (response.ok) {
+				console.log('Logout successful.');
+				await LOGIN.build();
+			}
+			else {
+				console.error('Logout failed.');
+			}
+		}
+		catch (error) {
+			console.error('Logout failed.');
+		}
+		/*=================================================================*/
 	});
 
 	return true;
