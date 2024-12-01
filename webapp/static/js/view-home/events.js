@@ -47,7 +47,7 @@ async function logout_btn(obj)
 		event.preventDefault();
 		try {
 			const csrfToken = await COOKIE.getCookie('csrftoken');
-			const response = await fetch('/api/logout/', {
+			const response = await fetch('/api/user_auth/logout/', {
 				method: 'POST',
 				headers: {
 					'X-CSRFToken': csrfToken

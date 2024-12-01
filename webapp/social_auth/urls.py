@@ -10,6 +10,6 @@ app_name = 'social_auth'
 
 urlpatterns = default_urlpatterns(FortyTwoProvider)
 urlpatterns += [
-    path('api/forty-two-login/', FortyTwoLogin.as_view()),
-    path('api/forty-two-connect/', FortyTwoConnect.as_view()),
+    path('forty-two-login/', FortyTwoLogin.as_view()),
+    path('forty-two-connect/', FortyTwoConnect.as_view()),
 ]

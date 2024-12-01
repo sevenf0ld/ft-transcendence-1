@@ -27,7 +27,7 @@ from allauth.account.views import confirm_email
 
 urlpatterns += [
     path('', include('frontend.urls')),
-    path('', include('user_auth.urls')),
+    path('api/user_auth/', include('user_auth.urls')),
     # dj-rest-auth
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     # django-allauth (registration & confirmation)
@@ -41,7 +41,7 @@ urlpatterns += [
     #re_path(r'^auth/', include('drf_social_oauth2.urls', namespace='drf')),
     # django-allauth (forty two social account)
     path('accounts/', include('allauth.urls')),
-    path('', include('social_auth.urls')),
+    path('api/social_auth/', include('social_auth.urls')),
 ]
 
 from django.conf import settings

@@ -40,7 +40,7 @@ async function register_btn(obj)
       const password_confirm = document.getElementById('password_confirm').value;
       try {
         const csrfToken = await COOKIE.getCookie('csrftoken');
-        const response = await fetch('/api/registration/', {
+        const response = await fetch('/api/user_auth/register/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

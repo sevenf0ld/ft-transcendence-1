@@ -18,11 +18,11 @@ from .views import (
 app_name = 'user_auth'
 
 urlpatterns = [
-    path('api/login/', CustomLoginView.as_view()),
-    path('api/login-phase-two/', send_otp),
-    path('api/login-phase-three/', verify_otp),
-    path('api/logout/', LogoutView.as_view()),
-    path('api/user/', UserDetailsView.as_view()),
-    path('api/registration/', CustomRegisterView.as_view()),
+    path('login/', CustomLoginView.as_view()),
+    path('login-phase-two/', send_otp),
+    path('login-phase-three/', verify_otp),
+    path('logout/', LogoutView.as_view()),
+    path('user/', UserDetailsView.as_view()),
+    path('register/', CustomRegisterView.as_view()),
     path('registration/account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
 ]

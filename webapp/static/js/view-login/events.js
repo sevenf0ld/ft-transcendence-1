@@ -43,7 +43,7 @@ async function form_submitBtn(obj)
 		{
 			const csrfToken = await COOKIE.getCookie('csrftoken');
 			// block sign in submit-button from being spammed as this will trigger new OTPs to be generated, sent and prompted
-			const phase_one_response = await fetch('/api/login/', 
+			const phase_one_response = await fetch('/api/user_auth/login/', 
 			{
 				method: 'POST',
 				headers: {
@@ -67,7 +67,7 @@ async function form_submitBtn(obj)
 				if (phase_one_data.mfa)
 				{
 					console.log('First phase of login successful: Credentials are valid.');
-					const phase_two_response = await fetch('/api/login-phase-two/',
+					const phase_two_response = await fetch('/api/user_auth/login-phase-two/',
 					{
 						method: 'POST',
 						headers: {
@@ -87,7 +87,7 @@ async function form_submitBtn(obj)
 						// do not use parseInt or Number bc that might lead to the trailing 0s being trimmed off?
 						// check for isNaN
 						const otp_prompt = await prompt("Enter the OTP sent to your registered email.");
-						const phase_three_response = await fetch('/api/login-phase-three/',
+						const phase_three_response = await fetch('/api/user_auth/login-phase-three/',
 						{
 							method: 'POST',
 							headers: {
@@ -104,7 +104,7 @@ async function form_submitBtn(obj)
 						if (phase_three_response.status == 200)
 						{
 							console.log('Third phase of login successful: OTP verification successful.');
-							const phase_four_response = await fetch('/api/login/',
+							const phase_four_response = await fetch('/api/user_auth/login/',
 							{
 								method: 'POST',
 								headers: {
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', async function (event) {
 		try {
 			const csrfToken = await COOKIE.getCookie('csrftoken');
 			// OAuth 2.0 Authorization Grant: authorization code and access token exchange
-			const response = await fetch('/api/forty-two-login/', {
+			const response = await fetch('/api/social_auth/forty-two-login/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
