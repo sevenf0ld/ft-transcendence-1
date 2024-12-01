@@ -39,9 +39,12 @@ async function form_submitBtn(obj)
 		event.preventDefault();
 		const username = document.getElementById('username').value;
 		const password = document.getElementById('password').value;
-		try {
+		try
+		{
 			const csrfToken = await COOKIE.getCookie('csrftoken');
-			const phase_one_response = await fetch('/api/login/', {
+			// block sign in submit-button from being spammed as this will trigger new OTPs to be generated, sent and prompted
+			const phase_one_response = await fetch('/api/login/', 
+			{
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -54,13 +57,18 @@ async function form_submitBtn(obj)
 				})
 			});
 			const phase_one_data = await phase_one_response.json();
-			if (phase_one_response.status == 200) {
+			if (phase_one_response.status == 200)
+			{
+				console.log('Login successful: logged-in as %s.', username);
 				await HOME.build();
-			} else if (phase_one_response.status == 202) {
-				if (phase_one_data.mfa) {
+			}
+			else if (phase_one_response.status == 202)
+			{
+				if (phase_one_data.mfa)
+				{
 					console.log('First phase of login successful: Credentials are valid.');
-					const csrfToken = await COOKIE.getCookie('csrftoken');
-					const phase_two_response = await fetch('/api/login-phase-two/', {
+					const phase_two_response = await fetch('/api/login-phase-two/',
+					{
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
@@ -73,18 +81,18 @@ async function form_submitBtn(obj)
 						})
 					});
 					const phase_two_data = await phase_two_response.json();
-					if (phase_two_response.status == 200) {
+					if (phase_two_response.status == 200)
+					{
 						console.log('Second phase of login successful: OTP sent to %s\'s email.', username);
-						// use parseInt instead? and check for isNaN
-						const otp_prompt = await Number(prompt("Enter the OTP sent to your registered email."));
-						console.log(otp_prompt);
-
-						const csrfToken = await COOKIE.getCookie('csrftoken');
-						const phase_three_response = await fetch('/api/login-phase-three/', {
+						// do not use parseInt or Number bc that might lead to the trailing 0s being trimmed off?
+						// check for isNaN
+						const otp_prompt = await prompt("Enter the OTP sent to your registered email.");
+						const phase_three_response = await fetch('/api/login-phase-three/',
+						{
 							method: 'POST',
 							headers: {
 								'Content-Type': 'application/json',
-								//'X-CSRFToken': csrfToken
+								'X-CSRFToken': csrfToken
 							},
 							body: JSON.stringify({
 								username: username,
@@ -93,17 +101,55 @@ async function form_submitBtn(obj)
 							})
 						});
 						const phase_three_data = await phase_three_response.json();
-						if (phase_three_response.status == 200) {
-							console.log('Third and final phase of login successful: logged-in as %s.', username);
-							await HOME.build();
+						if (phase_three_response.status == 200)
+						{
+							console.log('Third phase of login successful: OTP verification successful.');
+							const phase_four_response = await fetch('/api/login/',
+							{
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+									'X-CSRFToken': csrfToken
+								},
+								body: JSON.stringify({
+									username: username,
+									password: password,
+									phase: 'four',
+								})
+							});
+							const phase_four_data = await phase_four_response.json();
+							if (phase_four_response.status == 200)
+							{
+								console.log('Login successful: logged-in as %s.', username);
+								await HOME.build();
+							}
+							else
+							{
+								console.error('Login failed.');
+							}
 						}
-
+						else
+						{
+							console.error('Third phase of login failed: OTP verification failed.');
+						}
+					}
+					else
+					{
+						console.error('Second phase of login failed: Server error.');
 					}
 				}
-			} else {
-				console.error('First phase of login failed: ', username);
+				else
+				{
+					console.error('First phase of login failed: Invalid credentials.');
+				}
 			}
-		} catch (error) {
+			else
+			{
+				console.error('Login failed.');
+			}
+		}
+		catch (error)
+		{
 			console.error('Login failed.');
 		}
 		/*=================================================================*/

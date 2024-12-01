@@ -39,4 +39,4 @@ class Friend(models.Model):
     #=================================#
 
     def __str__(self):
-        return f"{self.user.username} and {self.friend.username} has a friendship status of: {self.status}"
+        return f'{self.user.username} and {self.friend.username} has a friendship status of: {self.status}'

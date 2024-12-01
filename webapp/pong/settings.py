@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'frontend.apps.FrontendConfig',
     'user_auth.apps.UserAuthConfig',
     'social_auth.apps.SocialAuthConfig',
-    'mfa_email.apps.MfaEmailConfig',
     # drf
     'rest_framework',
     'rest_framework.authtoken',
