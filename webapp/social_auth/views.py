@@ -29,7 +29,7 @@ class FortyTwoOAuth2Adapter(OAuth2Adapter):
 
     def complete_login(self, request, app, token, **kwargs):
         headers = {
-            "Authorization": "Bearer {}".format(token.token),
+            'Authorization': 'Bearer {}'.format(token.token),
         }
         extra_data = (
             get_adapter().get_requests_session().get(self.profile_url, headers=headers)

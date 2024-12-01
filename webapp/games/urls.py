@@ -2,6 +2,8 @@ from rest_framework.routers import DefaultRouter
 from .views import MatchViewSet, TournamentViewSet, GameHistoryViewSet
 from django.urls import path, include
 
+app_name = 'games'
+
 router = DefaultRouter()
 router.register(r'matches', MatchViewSet, basename='match')
 router.register(r'tournaments', TournamentViewSet, basename='tournament')

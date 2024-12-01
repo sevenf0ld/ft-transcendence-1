@@ -6,6 +6,8 @@ from .views import  (
     FortyTwoConnect
 )
 
+app_name = 'social_auth'
+
 urlpatterns = default_urlpatterns(FortyTwoProvider)
 urlpatterns += [
     path('api/forty-two-login/', FortyTwoLogin.as_view()),
