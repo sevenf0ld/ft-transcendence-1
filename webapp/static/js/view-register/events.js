@@ -60,7 +60,7 @@ async function register_btn(obj)
           console.error('Registration failed (not 200).');
         }
       } catch (error) {
-        console.error('Registration failed.' + error.message);
+        console.error('Registration failed' + error);
       }
 		/*=================================================================*/
 	});
