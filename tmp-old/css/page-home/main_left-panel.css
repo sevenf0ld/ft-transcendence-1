@@ -1,0 +1,69 @@
+/* file : main_left-panel.css */
+
+/* -------------------------------------------------- */
+/* developer notes
+/* -------------------------------------------------- */
+ /* 
+ * media
+ *  ├ header
+ *  │  └ logo
+ *  ├ main
+ *  │  └ main-width-container
+ *  │       ├──── left-panel
+ *  │       │       ├ profile-pic
+ *  │       │       ├ profile-name
+ *  │       │       ├ separator
+ *  │       │       ├ win-lost-div
+ *  │       │       │  ├ win
+ *  │       │       │  └ lost
+ *  │       │       ├ match-history-btn
+ *  │       │       └ btn-box-btm
+ *  │       │             ├ button-settings
+ *  │       │             └ button-logout
+ *  .... etc
+ */
+
+/* -------------------------------------------------- */
+/* import */
+/* -------------------------------------------------- */
+/* -------------------------------------------------- */
+/* main/left-panel */
+/* -------------------------------------------------- */
+main > div.main-width-container > .left-panel
+{
+	flex: 1;
+	gap: 1rem;
+	box-sizing: border-box;
+}
+
+main > div.main-width-container > .left-panel > .profile-pic
+{
+	height: 150px;
+	width: 150px;
+	border-radius: 50%;
+	background: url('../../assets/images/default.png');
+}
+
+main > div.main-width-container > .left-panel > .separator
+{
+	height: 2px;
+	width: 30%;
+	background: var(--cor-main-light);
+}
+
+main > div.main-width-container > .left-panel > .win-lost-div
+{
+	gap: 0.5rem;
+	border-radius: 5px;
+}
+
+main > div.main-width-container > .left-panel > .win-lost-div p
+{
+	font-size: 1.5em;
+}
+
+main > div.main-width-container > .left-panel > .btn-box-btm
+{
+	flex: 1;
+	gap: 1rem;
+}

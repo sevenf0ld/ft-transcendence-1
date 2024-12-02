@@ -66,6 +66,7 @@ async function logout_btn(obj)
 			console.error('Logout failed.');
 		}
 		/*=================================================================*/
+		LOGIN.build();
 	});
 
 	return true;

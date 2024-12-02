@@ -1,0 +1,155 @@
+/* file : main_center-panel.css */
+
+/* -------------------------------------------------- */
+/* developer notes
+/* -------------------------------------------------- */
+ /* 
+ * media
+ *  ├ header
+ *  ├ main
+ *  ├ main
+ *  │  └ main-width-container
+ *  │       ├──── left-panel
+ *  │       ├──── center-panel
+ *  │       │         ├ center-panel-top
+ *  │       │         │  ├ text-game-mode
+ *  │       │         │  └ game-board-div
+ *  │       │         │       ├ title-h3
+ *  │       │         │       ├ button-div
+ *  │       │         │       │  ├ button-pvp
+ *  │       │         │       │  ├ button-pve
+ *  │       │         │       │  └ button-tnm
+ *  │       │         │       ├ title-h3
+ *  │       │         │       └ button-div
+ *  │       │         │          ├ button-pvp
+ *  │       │         │          └ button-tnm
+ *  │       │         └ center-panel-bottom
+ *  │       │            ├ small-card
+ *  │       │            └ chat-room
+ *  .... etc
+ */
+
+/* -------------------------------------------------- */
+/* import */
+/* -------------------------------------------------- */
+/* -------------------------------------------------- */
+/* center-panel */
+/* -------------------------------------------------- */
+main > div.main-width-container > .center-panel
+{
+	flex: 4;
+	gap: 1rem;
+}
+
+/* -------------------------------------------------- */
+/* ceenter-panel-top */
+/* -------------------------------------------------- */
+main > div.main-width-container > .center-panel > .center-panel-top
+{
+	flex: 2;
+}
+
+main > div.main-width-container > .center-panel > .center-panel-top > .game-board
+{
+	flex: 1;
+	gap: 1rem;
+	border-radius: 27px;
+	background: #212529;
+	box-shadow: inset 8px 8px 16px #1c1f23,
+				inset -8px -8px 16px #262b2f;
+}
+
+main > div.main-width-container > .center-panel > .center-panel-top > .game-board button
+{
+	width: 13rem;
+}
+
+main > div.main-width-container > .center-panel > .center-panel-top > .game-board > .div-local-btn
+{
+	gap: 2rem;
+}
+
+main > div.main-width-container > .center-panel > .center-panel-top > .game-board > .div-remote-btn
+{
+	gap: 2rem;
+}
+
+/* -------------------------------------------------- */
+/* ceenter-panel-bottom */
+/* -------------------------------------------------- */
+main > div.main-width-container > .center-panel > .center-panel-bottom
+{
+	flex: 1;
+	gap: 1rem;
+	max-height: 201px;
+}
+
+main > div.main-width-container > .center-panel > .center-panel-bottom > .small-card
+{
+	gap: 0.5rem;
+	width: 200px;
+	border-radius: 27px;
+	background: var(--cor-main-dark-placeholder);
+	justify-content: center;
+	align-items: center;
+}
+
+main > div.main-width-container > .center-panel > .center-panel-bottom > .small-card p
+{
+	font-size: 1.2rem;
+	color: var(--cor-main-grey-placeholder);
+}
+
+main > div.main-width-container > .center-panel > .center-panel-bottom > .chat-room
+{
+	flex: 1;
+	border-radius: 27px;
+	background: var(--cor-main-dark-placeholder);
+	justify-content: center;
+	align-items: center;
+}
+
+main > div.main-width-container > .center-panel > .center-panel-bottom > .chat-room p
+{
+	font-size: 1.2rem;
+	color: var(--cor-main-grey-placeholder);
+}
+
+/* -------------------------------------------------- */
+/* chat-room */
+/* -------------------------------------------------- */
+main > div.main-width-container > .center-panel > .center-panel-bottom .chat_room_header
+{
+	padding: 1rem 0px 0px 0px;
+	border-radius: 27px 27px 0 0;
+	background: var(--cor-main-dark-heavy);
+}
+
+main > div.main-width-container > .center-panel > .center-panel-bottom .chat_room_body
+{
+	flex: 1;
+	overflow-y: auto;
+	gap: 0.5rem;
+}
+main > div.main-width-container > .center-panel > .center-panel-bottom .chat_room_body > p
+{
+	font-size: 0.8rem;
+	color: var(--cor-main-chat);
+	font-family: 'Noto Sans JP' ,sans-serif;
+	text-align: left;
+}
+
+main > div.main-width-container > .center-panel > .center-panel-bottom .chat_room_footer
+{
+	width: 100%;
+	padding: 0.5rem;
+	font-size: 0.8rem;
+	border-radius: 0px 0px 27px 27px;
+	background: var(--cor-main-dark-heavy);
+	font-family: 'Noto Sans JP' ,sans-serif;
+}
+
+main > div.main-width-container > .center-panel > .center-panel-bottom .chat_room_footer:focus
+{
+	outline: none;
+}

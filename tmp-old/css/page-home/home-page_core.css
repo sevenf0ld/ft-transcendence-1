@@ -1,0 +1,72 @@
+/* file : home-page.css */
+/* -------------------------------------------------- */
+/* developer notes
+/* -------------------------------------------------- */
+/*
+ * media
+ *  ├ header
+ *  │  └ main-width-container
+ *  │      └ logo
+ *  ├ main
+ *  │  └ main-width-container
+ *  │      ├ left-panel
+ *  │      ├ center-panel
+ *  │      └ right-panel
+ *  └ footer
+ *     └ main-width-container
+ *         └ footer-content
+ */
+/* -------------------------------------------------- */
+/* import */
+/* -------------------------------------------------- */
+@import url('./main_left-panel.css');
+@import url('./main_center-panel.css');
+@import url('./main_right-panel.css');
+
+/* -------------------------------------------------- */
+/* header
+/* -------------------------------------------------- */
+header
+{
+	font-family: 'Caveat', cursive;
+}
+
+header h1
+{
+	width: fit-content;
+	cursor: pointer;
+	user-select: none;
+}
+
+/* -------------------------------------------------- */
+/* main
+/* -------------------------------------------------- */
+main *
+{
+	color: var(--cor-main-light);
+	box-sizing: border-box;
+	font-family: 'Kalam', cursive;
+}
+
+.main-width-container
+{
+	width: 1300px;
+	border-radius: 50px;
+}
+
+main > div.main-width-container
+{
+	height: 700px;
+	border-radius: 50px;
+	background: #212529;
+	box-shadow:  50px 50px 100px #0d0f10,
+				 -50px -50px 100px #353b42;
+}
+
+/* -------------------------------------------------- */
+/* footer
+/* -------------------------------------------------- */
+footer
+{
+	font-family: 'Caveat', cursive;
+}
