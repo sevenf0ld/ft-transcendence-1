@@ -11,17 +11,17 @@ class MoveJWTRefreshCookieIntoTheBody(MiddlewareMixin):
     """
 
     def __init__(self, get_response):
-        #print("MOVE JWT INIT")
+        #print('MOVE JWT INIT')
         self.get_response = get_response
 
     def __call__(self, request):
-        #print("MOVE JWT CALL")
+        #print('MOVE JWT CALL')
         #print(response)
         response = self.get_response(request)
         return response
 
     def process_view(self, request, view_func, *view_args, **view_kwargs):
-        #print("MOVE JWT PROCESS VIEW")
+        #print('MOVE JWT PROCESS VIEW')
         #print(request.path)
         #print(request.body)
         if request.path == '/dj-rest-auth/token/refresh/' and JWT_AUTH_REFRESH_COOKIE in request.COOKIES:

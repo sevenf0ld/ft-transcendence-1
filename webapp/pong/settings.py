@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'friends.apps.FriendsConfig',
     'games.apps.GamesConfig',
     'frontend.apps.FrontendConfig',
+    'user_auth.apps.UserAuthConfig',
+    'social_auth.apps.SocialAuthConfig',
     # drf
     'rest_framework',
     'rest_framework.authtoken',
@@ -60,21 +62,34 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     # geek guide
     'sslserver',
+    # drf-social-oauth2
+    #'oauth2_provider',
+    #'social_django',
+    #'drf_social_oauth2',
 ]
 
 # maiman-m: add django-allauth settings for mandatory email verification on sign-up and allow password reset (prevents user_logged_in signal to follow user_signed_up)
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'https://ftpong.com:8000'
 #ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 #ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[FT_PONG] ' # 42PONG
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 #ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD
 ACCOUNT_SIGNUP_REDIRECT_URL = 'https://ftpong.com:8000'
+# register form validation
+ACCOUNT_ADAPTER = 'user_auth.adapter.CustomAccountAdapter'
+ACCOUNT_USERNAME_BLACKLIST = ['admin', 'root', 'superuser', 'django', 'pong', '42', 'test', 'user']
 ACCOUNT_USERNAME_MIN_LENGTH = 3
+ACCOUNT_USERNAME_VALIDATORS = 'user_auth.validators.validator_list'
+
+# drf-social-oauth2
+#DRFSO2_PROPRIETARY_BACKEND_NAME = '42Intra'
+#DRFSO2_URL_NAMESPACE = 'drf'
+#ACTIVATE_JWT = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -95,6 +110,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # simple jwt authentication
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        # drf-social-oauth2
+        #'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        #'drf_social_oauth2.authentication.SocialAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -121,6 +139,21 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+# django-allauth for social accounts
+SOCIALACCOUNT_PROVIDERS = {
+    'fortytwo': {
+        'APP': {
+            'client_id': config('CLIENT_ID'),
+            'secret': config('CLIENT_SECRET'),
+            'key': ''
+        }
+    }
+}
+SOCIALACCOUNT_ADAPTER = 'social_auth.adapter.FortyTwoSocialAccountAdapter'
+FORTYTWO_URL = 'https://api.intra.42.fr/'
+#SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+
 ROOT_URLCONF = 'pong.urls'
 
 TEMPLATES = [
@@ -135,10 +168,14 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # maiman-m: add drf-social-oauth2 context processors
+                #'social_django.context_processors.backends',
+                #'social_django.context_processors.login_redirect',
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'pong.wsgi.application'
 
@@ -177,16 +214,20 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # maiman-m: add authentication backend
-#AUTHENTICATION_BACKENDS = [
-#    'django.contrib.auth.backends.ModelBackend',  # Default authentication
-#]
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    # drf-social-oauth2
+    #'drf_social_oauth2.backends.DjangoOAuth2',
+    # django-allauth for social accounts
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Singapore'
 
 USE_I18N = True
 

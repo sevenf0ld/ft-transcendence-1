@@ -43,7 +43,7 @@ class Match(models.Model):
     #=================================#
 
     def __str__(self):
-        return f"{self.player.username} vs {self.opponent.username} at {self.match_time}"
+        return f'{self.player.username} vs {self.opponent.username} at {self.match_time}'
 
 class Tournament(models.Model):
     matches = models.ManyToManyField(Match)
@@ -72,7 +72,7 @@ class Tournament(models.Model):
     #=================================#
 
     def __str__(self):
-        return f"tournament taking place at {self.tournament_time}"
+        return f'tournament taking place at {self.tournament_time}'
 
 class GameHistory(models.Model):
     user = models.OneToOneField(

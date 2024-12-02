@@ -37,18 +37,11 @@ class Profile(models.Model):
 
     losses = models.PositiveIntegerField(default=0)
 
+    mfa_email_enabled = models.BooleanField(default=False)
+
     #=================================#
     #=====default model methods=======#
     #=================================#
 
     def __str__(self):
         return self.user.username
-
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-
-class ProtectedView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        return Response({'message': 'This is a protected view!'})
