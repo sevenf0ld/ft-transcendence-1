@@ -1,7 +1,6 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from dj_rest_auth.serializers import LoginSerializer
 
 try:
     from allauth.account import app_settings as allauth_account_settings
@@ -19,7 +18,6 @@ class CustomRegisterSerializer(RegisterSerializer):
                 raise serializers.ValidationError(
                     ('A user is already registered with this e-mail address.'),
                 )
-        existing_email = User.objects.filter(email=email).first()
-        if existing_email:
-            raise serializers.ValidationError('A user is already registered with this e-mail address.')
+        if User.objects.filter(email__iexact=email).exists():
+            raise serializers.ValidationError('Email address is taken.')
         return email

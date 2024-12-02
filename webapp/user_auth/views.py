@@ -87,7 +87,7 @@ OTP_EXPIRATION = 80
 @permission_classes([AllowAny])
 def send_otp(request):
     username = request.data.get('username')
-    user_data = User.objects.get(username=username)
+    user_data = User.objects.filter(username__iexact=username).last()
     email = user_data.email
 
     key_otp_code = f'otp_code_{email}'
@@ -124,7 +124,7 @@ def send_otp(request):
 def verify_otp(request):
     username = request.data.get('username')
     otp_received = request.data.get('otp')
-    user_data = User.objects.get(username=username)
+    user_data = User.objects.filter(username__iexact=username).last()
     email = user_data.email
 
     key_otp_code = f'otp_code_{email}'

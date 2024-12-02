@@ -165,6 +165,22 @@
     - [store in webstorage](https://stackoverflow.com/a/19211793)
 
 ### 2fa (authenticator app)
+-
 
 ## middleware
 - middleware [types and explanations](https://www.webforefront.com/django/middlewaredjango.html)
+
+# week 4 (extended by a week but will only take up the monday)
+## backend form and database validation
+### registration form
+- refer to [allauth account config](https://django-allauth.readthedocs.io/en/latest/account/configuration.html) for for registration restrictions
+    - [username validator to be a list](https://github.com/pennersr/django-allauth/pull/1648)
+- [drf validators](https://www.django-rest-framework.org/api-guide/validators/)
+- [all on django User model and its validators](https://simpleisbetterthancomplex.com/article/2021/07/08/what-you-should-know-about-the-django-user-model.html#user-model-limitations)
+    - [django built-in validators](https://docs.djangoproject.com/en/5.1/ref/validators/#built-in-validators)
+    - [django auth built-in validators](https://docs.djangoproject.com/en/5.1/ref/contrib/auth/#validators)
+    - [alnum username validator to include in models or serializers or forms](https://stackoverflow.com/a/17165415)
+    - [append validator to field](https://stackoverflow.com/q/12062258), [alt with init](https://stackoverflow.com/a/48558058)
+    - [get fields (meta)](https://stackoverflow.com/a/29423946)
+- [change the default `username_validator` property](https://stackoverflow.com/a/48030767)
+- [ValueError: The QuerySet value for an exact lookup must be limited to one result using slicing.](https://stackoverflow.com/a/56805785)
