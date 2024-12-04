@@ -43,3 +43,23 @@ class CustomAccountAdapter(DefaultAccountAdapter):
     #            raise ValidationError('Email address is taken.')
     #        if User.objects.filter(email__iexact=email).exists():
     #            raise ValidationError('Email address is taken.')
+
+    # https://github.com/pennersr/django-allauth/issues/1770
+    # allauth/utils.py
+    def populate_username(self, request, user):
+        """
+        Fills in a valid username, if required and missing.  If the
+        username is already present it is assumed to be valid
+        (unique).
+        """
+        from allauth.account.utils import user_email, user_field, user_username
+
+        first_name = user_field(user, "first_name")
+        last_name = user_field(user, "last_name")
+        email = user_email(user)
+        username = user_username(user)
+        if app_settings.USER_MODEL_USERNAME_FIELD:
+            user_username(
+                user,
+                username
+            )
