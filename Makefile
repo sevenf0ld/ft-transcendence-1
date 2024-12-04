@@ -14,15 +14,18 @@ MNG_FILE=./webapp/manage.py
 #--------------------------------------------------#
 all: run
 
-run: 
+run:
 	@reset
 	@echo "$(GREEN)[MSG] RUNNING SERVER$(RESET)"
-	@python3 $(MNG_FILE) runserver
+	@python3 $(MNG_FILE) runsslserver
+
+setup:
+	python3 $(MNG_FILE) makemigrations && python3 $(MNG_FILE) migrate && python3 $(MNG_FILE) createsuperuser
 
 re: clean all
 
 clean:
-	rm -f run main.o
+	rm -f run
 
 git-reset:
 	rm -rf ./* && git restore .

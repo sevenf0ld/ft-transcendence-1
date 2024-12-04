@@ -1,6 +1,7 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
+import re
 
 try:
     from allauth.account import app_settings as allauth_account_settings
@@ -21,3 +22,11 @@ class CustomRegisterSerializer(RegisterSerializer):
         if User.objects.filter(email__iexact=email).exists():
             raise serializers.ValidationError('Email address is taken.')
         return email
+
+    def validate_username(self, username):
+        username = get_adapter().clean_username(username)
+        blacklisted = allauth_account_settings.USERNAME_BLACKLIST
+        pattern = r'(?i)(' + '|'.join(map(re.escape, blacklisted)) + r')'
+        if re.search(pattern, username):
+            raise serializers.ValidationError('Username is blacklisted.')
+        return username

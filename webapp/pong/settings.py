@@ -81,7 +81,7 @@ ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 #ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD
 ACCOUNT_SIGNUP_REDIRECT_URL = 'https://ftpong.com:8000'
 # register form validation
-ACCOUNT_ADAPTER = 'user_auth.adapter.CustomAccountAdapter'
+#ACCOUNT_ADAPTER = 'user_auth.adapter.CustomAccountAdapter'
 ACCOUNT_USERNAME_BLACKLIST = ['admin', 'root', 'superuser', 'django', 'pong', '42', 'test', 'user']
 ACCOUNT_USERNAME_MIN_LENGTH = 3
 ACCOUNT_USERNAME_VALIDATORS = 'user_auth.validators.validator_list'
