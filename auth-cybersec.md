@@ -82,6 +82,7 @@
         - import [function](https://stackoverflow.com/a/48090640) instead of view in project root urls
 
 ### jwt
+- [what is jwt](https://supertokens.com/blog/what-is-jwt#)
 - jwt is [not controversial](https://medium.com/geekculture/jwt-authentication-in-django-part-1-implementing-the-backend-b7c58ab9431b)
     - store jwt tokens in a [httpOnly](https://stackoverflow.com/a/44869686) cookie instead of LocalStorage or regular cookies
     - the [how](https://stackoverflow.com/q/63493909) and subsequent discussions on both django and js side
@@ -164,23 +165,32 @@
     - [create dictionaries](https://stackoverflow.com/q/7196212)
     - [store in webstorage](https://stackoverflow.com/a/19211793)
 
-### 2fa (authenticator app)
--
+### 2fa (email)
+- [using pytop and has verified fields](https://dev.to/rupesh_mishra/implementing-email-and-mobile-otp-verification-in-django-a-comprehensive-guide-4oo0)
+- [refer to allauth.mfa](https://django-allauth.readthedocs.io/en/latest/mfa/introduction.html)
+    - [allauth mfa adapter](https://github.com/pennersr/django-allauth/blob/main/allauth/mfa/app_settings.py)
+    - [setup by gaetan gond](https://gaetangrond.me/posts/django/how-to-add-mfa-to-django-allauth-in-under-5mn/)
+    - [understand the implementation](https://github.com/pennersr/django-allauth/discussions/3465)
+- a very simple [guide](https://studygyaan.com/django/login-with-otp-via-email-phone-in-django-rest-framework?amp=1) on the basics
+- a very complex [guide](https://awstip.com/implementing-mobile-number-verification-and-otp-based-authentication-in-django-django-rest-48c54382e989)
+- utilizes [cron job](https://blog.stackademic.com/implementing-two-factor-authentication-in-django-rest-api-with-temporary-code-verification-48582987e63c) for expiration reset
+- utilizes [cache](https://medium.com/@sammyasopa/building-a-secure-otp-based-user-authentication-system-f06102afef8d) instead of a new mfa-related model
+    - [django cache framework](https://docs.djangoproject.com/en/5.1/topics/cache/)
+    - [all on caching in django](https://hackernoon.com/caching-in-django-everything-you-need-to-know)_
 
 ## middleware
 - middleware [types and explanations](https://www.webforefront.com/django/middlewaredjango.html)
 
-# week 4 (extended by a week but will only take up the monday)
-## backend form and database validation
-### registration form
-- refer to [allauth account config](https://django-allauth.readthedocs.io/en/latest/account/configuration.html) for for registration restrictions
+# week 2
+## form and database validation
+### registration
+- refer to [allauth account config](https://django-allauth.readthedocs.io/en/latest/account/configuration.html) for registration restrictions
     - [username validator to be a list](https://github.com/pennersr/django-allauth/pull/1648)
-- [drf validators](https://www.django-rest-framework.org/api-guide/validators/)
-- [all on django User model and its validators](https://simpleisbetterthancomplex.com/article/2021/07/08/what-you-should-know-about-the-django-user-model.html#user-model-limitations)
+- [django User model case-sensitivity and field uniqueness](https://simpleisbetterthancomplex.com/article/2021/07/08/what-you-should-know-about-the-django-user-model.html#user-model-limitations)
     - [django built-in validators](https://docs.djangoproject.com/en/5.1/ref/validators/#built-in-validators)
     - [django auth built-in validators](https://docs.djangoproject.com/en/5.1/ref/contrib/auth/#validators)
-    - [alnum username validator to include in models or serializers or forms](https://stackoverflow.com/a/17165415)
-    - [append validator to field](https://stackoverflow.com/q/12062258), [alt with init](https://stackoverflow.com/a/48558058)
-    - [get fields (meta)](https://stackoverflow.com/a/29423946)
-- [change the default `username_validator` property](https://stackoverflow.com/a/48030767)
-- [ValueError: The QuerySet value for an exact lookup must be limited to one result using slicing.](https://stackoverflow.com/a/56805785)
+    - [alnum username validator](https://stackoverflow.com/a/17165415)
+    - [append validator in __init__](https://stackoverflow.com/q/12062258), [alternatives](https://stackoverflow.com/a/48558058)
+    - [get User meta field](https://stackoverflow.com/a/29423946)
+    - [change the default `username_validator` property](https://stackoverflow.com/a/48030767)
+- [django lookups](https://archive.ph/rrdfG)
