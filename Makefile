@@ -14,7 +14,7 @@ MNG_FILE=./webapp/manage.py
 #--------------------------------------------------#
 all: run
 
-run: 
+run:
 	@reset
 	@echo "$(GREEN)[MSG] RUNNING SERVER$(RESET)"
 	@python3 $(MNG_FILE) runserver

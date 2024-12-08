@@ -1,0 +1,47 @@
+// file : SignupView.js
+// -------------------------------------------------- //
+// Importing-internal
+// -------------------------------------------------- //
+// -------------------------------------------------- //
+// Importing-external
+// -------------------------------------------------- //
+//layout
+import PageTitle from '../core/helpers/PageTitle.js';
+import MediaLayout from '../layouts/MediaLayout.js';
+import IntroLayout from '../layouts/IntroLayout.js';
+//components
+import SignupCard from '../components/SignupCard.js';
+// -------------------------------------------------- //
+// developer notes
+// -------------------------------------------------- //
+// -------------------------------------------------- //
+// main-functions
+// -------------------------------------------------- //
+// -------------------------------------------------- //
+// export
+// -------------------------------------------------- //
+export default class SignupView
+{
+	constructor(container)
+	{
+		this.container = container;
+	}
+	
+	async render()
+	{
+		const page_title = new PageTitle();
+		page_title.update('Sign Up');
+
+		const media = new MediaLayout();
+		await media.render();
+
+		const layout = new IntroLayout(await media.get());
+
+		await layout.render();
+
+		const signup = new SignupCard(await layout.get());
+		await signup.render();
+
+		return true;
+	}
+}

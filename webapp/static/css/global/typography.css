@@ -1,0 +1,82 @@
+/* file : typography.css */
+/* ------------------------------------------- */
+/* truncate */
+/* ------------------------------------------- */
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ------------------------------------------- */
+/* font-caveat */
+/* ------------------------------------------- */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(../../assets/fonts/caveat/caveat-regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(../../assets/fonts/caveat/caveat-bold.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(../../assets/fonts/caveat/caveat-medium.ttf) format('truetype');
+}
+
+/* ------------------------------------------- */
+/* font-roboto */
+/* ------------------------------------------- */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(../../assets/fonts/roboto/roboto-regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(../../assets/fonts/roboto/roboto-medium.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(../../assets/fonts/roboto/roboto-bold.ttf) format('truetype');
+}
+
+/* ------------------------------------------- */
+/* font-kalam */
+/* ------------------------------------------- */
+@font-face {
+  font-family: 'Kalam';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(../../assets/fonts/kalam/kalam-regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Kalam';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(../../assets/fonts/kalam/kalam-bold.ttf) format('truetype');
+}

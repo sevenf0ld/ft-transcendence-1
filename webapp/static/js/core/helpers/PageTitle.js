@@ -1,27 +1,31 @@
-// file : main.js
+// file : PageTitle.js
 // -------------------------------------------------- //
 // Importing-internal
 // -------------------------------------------------- //
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
-import './core/toolkits/bootstrap.bundle.js';
-import LoginView from './views/LoginView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// local-functions
-// -------------------------------------------------- //
-// -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-async function main()
+// -------------------------------------------------- //
+// export
+// -------------------------------------------------- //
+export default class PageTitle
 {
-	const loginView = new LoginView();
-	await loginView.render();
+	constructor(title)
+	{
+		this.title = title;
+	}
 
-	return true;
+	async update(title)
+	{
+		const new_title = "42Pong | " + title;
+		document.title = new_title;
+
+		return true;
+	}
 }
-
-document.addEventListener('DOMContentLoaded', main);
