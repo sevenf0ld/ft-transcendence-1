@@ -1,0 +1,45 @@
+/* library */
+@import "./toolkit/bootstrap.min.css";
+@import "./toolkit/reset.css";
+@import "./toolkit/fonts.css";
+/* common-styles */
+@import "./common/button.css";
+@import "./common/layout.css";
+/* views */
+@import "./forgetpass.css";
+@import "./home.css";
+@import "./livechat.css";
+@import "./local-pve.css";
+@import "./local-pvp.css";
+@import "./local-tour.css";
+@import "./login.css";
+@import "./profile.css";
+@import "./register.css";
+@import "./remo-pvp.css";
+@import "./remo-tour.css";
+
+/* -------------------------------------------------- */
+/* core */
+/* -------------------------------------------------- */
+:root {
+	/* theme */
+	--cor-1: #212529; /* boostrap-dark */
+	--cor-2: #e8edf2; /* boostrap-light */
+	--cor-3: #BAA898; /* khaki */
+	/* text */
+	--txt-1: white;
+	--txt-2: #212529; /* boostrap-dark */ 
+	--txt-3: #b7b8b9; /* placeholder-grey */
+}
+
+html,
+body
+{
+	width: 100vw;
+	height: 100vh;
+	user-select: none;
+	color: var(--txt-1);
+	box-sizing: border-box;
+	background-color: var(--cor-1);
+	font-family: 'Noto Sans JP' ,sans-serif;
+}
