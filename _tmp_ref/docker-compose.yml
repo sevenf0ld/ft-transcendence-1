@@ -1,0 +1,175 @@
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./DOCKER/nginx/conf/:/etc/nginx/conf.d
+      - ./DOCKER/nginx/ssl/certs/:/etc/nginx/ssl/certs
+      - ./DOCKER/nginx/ssl/private/:/etc/nginx/ssl/private
+      - ./DATABASE/staticfiles:/var/www/static
+    ports:
+      - 443:443
+      - 80:80
+    depends_on:
+      - web
+    networks:
+      - elk
+
+  web:
+    build:
+      context: ./DOCKER/web/
+    volumes:
+      - postgres_data:/tmp/
+      - ./DATABASE/postgres_data:/var/lib/postgresql/data/
+      - ./DOCKER/logs:/tmp/
+        #ports:
+        #  - 8000:8000
+    expose:
+      - 8000
+    depends_on:
+      - db
+      - logstash
+    env_file:
+      - ${PWD}/DOCKER/.env
+    networks:
+      - elk
+
+  db:
+    image: postgres:latest
+    volumes:
+    - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+    env_file:
+      - ${PWD}/DOCKER/.env
+    environment:
+    - "POSTGRES_HOST_AUTH_METHOD=trust"
+    networks:
+      - elk
+
+  db_exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    volumes:
+      - ./DOCKER/monitoring/config/queries.yml:/queries.yml
+    command:
+      - --extend.query-path=/queries.yml
+    environment:
+      - DATA_SOURCE_NAME=postgresql://postgres:12345@db:5432/transdb?sslmode=disable
+    ports:
+      - 9187:9187
+    depends_on:
+      - db
+    networks:
+      - elk
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    container_name: elasticsearch
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+      - ./DOCKER/elasticsearch/ilm_policy.json:/usr/share/elasticsearch/config/ilm_policy.json
+    ports:
+      - "9200:9200"
+    env_file:
+      - ${PWD}/DOCKER/.env
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - elk
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.0
+    volumes:
+    - ./DOCKER/kibana/tools/create_kibana_index_pattern.sh:/usr/local/bin/create_kibana_index_pattern.sh
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    env_file:
+      - ${PWD}/DOCKER/.env
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+     - elk
+
+  kibana_setup:
+    build:
+      context: ./DOCKER/kibana/
+    volumes:
+      - ./DOCKER/kibana/tools/create_kibana_index_pattern.sh:/usr/local/bin/create_kibana_index_pattern.sh
+    depends_on:
+      - kibana
+    networks:
+     - elk
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.14.0
+    container_name: logstash
+    volumes:
+      - ./DOCKER/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./DOCKER/logs:/tmp/
+    ports:
+      - "5044:5044"
+    depends_on:
+      - elasticsearch
+    env_file:
+      - ${PWD}/DOCKER/.env
+    environment:
+      - xpack.monitoring.elasticsearch.username='${ELASTIC_USERNAME}'
+      - xpack.monitoring.elasticsearch.password='${ELASTIC_PASSWORD}'
+    networks:
+      - elk
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    depends_on:
+      - web
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - prometheus_data:/prometheus
+      - ./DOCKER/monitoring/config/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - elk
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - elk
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/DATABASE/postgres_data
+      o: bind
+
+  prometheus_data:
+    driver: local
+
+  grafana_data:
+    driver: local
+
+  esdata:
+    driver: local
+
+networks:
+  elk:
+    driver: bridge

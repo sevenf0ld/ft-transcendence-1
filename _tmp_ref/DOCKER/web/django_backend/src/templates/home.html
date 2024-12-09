@@ -1,0 +1,37 @@
+<section id="home-section" style="display: none">
+    <h2>Welcome to home section!</h2>
+    <div id="left-panel">
+        <h2 id="home-username"></h2>
+        <img id="home-avatar" src="#" alt="User Avatar" />
+        <p>Wins: <span id="home-wins"></span></p>
+        <p>Losses: <span id="home-losses"></span></p>
+        <button id="match-history-button">Match History</button>
+        <button id="settings-button">Settings</button>
+        <button id="logout-button">Logout</button>
+    </div>
+
+    <div id="middle-panel">
+        <div id="game-mode">
+            <button>PvP</button>
+            <button>PvE</button>
+            <button>Tournament</button>
+        </div>
+        <div id="match-history" style="display: none">
+            <div id="match-container"></div>
+            <button id="close-button">Close</button>
+        </div>
+    </div>
+
+    <div id="right-panel">
+        <form id="add-friend-form">
+            <label for="add-friend-username">Friend's Username:</label>
+            <input type="text" id="add-friend-username" name="username" placeholder="Enter your friend's username" required>
+            <button type="submit">Add Friend</button>
+        </form>
+        <div id="add-friend-message"></div>
+        <div>
+            <ul id="friends-list"></ul>
+            <button id="refresh-button">Refresh</button>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+*.env
+.env
+
+# Django
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Logs 
+*.log
+logs/
+
+# Local database
+db.sqlite3
+
+# Static and media files
+staticfiles/
+media/
+
+# System and editor-specific files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Compiled files and cache
+*.mo
+*.pot
+
+# Package management files
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# vim
+*.swp
+*.swo
+
+# docker
+DATABASE/
+
+# temporary
+!.env
+

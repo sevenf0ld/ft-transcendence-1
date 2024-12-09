@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'web'
+    static_configs:
+      - targets: ['web:8000']
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['db_exporter:9187']

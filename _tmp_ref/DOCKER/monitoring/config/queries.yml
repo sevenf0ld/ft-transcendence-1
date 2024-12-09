@@ -1,0 +1,2 @@
+pg_stat_bgwriter:
+  query: "SELECT checkpoints_req, buffers_checkpoint, buffers_clean, maxwritten_clean, buffers_backend, buffers_alloc FROM pg_stat_bgwriter;"
