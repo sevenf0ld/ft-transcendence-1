@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', async function (event) {
 			const data = await response.json();
 			if (response.ok) {
 				console.log('Exchange successful.');
-				await HOME.build();
+				const home = new HomeView();
+				await home.render();
 			} else {
 				console.error('Exchange failed.');
 			}
@@ -418,7 +419,8 @@ export default class LoginCard
 			if (phase_one_response.status == 200)
 			{
 				console.log('Login successful: logged-in as %s.', username);
-				await HOME.build();
+				const home = new HomeView();
+				await home.render();
 			}
 			else if (phase_one_response.status == 202)
 			{
