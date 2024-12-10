@@ -7,7 +7,6 @@
 // -------------------------------------------------- //
 import LoginView from '../views/LoginView.js';
 import * as FormValiSignup from '../core/helpers/formVali-su.js';
-import * as COOKIE from '../core/helpers/cookie.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -265,6 +264,7 @@ export default class SignupCard
 		console.log('Form is valid!');
 
 		  /*=================================================================*/
+		/*
 		  event.preventDefault();
 		  const username = document.getElementById('username').value;
 		  const email = document.getElementById('email').value;
@@ -294,6 +294,7 @@ export default class SignupCard
 		  } catch (error) {
 			console.error('Registration failed.' + error.message);
 		  }
+		  */
 		/*=================================================================*/
 		return true;
 	}

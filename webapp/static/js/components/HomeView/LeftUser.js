@@ -9,7 +9,6 @@ import LoginView from '../../views/LoginView.js';
 import ModalLayout from '../../layouts/ModalLayout.js';
 import ModalSettings from './ModalSettings.js';
 import ModalHistory from './ModalHistory.js';
-import * as COOKIE from '../../core/helpers/cookie.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -307,6 +306,7 @@ export default class leftPanelUser
 	{
 		console.log('[EVENT] button clicked : logout');
 		/*=================================================================*/
+		/*
 		event.preventDefault();
 		try {
 			const csrfToken = await COOKIE.getCookie('csrftoken');
@@ -329,6 +329,7 @@ export default class leftPanelUser
 		catch (error) {
 			console.error('Logout failed.');
 		}
+		*/
 		/*=================================================================*/
 		return true;
 	}
