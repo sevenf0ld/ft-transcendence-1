@@ -188,7 +188,7 @@ function html_formGroup()
 		'%p2': `Enter your password`,
 		'%fgot-c': `ct-btn-forgot text-end`,
 		'%afgot-c': `small text-muted text-decoration-none`,
-		'%afgot-t': `Forgot Password?`,
+		'%afgot-t': `Forgot Password? `,
 		'%afgot-id': `btn_forgot`,
 		'%lbid': `btn_login`,
 		'%lbc': `ct-btn-dark btn no-hover`,
