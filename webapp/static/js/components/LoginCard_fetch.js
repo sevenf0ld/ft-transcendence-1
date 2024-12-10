@@ -163,82 +163,9 @@ class fetch_login
 // -------------------------------------------------- //
 // [2A] HELPER-FETCH-INTRA
 // -------------------------------------------------- //
-
-/*=================================================================*/
-// protect against csrf and prevent malicious parties from redirecting to the callback
-function generate_state() {
-	const length = 52;
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-	localStorage.setItem('intra_state', result);
-    return result;
-}
-/*=================================================================*/
-/*=================================================================*/
-// 42 Intra API
-const authorization_server = 'https://api.intra.42.fr/oauth/authorize';
-const token_endpoint = 'https://api.intra.42.fr/oauth/token';
-
-// OAuth 2.0
-const client_id = encodeURIComponent('u-s4t2ud-ebe5aa4d1068dc430477ebc2acfd2e267c8b3446ac0a5744cf8febc47aec5b8b');
-const redirect_uri = encodeURIComponent('https://ftpong.com:8000');
-const response_type = 'code';
-const scope = 'public';
-const grant_type = 'authorization_code';
-const client_secret = encodeURIComponent('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');
-/*=================================================================*/
-
-/*=================================================================*/
-document.addEventListener('DOMContentLoaded', async function (event) {
-	// parse GET query string upon authorization and redirection
-	const url_params = new Proxy(new URLSearchParams(window.location.search), {
-		get: (keys, value) => keys.get(value)
-	});
-	const url_code = decodeURIComponent(url_params.code);
-	const url_state= decodeURIComponent(url_params.state);
-	const state = localStorage.getItem('intra_state');
-
-	// protect against csrf and prevent malicious parties from redirecting to the callback
-	if (url_state === state)
-	{
-		try {
-			const fetchUtils = new FETCH_UTILS();
-			const csrfToken = await fetchUtils.getCookie('csrftoken');
-			// OAuth 2.0 Authorization Grant: authorization code and access token exchange
-			const response = await fetch('/api/social_auth/forty-two-login/', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'X-CSRFToken': csrfToken
-				},
-				body: JSON.stringify({
-					code: url_code
-				})
-			});
-			const data = await response.json();
-			if (response.ok) {
-				console.log('Exchange successful.');
-				const home = new HomeView();
-				await home.render();
-			} else {
-				console.error('Exchange failed.');
-			}
-		} catch (error) {
-			console.error('Exchange failed.');
-		}
-	}
-});
-/*=================================================================*/
 // -------------------------------------------------- //
 // [2B] MAIN-FETCH-INTRA
 // -------------------------------------------------- //
-
 class fetch_intra
 {
 	constructor()
@@ -307,22 +234,26 @@ class fetch_intra
 			{
 				// OAuth 2.0 Authorization Grant: authorization code and access token exchange
 				const mainFetch = new FETCH_UTILS();
-				mainFetch.getCookie('csrftoken');
-				mainFetch.setUrl('/api/social_auth/forty-two-login/');
-				mainFetch.setMethod('POST');
-				mainFetch.appendHeaders('Content-Type', 'application/json');
-				mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
-				mainFetch.appendBody('code', url_code);
-				mainFetch.fetchData();
+				await mainFetch.getCookie('csrftoken');
+				await mainFetch.setUrl('/api/social_auth/forty-two-login/');
+				await mainFetch.setMethod('POST');
+				await mainFetch.appendHeaders('Content-Type', 'application/json');
+				await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+				await mainFetch.appendBody('code', url_code);
+				console.log('mainFetch [BEFORE] =', mainFetch);
+				await mainFetch.fetchData();
+				console.log('mainFetch [AFTER] =', mainFetch);
 
+				console.log('mainFetch.response =', mainFetch.response);
+				console.log('mainFetch.response.ok =', mainFetch.response.ok);
 				if (mainFetch.response.ok)
-					this.re_value = 'exchange-successful.';
+					this.re_value = 'exchange-successful';
 				else
 					this.re_value = 'exchange-failed.';
 			} 
 			catch (error)
 			{
-				this.re_value = 'exchange-failed.';
+				this.re_value = '[TRY] exchange-failed.';
 			}
 		}
 		else

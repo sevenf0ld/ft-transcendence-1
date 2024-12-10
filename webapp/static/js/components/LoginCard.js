@@ -14,7 +14,11 @@ import HomeView from '../views/HomeView.js';
 const intraFetch = new FETCH.fetch_intra();
 document.addEventListener('DOMContentLoaded', async (e) => {
 	const result = await intraFetch.run();
-	console.log(result);
+	if (result === 'exchange-successful')
+	{
+		const HOME = new HomeView();
+		HOME.render();
+	}
 });
 // -------------------------------------------------- //
 // main-functions
