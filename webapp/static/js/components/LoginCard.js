@@ -164,7 +164,7 @@ function html_formGroup()
 			</div>
 			<div class="%formgp-c">
 				<label for="%id2">Password</label>
-				<input id="%id2" type="%t1" @cas placeholder="%p2" @auto>
+				<input id="%id2" type="%t2" @cas placeholder="%p2" @auto>
 			</div>
 			<div class="%fgot-c">
 				<a id="%afgot-id" href="#" class="%afgot-c">%afgot-t</a>
