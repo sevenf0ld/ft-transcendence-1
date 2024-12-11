@@ -7,7 +7,7 @@
 // -------------------------------------------------- //
 import LoginView from '../views/LoginView.js';
 import * as FormValiSignup from '../core/helpers/formVali-su.js';
-import * as COOKIE from '../core/helpers/cookie.js';
+import * as FETCH from './SignupCard_fetch.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -255,46 +255,28 @@ export default class SignupCard
 	// --- [04] EVENT
 	async submitClick()
 	{
+		event.preventDefault();
 		console.log('[EVENT] button clicked : submit');
 		if (await FormValiSignup.validate() === false)
 		{
 			console.log('Form is invalid!');
-			event.preventDefault();
 			return;
 		}
 		console.log('Form is valid!');
 
-		  /*=================================================================*/
-		  event.preventDefault();
-		  const username = document.getElementById('username').value;
-		  const email = document.getElementById('email').value;
-		  const password = document.getElementById('password').value;
-		  const password_confirm = document.getElementById('confirm').value;
-		  try {
-			const csrfToken = await COOKIE.getCookie('csrftoken');
-			const response = await fetch('/api/user_auth/register/', {
-			  method: 'POST',
-			  headers: {
-				'Content-Type': 'application/json',
-				'X-CSRFToken': csrfToken
-			  },
-			  body: JSON.stringify({
-				username: username,
-				email: email,
-				password1: password,
-				password2: password_confirm
-			  })
-			});
-			const data = await response.json();
-			if (response.ok) {
-			  console.log('Registration successful.');
-			} else {
-			  console.error('Registration failed (not 200).');
-			}
-		  } catch (error) {
-			console.error('Registration failed.' + error.message);
-		  }
-		/*=================================================================*/
+		const registerFetch = new FETCH.fetch_register();
+		const result = await registerFetch.fetchData();
+		if (result == 'register-successful')
+		{
+			alert('Registration successful.');
+			const login = new LoginView();
+			await login.render();
+		}
+		else
+		{
+			console.error('Registration failed.');
+		}
+
 		return true;
 	}
 

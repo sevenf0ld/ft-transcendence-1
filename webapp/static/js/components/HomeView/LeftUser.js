@@ -9,7 +9,7 @@ import LoginView from '../../views/LoginView.js';
 import ModalLayout from '../../layouts/ModalLayout.js';
 import ModalSettings from './ModalSettings.js';
 import ModalHistory from './ModalHistory.js';
-import * as COOKIE from '../../core/helpers/cookie.js';
+import * as FETCH from './LeftUser_fetch.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -306,30 +306,22 @@ export default class leftPanelUser
 	async logoutClick(event)
 	{
 		console.log('[EVENT] button clicked : logout');
-		/*=================================================================*/
-		event.preventDefault();
-		try {
-			const csrfToken = await COOKIE.getCookie('csrftoken');
-			const response = await fetch('/api/user_auth/logout/', {
-				method: 'POST',
-				headers: {
-					'X-CSRFToken': csrfToken
-				}
-			});
-			const data = await response.json();
-			if (response.ok) {
-				console.log('Logout successful.');
-				const loginView = new LoginView();
-				await loginView.render();
-			}
-			else {
-				console.error('Logout failed.');
-			}
+
+		const logoutFetch = new FETCH.fetch_logout();
+		const fetch_result = await logoutFetch.fetchData();
+		if (fetch_result === 'logout-successful')
+		{
+			const loginView = new LoginView(this.container);
+	
+			localStorage.removeItem('intra_state');
+			//remove uri as well (later)
+			await loginView.render();
 		}
-		catch (error) {
-			console.error('Logout failed.');
+		else
+		{
+			console.log(fetch_result);
 		}
-		/*=================================================================*/
+
 		return true;
 	}
 
