@@ -305,32 +305,6 @@ export default class leftPanelUser
 	async logoutClick(event)
 	{
 		console.log('[EVENT] button clicked : logout');
-		/*=================================================================*/
-		/*
-		event.preventDefault();
-		try {
-			const csrfToken = await COOKIE.getCookie('csrftoken');
-			const response = await fetch('/api/user_auth/logout/', {
-				method: 'POST',
-				headers: {
-					'X-CSRFToken': csrfToken
-				}
-			});
-			const data = await response.json();
-			if (response.ok) {
-				console.log('Logout successful.');
-				const loginView = new LoginView();
-				await loginView.render();
-			}
-			else {
-				console.error('Logout failed.');
-			}
-		}
-		catch (error) {
-			console.error('Logout failed.');
-		}
-		*/
-		/*=================================================================*/
 		return true;
 	}
 

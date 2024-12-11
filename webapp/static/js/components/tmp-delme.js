@@ -258,3 +258,30 @@ import HomeView from '../views/HomeView.js';
 // -------------------------------------------------- //
 // [1B] MAIN-FETCH-LOGIN
 // -------------------------------------------------- //
+
+		/*=================================================================*/
+		/* SIGNOUT BUTTON
+		event.preventDefault();
+		try {
+			const csrfToken = await COOKIE.getCookie('csrftoken');
+			const response = await fetch('/api/user_auth/logout/', {
+				method: 'POST',
+				headers: {
+					'X-CSRFToken': csrfToken
+				}
+			});
+			const data = await response.json();
+			if (response.ok) {
+				console.log('Logout successful.');
+				const loginView = new LoginView();
+				await loginView.render();
+			}
+			else {
+				console.error('Logout failed.');
+			}
+		}
+		catch (error) {
+			console.error('Logout failed.');
+		}
+		*/
+		/*=================================================================*/

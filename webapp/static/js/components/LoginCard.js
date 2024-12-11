@@ -11,6 +11,10 @@ import HomeView from '../views/HomeView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// -------------------------------------------------- //
+// Special-events
+// -------------------------------------------------- //
+// It's for the intra button
 const intraFetch = new FETCH.fetch_intra();
 document.addEventListener('DOMContentLoaded', async (e) => {
 	const result = await intraFetch.run();
@@ -297,7 +301,6 @@ export default class LoginCard
 			if (!ele)
 				throw new Error(`[ERR] component not found : ${getEle[key]}`);
 			const str = getEle[key].substring(1);
-		console.log("xxxx");
 			this.compo_register(str, ele);
 		}
 
@@ -331,7 +334,6 @@ export default class LoginCard
 
 		const loginFetch = new FETCH.fetch_login();
 		const fetch_result = await loginFetch.fetchData();
-		console.log(fetch_result);
 
 		return true;
 	}
@@ -405,3 +407,4 @@ export default class LoginCard
 		return true;
 	}
 }
+

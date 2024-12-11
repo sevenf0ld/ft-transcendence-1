@@ -31,7 +31,6 @@ class fetch_login
 	// --- [] PHASE ONE
 	async phase_one(url)
 	{
-		console.log('[DEBUG] try-syntax Login started.');
 		const mainFetch = new FETCH_UTILS();
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl(url);
@@ -154,7 +153,7 @@ class fetch_login
 		}
 		catch (error)
 		{
-			console.error('[ERR] try-syntax Login failed : %s', error);
+			console.error('[ERR] try-syntax; Login failed : %s', error);
 		}
 		return this.re_value;
 	}
@@ -193,7 +192,6 @@ class fetch_intra
 	
 	async generate_state()
 	{
-		// protect against csrf and prevent malicious parties from redirecting to the callback
 		let counter = 0;
 		let result = '';
 		const length = 52;
@@ -213,26 +211,16 @@ class fetch_intra
 
 	async event_ContentLoaded(event)
 	{
-		// parse GET query string upon authorization and redirection
 		const url_params = await new Proxy(new URLSearchParams(window.location.search), {
 			get: (keys, value) => keys.get(value)
 		});
-
-		console.log('url_params =', decodeURIComponent(url_params.code));
-		// check if url_params.state is a string
-		console.log('url_params =', url_params.state);
-
 		const url_code = await decodeURIComponent(url_params.code);
 		const url_state = await decodeURIComponent(url_params.state);
 		const state = localStorage.getItem('intra_state');
-		console.log('local_state =', state);
-		console.log('url_state =', url_state);
-		// protect against csrf and prevent malicious parties from redirecting to the callback
 		if (url_state === state)
 		{
 			try 
 			{
-				// OAuth 2.0 Authorization Grant: authorization code and access token exchange
 				const mainFetch = new FETCH_UTILS();
 				await mainFetch.getCookie('csrftoken');
 				await mainFetch.setUrl('/api/social_auth/forty-two-login/');
@@ -240,12 +228,8 @@ class fetch_intra
 				await mainFetch.appendHeaders('Content-Type', 'application/json');
 				await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
 				await mainFetch.appendBody('code', url_code);
-				console.log('mainFetch [BEFORE] =', mainFetch);
 				await mainFetch.fetchData();
-				console.log('mainFetch [AFTER] =', mainFetch);
 
-				console.log('mainFetch.response =', mainFetch.response);
-				console.log('mainFetch.response.ok =', mainFetch.response.ok);
 				if (mainFetch.response.ok)
 					this.re_value = 'exchange-successful';
 				else
