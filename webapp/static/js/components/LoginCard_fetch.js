@@ -24,8 +24,9 @@ class fetch_login
 		this.val_password = document.getElementById('password').value;
 		this.current_phase = 1;
 		this.fetch_utils_holder = null;
+		this.otp = '';
 		this.re_value = '';
-		this.opt = '';
+		this.fetch_obj = null;
 	}
 
 	// --- [] PHASE ONE
@@ -42,11 +43,12 @@ class fetch_login
 		await mainFetch.appendBody('phase', 'one');
 		await mainFetch.fetchData();
 		this.fetch_utils_holder = mainFetch;
+		this.fetch_obj = mainFetch;
 
 		switch (mainFetch.response.status)
 		{
 			case 200:
-				this.re_value = 'p1-success';
+				this.re_value = 'login-successful';
 				break;
 			case 202:
 				this.current_phase = 2;
@@ -55,6 +57,18 @@ class fetch_login
 				this.re_value = 'p1-failed';
 				break;
 		}
+
+		if (this.current_phase === 202)
+		{
+			if (this.fetch_utils_holder.rdata.mfa)
+				this.current_phase = 2;
+			else
+			{
+				this.re_value = 'p1-failed-invalid-credentials';
+				return false;
+			}
+		}
+
 		return true;
 	}
 	
@@ -65,19 +79,13 @@ class fetch_login
 			return false;
 
 		const mainFetch = new FETCH_UTILS();
-		if (this.fetch_utils_holder.rdata.mfa)
-		{
-			await mainFetch.copy_object(this.fetch_utils_holder);
-			await mainFetch.setUrl(url);
-			await mainFetch.appendBody('phase', 'two');
-			await mainFetch.fetchData();
-			this.fetch_utils_holder = mainFetch;
-		}
-		else
-		{
-			this.re_value = 'p2-failed-invalid-credentials';
-			return false;
-		}
+		await mainFetch.copy_object(this.fetch_utils_holder);
+		await mainFetch.setUrl(url);
+		await mainFetch.appendBody('phase', 'two');
+		await mainFetch.appendBody('username', this.val_username);
+		await mainFetch.fetchData();
+		this.fetch_utils_holder = mainFetch;
+		this.fetch_obj = mainFetch;
 
 		switch (mainFetch.response.status)
 		{
@@ -102,10 +110,12 @@ class fetch_login
 		const mainFetch = new FETCH_UTILS();
 		await mainFetch.copy_object(this.fetch_utils_holder);
 		await mainFetch.setUrl(url);
+		await mainFetch.appendBody('username', this.val_username);
 		await mainFetch.appendBody('phase', 'three');
 		await mainFetch.appendBody('otp', this.opt);
 		await mainFetch.fetchData();
 		this.fetch_utils_holder = mainFetch;
+		this.fetch_obj = mainFetch;
 
 		switch (mainFetch.response.status)
 		{
@@ -128,12 +138,15 @@ class fetch_login
 		await mainFetch.copy_object(this.fetch_utils_holder);
 		await mainFetch.setUrl(url);
 		await mainFetch.appendBody('phase', 'four');
+		await mainFetch.appendBody('username', this.val_username);
+		await mainFetch.appendBody('password', this.val_password);
 		await mainFetch.fetchData();
+		this.fetch_obj = mainFetch;
 
 		switch (mainFetch.response.status)
 		{
 			case 200:
-				this.re_value = 'p4-success-logged-in';
+				this.re_value = 'login-successful';
 				break;
 			default:
 				this.re_value = 'p4-failed';
@@ -237,7 +250,8 @@ class fetch_intra
 			} 
 			catch (error)
 			{
-				this.re_value = '[TRY] exchange-failed.';
+				this.re_value = '[ERR] try-catch; exchange failed : ' + error;
+				console.error(this.re_value);
 			}
 		}
 		else

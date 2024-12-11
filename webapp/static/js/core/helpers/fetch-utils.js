@@ -32,9 +32,6 @@ export default class fetch_utils
 		this.url = obj.url;
 		this.object['method'] = obj.object['method'];
 		this.object['headers'] = JSON.parse(JSON.stringify(obj.object['headers']));
-		this.object['body'] = JSON.parse(obj.object['body']);
-		this.response = JSON.parse(JSON.stringify(obj.response));
-		this.rdata = JSON.parse(JSON.stringify(obj.rdata));
 
 		return true;
 	}

@@ -335,6 +335,13 @@ export default class LoginCard
 		const loginFetch = new FETCH.fetch_login();
 		const fetch_result = await loginFetch.fetchData();
 
+		console.log(fetch_result);
+		if (fetch_result === 'login-successful')
+		{
+			const HOME = new HomeView();
+			await HOME.render();
+		}
+
 		return true;
 	}
 

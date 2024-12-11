@@ -9,6 +9,7 @@ import LoginView from '../../views/LoginView.js';
 import ModalLayout from '../../layouts/ModalLayout.js';
 import ModalSettings from './ModalSettings.js';
 import ModalHistory from './ModalHistory.js';
+import * as FETCH from './LeftUser_fetch.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -305,6 +306,22 @@ export default class leftPanelUser
 	async logoutClick(event)
 	{
 		console.log('[EVENT] button clicked : logout');
+
+		const logoutFetch = new FETCH.fetch_logout();
+		const fetch_result = await logoutFetch.fetchData();
+		if (fetch_result === 'logout-successful')
+		{
+			const loginView = new LoginView(this.container);
+	
+			localStorage.removeItem('intra_state');
+			//remove uri as well (later)
+			await loginView.render();
+		}
+		else
+		{
+			console.log(fetch_result);
+		}
+
 		return true;
 	}
 
