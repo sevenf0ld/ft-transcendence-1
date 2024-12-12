@@ -8,6 +8,7 @@
 import LoginView from '../views/LoginView.js';
 import * as FormValiSignup from '../core/helpers/formVali-su.js';
 import * as FETCH from './SignupCard_fetch.js';
+import * as LOADING from '../core/helpers/loading.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -255,11 +256,15 @@ export default class SignupCard
 	// --- [04] EVENT
 	async submitClick()
 	{
-		event.preventDefault();
 		console.log('[EVENT] button clicked : submit');
+		event.preventDefault();
+
+		await LOADING.disable_all();
+
 		if (await FormValiSignup.validate() === false)
 		{
 			console.log('Form is invalid!');
+			LOADING.restore_all();
 			return;
 		}
 		console.log('Form is valid!');
@@ -276,6 +281,8 @@ export default class SignupCard
 		{
 			console.error('Registration failed.');
 		}
+
+		await LOADING.restore_all();
 
 		return true;
 	}

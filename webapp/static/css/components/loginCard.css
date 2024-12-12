@@ -80,3 +80,56 @@
 	margin-left: 0.5rem;
 }
 
+/* -------------------------------------------------- */
+/* otp */
+/* -------------------------------------------------- */
+.ct-login-otp
+{
+	display: flex;
+	flex-direction: column;
+	padding: 1.5rem 3rem;
+	gap: 1rem;
+	border-radius: 0.5rem;
+	background-color: var(--cor-2);
+	color: var(--txt-2);
+	align-items: center;
+	font-family: 'Noto Sans JP' ,sans-serif;
+	width: 25rem;
+}
+
+.ct-login-otp .ct-login-otp-input
+{
+	padding: 0.5rem;
+	border: none;
+	width: 100%;
+	text-align: center;
+	letter-spacing: 0.5rem;
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.ct-login-otp .ct-login-otp-input::placeholder
+{
+	font-weight: normal;
+	font-size: 1rem;
+	letter-spacing: 0rem;
+}
+
+.ct-login-otp .ct-btn-login-otp
+{
+	color: var(--txt-1);
+	background-color: var(--cor-1);
+	width: 100%;
+	border: none;
+	padding: 0.5rem;
+	border-radius: 0.2rem;
+}
+
+.ct-login-otp .ct-btn-login-goback
+{
+	border: none;
+	background-color: transparent;
+	color: var(--txt-4);
+	width: fit-content;
+	padding: 0.2rem;
+}

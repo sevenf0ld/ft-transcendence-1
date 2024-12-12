@@ -29,9 +29,26 @@ class fetch_login
 		this.fetch_obj = null;
 	}
 
+	async set_phase(phase)
+	{
+		this.current_phase = phase;
+
+		return true;
+	}
+
+	async set_otp(otp)
+	{
+		this.otp = otp;
+
+		return true;
+	}
+
 	// --- [] PHASE ONE
 	async phase_one(url)
 	{
+		if (this.current_phase !== 1)
+			return false;
+
 		const mainFetch = new FETCH_UTILS();
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl(url);
@@ -90,7 +107,7 @@ class fetch_login
 		switch (mainFetch.response.status)
 		{
 			case 200:
-				this.current_phase = 3;
+				this.re_value = 'login-otp';
 				break;
 			default:
 				this.re_value = 'p2-failed-server-error';
@@ -106,13 +123,12 @@ class fetch_login
 		if (this.current_phase !== 3)
 			return false;
 
-		this.opt = await prompt('Enter OTP:');
 		const mainFetch = new FETCH_UTILS();
 		await mainFetch.copy_object(this.fetch_utils_holder);
 		await mainFetch.setUrl(url);
 		await mainFetch.appendBody('username', this.val_username);
 		await mainFetch.appendBody('phase', 'three');
-		await mainFetch.appendBody('otp', this.opt);
+		await mainFetch.appendBody('otp', this.otp);
 		await mainFetch.fetchData();
 		this.fetch_utils_holder = mainFetch;
 		this.fetch_obj = mainFetch;
@@ -127,6 +143,23 @@ class fetch_login
 				break;
 		}
 	}
+
+	// --- [] PHASE-THREE-EXTRA (OTP-VERIFY)
+	async verify_otp(otp)
+	{
+		let re_value = true;
+
+		// if otp contain non-digit
+		if (otp.match(/\D/))
+			re_value = false;
+
+		// if otp contain 6 digits
+		if (otp.length !== 6)
+			re_value = false;
+
+		return re_value;
+	}
+	
 	
 	// --- [] PHASE FOUR
 	async phase_four(url)
