@@ -56,7 +56,9 @@ function html_element()
 	// [A] TEMPLATE
 	let template = `
 	<div class="%otp-c">
-		<h3 class="%oth-c">%oth-t</h3>
+		<div class="%oth-c">%oth-t</div>
+		<img class="%img-c" src="%img-src" alt="%img-alt" />
+		<div class="%bsm-c" @att0>%bsm-t</div>
 		<input type="%oti-ty" class="%oti-1c" @att1 placeholder="%oti-p" />
 		<button id="%ots-id" class="%ots-c">%ots-t</button>
 		<button id="%otg-id" class="%otg-c">%otg-t</button>
@@ -68,16 +70,22 @@ function html_element()
 	{
 		'%otp-c': `ct-login-otp`,
 		'%oth-c': `ct-login-otp-header`,
-		'%oth-t': `OTP has been sent to your email!`,
+		'%oth-t': `OTP Verification`,
+		'%img-c': `ct-login-otp-img`,
+		'%img-src': `/static/assets/images/mail.svg`,
+		'%img-alt': `otp`,
+		'%bsm-c': `alert alert-info`,
+		'@att0': `role="alert"`,
+		'%bsm-t': `OTP has been sent to your email!`,
 		'%oti-ty': `text`,
 		'%oti-1c': `ct-login-otp-input form-control form-control-sm`,
 		'@att1': `maxlength="6" required`,
-		'%oti-p': `ENTER OTP`,
+		'%oti-p': `Enter 6-digit OTP`,
 		'%ots-id': `btn_otp_submit`,
 		'%ots-c': `ct-btn-login-otp`,
 		'%ots-t': `Verify OTP`,
 		'%otg-id': `btn_otp_goback`,
-		'%otg-c': `ct-btn-login-goback`,
+		'%otg-c': `ct-btn-login-goback text-decoration-none text-muted`,
 		'%otg-t': `Go Back`,
 	};
 
