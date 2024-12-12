@@ -97,6 +97,25 @@
 	width: 25rem;
 }
 
+.ct-login-otp > .ct-login-otp-header
+{
+	width: 100%;
+	font-weight: bold;
+	font-size: 1.5rem;
+	text-align: center;
+}
+
+.ct-login-otp > .ct-login-otp-img
+{
+	width: 10rem;
+}
+
+.ct-login-otp  .alert-info
+{
+	width: 100%;
+	margin: 0;
+}
+
 .ct-login-otp .ct-login-otp-input
 {
 	padding: 0.5rem;
@@ -113,6 +132,7 @@
 	font-weight: normal;
 	font-size: 1rem;
 	letter-spacing: 0rem;
+	color: var(--txt-9);
 }
 
 .ct-login-otp .ct-btn-login-otp
@@ -121,7 +141,7 @@
 	background-color: var(--cor-1);
 	width: 100%;
 	border: none;
-	padding: 0.5rem;
+	padding: 0.75rem;
 	border-radius: 0.2rem;
 }
 
@@ -129,7 +149,7 @@
 {
 	border: none;
 	background-color: transparent;
-	color: var(--txt-4);
 	width: fit-content;
 	padding: 0.2rem;
+	font-size: 0.8rem;
 }
