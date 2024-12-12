@@ -212,7 +212,7 @@ export default class LoginOTP
 			this.alert_div.setMsg('Verifying OTP...');
 			this.alert_div.alert_render();
 			const fetch_result = await loginFetch.fetchData();
-			await new Promise(r => setTimeout(r, 2000));
+			await new Promise(r => setTimeout(r, 1000));
 
 			if (fetch_result === 'login-successful')
 			{

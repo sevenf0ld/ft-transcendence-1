@@ -325,11 +325,29 @@ export default class LoginCard
 		return template;
 	}
 
+	async check_input()
+	{
+		const username = document.getElementById('username').value;
+		const password = document.getElementById('password').value;
+		if (username === '' || password === '')
+		{
+			await this.alert_div.setType('alert-danger');
+			await this.alert_div.setMsg('Please enter your username and password!');
+			await this.alert_div.alert_render();
+			return false;
+		}
+
+		return true;
+	}
+
 	// --- [04] EVENT
 	async loginClick(event)
 	{
 		console.log('[EVENT] button clicked : login');
 		event.preventDefault();
+
+		if (!await this.check_input())
+			return false;
 
 		this.alert_div.alert_clear();
 		await LOADING.disable_all();
