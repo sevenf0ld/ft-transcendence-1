@@ -6,6 +6,9 @@
 // Importing-external
 // -------------------------------------------------- //
 import LoginView from '../views/LoginView.js';
+import HomeView from '../views/HomeView.js';
+import * as LOADING from '../core/helpers/loading.js';
+import * as FETCH from './LoginCard_fetch.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -69,7 +72,7 @@ function html_element()
 		'%oti-ty': `text`,
 		'%oti-1c': `ct-login-otp-input form-control form-control-sm`,
 		'@att1': `maxlength="6" required`,
-		'%oti-p': `Enter OTP`,
+		'%oti-p': `ENTER OTP`,
 		'%ots-id': `btn_otp_submit`,
 		'%ots-c': `ct-btn-login-otp`,
 		'%ots-t': `Verify OTP`,
@@ -101,8 +104,9 @@ const ele =
 export default class LoginOTP
 {
 	// --- [00] CONSTRUCTOR
-	constructor()
+	constructor(loginFetch_obj)
 	{
+		this.loginFetch_obj = loginFetch_obj;
 		this.container = document.getElementById("media");
 		this.components = {};
 	}
@@ -177,6 +181,30 @@ export default class LoginOTP
 		console.log('[EVENT] button clicked : submitOtp');
 		event.preventDefault();
 
+		await LOADING.disable_all();
+
+		const loginFetch = this.loginFetch_obj;
+		await loginFetch.set_phase(3);
+		
+		const otp = document.querySelector('.ct-login-otp-input').value;
+		const otp_verify = await loginFetch.verify_otp(otp);
+		if (otp_verify === false)
+			alert('Invalid OTP : 6 digits only & cant be empty');
+		else
+		{
+			loginFetch.set_otp(otp);
+			const fetch_result = await loginFetch.fetchData();
+
+			console.log("OTP-FETCH-RESULT : ", fetch_result);
+			if (fetch_result === 'login-successful')
+			{
+				const HOME = new HomeView();
+				await HOME.render();
+			}
+		}
+
+		await LOADING.restore_all();
+
 		return true;
 	}
 
@@ -193,10 +221,8 @@ export default class LoginOTP
 
 	async submitOtpInput(event)
 	{
-		console.log("input event");
 		const value = event.target.value.replace(/\D/g, '');
 		event.target.value = value;
-		console.log(event.target.value);
 	}
 
 	async bind_events()

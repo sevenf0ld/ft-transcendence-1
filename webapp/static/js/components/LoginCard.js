@@ -343,7 +343,7 @@ export default class LoginCard
 		if (fetch_result === 'login-otp')
 		{
 			await LOADING.restore_all();
-			const OTP = new LoginOTP();
+			const OTP = new LoginOTP(loginFetch);
 			await OTP.render();
 		}
 		if (fetch_result === 'login-successful')
