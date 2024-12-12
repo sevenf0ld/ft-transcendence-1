@@ -1,0 +1,65 @@
+/* file : popup.css */
+/* -------------------------------------------------- */
+/* main-container
+/* -------------------------------------------------- */
+.popup .modal-content
+{
+	color: var(--txt-1);
+	background-color: var(--cor-1);
+	padding: 1rem;
+	border-radius: 1rem;
+	background: #0e1012;
+	box-shadow:	20px 20px 41px #060607,
+             	-20px -20px 41px #161a1d;
+}
+
+/* -------------------------------------------------- */
+/* header footer body
+/* -------------------------------------------------- */
+.popup .modal-header,
+.popup .modal-footer
+{
+	text-align: center;
+	border: none;
+}
+
+.popup .modal-body
+{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1.5rem;
+	border: none;
+}
+
+/* -------------------------------------------------- */
+/* body's buttons
+/* -------------------------------------------------- */
+.popup .modal-body button
+{
+	color: var(--txt-1);
+	min-width: 13rem;
+	border: none;
+	padding: 1rem 1.5rem;
+	border-radius: 8px;
+	background: #0e1012;
+	box-shadow:  5px 5px 14px #060607,
+				 -5px -5px 14px #161a1d;
+}
+
+.popup .modal-body button:hover
+{
+	border-radius: 8px;
+	background: linear-gradient(145deg, #0f1113, #0d0e10);
+	box-shadow:  5px 5px 14px #060607,
+				 -5px -5px 14px #161a1d;
+}
+
+.popup .modal-body button:active
+{
+	border-radius: 8px;
+	background: #0e1012;
+	box-shadow: inset 5px 5px 14px #060607,
+				inset -5px -5px 14px #161a1d;
+}
