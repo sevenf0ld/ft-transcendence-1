@@ -8,6 +8,7 @@
 import SignupView from '../views/SignupView.js';
 import * as FETCH from './LoginCard_fetch.js';
 import HomeView from '../views/HomeView.js';
+import * as LOADING from '../core/helpers/loading.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -198,7 +199,7 @@ function html_buttonIntra()
 
 	for (const key in attributes)
 		template = template.split(key).join(attributes[key]);
- 
+
 	// [C] PUSH TO BUTTONS TRACKER
 	btns.arr['intra'] = attributes['%ibid'];
 
@@ -332,6 +333,8 @@ export default class LoginCard
 		console.log('[EVENT] button clicked : login');
 		event.preventDefault();
 
+		await LOADING.disable_all();
+
 		const loginFetch = new FETCH.fetch_login();
 		const fetch_result = await loginFetch.fetchData();
 
@@ -341,6 +344,8 @@ export default class LoginCard
 			const HOME = new HomeView();
 			await HOME.render();
 		}
+
+		await LOADING.restore_all();
 
 		return true;
 	}
@@ -356,6 +361,8 @@ export default class LoginCard
 	async intraClick(event)
 	{
 		console.log('[EVENT] button clicked : intra');
+		event.preventDefault();
+
 		await intraFetch.redirect(event);
 
 		return true;
@@ -366,8 +373,11 @@ export default class LoginCard
 		console.log('[EVENT] button clicked : signup');
 		event.preventDefault();
 
+		// pause browser for loading to another page
+		//
 		const signup = new SignupView();
 		await signup.render();
+
 
 		return true;
 	}
@@ -414,4 +424,3 @@ export default class LoginCard
 		return true;
 	}
 }
-
