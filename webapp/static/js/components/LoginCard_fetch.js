@@ -160,7 +160,6 @@ class fetch_login
 		return re_value;
 	}
 	
-	
 	// --- [] PHASE FOUR
 	async phase_four(url)
 	{
