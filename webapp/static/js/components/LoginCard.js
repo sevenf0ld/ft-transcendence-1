@@ -385,7 +385,6 @@ export default class LoginCard
 		const signup = new SignupView();
 		await signup.render();
 
-
 		return true;
 	}
 

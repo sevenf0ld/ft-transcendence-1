@@ -42,6 +42,7 @@ urlpatterns += [
     # django-allauth (forty two social account)
     path('accounts/', include('allauth.urls')),
     path('api/social_auth/', include('social_auth.urls')),
+    path('api/friends/', include('friends.urls')),
 ]
 
 from django.conf import settings
