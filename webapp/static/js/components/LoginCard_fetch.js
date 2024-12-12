@@ -90,7 +90,7 @@ class fetch_login
 		switch (mainFetch.response.status)
 		{
 			case 200:
-				this.current_phase = 3;
+				this.re_value = 'login-otp';
 				break;
 			default:
 				this.re_value = 'p2-failed-server-error';

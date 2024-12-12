@@ -9,6 +9,7 @@ import SignupView from '../views/SignupView.js';
 import * as FETCH from './LoginCard_fetch.js';
 import HomeView from '../views/HomeView.js';
 import * as LOADING from '../core/helpers/loading.js';
+import LoginOTP from './LoginOTP.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -339,6 +340,12 @@ export default class LoginCard
 		const fetch_result = await loginFetch.fetchData();
 
 		console.log(fetch_result);
+		if (fetch_result === 'login-otp')
+		{
+			await LOADING.restore_all();
+			const OTP = new LoginOTP();
+			await OTP.render();
+		}
 		if (fetch_result === 'login-successful')
 		{
 			const HOME = new HomeView();
