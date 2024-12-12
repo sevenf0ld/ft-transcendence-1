@@ -109,6 +109,11 @@ function html_friendList()
 	};
 
 	// [A] TEMPLATE
+	/*=================================================================*/
+	// api (url to fetch): /api/friends/friend-list-av/retrieve/
+	// required body: `user: <username>`
+	// return value: {"user":"what","friends":["when"],"num_of_friends":1,"blocked":[],"num_of_blocked":0,"outgoing":["temp"],"num_of_outgoing":1,"incoming":["fake"],"num_of_incoming":1}
+	/*=================================================================*/
 	let template = `
 	<div class="%friend-list-c">
 		<div class="%flist-c">
