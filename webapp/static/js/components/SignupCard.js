@@ -63,7 +63,7 @@ function html_header()
 	const attributes =
 	{
 		'%p-c': `ct-signup-header text-center`,
-		'%p-t': `42PONG - SIGN IN`,
+		'%p-t': `42PONG - SIGN UP`,
 	};
 
 	for (const key in attributes)

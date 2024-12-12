@@ -73,11 +73,15 @@ async function cant_be_empty()
 	{
 		if (form.input_arr[key].value === '')
 		{
-			form.msg_arr[form.pair[key]].innerHTML = '* cannot be empty';
+			form.msg_arr[form.pair[key]].innerHTML = 'cannot be empty';
+			form.msg_arr[form.pair[key]].style.display = 'block';
 			re_value = false;
 		}
 		else
+		{
 			form.msg_arr[form.pair[key]].innerHTML = '';
+			form.msg_arr[form.pair[key]].style.display = 'none';
+		}
 	}
 
 	return re_value;
@@ -94,7 +98,8 @@ async function valid_email()
 	// not containing '@' in the string
 	if (!email.includes('@'))
 	{
-		msg.innerHTML = '* invalid email';
+		msg.innerHTML = 'invalid email';
+		msg.style.display = 'block';
 		return false;
 	}
 }
@@ -112,7 +117,8 @@ async function register_confirm_password()
 	);
 	if (input1.value !== input2.value)
 	{
-		msg.innerHTML = '* Passwords do not match';
+		msg.innerHTML = 'Passwords do not match';
+		msg.style.display = 'block';
 		return false;
 	}
     return true;
@@ -130,26 +136,30 @@ async function register_password()
 	// password is out of range
 	if (input1.value.length < 8 || input1.value.length > 16)
 	{
-		msg.innerHTML = '* between 8 and 16 chars';
+		msg.innerHTML = 'between 8 and 16 chars';
+		msg.style.display = 'block';
 		return false;
 	}
 
 	// password does not contain a number
 	if (!/\d/.test(input1.value))
 	{
-		msg.innerHTML = '* must contain a number';
+		msg.innerHTML = 'must contain a number';
+		msg.style.display = 'block';
 		return false;
 	}
 
 	// password does not contain a letter (case-insensitive)
 	if (!/[a-z]/.test(input1.value))
 	{
-		msg.innerHTML = '* must contain a letter';
+		msg.innerHTML = 'must contain a letter';
+		msg.style.display = 'block';
 		return false;
 	}
 
 	// reset the error message if ok
 	msg.innerHTML = '';
+	msg.style.display = 'none';
 
     return true;
 }
