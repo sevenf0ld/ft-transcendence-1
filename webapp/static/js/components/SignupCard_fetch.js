@@ -75,6 +75,7 @@ class fetch_register
 			await mainFetch.appendBody('email', this.val_email);
 			await mainFetch.appendBody('password1', this.val_password);
 			await mainFetch.appendBody('password2', this.val_password_confirm);
+			console.log(mainFetch);
 			await mainFetch.fetchData();
 			this.fetch_obj = mainFetch;
 

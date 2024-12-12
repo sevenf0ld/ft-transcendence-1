@@ -306,6 +306,7 @@ export default class leftPanelUser
 	async logoutClick(event)
 	{
 		console.log('[EVENT] button clicked : logout');
+		event.preventDefault();
 
 		const logoutFetch = new FETCH.fetch_logout();
 		const fetch_result = await logoutFetch.fetchData();
