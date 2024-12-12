@@ -80,7 +80,7 @@ function html_element()
 		'%oti-ty': `text`,
 		'%oti-1c': `ct-login-otp-input form-control form-control-sm`,
 		'@att1': `maxlength="6" required`,
-		'%oti-p': `Enter OTP`,
+		'%oti-p': `Enter 6-digit OTP`,
 		'%ots-id': `btn_otp_submit`,
 		'%ots-c': `ct-btn-login-otp`,
 		'%ots-t': `Verify OTP`,

@@ -10,6 +10,12 @@
 	font-family: 'Caveat', cursive;
 }
 
+.ct-login-header ~ #alert_login
+{
+	width: 100%;
+	margin: 0;
+}
+
 /* -------------------------------------------------- */
 /* card/form */
 /* -------------------------------------------------- */
@@ -29,17 +35,16 @@
 	color: var(--txt-3);
 }
 
-#btm_forgot
-{
-	gap: 0.5rem;
-	color: var(--cor-2);
-	background-color: var(--cor-1);
-}
-
 .ct-login-form > button.btn.ct-btn-dark
 {
 	color: var(--txt-1);
 	background-color: var(--cor-1);
+}
+
+/* taget last secodn child */
+{
+	display: flex;
+	justify-content: space-between;
 }
 
 
@@ -78,6 +83,18 @@
 #btn_signup
 {
 	margin-left: 0.5rem;
+}
+
+/* -------------------------------------------------- */
+/* alert
+/* -------------------------------------------------- */
+#alert_login
+{
+	width: 100%;
+	margin: 0;
+	font-size: 0.9rem;
+	padding: 0.5rem;
+	line-height: 1.3rem;
 }
 
 /* -------------------------------------------------- */
