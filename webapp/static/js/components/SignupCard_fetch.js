@@ -15,40 +15,6 @@ import { fetch_utils as FETCH_UTILS } from '../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 // [1B] MAIN-FETCH-REGISTER
 // -------------------------------------------------- //
- /*=================================================================*/
-/*
-	  event.preventDefault();
-	  const username = document.getElementById('username').value;
-	  const email = document.getElementById('email').value;
-	  const password = document.getElementById('password').value;
-	  const password_confirm = document.getElementById('confirm').value;
-	  try {
-		const csrfToken = await COOKIE.getCookie('csrftoken');
-		const response = await fetch('/api/user_auth/register/', {
-		  method: 'POST',
-		  headers: {
-			'Content-Type': 'application/json',
-			'X-CSRFToken': csrfToken
-		  },
-		  body: JSON.stringify({
-			username: username,
-			email: email,
-			password1: password,
-			password2: password_confirm
-		  })
-		});
-		const data = await response.json();
-		if (response.ok) {
-		  console.log('Registration successful.');
-		} else {
-		  console.error('Registration failed (not 200).');
-		}
-	  } catch (error) {
-		console.error('Registration failed.' + error.message);
-	  }
-	  */
-/*=================================================================*/
-
 class fetch_register
 {
 	constructor()
@@ -80,9 +46,9 @@ class fetch_register
 			this.fetch_obj = mainFetch;
 
 			if (mainFetch.response.ok)
-				this.re_value = 'register-successful';
+				this.re_value = 'registeration-successful';
 			else
-				this.re_value = 'register-failed';
+				this.re_value = 'registeration-failed';
 		}
 		catch (error)
 		{

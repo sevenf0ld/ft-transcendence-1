@@ -60,3 +60,15 @@
 	align-self: center;
 	text-decoration: none;
 }
+
+/* -------------------------------------------------- */
+/* alert
+/* -------------------------------------------------- */
+#alert_register
+{
+	margin: 0px;
+	margin-top: 1rem;
+	font-size: 0.9rem;
+	padding: 0.5rem;
+	line-height: 1.3rem;
+}
