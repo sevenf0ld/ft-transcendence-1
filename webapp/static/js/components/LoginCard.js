@@ -373,7 +373,7 @@ export default class LoginCard
 		if (fetch_result === 'p2-failed-server-error')
 		{
 			await LOADING.restore_all();
-			await this.alert_div.setType('alert-danger');
+			await this.alert_div.setTpe('alert-danger');
 			await this.alert_div.setMsg('Server error');
 			await this.alert_div.alert_render();
 		}

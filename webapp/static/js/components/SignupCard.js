@@ -9,6 +9,7 @@ import LoginView from '../views/LoginView.js';
 import * as FormValiSignup from '../core/helpers/formVali-su.js';
 import * as FETCH from './SignupCard_fetch.js';
 import * as LOADING from '../core/helpers/loading.js';
+import alert_utils from '../core/helpers/alert-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -118,6 +119,7 @@ function html_formGroup()
 				${insert('email', 'email', '2')}
 				${insert('password', 'password', '3')}
 				${insert('confirm', 'password', '4')}
+				<div @att1 @att2></div>
 				<button id="%bi" class="%bc" type="submit">Submit</button>
 			</form>
 	`;
@@ -130,6 +132,8 @@ function html_formGroup()
 		'%in-c': `p-2 form-control form-control-sm`,
 		'%bi': `btn_signup`,
 		'%bc': `ct-btn-dark btn no-hover mt-2`,
+		'@att1': `class="alert d-none"`,
+		'@att2': `role="alert" id="alert_register"`,
 	};
 
 	for (const key in attributes)
@@ -253,32 +257,117 @@ export default class SignupCard
 		return template;
 	}
 
+	// special-add : inputs field additonal limit
+	async form_limit_addon()
+	{
+		// limit username input length
+		const inputs = document.querySelector('#username');
+		inputs.setAttribute('maxlength', '10');
+
+		// limit password input length
+		const password = document.querySelector('#password');
+		password.setAttribute('maxlength', '16');
+		const msg = document.getElementById('err_signup_3');
+		//if maxed during input, show error
+		password.addEventListener('input', function()
+		{
+			if (this.value.length >= 16)
+			{
+				msg.innerText = 'maximum reached (16 characters)';
+				msg.style.display = 'block';
+			}
+		});
+
+		// limit username input char type (alphanumeric)
+		inputs.addEventListener('input', function()
+		{
+			this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
+		});
+
+		// limit email input char type (alphanumeric + @ + .)
+		const email = document.querySelector('#email');
+		email.addEventListener('input', function()
+		{
+			this.value = this.value.replace(/[^a-zA-Z0-9@.]/g, '');
+		});
+
+		return true;
+	}
+
 	// --- [04] EVENT
 	async submitClick()
 	{
 		console.log('[EVENT] button clicked : submit');
 		event.preventDefault();
 
+		await this.alert_div.alert_clear();
 		await LOADING.disable_all();
 
 		if (await FormValiSignup.validate() === false)
 		{
 			console.log('Form is invalid!');
 			LOADING.restore_all();
-			return;
+			return false;
 		}
-		console.log('Form is valid!');
+
+		const string_div = 'Registering...';
+		await this.alert_div.setType('alert-info');
+		await this.alert_div.setMsg(string_div);
+		await this.alert_div.alert_render();
 
 		const registerFetch = new FETCH.fetch_register();
 		const result = await registerFetch.fetchData();
-		if (result == 'register-successful')
+		await new Promise(r => setTimeout(r, 1000));
+
+		if (result == 'registeration-successful')
 		{
-			alert('Registration successful.');
+			await this.alert_div.alert_clear();
+			const string_div = 'Registration successful!';
+			await this.alert_div.setType('alert-success');
+			await this.alert_div.setMsg(string_div);
+			await this.alert_div.alert_render();
+			await new Promise(r => setTimeout(r, 1000));
+
+			let string_alert = '\nAn activation link has been';
+			string_alert += ' sent to your email. Only confirmed';
+			string_alert += ' emails will be able to login.';
+			await alert(string_alert);
+
+			await this.alert_div.alert_clear();
+			await this.alert_div.setType('alert-warning');
+			await this.alert_div.setMsg('Redirecting to login...');
+			await this.alert_div.alert_render();
+			await new Promise(r => setTimeout(r, 2500));
+
 			const login = new LoginView();
 			await login.render();
 		}
 		else
 		{
+			await this.alert_div.alert_clear();
+			await this.alert_div.setType('alert-danger');
+			let string_div = '';
+			if (registerFetch.fetch_obj.rdata['username'])
+			{
+				string_div += 'Username: ';
+				string_div += registerFetch.fetch_obj.rdata['username'];
+			}
+			else if (registerFetch.fetch_obj.rdata['email'])
+			{
+				string_div += 'Email: ';
+				string_div += registerFetch.fetch_obj.rdata['email'];
+			}
+			else if (registerFetch.fetch_obj.rdata['password1'])
+			{
+				string_div += 'Password: ';
+				string_div += registerFetch.fetch_obj.rdata['password1'];
+			}
+			else
+			{
+				string_div += 'Something went wrong. Please try again.';
+			}
+			await this.alert_div.setMsg(string_div);
+			await this.alert_div.alert_render();
 			console.error('Registration failed.');
 		}
 
@@ -320,6 +409,8 @@ export default class SignupCard
 		
 		this.container.innerHTML = '';
 		this.container.innerHTML = template;
+		this.alert_div = new alert_utils(document.getElementById('alert_register'));
+		await this.form_limit_addon();
 
 		await this.bind_events();
 		//await this.modals_render();
