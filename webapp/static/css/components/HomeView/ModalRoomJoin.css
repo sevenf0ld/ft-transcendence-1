@@ -9,7 +9,7 @@
 
 .join-room-main
 {
-	gap: 2rem;
+	gap: 1rem;
 }
 
 #modal-join .modal-title
@@ -125,22 +125,13 @@
 	justify-content: center;
 }
 
-
 .join-room-main .input-group input
 {
 	width: 13.5rem;
 	padding: 0.2rem;
-	border: none;
 	text-align: center;
 	font-weight: bold;
 	font-size: 1.2rem;
-	background-color: var(--cor-4);
-	color: var(--txt-7);
-}
-
-.join-room-main .input-group input::placeholder
-{
-	color: var(--txt-8);
 }
 
 .join-room-main .input-group input:focus

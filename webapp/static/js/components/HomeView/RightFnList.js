@@ -7,6 +7,9 @@
 // -------------------------------------------------- //
 //import ModalFnOpt from './ModalFnOpt.js';
 //import ModalAdd from './ModalAdd.js';
+	//	// --- [05] RENDER
+import ModalLayout from '../../layouts/ModalLayout.js';
+import ModalAddFriend from './ModalAdd.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -74,15 +77,15 @@ function html_title()
 function html_friendList()
 {
 	// [-] HELPER FUNCTION
-	function friend_generate(name, stat)
+	function friend_generate(name, stat, type)
 	{
 		let template = `
-		<div class="%friend-c">
+		<div class="%friend-c" title="%name-t" data-type="%type">
 			<div class="%pfpctn-c">
 				<img class="%pfp-c" src="%pfp-src" alt="%pfp-alt"></img>
 				<div class="%status-c"></div>
 			</div>
-			<h2 class="%name-c">%name</h2>
+			<h2 class="%name-c">%name-t</h2>
 			<img class="%set-c" src="%set-src" alt="%set-alt"></img>
 		</div>
 		`
@@ -90,13 +93,14 @@ function html_friendList()
 		const attributes =
 		{
 			'%friend-c': 'fnl-item-ctn',
+			'%name-t': name,
+			'%type': type,
 			'%pfpctn-c': 'fnl-item-pfp-ctn',
 			'%pfp-c': `fnl-item-pfp`,
 			'%status-c': `fnl-item-status ${stat}`,
 			'%pfp-src': '/static/assets/images/default-pfp.png',
 			'%pfp-alt': 'profile picture',
 			'%name-c': `fnl-item-name ${stat} truncate`,
-			'%name': name,
 			'%set-c': 'fnl-item-settings',
 			'%set-src': '/static/assets/images/settings.svg',
 			'%set-alt': 'settings',
@@ -122,9 +126,9 @@ function html_friendList()
 				<div class="%flist-title-sym-c">-</div>
 			</div>
 			<div class="%flAdd-c">
-				${friend_generate('Molly', 'online')}
-				${friend_generate('Tom', 'offline')}
-				${friend_generate('Kitty', 'online')}
+				${friend_generate('Molly', 'online', 'added')}
+				${friend_generate('Tom', 'offline', 'added')}
+				${friend_generate('Kitty', 'online', 'added')}
 			</div>
 		</div>
 		<div class="%flist-c">
@@ -133,7 +137,8 @@ function html_friendList()
 				<div class="%flist-title-sym-c">-</div>
 			</div>
 			<div class="%flPending-c">
-				${friend_generate('Bin', 'pending')}
+				${friend_generate('Bin', 'pending', 'request-in')}
+				${friend_generate('Bout', 'pending', 'request-out')}
 			</div>
 		</div>
 		<div class="%flist-c">
@@ -142,7 +147,7 @@ function html_friendList()
 				<div class="%flist-title-sym-c">-</div>
 			</div>
 			<div class="%flBlocked-c">
-				${friend_generate('Ameme', 'blocked')}
+				${friend_generate('Ameme', 'blocked', 'blocked')}
 			</div>
 		</div>
 	</div>
@@ -321,6 +326,13 @@ export default class rightPanelFriends
 		event.preventDefault();
 		console.log('[EVENT] button clicked : add friend');
 
+		//for popup modal
+		const moda = document.querySelector('#modal-addFriend .modal-title');
+		moda.innerHTML = 'Add Friend';
+		const modata = document.querySelector('#modal-addFriend .modal-body');
+		modata.innerHTML = "";
+		const modaAdd = new ModalAddFriend(modata);
+		modaAdd.render();
 
 		return true;
 	}
@@ -339,6 +351,19 @@ export default class rightPanelFriends
 	}
 
 	// --- [01] RENDER
+	async modals_render()
+	{
+		let parent_html;
+
+		parent_html = this.container;
+		const modal1 = new ModalLayout(
+			parent_html, "modal-addFriend", "Add Friend"
+		);
+		await modal1.render();
+
+		return true;
+	}
+
 	async render()
 	{
 		const template = await this.init_template();
@@ -347,6 +372,7 @@ export default class rightPanelFriends
 		this.container.innerHTML = template;
 
 		await this.bind_events();
+		await this.modals_render();
 
 		return true;
 	}

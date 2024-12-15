@@ -75,7 +75,7 @@ function html_element()
 		<div class="%main-1c %main-2c">
 			${room_display_board()}
 			<div class="%ip-c">
-				<input id="%dpi-c" type="%dpi-ty" placeholder="%dpi-ph" >
+				<input id="%dpi-id" type="%dpi-ty" @att1 @att2 @att3 @att4>
 				<p class="%em-c">%em-t</p>
 				<p class="%info-c">%info-t</p>
 			</div>
@@ -111,9 +111,12 @@ function html_element()
 		'@att1': 'data-bs-toggle="tooltip" title="killerhunter789"',
 		'%nam-t': 'killerhunter789',
 		'%ip-c': 'input-group d-flex flex-column',
-		'%dpi-c': 'room-join-code',
+		'%dpi-id': 'room-join-code',
 		'%dpi-ty': 'text',
-		'%dpi-ph': 'Enter Room ID',
+		'@att1': 'placeholder="Enter Room ID"',
+		'@att2': 'autocomplete="off"',
+		'@att3': 'maxlength="5" required',
+		'@att4': 'class="ct-home-input"',
 		'%em-c': 'join-room-err',
 		'%em-t': '',
 		'%info-c': 'join-room-info',
@@ -242,6 +245,21 @@ export default class ModalRoomJoin
 		return true;
 	}
 
+	async input_number_only()
+	{
+		const input = document.querySelector('#room-join-code');
+
+		input.addEventListener('keypress', (e) =>
+		{
+			const key = e.key;
+			const regex = /[0-9]/;
+			if (!regex.test(key))
+				e.preventDefault();
+		});
+
+		return true;
+	}
+
 	async bind_events()
 	{
 		await btns.read_buttons();
@@ -249,6 +267,7 @@ export default class ModalRoomJoin
 			'click', async (e) => {await this.joinClick(e);
 		});
 		await this.roomListClick();
+		await this.input_number_only();
 	}
 	
 	// --- [05] RENDER
