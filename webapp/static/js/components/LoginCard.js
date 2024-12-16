@@ -383,9 +383,8 @@ export default class LoginCard
 			await this.alert_div.setMsg('Login successful! Logging in...');
 			await this.alert_div.alert_render();
 
+			localStorage.setItem('user', JSON.stringify(loginFetch.fetch_obj.rdata['user']));
 			await new Promise(r => setTimeout(r, 2000));
-			await LOADING.restore_all();
-
 			const HOME = new HomeView();
 			await HOME.render();
 		}

@@ -49,11 +49,11 @@ function html_element()
 	// [-] HELPER FUNCTION
 	// [A] TEMPLATE
 	let template = `
-		<div class="%addf-c">
+		<form class="%addf-c">
 			<input type="in-t" class="%in-1c" @att1 @att2 @att3>
-			<button id="%addfb-id" class="%addfb-c">%addfb-t</button>
+			<button @att4 @att5 @att6>%addfb-t</button>
 			<div class="%addfmsg-c" role="%addfmsg-r">%addfmsg-t</div>
-		</div>
+		</form>
 	`;
 
 	// [B] SET ATTRIBUTES
@@ -65,19 +65,20 @@ function html_element()
 		'@att1': 'placeholder="Enter username"',
 		'@att2': 'required autocomplete="off"',
 		'@att3': 'maxlength="16"',
+		'@att4': 'id="btn_add_friend_submit"',
+		'@att5': 'class="add-friend-btn"',
+		'@att6': 'type="submit"',
+		'%addfb-t': 'Add Friend',
 		'%addfmsg-c': 'ct-alert-addFriend alert d-none',
 		'%addfmsg-r': 'alert',
 		'%addfmsg-t': 'User not found',
-		'%addfb-id': 'btn_add_friend_submit',
-		'%addfb-c': 'add-friend-btn',
-		'%addfb-t': 'Add Friend',
 	};
 
 	for (const key in attributes)
 		template = template.split(key).join(attributes[key]);
 
 	// [C] PUSH TO BUTTONS TRACKER
-	btns.arr.submit = attributes['%addfb-id'];
+	btns.arr.submit = 'btn_add_friend_submit';
 
 	// [D] HTML RETURN
 	return template;
@@ -165,8 +166,10 @@ export default class ModalAddFriend
 	}
 
 	// --- [04] EVENT
-	async submit_click()
+	async submit_click(event)
 	{
+		event.preventDefault();
+		alert(event.target.textContent);
 		return true;
 	}
 
@@ -192,7 +195,7 @@ export default class ModalAddFriend
 		await btns.read_buttons();
 
 		btns.arr['submit'].addEventListener(
-			'click', async (e) => {await this.submit_click();}
+			'click', async (e) => {await this.submit_click(e);}
 		);
 
 		await this.field_handle();

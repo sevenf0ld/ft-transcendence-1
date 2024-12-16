@@ -54,6 +54,8 @@ const btns = new button();
 function html_pfp()
 {
 	// [-] HELPER FUNCTION
+	const obj = JSON.parse(localStorage.getItem('user'));
+	const name = obj.username;
 
 	// [A] TEMPLATE
 	let template = `
@@ -68,7 +70,7 @@ function html_pfp()
 		'%pfp-src': '/static/assets/images/default-pfp.png',
 		'%pfp-alt': 'profile picture',
 		'%name-c': 'ct-lpanel-username h5 truncate',
-		'%name': 'JLIAW'
+		'%name': `${name}`,
 	};
 
 	for (const key in attributes)
@@ -314,8 +316,9 @@ export default class leftPanelUser
 		{
 			const loginView = new LoginView(this.container);
 	
-			localStorage.removeItem('intra_state');
-			//remove uri as well (later)
+			localStorage.clear();
+			location.href = '/';
+
 			await loginView.render();
 		}
 		else
