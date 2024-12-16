@@ -9,6 +9,7 @@ import LoginView from '../views/LoginView.js';
 import HomeView from '../views/HomeView.js';
 import * as LOADING from '../core/helpers/loading.js';
 import * as FETCH from './LoginCard_fetch.js';
+import alert_utils from '../core/helpers/alert-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -56,7 +57,9 @@ function html_element()
 	// [A] TEMPLATE
 	let template = `
 	<div class="%otp-c">
-		<h3 class="%oth-c">%oth-t</h3>
+		<div class="%oth-c">%oth-t</div>
+		<img class="%img-c" src="%img-src" alt="%img-alt" />
+		<div class="%bsm-c" @att0>%bsm-t</div>
 		<input type="%oti-ty" class="%oti-1c" @att1 placeholder="%oti-p" />
 		<button id="%ots-id" class="%ots-c">%ots-t</button>
 		<button id="%otg-id" class="%otg-c">%otg-t</button>
@@ -68,16 +71,22 @@ function html_element()
 	{
 		'%otp-c': `ct-login-otp`,
 		'%oth-c': `ct-login-otp-header`,
-		'%oth-t': `OTP has been sent to your email!`,
+		'%oth-t': `OTP Verification`,
+		'%img-c': `ct-login-otp-img`,
+		'%img-src': `/static/assets/images/mail.svg`,
+		'%img-alt': `otp`,
+		'%bsm-c': `alert alert-info ct-alert-otp`,
+		'@att0': `role="alert"`,
+		'%bsm-t': `OTP has been sent to your email!`,
 		'%oti-ty': `text`,
 		'%oti-1c': `ct-login-otp-input form-control form-control-sm`,
 		'@att1': `maxlength="6" required`,
-		'%oti-p': `ENTER OTP`,
+		'%oti-p': `Enter 6-digit OTP`,
 		'%ots-id': `btn_otp_submit`,
 		'%ots-c': `ct-btn-login-otp`,
 		'%ots-t': `Verify OTP`,
 		'%otg-id': `btn_otp_goback`,
-		'%otg-c': `ct-btn-login-goback`,
+		'%otg-c': `ct-btn-login-goback text-decoration-none text-muted`,
 		'%otg-t': `Go Back`,
 	};
 
@@ -109,6 +118,7 @@ export default class LoginOTP
 		this.loginFetch_obj = loginFetch_obj;
 		this.container = document.getElementById("media");
 		this.components = {};
+		this.alert_div = null;
 	}
 
 	// --- [01] GETTER
@@ -175,7 +185,6 @@ export default class LoginOTP
 	}
 
 	// --- [04] EVENT
-
 	async submitOtpClick(event)
 	{
 		console.log('[EVENT] button clicked : submitOtp');
@@ -189,17 +198,40 @@ export default class LoginOTP
 		const otp = document.querySelector('.ct-login-otp-input').value;
 		const otp_verify = await loginFetch.verify_otp(otp);
 		if (otp_verify === false)
-			alert('Invalid OTP : 6 digits only & cant be empty');
+		{
+			this.alert_div.alert_clear();
+			this.alert_div.setType('alert-danger');
+			this.alert_div.setMsg('Invalid OTP: 6 digits required');
+			this.alert_div.alert_render();
+		}
 		else
 		{
 			loginFetch.set_otp(otp);
+			this.alert_div.alert_clear();
+			this.alert_div.setType('alert-info');
+			this.alert_div.setMsg('Verifying OTP...');
+			this.alert_div.alert_render();
 			const fetch_result = await loginFetch.fetchData();
+			await new Promise(r => setTimeout(r, 1000));
 
-			console.log("OTP-FETCH-RESULT : ", fetch_result);
 			if (fetch_result === 'login-successful')
 			{
+				this.alert_div.alert_clear();
+				this.alert_div.setType('alert-success');
+				this.alert_div.setMsg('Login successful!');
+				this.alert_div.alert_render();
+
+				await new Promise(r => setTimeout(r, 1500));
 				const HOME = new HomeView();
 				await HOME.render();
+			}
+			else
+			{
+				this.alert_div.alert_clear();
+				this.alert_div.setType('alert-danger');
+				let string = loginFetch.fetch_obj.rdata['detail'];
+				this.alert_div.setMsg('Verification failed: ' + string);
+				this.alert_div.alert_render();
 			}
 		}
 
@@ -253,6 +285,7 @@ export default class LoginOTP
 		
 		this.container.innerHTML = '';
 		this.container.innerHTML = template;
+		this.alert_div = new alert_utils(document.querySelector('.ct-alert-otp'));
 
 		await this.bind_events();
 		//await this.modals_render();

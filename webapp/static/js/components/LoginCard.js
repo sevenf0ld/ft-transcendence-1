@@ -10,6 +10,7 @@ import * as FETCH from './LoginCard_fetch.js';
 import HomeView from '../views/HomeView.js';
 import * as LOADING from '../core/helpers/loading.js';
 import LoginOTP from './LoginOTP.js';
+import alert_utils from '../core/helpers/alert-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -43,7 +44,6 @@ class button
 	constructor()
 	{
 		this.arr = {
-			'forgot': '',
 			'login': '',
 			'intra': '',
 			'signup': '',
@@ -102,14 +102,12 @@ function html_formGroup()
 				<label for="%id1">Username</label>
 				<input id="%id1" type="%t1" @cas placeholder="%p1" @auto>
 			</div>
-			<div class="%formgp-c">
+			<div class="%formgp-c %last">
 				<label for="%id2">Password</label>
 				<input id="%id2" type="%t2" @cas placeholder="%p2" @auto>
 			</div>
-			<div class="%fgot-c">
-				<a id="%afgot-id" href="#" class="%afgot-c">%afgot-t</a>
-			</div>
 			<button id="%lbid" class="%lbc" type="submit">Sign In</button>
+			<div @att1 @att2></div>
 		</form>
 	`;
 
@@ -118,6 +116,7 @@ function html_formGroup()
 	{
 		'%form-c': `ct-login-form d-flex flex-column`,
 		'%formgp-c': 'ct-form-group d-flex flex-column',
+		'%last': 'mb-3',
 		'@cas': `class="p-2 form-control form-control-sm"`,
 		'@auto': `required="" autocomplete="off" spellcheck="false"`,
 		'%id1': `username`,
@@ -126,10 +125,8 @@ function html_formGroup()
 		'%id2': `password`,
 		'%t2': `password`,
 		'%p2': `Enter your password`,
-		'%fgot-c': `ct-btn-forgot text-end`,
-		'%afgot-c': `small text-muted text-decoration-none`,
-		'%afgot-t': `Forgot Password?`,
-		'%afgot-id': `btn_forgot`,
+		'@att1': `class="alert d-none"`,
+		'@att2': `role="alert" id="alert_login"`,
 		'%lbid': `btn_login`,
 		'%lbc': `ct-btn-dark btn no-hover`,
 	};
@@ -139,7 +136,6 @@ function html_formGroup()
 
 	// [C] PUSH TO BUTTONS TRACKER
 	btns.arr['login'] = attributes['%lbid'];
-	btns.arr['forgot'] = attributes['%afgot-id'];
 
 	// [D] HTML RETURN
 	return template;
@@ -259,6 +255,7 @@ export default class LoginCard
 	{
 		this.container = container;
 		this.components = {};
+		this.alert_div = null;
 	}
 
 	// --- [01] GETTER
@@ -328,12 +325,31 @@ export default class LoginCard
 		return template;
 	}
 
+	async check_input()
+	{
+		const username = document.getElementById('username').value;
+		const password = document.getElementById('password').value;
+		if (username === '' || password === '')
+		{
+			await this.alert_div.setType('alert-danger');
+			await this.alert_div.setMsg('Please enter your username and password!');
+			await this.alert_div.alert_render();
+			return false;
+		}
+
+		return true;
+	}
+
 	// --- [04] EVENT
 	async loginClick(event)
 	{
 		console.log('[EVENT] button clicked : login');
 		event.preventDefault();
 
+		if (!await this.check_input())
+			return false;
+
+		this.alert_div.alert_clear();
 		await LOADING.disable_all();
 
 		const loginFetch = new FETCH.fetch_login();
@@ -346,21 +362,35 @@ export default class LoginCard
 			const OTP = new LoginOTP(loginFetch);
 			await OTP.render();
 		}
+		if (fetch_result === 'p1-failed')
+		{
+			await LOADING.restore_all();
+			await this.alert_div.setType('alert-danger');
+			let string = loginFetch.fetch_obj.rdata['non_field_errors'];
+			await this.alert_div.setMsg('Login failed: ' + string);
+			await this.alert_div.alert_render();
+		}
+		if (fetch_result === 'p2-failed-server-error')
+		{
+			await LOADING.restore_all();
+			await this.alert_div.setTpe('alert-danger');
+			await this.alert_div.setMsg('Server error');
+			await this.alert_div.alert_render();
+		}
 		if (fetch_result === 'login-successful')
 		{
+			await this.alert_div.setType('alert-success');
+			await this.alert_div.setMsg('Login successful! Logging in...');
+			await this.alert_div.alert_render();
+
+			await new Promise(r => setTimeout(r, 2000));
+			await LOADING.restore_all();
+
 			const HOME = new HomeView();
 			await HOME.render();
 		}
 
 		await LOADING.restore_all();
-
-		return true;
-	}
-
-	async forgotClick(event)
-	{
-		console.log('[EVENT] button clicked : forgot');
-		event.preventDefault();
 
 		return true;
 	}
@@ -380,16 +410,9 @@ export default class LoginCard
 		console.log('[EVENT] button clicked : signup');
 		event.preventDefault();
 
-		// pause browser for loading to another page
-		//
 		const signup = new SignupView();
 		await signup.render();
 
-		return true;
-	}
-
-	async contentLoaded(event)
-	{
 		return true;
 	}
 
@@ -399,9 +422,6 @@ export default class LoginCard
 
 		btns.arr['login'].addEventListener(
 			'click', async (e) => {await this.loginClick(e);}
-		);
-		btns.arr['forgot'].addEventListener(
-			'click', async (e) => {await this.forgotClick(e);}
 		);
 		btns.arr['intra'].addEventListener(
 			'click', async (e) => {await this.intraClick(e);}
@@ -423,6 +443,7 @@ export default class LoginCard
 		
 		this.container.innerHTML = '';
 		this.container.innerHTML = template;
+		this.alert_div = new alert_utils(document.getElementById('alert_login'));
 
 		await this.bind_events();
 		//await this.modals_render();

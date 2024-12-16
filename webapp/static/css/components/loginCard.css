@@ -10,6 +10,12 @@
 	font-family: 'Caveat', cursive;
 }
 
+.ct-login-header ~ #alert_login
+{
+	width: 100%;
+	margin: 0;
+}
+
 /* -------------------------------------------------- */
 /* card/form */
 /* -------------------------------------------------- */
@@ -29,17 +35,16 @@
 	color: var(--txt-3);
 }
 
-#btm_forgot
-{
-	gap: 0.5rem;
-	color: var(--cor-2);
-	background-color: var(--cor-1);
-}
-
 .ct-login-form > button.btn.ct-btn-dark
 {
 	color: var(--txt-1);
 	background-color: var(--cor-1);
+}
+
+/* taget last secodn child */
+{
+	display: flex;
+	justify-content: space-between;
 }
 
 
@@ -81,6 +86,18 @@
 }
 
 /* -------------------------------------------------- */
+/* alert
+/* -------------------------------------------------- */
+#alert_login
+{
+	width: 100%;
+	margin: 0;
+	font-size: 0.9rem;
+	padding: 0.5rem;
+	line-height: 1.3rem;
+}
+
+/* -------------------------------------------------- */
 /* otp */
 /* -------------------------------------------------- */
 .ct-login-otp
@@ -95,6 +112,25 @@
 	align-items: center;
 	font-family: 'Noto Sans JP' ,sans-serif;
 	width: 25rem;
+}
+
+.ct-login-otp > .ct-login-otp-header
+{
+	width: 100%;
+	font-weight: bold;
+	font-size: 1.5rem;
+	text-align: center;
+}
+
+.ct-login-otp > .ct-login-otp-img
+{
+	width: 10rem;
+}
+
+.ct-login-otp  .alert-info
+{
+	width: 100%;
+	margin: 0;
 }
 
 .ct-login-otp .ct-login-otp-input
@@ -113,6 +149,7 @@
 	font-weight: normal;
 	font-size: 1rem;
 	letter-spacing: 0rem;
+	color: var(--txt-9);
 }
 
 .ct-login-otp .ct-btn-login-otp
@@ -121,7 +158,7 @@
 	background-color: var(--cor-1);
 	width: 100%;
 	border: none;
-	padding: 0.5rem;
+	padding: 0.75rem;
 	border-radius: 0.2rem;
 }
 
@@ -129,7 +166,16 @@
 {
 	border: none;
 	background-color: transparent;
-	color: var(--txt-4);
 	width: fit-content;
 	padding: 0.2rem;
+	font-size: 0.8rem;
+}
+
+.ct-login-otp .ct-alert-otp
+{
+	width: 100%;
+	margin: 0;
+	font-size: 0.9rem;
+	padding: 0.5rem;
+	line-height: 1.3rem;
 }
