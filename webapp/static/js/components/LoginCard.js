@@ -355,7 +355,7 @@ export default class LoginCard
 		const loginFetch = new FETCH.fetch_login();
 		const fetch_result = await loginFetch.fetchData();
 
-		console.log(fetch_result);
+		console.log('[FETCH] login-button : ', fetch_result);
 		if (fetch_result === 'login-otp')
 		{
 			await LOADING.restore_all();

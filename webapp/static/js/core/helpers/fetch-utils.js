@@ -106,8 +106,11 @@ export default class fetch_utils
 			throw new Error('ERR] Content-Type is not set.');
 		if (this.object['headers']['X-CSRFToken'] === '')
 			throw new Error('[ERR] CSRFToken is not set.');
-		if (this.object['body'] === '{}')
+		if (this.object['body'] === '{}' && this.object['method'] !== 'GET')
 			throw new Error('[ERR] Body is not set.');
+
+		if (this.object['body'] === JSON.stringify({}))
+			delete this.object['body'];
 		
 		return true;
 	}
@@ -119,6 +122,7 @@ export default class fetch_utils
 		const response = await fetch(this.url, this.object);
 		this.response = response;
 		const data = await response.json();
+
 		this.rdata = data;
 
 		return true;

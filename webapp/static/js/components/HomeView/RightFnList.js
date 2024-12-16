@@ -10,6 +10,7 @@
 	//	// --- [05] RENDER
 import ModalLayout from '../../layouts/ModalLayout.js';
 import ModalAddFriend from './ModalAdd.js';
+import * as FETCH from './RightFnList_fetch.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -74,7 +75,7 @@ function html_title()
 	return template;
 }
 
-function html_friendList()
+async function html_friendList()
 {
 	// [-] HELPER FUNCTION
 	function friend_generate(name, stat, type)
@@ -118,6 +119,51 @@ function html_friendList()
 	// required body: `user: <username>`
 	// return value: {"user":"what","friends":["when"],"num_of_friends":1,"blocked":[],"num_of_blocked":0,"outgoing":["temp"],"num_of_outgoing":1,"incoming":["fake"],"num_of_incoming":1}
 	/*=================================================================*/
+	async function fetch_friend_list(type)
+	{
+		let template = '';
+		const flistFetch = new FETCH.fetch_friendList();
+		const result = await flistFetch.fetchData();
+		if (result === 'fetch-success')
+		{
+			const data = flistFetch.fetch_obj.rdata;
+			const friends = data['friends'];
+			const blocked = data['blocked'];
+			const outgoing = data['outgoing'];
+			const incoming = data['incoming'];
+			if (type === 'added')
+			{
+				if (friends.length === 0)
+					template += '<p class="%empty-c">%empty-t</p>';
+				for (const friend of friends)
+					template += friend_generate(friend, 'online', 'added');
+			}
+			else if (type === 'pending')
+			{
+				if (outgoing.length === 0 && incoming.length === 0)
+					template += '<p class="%empty-c">%empty-t</p>';
+				for (const friend of outgoing)
+					template += friend_generate(friend, 'pending', 'request-out');
+				for (const friend of incoming)
+					template += friend_generate(friend, 'pending', 'request-in');
+			}
+			else if (type === 'blocked')
+			{
+				if (blocked.length === 0)
+					template += '<p class="%empty-c">%empty-t</p>';
+				for (const friend of blocked)
+					template += friend_generate(friend, 'blocked', 'blocked');
+			}
+			return template;
+		}
+		template = '<p>Failed to fetch friend list</p>';
+		return template;
+	}
+
+	const friend_list = await fetch_friend_list('added');
+	const friend_pending = await fetch_friend_list('pending');
+	const friend_blocked = await fetch_friend_list('blocked');
+
 	let template = `
 	<div class="%friend-list-c">
 		<div class="%flist-c">
@@ -126,9 +172,7 @@ function html_friendList()
 				<div class="%flist-title-sym-c">-</div>
 			</div>
 			<div class="%flAdd-c">
-				${friend_generate('Molly', 'online', 'added')}
-				${friend_generate('Tom', 'offline', 'added')}
-				${friend_generate('Kitty', 'online', 'added')}
+				${friend_list}
 			</div>
 		</div>
 		<div class="%flist-c">
@@ -137,8 +181,7 @@ function html_friendList()
 				<div class="%flist-title-sym-c">-</div>
 			</div>
 			<div class="%flPending-c">
-				${friend_generate('Bin', 'pending', 'request-in')}
-				${friend_generate('Bout', 'pending', 'request-out')}
+				${friend_pending}
 			</div>
 		</div>
 		<div class="%flist-c">
@@ -147,7 +190,7 @@ function html_friendList()
 				<div class="%flist-title-sym-c">-</div>
 			</div>
 			<div class="%flBlocked-c">
-				${friend_generate('Ameme', 'blocked', 'blocked')}
+				${friend_blocked}
 			</div>
 		</div>
 	</div>
@@ -164,6 +207,8 @@ function html_friendList()
 		'%flAdd-c': 'category-list-ctn',
 		'%flPending-c': 'category-list-ctn',
 		'%flBlocked-c': 'category-list-ctn',
+		'%empty-c': 'empty-list',
+		'%empty-t': '(Empty)',
 	};
 
 	for (const key in attributes)
@@ -277,7 +322,7 @@ export default class rightPanelFriends
 		let template = "";
 		template = "<div class='friend-list-main'>";
 		template += ele.html_title();
-		template += ele.html_friendList();
+		template += await ele.html_friendList();
 		template += ele.html_addbtn();
 		template += "</div>";
 

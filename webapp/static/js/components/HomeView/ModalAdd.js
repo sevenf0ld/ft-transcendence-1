@@ -8,6 +8,8 @@
 import * as FETCH from './ModalAdd_fetch.js';
 import * as LOADING from '../../core/helpers/loading.js';
 import alert_utils from '../../core/helpers/alert-utils.js';
+import rightPanelFriends from './RightFnList.js';
+
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -255,6 +257,26 @@ export default class ModalAddFriend
 		return true;
 	}
 
+	async modals_events()
+	{
+		const modal = document.querySelector('.modal#modal-addFriend');
+
+		// when modals are shown
+		modal.addEventListener('shown.bs.modal', async () =>
+		{
+		});
+
+		// when modals are hidden
+		modal.addEventListener('hidden.bs.modal', async () =>
+		{
+			const parent_div = document.querySelector('.ct-main-rpanel');
+			const rightpanel = new rightPanelFriends(parent_div);
+			await rightpanel.render();
+		});
+
+		return true;
+	}
+
 	async bind_events()
 	{
 		await btns.read_buttons();
@@ -264,9 +286,11 @@ export default class ModalAddFriend
 		);
 
 		await this.field_handle();
+		await this.modals_events();
 
 		return true;
 	}
+
 
 	// --- [05] RENDER
 	async render()

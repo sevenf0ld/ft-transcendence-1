@@ -164,16 +164,12 @@ class FriendListRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = FriendListDisplayModelSerializer
 
     def get_object(self):
-        serializer = self.get_serializer(data=self.request.data)
-        serializer.is_valid(raise_exception=True)
-
-        user = serializer.validated_data['user']
-
-        fl = FriendList.objects.get(user=user)
+        fl = FriendList.objects.get(user=self.request.user)
 
         self.check_object_permissions(self.request, fl)
 
         return fl
+
 
 # list's use case is to be reviewed
 #class FriendListListAPIView(generics.ListAPIView):

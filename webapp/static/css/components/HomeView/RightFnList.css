@@ -143,9 +143,14 @@
 	padding: 10px;
 }
 
+/* if empty */
+.friend-list-main .empty-list
+{
+	text-align: center;
+	padding: 20px;
+	color: var(--txt-4);
+}
 
 /* -------------------------------------------------- */
 /* add-friend-modal */
 /* -------------------------------------------------- */
-
-
