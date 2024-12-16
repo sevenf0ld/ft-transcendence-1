@@ -74,31 +74,31 @@ class FriendListDisplayModelSerializer(serializers.ModelSerializer):
     incoming = serializers.SerializerMethodField()
     num_of_incoming = serializers.SerializerMethodField()
 
-    def to_internal_value(self, data):
-        user_username = data.get('user')
-        if not user_username:
-            raise serializers.ValidationError({
-                'user': 'This field is required.'
-            })
-        try:
-            user = User.objects.get(username=user_username)
-        except User.DoesNotExist:
-            raise serializers.ValidationError({
-                'sender': 'Non-existent user.'
-            })
-        #display = data.get('display')
-        #if display is None:
-        #    raise serializers.ValidationError({
-        #        'display': 'This field is required.'
-        #    })
-        #if display.lower() not in ['added', 'pending', 'blocked']:
-        #    raise serializers.ValidationError({
-        #        'display': 'Non-existent friend list section.'
-        #    })
-        return {
-            'user': user,
-            #'display': display
-        }
+    #def to_internal_value(self, data):
+    #    user_username = data.get('user')
+    #    if not user_username:
+    #        raise serializers.ValidationError({
+    #            'user': 'This field is required.'
+    #        })
+    #    try:
+    #        user = User.objects.get(username=user_username)
+    #    except User.DoesNotExist:
+    #        raise serializers.ValidationError({
+    #            'sender': 'Non-existent user.'
+    #        })
+    #    #display = data.get('display')
+    #    #if display is None:
+    #    #    raise serializers.ValidationError({
+    #    #        'display': 'This field is required.'
+    #    #    })
+    #    #if display.lower() not in ['added', 'pending', 'blocked']:
+    #    #    raise serializers.ValidationError({
+    #    #        'display': 'Non-existent friend list section.'
+    #    #    })
+    #    return {
+    #        'user': user,
+    #        #'display': display
+    #    }
 
     def get_friends(self, obj):
         return [friend.username for friend in obj.friends.all()]
