@@ -257,6 +257,9 @@ export default class IntroLayout
 		this.container.innerHTML = '';
 		this.container.innerHTML = template;
 
+		//if append is needed
+		//this.container.insertAdjacentHTML('beforeend', template);
+
 		await this.bind_events();
 		await this.modals_render();
 

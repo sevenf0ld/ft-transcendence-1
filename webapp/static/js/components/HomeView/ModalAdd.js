@@ -291,7 +291,6 @@ export default class ModalAddFriend
 		return true;
 	}
 
-
 	// --- [05] RENDER
 	async render()
 	{

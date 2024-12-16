@@ -11,6 +11,7 @@
 import ModalLayout from '../../layouts/ModalLayout.js';
 import ModalAddFriend from './ModalAdd.js';
 import * as FETCH from './RightFnList_fetch.js';
+import ModalFnOpt from './ModalFnOpt.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -87,7 +88,7 @@ async function html_friendList()
 				<div class="%status-c"></div>
 			</div>
 			<h2 class="%name-c">%name-t</h2>
-			<img class="%set-c" src="%set-src" alt="%set-alt"></img>
+			<img @att1 @att2 @att3 @att4 @att5></img>
 		</div>
 		`
 
@@ -102,9 +103,15 @@ async function html_friendList()
 			'%pfp-src': '/static/assets/images/default-pfp.png',
 			'%pfp-alt': 'profile picture',
 			'%name-c': `fnl-item-name ${stat} truncate`,
+
 			'%set-c': 'fnl-item-settings',
 			'%set-src': '/static/assets/images/settings.svg',
 			'%set-alt': 'settings',
+			'@att1': 'class="fnl-item-settings"',
+			'@att2': 'src="/static/assets/images/settings.svg"',
+			'@att3': 'alt="settings"',
+			'@att4': 'data-bs-toggle="modal"',
+			'@att5': 'data-bs-target="#modal-fnOpt"',
 		};
 
 		for (const key in attributes)
@@ -381,6 +388,28 @@ export default class rightPanelFriends
 
 		return true;
 	}
+	
+	async friendOptionsClick(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] button clicked : friend options');
+
+		//temporary
+		// get name and type
+		const name = event.target.parentElement.querySelector('.fnl-item-name').innerHTML;
+		const type = event.target.parentElement.getAttribute('data-type');
+
+		// set modal title
+		const moda_title = document.querySelector('#modal-fnOpt .modal-title');
+		moda_title.innerHTML = `${name}`;
+
+		// set modal body
+		const moda_body = document.querySelector('#modal-fnOpt .modal-body');
+		const modaFriendOpt = new ModalFnOpt(moda_body, type, name);
+		await modaFriendOpt.render();
+
+		return true;
+	}
 
 	async bind_events()
 	{
@@ -392,6 +421,14 @@ export default class rightPanelFriends
 			'click', async (e) => {await this.addFriendClick(e);}
 		);
 
+		const friend_items = document.querySelectorAll('.fnl-item-settings');
+		for (const item of friend_items)
+		{
+			item.addEventListener(
+				'click', async (e) => {await this.friendOptionsClick(e);}
+			);
+		}
+
 		return true;
 	}
 
@@ -401,10 +438,16 @@ export default class rightPanelFriends
 		let parent_html;
 
 		parent_html = this.container;
+
 		const modal1 = new ModalLayout(
 			parent_html, "modal-addFriend", "Add Friend"
 		);
-		await modal1.render();
+		await modal1.render()
+
+		const modal2 = new ModalLayout(
+			parent_html, "modal-fnOpt", "Friend Options"
+		);
+		await modal2.render()
 
 		return true;
 	}
