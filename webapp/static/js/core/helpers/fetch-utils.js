@@ -26,6 +26,7 @@ export default class fetch_utils
 		};
 		this.response = {};
 		this.rdata = {};
+		this.robject = {};
 	}
 
 	// --- [00] DEEP-COPY
@@ -120,11 +121,20 @@ export default class fetch_utils
 	{
 		await this.read_check();
 		const response = await fetch(this.url, this.object);
-		this.response = response;
-		const data = await response.json();
+		this.robject = response;
+		if (response.status !== 204)
+		{
+			console.log(response);
+			this.response = response;
+			const data = await response.json();
 
-		this.rdata = data;
-
+			this.rdata = data;
+		}
+		else
+		{
+			this.response = null;
+			this.rdata = null;
+		}
 		return true;
 	}
 }

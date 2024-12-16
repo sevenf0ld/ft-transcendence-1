@@ -5,6 +5,8 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
+import { fetch_utils as FETCH_UTILS } from '../../core/helpers/fetch-utils.js';
+import rightPanelFriends from './RightFnList.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -54,12 +56,12 @@ function html_element()
 	// [-] HELPER FUNCTION
 	// [A] TEMPLATE
 	let template = `
-		<button id="%uf-id" class="%uf-c">%uf-t</button>
-		<button id="%bl-id" class="%bl-c">%bl-t</button>
-		<button id="%cr-id" class="%cr-c">%cr-t</button>
-		<button id="%ar-id" class="%ar-c">%ar-t</button>
-		<button id="%dr-id" class="%dr-c">%dr-t</button>
-		<button id="%ub-id" class="%ub-c">%ub-t</button>
+		<button id="%uf-id" class="%uf-c" >%uf-t</button>
+		<button id="%bl-id" class="%bl-c" >%bl-t</button>
+		<button id="%cr-id" class="%cr-c" >%cr-t</button>
+		<button id="%ar-id" class="%ar-c" >%ar-t</button>
+		<button id="%dr-id" class="%dr-c" >%dr-t</button>
+		<button id="%ub-id" class="%ub-c" >%ub-t</button>
 	`;
 
 	// [B] SET ATTRIBUTES
@@ -118,6 +120,7 @@ export default class ModalFnOpt
 		this.type = type;
 		this.target = target;
 		this.components = {};
+		this.user = '';
 	}
 
 	// --- [01] GETTER
@@ -225,11 +228,263 @@ export default class ModalFnOpt
 		return true;
 	}
 
+	async refresh()
+	{
+		const parentHtml = document.querySelector('.ct-main-rpanel');
+		const rightPanel = new rightPanelFriends(parentHtml);
+		await rightPanel.render();
+
+		return true;
+	}
+
+	async confirmation(str)
+	{
+		const confirmation = confirm(`Are you sure you want to ${str}?`);
+		if (confirmation === true)
+			return true;
+		else
+			return false;
+	}
+
+	async close_modal()
+	{
+		const modal = bootstrap.Modal.getInstance(
+			document.getElementById('modal-fnOpt')
+		);
+		await modal.hide();
+
+		return true;
+	}
+
+	async unfriendClick(event)
+	{
+		if (this.type !== 'added')
+			return false;
+
+		event.preventDefault();
+		console.log('unfriend');
+
+		if (await this.confirmation(`unfriend ${this.target}`) === false)
+			return false;
+
+		//curl -X PATCH -H "Content-type: application/json" -d '{"user": "what", "target": "who"}' 'https://localhost:8000/api/friends/friend-list-av/unfriend/' --insecure
+		const mainFetch = new FETCH_UTILS();
+		await mainFetch.getCookie('csrftoken');
+		await mainFetch.setUrl('/api/friends/friend-list-av/unfriend/');
+		await mainFetch.setMethod('PATCH');
+		await mainFetch.appendHeaders('Content-Type', 'application/json');
+		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+		await mainFetch.appendBody('user', this.user);
+		await mainFetch.appendBody('target', this.target);
+		await mainFetch.fetchData();
+
+		//tomorrow change to bs-alert-display-div
+		if (mainFetch.robject.ok)
+			alert('Unfriend successful');
+		else
+			alert('Failed to unfriend');
+
+		await this.close_modal();
+		await this.refresh();
+
+		return true;
+	}
+
+	async blockClick(event)
+	{
+		if (this.type !== 'added')
+			return false;
+
+		event.preventDefault();
+		console.log('block');
+
+		if (await this.confirmation(`block ${this.target}`) === false)
+			return false;
+	
+		//curl -X PATCH -H "Content-type: application/json" -d '{"user": "what", "target": "how"}' 'https://localhost:8000/api/friends/friend-list-av/block/' --insecure
+		const mainFetch = new FETCH_UTILS();
+		await mainFetch.getCookie('csrftoken');
+		await mainFetch.setUrl('/api/friends/friend-list-av/block/');
+		await mainFetch.setMethod('PATCH');
+		await mainFetch.appendHeaders('Content-Type', 'application/json');
+		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+		await mainFetch.appendBody('user', this.user);
+		await mainFetch.appendBody('target', this.target);
+		await mainFetch.fetchData();
+
+		//tomorrow change to bs-alert-display-div
+		if (mainFetch.robject.ok)
+			alert('Block successful');
+		else
+			alert('Failed to block');
+
+		await this.close_modal();
+		await this.refresh();
+
+		return true;
+	}
+
+	async cancelRequestClick(event)
+	{
+		if (this.type !== 'request-out')
+			return false;
+		event.preventDefault();
+		console.log('cancel request');
+
+		if (await this.confirmation(`cancel sent request`) === false)
+			return false;
+
+		//curl -X DELETE -H "Content-type: application/json" -d '{"sender": "when", "recipient": "what"}' 'https://localhost:8000/api/friends/friend-request-av/cancel/' --insecur
+		const mainFetch = new FETCH_UTILS();
+		await mainFetch.getCookie('csrftoken');
+		await mainFetch.setUrl('/api/friends/friend-request-av/cancel/');
+		await mainFetch.setMethod('DELETE');
+		await mainFetch.appendHeaders('Content-Type', 'application/json');
+		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+		await mainFetch.appendBody('sender', this.user);
+		await mainFetch.appendBody('recipient', this.target);
+		await mainFetch.fetchData();
+
+		//tomorrow change to bs-alert-display-div
+		if (mainFetch.robject.ok)
+			alert('Request has been cancelled');
+		else
+			alert('Failed to cancel request');
+
+		await this.close_modal();
+		await this.refresh();
+
+		return true;
+	}
+
+	async acceptRequestClick(event)
+	{
+		if (this.type !== 'request-in')
+			return false;
+
+		event.preventDefault();
+		console.log('accept request');
+
+		//curl -X DELETE -H "Content-type: application/json" -d '{"sender": "what", "recipient": "when"}' 'https://localhost:8000/api/friends/friend-request-av/accept/' --insecure
+		//
+		const mainFetch = new FETCH_UTILS();
+		await mainFetch.getCookie('csrftoken');
+		await mainFetch.setUrl('/api/friends/friend-request-av/accept/');
+		await mainFetch.setMethod('DELETE');
+		await mainFetch.appendHeaders('Content-Type', 'application/json');
+		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+		await mainFetch.appendBody('sender', this.user);
+		await mainFetch.appendBody('recipient', this.target);
+		await mainFetch.fetchData();
+
+		//tomorrow change to bs-alert-display-div
+		if (mainFetch.robject.ok)
+			alert('Request has been accepted');
+		else
+			alert('Failed to accept request');
+
+		await this.close_modal();
+		await this.refresh();
+
+		return true;
+	}
+
+	async declineRequestClick(event)
+	{
+		if (this.type !== 'request-out')
+			return false;
+
+		event.preventDefault();
+		console.log('decline request');
+
+		//curl -X DELETE -H "Content-type: application/json" -d '{"sender": "what", "recipient": "when"}' 'https://localhost:8000/api/friends/friend-request-av/decline/' --insecure
+		const mainFetch = new FETCH_UTILS();
+		await mainFetch.getCookie('csrftoken');
+		await mainFetch.setUrl('/api/friends/friend-request-av/decline/');
+		await mainFetch.setMethod('DELETE');
+		await mainFetch.appendHeaders('Content-Type', 'application/json');
+		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+		await mainFetch.appendBody('sender', this.target);
+		await mainFetch.appendBody('recipient', this.user);
+		await mainFetch.fetchData();
+
+		//tomorrow change to bs-alert-display-div
+		if (mainFetch.robject.ok)
+			alert('Request has been declined');
+		else
+			alert('Failed to decline request');
+
+		await this.close_modal();
+		await this.refresh();
+
+		return true;
+	}
+
+	async unblockClick(event)
+	{
+		if (this.type !== 'blocked')
+			return false;
+
+		event.preventDefault();
+		console.log('unblock');
+
+		//curl -X PATCH -H "Content-type: application/json" -d '{"user": "what", "target": "how"}' 'https://localhost:8000/api/friends/friend-list-av/unblock/' --insecure
+		const mainFetch = new FETCH_UTILS();
+		await mainFetch.getCookie('csrftoken');
+		await mainFetch.setUrl('/api/friends/friend-list-av/unblock/');
+		await mainFetch.setMethod('PATCH');
+		await mainFetch.appendHeaders('Content-Type', 'application/json');
+		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+		await mainFetch.appendBody('user', this.user);
+		await mainFetch.appendBody('target', this.target);
+		await mainFetch.fetchData();
+
+		//tomorrow change to bs-alert-display-div
+		if (mainFetch.robject.ok)
+			alert('Unblock successful');
+		else
+			alert('Failed to unblock');
+
+		await this.close_modal();
+		await this.refresh();
+
+		return true;
+	}
+
 	async bind_events()
 	{
+		const local_obj = JSON.parse(localStorage.getItem('user'));
+		this.user = local_obj.username;
+		if (this.user === '')
+			throw new Error(`[ERR] user not found in local storage`);
+
 		await btns.read_buttons();
 
 		await this.disable_buttons();
+
+		btns.arr['unfriend'].addEventListener(
+			'click', (e) => this.unfriendClick(e)
+		);
+
+		btns.arr['block'].addEventListener(
+			'click', (e) => this.blockClick(e)
+		);
+
+		btns.arr['cancel-request'].addEventListener(
+			'click', (e) => this.cancelRequestClick(e)
+		);
+
+		btns.arr['accept-request'].addEventListener(
+			'click', (e) => this.acceptRequestClick(e)
+		);
+
+		btns.arr['decline-request'].addEventListener(
+			'click', (e) => this.declineRequestClick(e)
+		);
+
+		btns.arr['unblock'].addEventListener(
+			'click', (e) => this.unblockClick(e)
+		);
 
 		return true;
 	}

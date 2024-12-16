@@ -217,6 +217,15 @@ export default class ModalAddFriend
 
 			alert(`Friend request has been sent to ${string}`);
 
+			const modal = bootstrap.Modal.getInstance(
+				document.getElementById('modal-addFriend'
+			));
+			await modal.hide();
+
+			const parent_div = document.querySelector('.ct-main-rpanel');
+			const rightpanel = new rightPanelFriends(parent_div);
+			await rightpanel.render();
+
 			await LOADING.restore_all();
 		}
 		else if (fetch_result === 'addFriend-failed')
@@ -269,9 +278,6 @@ export default class ModalAddFriend
 		// when modals are hidden
 		modal.addEventListener('hidden.bs.modal', async () =>
 		{
-			const parent_div = document.querySelector('.ct-main-rpanel');
-			const rightpanel = new rightPanelFriends(parent_div);
-			await rightpanel.render();
 		});
 
 		return true;
