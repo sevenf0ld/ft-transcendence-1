@@ -174,6 +174,26 @@ export default class IntroLayout
 
 		console.log('[EVENT] button clicked : example-1');
 
+		// FETCH-SECION-EXAMPLE
+		if (!await this.check_input())
+			return false;
+
+		this.alert_div.alert_clear();
+		await LOADING.disable_all();
+
+		const loginFetch = new FETCH.fetch_login();
+		const fetch_result = await loginFetch.fetchData();
+
+		console.log(fetch_result);
+		if (fetch_result === 'success')
+		{
+			await LOADING.restore_all();
+			const OTP = new LoginOTP(loginFetch);
+			await OTP.render();
+		}
+
+		await LOADING.restore_all();
+
 		return true;
 	}
 

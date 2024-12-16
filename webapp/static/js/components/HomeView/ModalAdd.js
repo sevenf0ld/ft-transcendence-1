@@ -5,6 +5,9 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
+import * as FETCH from './ModalAdd_fetch.js';
+import * as LOADING from '../../core/helpers/loading.js';
+import alert_utils from '../../core/helpers/alert-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -16,6 +19,8 @@
 // 		   to register as export element; first one
 // 		   is always default
 const getEle = [
+	'.ct-home-input',
+	'.add-friend-btn',
 ];
 
 // --- [LOCAL] BUTTONS SECTION
@@ -100,6 +105,7 @@ export default class ModalAddFriend
 	{
 		this.container = container;
 		this.components = {};
+		this.alert_div = null;
 	}
 
 	// --- [01] GETTER
@@ -165,11 +171,70 @@ export default class ModalAddFriend
 		return template;
 	}
 
+	async check_input()
+	{
+		const username = document.querySelector('.add-friend-input').value;
+		if (username.length < 3 || username.length > 16)
+		{
+			this.alert_div.alert_clear();
+			this.alert_div.alert_danger('Please enter a valid username');
+			return false;
+		}
+
+		return true;
+	}
+
 	// --- [04] EVENT
 	async submit_click(event)
 	{
+		console.log('[EVENT] button clicked : submit-add-friend');
 		event.preventDefault();
-		alert(event.target.textContent);
+
+		if (!await this.check_input())
+			return false;
+
+		this.alert_div.alert_clear();
+		await LOADING.disable_all();
+
+		//send data to backend
+		const addFetch = new FETCH.fetch_addFriend();
+		const fetch_result = await addFetch.fetchData();
+
+		this.alert_div.alert_info('Sending request...');
+		await new Promise(r => setTimeout(r, 1000));
+
+		if (fetch_result === 'addFriend-successful')
+		{
+			let string = 'the user';
+			this.alert_div.alert_success('Add friend successful!');
+
+			await new Promise(r => setTimeout(r, 100));
+
+			if (addFetch.fetch_obj.rdata['recipient'])
+				string = addFetch.fetch_obj.rdata['recipient'];
+
+			alert(`Friend request has been sent to ${string}`);
+
+			await LOADING.restore_all();
+		}
+		else if (fetch_result === 'addFriend-failed')
+		{
+			let string = 'Add friend failed! ';
+			await this.alert_div.alert_danger(string);
+
+			await new Promise(r => setTimeout(r, 100));
+
+			if (addFetch.fetch_obj.rdata['detail'])
+				alert(addFetch.fetch_obj.rdata['detail']);
+			else if (addFetch.fetch_obj.rdata['recipient'])
+				alert(addFetch.fetch_obj.rdata['recipient']);
+			else
+				alert('Unknown error');
+
+			await LOADING.restore_all();
+		}
+
+		await LOADING.restore_all();
 		return true;
 	}
 
@@ -210,6 +275,7 @@ export default class ModalAddFriend
 
 		this.container.innerHTML = '';
 		this.container.innerHTML = template;
+		this.alert_div = new alert_utils(document.querySelector('.ct-alert-addFriend'));
 
 		await this.bind_events();
 		//await this.modals_render();
