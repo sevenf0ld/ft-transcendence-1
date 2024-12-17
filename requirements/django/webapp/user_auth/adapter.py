@@ -42,3 +42,12 @@ class CustomAccountAdapter(DefaultAccountAdapter):
     #                [first_name, last_name, email, username, "user"]
     #            ),
     #        )
+
+# registration
+# dj_rest_auth/registration/serializer RegisterSerializer
+# dj_rest_auth/registration/views RegisterView
+# allauth/account/utils complete_signup
+# allauth/account/utils perform_login
+# allauth/account/adapter.py pre_login
+# allauth/account/utils.py send_email_confirmation
+# allauth/account/models.py EmailAddress

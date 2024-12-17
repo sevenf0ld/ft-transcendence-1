@@ -14,3 +14,13 @@ class FortyTwoSocialAccountAdapter(DefaultSocialAccountAdapter):
         user_username(user, username or '')
         user_email(user, valid_email_or_none(email) or '')
         return user
+
+    # allauth/socialaccount/adapter.py
+    #def get_requests_session(self):
+    #    import requests
+
+    #    session = requests.Session()
+    #    session.request = functools.partial(
+    #        session.request, timeout=app_settings.REQUESTS_TIMEOUT
+    #    )
+    #    return session
