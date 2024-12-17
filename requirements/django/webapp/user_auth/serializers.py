@@ -6,16 +6,20 @@ import re
 try:
     from allauth.account import app_settings as allauth_account_settings
     from allauth.account.adapter import get_adapter
-    from allauth.socialaccount.models import EmailAddress
+    #from allauth.socialaccount.models import EmailAddress
+    #from allauth.account.models import EmailAddress
+    from allauth.utils import email_address_exists
 except ImportError:
     raise ImportError('allauth needs to be added to INSTALLED_APPS.')
 
 # dj_rest_auth/registration/serializers.py
+# https://github.com/iMerica/dj-rest-auth/pull/539/files
 class CustomRegisterSerializer(RegisterSerializer):
     def validate_email(self, email):
         email = get_adapter().clean_email(email)
         if allauth_account_settings.UNIQUE_EMAIL:
-            if email and EmailAddress.objects.is_verified(email):
+            #if email and EmailAddress.objects.is_verified(email):
+            if email and email_address_exists(email):
                 raise serializers.ValidationError(
                     ('A user is already registered with this e-mail address.'),
                 )

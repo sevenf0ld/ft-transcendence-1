@@ -22,12 +22,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(y+&u$qj$@+-$hn3kes!%*u*(5w%wwlw*6235b2x+9o@1_trp$'
+#SECRET_KEY = 'django-insecure-(y+&u$qj$@+-$hn3kes!%*u*(5w%wwlw*6235b2x+9o@1_trp$'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ftpong.com', 'api.ftpong.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ftpong.com', 'api.ftpong.com', '0.0.0.0']
+#config('DJANGO_ALLOWED_HOSTS')
+#ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 # maiman-m: for allauth registration
 SITE_ID = 1
@@ -36,6 +47,8 @@ SITE_ID = 1
 
 # maiman-m: add pong apps & DRF
 INSTALLED_APPS = [
+    # async chat server
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,6 +62,7 @@ INSTALLED_APPS = [
     'frontend.apps.FrontendConfig',
     'user_auth.apps.UserAuthConfig',
     'social_auth.apps.SocialAuthConfig',
+    'chat.apps.ChatConfig',
     # drf
     'rest_framework',
     'rest_framework.authtoken',
@@ -61,25 +75,31 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'dj_rest_auth.registration',
     # geek guide
-    'sslserver',
+    #'sslserver',
     # drf-social-oauth2
     #'oauth2_provider',
     #'social_django',
     #'drf_social_oauth2',
+    # async chat server
+    #'channels',
 ]
+
+# async chat server
+ASGI_APPLICATION = 'pong.asgi.application'
 
 # maiman-m: add django-allauth settings for mandatory email verification on sign-up and allow password reset (prevents user_logged_in signal to follow user_signed_up)
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'https://ftpong.com:8000'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'https://ftpong.com:443'
 #ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+#ACCOUNT_EMAIL_VERIFICATION = 'none'
 #ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[FT_PONG] ' # 42PONG
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 #ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD
-ACCOUNT_SIGNUP_REDIRECT_URL = 'https://ftpong.com:8000'
+ACCOUNT_SIGNUP_REDIRECT_URL = 'https://ftpong.com:443'
 # register form validation
 #ACCOUNT_ADAPTER = 'user_auth.adapter.CustomAccountAdapter'
 ACCOUNT_USERNAME_BLACKLIST = ['admin', 'root', 'superuser', 'django', 'pong', '42', 'test', 'user']
@@ -100,9 +120,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # django-allauth for standard registration
-    'allauth.account.middleware.AccountMiddleware',
+    #'allauth.account.middleware.AccountMiddleware',
     # refresh token in body instead of header
-    'pong.middleware.MoveJWTRefreshCookieIntoTheBody',
+    #'pong.middleware.MoveJWTRefreshCookieIntoTheBody',
 ]
 
 # maiman-m: enable drf authentication
@@ -131,6 +151,10 @@ REST_AUTH = {
     'JWT_AUTH_REFRESH_COOKIE': 'jwt-refresh',
     'JWT_AUTH_SECURE': True,
 }
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost',
+    'https://ftpong.com',
+]
 
 # djangorestframework-simplejwt
 from datetime import timedelta
@@ -187,11 +211,11 @@ WSGI_APPLICATION = 'pong.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('TRANSDB_NAME'),
-        'USER': config('TRANSDB_USER'),
-        'PASSWORD': config('TRANSDB_PASSWORD'),
-        'HOST': config('TRANSDB_HOST'),
-        'PORT': config('TRANSDB_PORT'),
+        'NAME': config('POSTGRES_DB'),
+        'USER': config('POSTGRES_USER'),
+        'PASSWORD': config('POSTGRES_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
@@ -238,9 +262,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 # maiman-m: add frontend static files
 STATICFILES_DIRS = [BASE_DIR / 'static']
+# django.core.exceptions.ImproperlyConfigured: You're using the staticfiles app without having set the STATIC_ROOT setting to a filesystem path.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -250,9 +276,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # maiman-m: add SMTP config for email verification
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS')
-EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
