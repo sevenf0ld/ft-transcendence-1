@@ -5,12 +5,14 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
-import SignupView from '../views/SignupView.js';
 import * as FETCH from './LoginCard_fetch.js';
-import HomeView from '../views/HomeView.js';
 import * as LOADING from '../core/helpers/loading.js';
 import LoginOTP from './LoginOTP.js';
 import alert_utils from '../core/helpers/alert-utils.js';
+import ROUTER from '../core/router.js';
+// tmp-obsolete-imports
+import HomeView from '../views/HomeView.js';
+import SignupView from '../views/SignupView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -355,7 +357,7 @@ export default class LoginCard
 		const loginFetch = new FETCH.fetch_login();
 		const fetch_result = await loginFetch.fetchData();
 
-		console.log(fetch_result);
+		console.log('[FETCH] login-button : ', fetch_result);
 		if (fetch_result === 'login-otp')
 		{
 			await LOADING.restore_all();
@@ -383,11 +385,9 @@ export default class LoginCard
 			await this.alert_div.setMsg('Login successful! Logging in...');
 			await this.alert_div.alert_render();
 
+			localStorage.setItem('user', JSON.stringify(loginFetch.fetch_obj.rdata['user']));
 			await new Promise(r => setTimeout(r, 2000));
-			await LOADING.restore_all();
-
-			const HOME = new HomeView();
-			await HOME.render();
+			await ROUTER.navigateTo('/homepage');
 		}
 
 		await LOADING.restore_all();
@@ -410,8 +410,7 @@ export default class LoginCard
 		console.log('[EVENT] button clicked : signup');
 		event.preventDefault();
 
-		const signup = new SignupView();
-		await signup.render();
+		await ROUTER.navigateTo('/register');
 
 		return true;
 	}

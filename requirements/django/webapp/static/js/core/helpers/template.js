@@ -174,6 +174,26 @@ export default class IntroLayout
 
 		console.log('[EVENT] button clicked : example-1');
 
+		// FETCH-SECION-EXAMPLE
+		if (!await this.check_input())
+			return false;
+
+		this.alert_div.alert_clear();
+		await LOADING.disable_all();
+
+		const loginFetch = new FETCH.fetch_login();
+		const fetch_result = await loginFetch.fetchData();
+
+		console.log(fetch_result);
+		if (fetch_result === 'success')
+		{
+			await LOADING.restore_all();
+			const OTP = new LoginOTP(loginFetch);
+			await OTP.render();
+		}
+
+		await LOADING.restore_all();
+
 		return true;
 	}
 
@@ -183,6 +203,22 @@ export default class IntroLayout
 
 		console.log('[EVENT] button clicked : example-2');
 
+		// render the content of modal
+		const moda = document.querySelector('#modal-join .modal-title');
+		moda.innerHTML = 'Available Rooms (Tournament)';
+		const modata = document.querySelector('#modal-join .modal-body');
+		modata.setAttribute('data-room-type', 'tour');
+		modata.innerHTML = "";
+		const modaTour = new ModalRoomJoin(modata);
+		modaTour.render();
+
+		// MODAL SHOWS UP EVENT FOR DYANMIC CONTENT
+		const modal = document.getElementById('modal-settings');
+		modal.addEventListener('show.bs.modal', async (e) =>
+		{
+			console.log("text : ", e.relatedTarget.textContent);
+		});
+
 		return true;
 	}
 
@@ -190,11 +226,11 @@ export default class IntroLayout
 	{
 		await btns.read_buttons();
 		btns.arr['example-1'].addEventListener(
-			'click', async (e) => {await this.test1Click(e);
-		});
+			'click', async (e) => {await this.test1Click(e);}
+		);
 		btns.arr['example-2'].addEventListener(
-			'click', async (e) => {await this.test2Click(e);
-		});
+			'click', async (e) => {await this.test2Click(e);}
+		);
 
 		return true;
 	}
@@ -204,15 +240,12 @@ export default class IntroLayout
 	{
 		let parent_html;
 
+		// ONLY THE LAYOUT. DO NOT RENDER MODAL CONTENT
 		parent_html = this.container;
 		const modal1 = new ModalLayout(
 			parent_html, "modal-settings", "Settings"
 		);
 		await modal1.render();
-
-		parent_html = await modal1.get();
-		const modalSettings = new ModalSettings(parent_html);
-		await modalSettings.render();
 
 		return true;
 	}
@@ -223,6 +256,9 @@ export default class IntroLayout
 
 		this.container.innerHTML = '';
 		this.container.innerHTML = template;
+
+		//if append is needed
+		//this.container.insertAdjacentHTML('beforeend', template);
 
 		await this.bind_events();
 		await this.modals_render();

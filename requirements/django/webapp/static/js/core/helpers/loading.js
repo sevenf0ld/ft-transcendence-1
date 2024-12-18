@@ -40,6 +40,12 @@ async function disable_all()
 		input.disabled = true;
 		input.style.cursor = 'wait';
 	});
+
+	const modals = document.querySelectorAll('.modal');
+	modals.forEach(modal => {
+		modal.style.cursor = 'wait';
+		modal.style.pointerEvents = 'none';
+	});
 }
 
 async function restore_all()
@@ -63,6 +69,12 @@ async function restore_all()
 	inputs.forEach(input => {
 		input.disabled = false;
 		input.style.cursor = 'text';
+	});
+
+	const modals = document.querySelectorAll('.modal');
+	modals.forEach(modal => {
+		modal.style.cursor = 'pointer';
+		modal.style.pointerEvents = 'auto';
 	});
 }
 

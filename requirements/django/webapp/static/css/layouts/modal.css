@@ -8,8 +8,8 @@
 	background-color: var(--cor-1);
 	padding: 1rem;
 	border-radius: 1rem;
-	 background: #0e1012;
-box-shadow:  20px 20px 41px #060607,
+	background: #0e1012;
+	box-shadow:  20px 20px 41px #060607,
              -20px -20px 41px #161a1d;
 }
 
@@ -17,6 +17,8 @@ box-shadow:  20px 20px 41px #060607,
 {
 	text-align: center;
 	border: none;
+	font-size: 1.3rem;
+	font-weight: bold;
 }
 
 .modal-footer
@@ -41,15 +43,7 @@ box-shadow:  20px 20px 41px #060607,
 	border: none;
 	padding: 1rem 1.5rem;
 	border-radius: 8px;
-	background: #0e1012;
-	box-shadow:  5px 5px 14px #060607,
-				 -5px -5px 14px #161a1d;
-}
-
-.modal-body button:hover
-{
-	border-radius: 8px;
-	background: linear-gradient(145deg, #0f1113, #0d0e10);
+	background: #171c22;
 	box-shadow:  5px 5px 14px #060607,
 				 -5px -5px 14px #161a1d;
 }

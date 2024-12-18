@@ -221,6 +221,7 @@ export default class LoginOTP
 				this.alert_div.setMsg('Login successful!');
 				this.alert_div.alert_render();
 
+				localStorage.setItem('user', JSON.stringify(loginFetch.fetch_obj.rdata['user']));
 				await new Promise(r => setTimeout(r, 1500));
 				const HOME = new HomeView();
 				await HOME.render();

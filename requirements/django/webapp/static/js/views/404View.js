@@ -1,36 +1,41 @@
-// file : main.js
+// file : 404View.js
 // -------------------------------------------------- //
 // Importing-internal
 // -------------------------------------------------- //
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
-import ROUTER from './core/router.js';
-import './core/toolkits/bootstrap.bundle.js';
+//layout
+import PageTitle from '../core/helpers/PageTitle.js';
+import MediaLayout from '../layouts/MediaLayout.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// local-functions
-// -------------------------------------------------- //
-// -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-async function main()
+// -------------------------------------------------- //
+// export
+// -------------------------------------------------- //
+export default class PageNotFoundView
 {
-	await ROUTER.navigateTo('/login');
-
-	return true;
-}
-
-document.addEventListener('keydown', async (event) =>
-{
-    if ((event.ctrlKey && event.key === 'r') || event.key === 'F5')
+	constructor()
 	{
-        event.preventDefault();
-		console.log('Nah do\'nt refresh, this is a SPA');
 	}
-});
+	
+	async render()
+	{
+		const page_title = new PageTitle();
+		page_title.update('404 - Page Not Found');
 
-window.onpopstate = ROUTER.router;
-document.addEventListener('DOMContentLoaded', main);
+		const media = new MediaLayout();
+		await media.render();
+
+		const media_layout = await media.get();
+		media_layout.innerHTML = `
+		<p>404 - Page Not Found</p>
+		`;
+
+		return true;
+	}
+}

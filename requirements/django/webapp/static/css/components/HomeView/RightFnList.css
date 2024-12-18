@@ -23,7 +23,6 @@
 }
 
 /* list */
-
 /* friend-list-containers */
 .friend-list-main .list-ctn
 {
@@ -33,7 +32,6 @@
 	background-color: var(--cor-4);
 	scrollbar-width: thin;
 	scrollbar-color: var(--cor-5) var(--cor-4);
-
 }
 
 .friend-list-main .list-ctn .category-ctn
@@ -53,7 +51,6 @@
 	font-weight: bold;
 }
 
-
 .friend-list-main .list-ctn .category-title-ctn .category-title
 {
 }
@@ -62,8 +59,6 @@
 {
 	background-color: #161a1e;
 }
-
-
 
 .friend-list-main .list-ctn .category-ctn .category-list-ctn
 {
@@ -78,7 +73,6 @@
 	flex-direction: row;
 	padding: 10px;
 	align-items: center;
-	justify-content: space-between;
 	cursor: pointer;
 }
 
@@ -128,6 +122,7 @@
 	padding-left: 0.1rem;
 	font-size: 0.8rem;
 	color: var(--stfr-3);
+	margin-left: 0.5rem;
 }
 
 .category-list-ctn .fnl-item-ctn .fnl-item-name.online
@@ -139,11 +134,22 @@
 {
 	width: 15px;
 	cursor: pointer;
+	margin-left: auto;
 }
-
 
 /* button */
 .friend-list-main #btn_add_friend
 {
-	padding: 10px;
 }
+
+/* if empty */
+.friend-list-main .empty-list
+{
+	text-align: center;
+	padding: 20px;
+	color: var(--txt-4);
+}
+
+/* -------------------------------------------------- */
+/* add-friend-modal */
+/* -------------------------------------------------- */

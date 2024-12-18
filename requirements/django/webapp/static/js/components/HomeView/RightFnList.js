@@ -7,6 +7,11 @@
 // -------------------------------------------------- //
 //import ModalFnOpt from './ModalFnOpt.js';
 //import ModalAdd from './ModalAdd.js';
+	//	// --- [05] RENDER
+import ModalLayout from '../../layouts/ModalLayout.js';
+import ModalAddFriend from './ModalAdd.js';
+import * as FETCH from './RightFnList_fetch.js';
+import ModalFnOpt from './ModalFnOpt.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -71,35 +76,42 @@ function html_title()
 	return template;
 }
 
-function html_friendList()
+async function html_friendList()
 {
 	// [-] HELPER FUNCTION
-	function friend_generate(name, stat)
+	function friend_generate(name, stat, type)
 	{
 		let template = `
-		<div class="%friend-c">
+		<div class="%friend-c" title="%name-t" data-type="%type">
 			<div class="%pfpctn-c">
 				<img class="%pfp-c" src="%pfp-src" alt="%pfp-alt"></img>
 				<div class="%status-c"></div>
 			</div>
-			<h2 class="%name-c">%name</h2>
-			<img class="%set-c" src="%set-src" alt="%set-alt"></img>
+			<h2 class="%name-c">%name-t</h2>
+			<img @att1 @att2 @att3 @att4 @att5></img>
 		</div>
 		`
 
 		const attributes =
 		{
 			'%friend-c': 'fnl-item-ctn',
+			'%name-t': name,
+			'%type': type,
 			'%pfpctn-c': 'fnl-item-pfp-ctn',
 			'%pfp-c': `fnl-item-pfp`,
 			'%status-c': `fnl-item-status ${stat}`,
 			'%pfp-src': '/static/assets/images/default-pfp.png',
 			'%pfp-alt': 'profile picture',
 			'%name-c': `fnl-item-name ${stat} truncate`,
-			'%name': name,
+
 			'%set-c': 'fnl-item-settings',
 			'%set-src': '/static/assets/images/settings.svg',
 			'%set-alt': 'settings',
+			'@att1': 'class="fnl-item-settings"',
+			'@att2': 'src="/static/assets/images/settings.svg"',
+			'@att3': 'alt="settings"',
+			'@att4': 'data-bs-toggle="modal"',
+			'@att5': 'data-bs-target="#modal-fnOpt"',
 		};
 
 		for (const key in attributes)
@@ -114,6 +126,51 @@ function html_friendList()
 	// required body: `user: <username>`
 	// return value: {"user":"what","friends":["when"],"num_of_friends":1,"blocked":[],"num_of_blocked":0,"outgoing":["temp"],"num_of_outgoing":1,"incoming":["fake"],"num_of_incoming":1}
 	/*=================================================================*/
+	async function fetch_friend_list(type)
+	{
+		let template = '';
+		const flistFetch = new FETCH.fetch_friendList();
+		const result = await flistFetch.fetchData();
+		if (result === 'fetch-success')
+		{
+			const data = flistFetch.fetch_obj.rdata;
+			const friends = data['friends'];
+			const blocked = data['blocked'];
+			const outgoing = data['outgoing'];
+			const incoming = data['incoming'];
+			if (type === 'added')
+			{
+				if (friends.length === 0)
+					template += '<p class="%empty-c">%empty-t</p>';
+				for (const friend of friends)
+					template += friend_generate(friend, 'online', 'added');
+			}
+			else if (type === 'pending')
+			{
+				if (outgoing.length === 0 && incoming.length === 0)
+					template += '<p class="%empty-c">%empty-t</p>';
+				for (const friend of outgoing)
+					template += friend_generate(friend, 'pending', 'request-out');
+				for (const friend of incoming)
+					template += friend_generate(friend, 'pending', 'request-in');
+			}
+			else if (type === 'blocked')
+			{
+				if (blocked.length === 0)
+					template += '<p class="%empty-c">%empty-t</p>';
+				for (const friend of blocked)
+					template += friend_generate(friend, 'blocked', 'blocked');
+			}
+			return template;
+		}
+		template = '<p>Failed to fetch friend list</p>';
+		return template;
+	}
+
+	const friend_list = await fetch_friend_list('added');
+	const friend_pending = await fetch_friend_list('pending');
+	const friend_blocked = await fetch_friend_list('blocked');
+
 	let template = `
 	<div class="%friend-list-c">
 		<div class="%flist-c">
@@ -122,9 +179,7 @@ function html_friendList()
 				<div class="%flist-title-sym-c">-</div>
 			</div>
 			<div class="%flAdd-c">
-				${friend_generate('Molly', 'online')}
-				${friend_generate('Tom', 'offline')}
-				${friend_generate('Kitty', 'online')}
+				${friend_list}
 			</div>
 		</div>
 		<div class="%flist-c">
@@ -133,7 +188,7 @@ function html_friendList()
 				<div class="%flist-title-sym-c">-</div>
 			</div>
 			<div class="%flPending-c">
-				${friend_generate('Bin', 'pending')}
+				${friend_pending}
 			</div>
 		</div>
 		<div class="%flist-c">
@@ -142,7 +197,7 @@ function html_friendList()
 				<div class="%flist-title-sym-c">-</div>
 			</div>
 			<div class="%flBlocked-c">
-				${friend_generate('Ameme', 'blocked')}
+				${friend_blocked}
 			</div>
 		</div>
 	</div>
@@ -159,6 +214,8 @@ function html_friendList()
 		'%flAdd-c': 'category-list-ctn',
 		'%flPending-c': 'category-list-ctn',
 		'%flBlocked-c': 'category-list-ctn',
+		'%empty-c': 'empty-list',
+		'%empty-t': '(Empty)',
 	};
 
 	for (const key in attributes)
@@ -272,7 +329,7 @@ export default class rightPanelFriends
 		let template = "";
 		template = "<div class='friend-list-main'>";
 		template += ele.html_title();
-		template += ele.html_friendList();
+		template += await ele.html_friendList();
 		template += ele.html_addbtn();
 		template += "</div>";
 
@@ -321,6 +378,35 @@ export default class rightPanelFriends
 		event.preventDefault();
 		console.log('[EVENT] button clicked : add friend');
 
+		//for popup modal
+		const moda = document.querySelector('#modal-addFriend .modal-title');
+		moda.innerHTML = 'Add Friend';
+		const modata = document.querySelector('#modal-addFriend .modal-body');
+		modata.innerHTML = "";
+		const modaAdd = new ModalAddFriend(modata);
+		modaAdd.render();
+
+		return true;
+	}
+	
+	async friendOptionsClick(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] button clicked : friend options');
+
+		//temporary
+		// get name and type
+		const name = event.target.parentElement.querySelector('.fnl-item-name').innerHTML;
+		const type = event.target.parentElement.getAttribute('data-type');
+
+		// set modal title
+		const moda_title = document.querySelector('#modal-fnOpt .modal-title');
+		moda_title.innerHTML = `${name}`;
+
+		// set modal body
+		const moda_body = document.querySelector('#modal-fnOpt .modal-body');
+		const modaFriendOpt = new ModalFnOpt(moda_body, type, name);
+		await modaFriendOpt.render();
 
 		return true;
 	}
@@ -335,10 +421,37 @@ export default class rightPanelFriends
 			'click', async (e) => {await this.addFriendClick(e);}
 		);
 
+		const friend_items = document.querySelectorAll('.fnl-item-settings');
+		for (const item of friend_items)
+		{
+			item.addEventListener(
+				'click', async (e) => {await this.friendOptionsClick(e);}
+			);
+		}
+
 		return true;
 	}
 
 	// --- [01] RENDER
+	async modals_render()
+	{
+		let parent_html;
+
+		parent_html = this.container;
+
+		const modal1 = new ModalLayout(
+			parent_html, "modal-addFriend", "Add Friend"
+		);
+		await modal1.render()
+
+		const modal2 = new ModalLayout(
+			parent_html, "modal-fnOpt", "Friend Options"
+		);
+		await modal2.render()
+
+		return true;
+	}
+
 	async render()
 	{
 		const template = await this.init_template();
@@ -347,6 +460,7 @@ export default class rightPanelFriends
 		this.container.innerHTML = template;
 
 		await this.bind_events();
+		await this.modals_render();
 
 		return true;
 	}

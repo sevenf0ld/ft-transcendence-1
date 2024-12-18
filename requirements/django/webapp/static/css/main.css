@@ -7,6 +7,7 @@
 @import "./global/reset.css";
 @import "./global/typography.css";
 @import "./global/button.css";
+@import "./global/input.css";
 
 /* layouts */
 @import "./layouts/intro.css";
@@ -21,7 +22,9 @@
 @import "./components/HomeView/MidPanel.css";
 @import "./components/HomeView/ModalRoomJoin.css";
 @import "./components/HomeView/ModalHistory.css";
-@import "./components/HomeView/RightPanelFn.css";
+@import "./components/HomeView/RightFnList.css";
+@import "./components/HomeView/ModalAdd.css";
+@import "./components/HomeView/ModalFnOpt.css";
 
 /* ...to be added */
 

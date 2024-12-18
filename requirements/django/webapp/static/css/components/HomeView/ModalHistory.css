@@ -14,12 +14,6 @@
 	align-items: center;
 }
 
-#modal-history .modal-title
-{
-	font-size: 1.3rem;
-	font-weight: bold;
-}
-
 #modal-history .history-player
 {
 	width: fit-content;
@@ -41,7 +35,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
-	padding: 1rem;
+	padding: 0px 1rem;
 	overflow-y: auto;
 	scrollbar-width: thin;
 	scrollbar-color: var(--cor-5) var(--cor-4);
