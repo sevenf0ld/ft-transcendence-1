@@ -43,6 +43,8 @@ urlpatterns += [
     path('accounts/', include('allauth.urls')),
     path('api/social_auth/', include('social_auth.urls')),
     path('api/friends/', include('friends.urls')),
+    # async chat server
+    path('chat/', include('chat.urls')),
 ]
 
 from django.conf import settings

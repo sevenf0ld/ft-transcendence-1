@@ -170,7 +170,6 @@ class FriendListRetrieveAPIView(generics.RetrieveAPIView):
 
         return fl
 
-
 # list's use case is to be reviewed
 #class FriendListListAPIView(generics.ListAPIView):
 #    queryset = FriendList.objects.all()

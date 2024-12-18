@@ -52,9 +52,6 @@ class Router
 
 	async navigateTo(path)
 	{
-		if (path === 
-			return false;
-
 		this.routes = {
 			'/': async () => await new LoginView().render(),
 			'/login': async () => await new LoginView().render(),
