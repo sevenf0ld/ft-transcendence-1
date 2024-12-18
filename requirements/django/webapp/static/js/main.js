@@ -28,7 +28,8 @@ document.addEventListener('keydown', async (event) =>
     if ((event.ctrlKey && event.key === 'r') || event.key === 'F5')
 	{
         event.preventDefault();
-		console.log('Nah do\'nt refresh, this is a SPA');
+
+		console.log('Nah do\'nt refresh, this is a SPA.');
 	}
 });
 

@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', async (e) => {
 	const result = await intraFetch.run();
 	if (result === 'exchange-successful')
 	{
+		await localStorage.setItem('user', JSON.stringify(
+			intraFetch.fetch_obj.rdata['user'])
+		);
 		const HOME = new HomeView();
 		HOME.render();
 	}

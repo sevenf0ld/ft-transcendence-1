@@ -233,6 +233,7 @@ class fetch_intra
 		);
 
 		this.re_value = '';
+		this.fetch_obj = null;
 	}
 	
 	async generate_state()
@@ -274,6 +275,8 @@ class fetch_intra
 				await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
 				await mainFetch.appendBody('code', url_code);
 				await mainFetch.fetchData();
+				this.fetch_obj = mainFetch;
+
 
 				if (mainFetch.response.ok)
 					this.re_value = 'exchange-successful';
