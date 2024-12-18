@@ -86,6 +86,11 @@ INSTALLED_APPS = [
 
 # async chat server
 ASGI_APPLICATION = 'pong.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
 
 # maiman-m: add django-allauth settings for mandatory email verification on sign-up and allow password reset (prevents user_logged_in signal to follow user_signed_up)
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
