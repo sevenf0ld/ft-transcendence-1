@@ -39,8 +39,6 @@ class Router
 			'/homepage': async () => await new HomeView().render(),
 		};
 		const path = window.location.pathname.replace(/\/$/, ''); // Remove trailing slash
-		console.log("Current path:", path); // Log the path
-		console.log("Defined routes:", this.routes); // Log the routes object
 		const page_render = this.routes[path];
 		if (page_render)
 			await page_render();
