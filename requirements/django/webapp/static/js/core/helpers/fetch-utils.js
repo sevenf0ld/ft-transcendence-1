@@ -124,7 +124,6 @@ export default class fetch_utils
 		this.robject = response;
 		if (response.status !== 204)
 		{
-			console.log(response);
 			this.response = response;
 			const data = await response.json();
 

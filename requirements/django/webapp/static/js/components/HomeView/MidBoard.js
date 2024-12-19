@@ -164,7 +164,7 @@ export default class IntroLayout
 	{
 		if (this.read_components() === false)
 		{
-			throw new Error(`[ERR] this class has no export components`);
+			throw new Error(`[Err] this class has no export components`);
 			return false;
 		}
 		return this.compo_get(element);
