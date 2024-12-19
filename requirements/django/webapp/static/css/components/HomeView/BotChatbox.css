@@ -8,6 +8,7 @@
 	width: 100%;
 	display: flex;
 	flex-direction: column;
+	font-family: monospace;
 }
 
 .ct-chatbox-ctn .ct-chatbox-hd
@@ -27,6 +28,7 @@
 	padding: 0.3rem;
 	cursor: pointer;
 	border-radius: 0.3rem;
+	font-weight: bold;
 }
 
 .ct-chatbox-ctn .ct-chatbox-inv
@@ -62,9 +64,8 @@
 {
 	display: flex;
 	padding: 0.3rem;
-	/* to text wrap */
-	word-wrap: break-word; /* Older property for compatibility */
-	overflow-wrap: break-word; /* Modern equivalent */
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 .ct-chatbox-ctn .ct-chatbox-ft

@@ -68,10 +68,10 @@ function html_element()
 				<div class="%close-1c" id="%close-1d">%close-1t</div>
 			</div>
 			<div class="%bd-1c">
-				${insert('user-1 : hello')}
-				${insert('user-2 : hi')}
-				${insert('user-1 : how are you?')}
-				${insert('user-2 : good')}
+				${insert('user-1: hello')}
+				${insert('user-2: hi')}
+				${insert('user-1: how are you?')}
+				${insert('user-2: good')}
 			</div>
 			<div class="%ft-1c">
 				<input @att1 @att2 @att3 @att4>
