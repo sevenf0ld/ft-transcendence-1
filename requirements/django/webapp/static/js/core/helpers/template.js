@@ -247,6 +247,10 @@ export default class IntroLayout
 		);
 		await modal1.render();
 
+		parent_html = await modal1.get();
+		const modalSettings = new ModalSettings(parent_html);
+		await modalSettings.render();
+
 		return true;
 	}
 

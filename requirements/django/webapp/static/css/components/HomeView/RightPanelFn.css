@@ -1,0 +1,149 @@
+/* file : RightPanelFn.css */
+/* -------------------------------------------------- */
+/* Right panel */
+/* -------------------------------------------------- */
+/* module main container */
+.friend-list-main
+{
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	padding: 0.5rem;
+	gap: 1rem;
+}
+
+/* title */
+.friend-list-main .friend-top-title
+{
+	padding: 10px;
+	text-align: center;
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+
+/* list */
+
+/* friend-list-containers */
+.friend-list-main .list-ctn
+{
+	flex: 1;
+	overflow-y: auto;
+	font-family: monospace;
+	background-color: var(--cor-4);
+	scrollbar-width: thin;
+	scrollbar-color: var(--cor-5) var(--cor-4);
+
+}
+
+.friend-list-main .list-ctn .category-ctn
+{
+	display: flex;
+	flex-direction: column;
+}
+
+.friend-list-main .list-ctn .category-ctn .category-title-ctn
+{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 10px;
+	background-color: var(--stat-2);
+	cursor: pointer;
+	font-weight: bold;
+}
+
+
+.friend-list-main .list-ctn .category-title-ctn .category-title
+{
+}
+
+.friend-list-main .list-ctn .category-ctn .category-title-ctn:hover
+{
+	background-color: #161a1e;
+}
+
+
+
+.friend-list-main .list-ctn .category-ctn .category-list-ctn
+{
+	display: flex;
+	flex-direction: column;
+}
+
+/* friend-list-item */
+.category-list-ctn .fnl-item-ctn
+{
+	display: flex;
+	flex-direction: row;
+	padding: 10px;
+	align-items: center;
+	justify-content: space-between;
+	cursor: pointer;
+}
+
+.category-list-ctn .fnl-item-ctn:hover
+{
+	background-color: var(--txt-4);
+}
+
+.category-list-ctn .fnl-item-ctn .fnl-item-pfp-ctn
+{
+	position: relative;
+}
+
+.category-list-ctn .fnl-item-ctn .fnl-item-pfp
+{
+	width: 35px;
+	height: 35px;
+	border-radius: 50%;
+}
+
+.category-list-ctn .fnl-item-ctn .fnl-item-status
+{
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background-color: var(--stfr-2);
+	border: 2px solid var(--cor-4);
+}
+
+.category-list-ctn .fnl-item-ctn .fnl-item-status.online
+{
+	background-color: var(--stfr-1);
+}
+
+.category-list-ctn .fnl-item-ctn .fnl-item-pfp.online
+{
+}
+
+.category-list-ctn .fnl-item-ctn .fnl-item-name
+{
+	width: 100%;
+	max-width: 5rem;
+	text-align: left;
+	padding-left: 0.1rem;
+	font-size: 0.8rem;
+	color: var(--stfr-3);
+}
+
+.category-list-ctn .fnl-item-ctn .fnl-item-name.online
+{
+	color: var(--txt-1);
+}
+
+.category-list-ctn .fnl-item-ctn .fnl-item-settings
+{
+	width: 15px;
+	cursor: pointer;
+}
+
+
+/* button */
+.friend-list-main #btn_add_friend
+{
+	padding: 10px;
+}
