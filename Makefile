@@ -10,7 +10,7 @@ CMD = docker compose -f
 run: $(NAME)
 
 setup:
-	mkdir -p $(HOME)/data/vol_django
+	#mkdir -p $(HOME)/data/vol_django
 	mkdir -p $(HOME)/data/vol_pg
 
 $(NAME): setup

@@ -14,6 +14,13 @@ fi
 python manage.py flush --no-input # remove in production
 python manage.py makemigrations # remove in production
 python manage.py migrate
+
+#if [ "$DEBUG" = "True" ]
+#then
+#	echo "Skipping collectstatic..."
+#else
+#	python manage.py collectstatic --no-input
+#fi
 python manage.py collectstatic --no-input
 
 #python manage.py shell --command="
