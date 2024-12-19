@@ -42,7 +42,11 @@ chat_socket.addEventListener("message", (event) => {
     console.log("chat socket message received:", data.message);
 
     let messages = document.getElementById('messages');
-    let css_class = data.sender === sender ? 'sender' : 'receiver';
+    let css_class;
+    if (data.sender === sender)
+      css_class = "sender";
+    else
+      css_class = "receiver";
     messages.insertAdjacentHTML('beforeend', `<div class="${css_class}"><p>${data.message}</p></div>`);
   };
 });

@@ -1,15 +1,9 @@
 .sender {
-  position: relative;
-  right: 0;
-  background-color: #e0f7fa;
-  margin: 10px 0;
-  width: fit-content;
+    color: blue;
+    background-color: lightblue;
 }
 
 .receiver {
-  position: relative;
-  left: 0;
-  background-color: #ffccbc;
-  margin: 10px 0;
-  width: fit-content;
+    color: green;
+    background-color: lightgreen;
 }
