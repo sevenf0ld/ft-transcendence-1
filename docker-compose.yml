@@ -29,7 +29,9 @@ services:
       depends_on:
         - django
       volumes:
-        - vol_django:/django/
+        #- vol_django:/django/
+        - ./requirements/django/webapp/:/django/
+        - ./requirements/django/webapp/staticfiles/:/django/staticfiles
       networks:
         - net_trans
 
@@ -43,8 +45,9 @@ services:
       depends_on:
         - redis
       volumes:
+        #- vol_django:/django/
         - ./requirements/django/webapp/:/django/
-        - vol_django:/django/
+        - ./requirements/django/webapp/staticfiles/:/django/staticfiles
       networks:
         - net_trans
       env_file:
@@ -65,12 +68,12 @@ services:
 
 volumes:
 
-    vol_django:
-      driver: local
-      driver_opts:
-        type: none
-        o: bind
-        device: ~/data/vol_django
+    #vol_django:
+    #  driver: local
+    #  driver_opts:
+    #    type: none
+    #    o: bind
+    #    device: ~/data/vol_django
     vol_pg:
       driver: local
       driver_opts:
