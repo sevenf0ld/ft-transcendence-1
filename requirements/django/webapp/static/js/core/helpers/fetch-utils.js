@@ -135,6 +135,7 @@ export default class fetch_utils
 			this.response = null;
 			this.rdata = null;
 		}
+
 		return true;
 	}
 }
