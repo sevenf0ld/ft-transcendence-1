@@ -193,6 +193,7 @@ class form_input
 			return false;
 		}
 
+		/*
 		// password does not contain a capital letter
 		if (!/[A-Z]/.test(input1.value))
 		{
@@ -200,6 +201,7 @@ class form_input
 			msg.style.display = 'block';
 			return false;
 		}
+		*/
 
 		// reset the error message if ok
 		msg.innerHTML = '';

@@ -159,12 +159,12 @@ export default class IntroLayout
 		this.components = {};
 	}
 
-	// --- [01] GETTER
+	// --- [01] getter
 	async get(element = 'default')
 	{
 		if (this.read_components() === false)
 		{
-			throw new Error(`[ERR] this class has no export components`);
+			throw new error(`[err] this class has no export components`);
 			return false;
 		}
 		return this.compo_get(element);
