@@ -277,7 +277,6 @@ class fetch_intra
 				await mainFetch.fetchData();
 				this.fetch_obj = mainFetch;
 
-
 				if (mainFetch.response.ok)
 					this.re_value = 'exchange-successful';
 				else

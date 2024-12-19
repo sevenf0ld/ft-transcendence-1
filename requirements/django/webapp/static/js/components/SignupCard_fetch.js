@@ -29,19 +29,18 @@ class fetch_register
 
 	async fetchData()
 	{
+		const mainFetch = new FETCH_UTILS();
+		await mainFetch.getCookie('csrftoken');
+		await mainFetch.setUrl('/api/user_auth/register/');
+		await mainFetch.setMethod('POST');
+		await mainFetch.appendHeaders('Content-Type', 'application/json');
+		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+		await mainFetch.appendBody('username', this.val_username);
+		await mainFetch.appendBody('email', this.val_email);
+		await mainFetch.appendBody('password1', this.val_password);
+		await mainFetch.appendBody('password2', this.val_password_confirm);
 		try 
 		{
-			const mainFetch = new FETCH_UTILS();
-			await mainFetch.getCookie('csrftoken');
-			await mainFetch.setUrl('/api/user_auth/register/');
-			await mainFetch.setMethod('POST');
-			await mainFetch.appendHeaders('Content-Type', 'application/json');
-			await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
-			await mainFetch.appendBody('username', this.val_username);
-			await mainFetch.appendBody('email', this.val_email);
-			await mainFetch.appendBody('password1', this.val_password);
-			await mainFetch.appendBody('password2', this.val_password_confirm);
-			console.log(mainFetch);
 			await mainFetch.fetchData();
 			this.fetch_obj = mainFetch;
 

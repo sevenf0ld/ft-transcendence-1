@@ -12,6 +12,7 @@ import ModalLayout from '../../layouts/ModalLayout.js';
 import ModalAddFriend from './ModalAdd.js';
 import * as FETCH from './RightFnList_fetch.js';
 import ModalFnOpt from './ModalFnOpt.js';
+import BotChatbox from './BotChatbox.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -126,12 +127,12 @@ async function html_friendList()
 	// required body: `user: <username>`
 	// return value: {"user":"what","friends":["when"],"num_of_friends":1,"blocked":[],"num_of_blocked":0,"outgoing":["temp"],"num_of_outgoing":1,"incoming":["fake"],"num_of_incoming":1}
 	/*=================================================================*/
+	const flistFetch = new FETCH.fetch_friendList();
+	const fresult = await flistFetch.fetchData();
 	async function fetch_friend_list(type)
 	{
 		let template = '';
-		const flistFetch = new FETCH.fetch_friendList();
-		const result = await flistFetch.fetchData();
-		if (result === 'fetch-success')
+		if (fresult === 'fetch-success')
 		{
 			const data = flistFetch.fetch_obj.rdata;
 			const friends = data['friends'];
@@ -411,6 +412,27 @@ export default class rightPanelFriends
 		return true;
 	}
 
+	async friendPopupClick(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] friend-list clicked : friend popup');
+
+		//temporary
+		// get name and type
+		const name_div = event.target.closest('.fnl-item-ctn');
+		const name = name_div.querySelector('.fnl-item-name').innerHTML;
+		const type = name_div.getAttribute('data-type');
+		const parent_div = document.querySelector('.ct-bottom-right');
+
+		if (type === 'added')
+		{
+			const chatbox = new BotChatbox(parent_div, name);
+			await chatbox.render();
+		}
+
+		return true;
+	}
+
 	async bind_events()
 	{
 		await btns.read_buttons();
@@ -421,11 +443,19 @@ export default class rightPanelFriends
 			'click', async (e) => {await this.addFriendClick(e);}
 		);
 
-		const friend_items = document.querySelectorAll('.fnl-item-settings');
-		for (const item of friend_items)
+		const friend_items_settings = document.querySelectorAll('.fnl-item-settings');
+		for (const item of friend_items_settings)
 		{
 			item.addEventListener(
 				'click', async (e) => {await this.friendOptionsClick(e);}
+			);
+		}
+
+		const friend_list = document.querySelectorAll('.fnl-item-name');
+		for (const item of friend_list)
+		{
+			item.addEventListener(
+				'click', async (e) => {await this.friendPopupClick(e);}
 			);
 		}
 
