@@ -1,0 +1,36 @@
+/* file : home.css */
+
+.ct-board-home
+{
+}
+
+/* -------------------------------------------------- */
+/* section */
+/* -------------------------------------------------- */
+.ct-board-home > .ct-home-section
+{
+	gap: 1rem;
+}
+
+.ct-home-section > h3
+{
+	font-size: 1.3rem;
+}
+
+/* -------------------------------------------------- */
+/* buttons */
+/* -------------------------------------------------- */
+.ct-home-section > .ct-section-btns
+{
+	gap: 2rem;
+}
+
+.ct-section-btns > button
+{
+	min-width: 12rem;
+}
+
+.ct-mpanel-bottom .ct-bottom-placeholder
+{
+	color: var(--txt-4);
+}
