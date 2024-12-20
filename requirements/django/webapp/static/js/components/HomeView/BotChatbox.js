@@ -5,6 +5,7 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
+import BotFriendPfp from './BotFriendPfp.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -62,8 +63,8 @@ function html_element()
 	// [A] TEMPLATE
 	let template = `
 		<div class="%main-1c %main-2c">
-			<div class="%hd-1c" id="%hd-1d">
-				<p class="%p1-c" title-"%p1-t">%p1-t</p>
+			<div class="%hd-1c">
+				<p class="%p1-c" title-"%p1-t" id="%hd-1d">%p1-t</p>
 				<div class="%inv-1c" id="%inv-1d">invite</div>
 				<div class="%close-1c" id="%close-1d">%close-1t</div>
 			</div>
@@ -206,11 +207,14 @@ export default class BotChatbox
 	}
 
 	// --- [04] EVENT
-	async headerClick(event)
+	async profileClick(event)
 	{
 		event.preventDefault();
-
 		console.log('[EVENT] chatbox mssage\'s header clicked');
+
+		const parent_div = document.querySelector('.ct-bottom-left');
+		const pfp = new BotFriendPfp(parent_div, this.target);
+		await pfp.render('replace');
 
 		return true;
 	}
@@ -229,10 +233,15 @@ export default class BotChatbox
 		event.preventDefault();
 
 		console.log('[EVENT] button clicked: close chatbox');
+		
+		const child = '<p class="ct-bottom-placeholder">(placeholder)</p>';
 
 		const parent_div = document.querySelector('.ct-bottom-right');
-		const child = '<p class="ct-bottom-placeholder">(placeholder)</p>';
 		parent_div.innerHTML = child;
+
+		const pfp_ctn = document.querySelector('.ct-bottom-left');
+		pfp_ctn.innerHTML = child;
+
 
 		return true;
 	}
@@ -322,7 +331,7 @@ export default class BotChatbox
 		await btns.read_buttons();
 
 		btns.arr['profile'].addEventListener(
-			'click', async (e) => {await this.headerClick(e);}
+			'click', async (e) => {await this.profileClick(e);}
 		);
 
 		btns.arr['invite'].addEventListener(
@@ -358,5 +367,3 @@ export default class BotChatbox
 		return true;
 	}
 }
-
-
