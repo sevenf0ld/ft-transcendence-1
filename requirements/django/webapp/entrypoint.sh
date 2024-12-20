@@ -11,8 +11,8 @@ then
     echo "PostgreSQL started"
 fi
 
-python manage.py flush --no-input # remove in production
-python manage.py makemigrations # remove in production
+#python manage.py flush --no-input # remove in production
+#python manage.py makemigrations # remove in production
 python manage.py migrate
 
 #if [ "$DEBUG" = "True" ]
