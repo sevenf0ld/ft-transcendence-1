@@ -73,10 +73,10 @@ function html_element()
 				${insert('user-1: how are you?')}
 				${insert('user-2: good')}
 			</div>
-			<div class="%ft-1c">
+			<form class="%ft-1c">
 				<input @att1 @att2 @att3 @att4>
 				<button @att-a1 @att-a2>@att-a3</button>
-			</div>
+			</form>
 		</div>
 	`;
 
@@ -102,7 +102,7 @@ function html_element()
 		'@att3': 'id="input_chatbox" autocomplete="off"',
 		'@att4': 'class="ct-chatbox-input"',
 		'@att-a1': 'id="btn_chatbox_send"',
-		'@att-a2': 'class="ct-chatbox-send"',
+		'@att-a2': 'class="ct-chatbox-send" type="submit"',
 		'@att-a3': 'Send',
 	};
 
@@ -242,6 +242,64 @@ export default class BotChatbox
 		return true;
 	}
 
+	async connect_socket()
+	{
+		let url = `wss://${window.location.host}/ws/chat/`;
+		const chat_socket = new WebSocket(url);
+		const localObj = JSON.parse(localStorage.getItem('user'));
+		let sender = localObj.username;
+
+		const send_btn = document.getElementById('btn_chatbox_send');
+		const input = document.getElementById('input_chatbox');
+		const chatbox_ctn = document.querySelector('.ct-chatbox-ctn .ct-chatbox-bd');
+		chatbox_ctn.innerHTML = '';
+
+		function internal_insert(user, msg)
+		{
+			if (user === 'You')
+				return `<div class="ct-chatbox-msg text-muted">${user}: ${msg}</div>`;
+			else
+				return `<div class="ct-chatbox-msg">${user}: ${msg}</div>`;
+		}
+
+		chat_socket.addEventListener("message", (event) => {
+		  let data = JSON.parse(event.data);
+
+		  if (data.type == 'connection_established')
+		  {
+			console.log("chat socket connection established:", data.message);
+		  }
+		  else if (data.type === 'message_received')
+		  {
+			console.log("chat socket message received:", data.message);
+			let sender_name = data.sender === sender ? 'You' : data.sender;
+			chatbox_ctn.insertAdjacentHTML('beforeend', internal_insert(sender_name, data.message));
+		  }
+		});
+
+		send_btn.addEventListener('click', (event) => {
+			event.preventDefault();
+			let message = input.value;
+			if (chat_socket.readyState === WebSocket.OPEN)
+			{
+				console.log("chat socket message sending:", message);
+
+				chat_socket.send(JSON.stringify({
+				  'message': message,
+				  'sender': sender
+				}));
+				input.value = '';
+			}
+			else if (chat_socket.readyState === WebSocket.CONNECTING)
+				console.log("chat socket is waiting on an open connection with the server.");
+			else if (chat_socket.readState >= 2)
+				console.error("connection with chat socket is closing or closed.");
+		});
+
+
+		return true;
+	}
+
 	async bind_events()
 	{
 		await btns.read_buttons();
@@ -261,6 +319,8 @@ export default class BotChatbox
 		btns.arr['send-msg'].addEventListener(
 			'click', async (e) => {await this.sendMsgClick(e);}
 		);
+
+		await this.connect_socket();
 
 		return true;
 	}
