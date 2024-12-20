@@ -31,7 +31,7 @@ document.addEventListener('keydown', async (event) =>
     
 		console.log('Nah do\'nt refresh, this is a SPA.');
 	}
-});
+})
 
 window.onpopstate = ROUTER.router;
 document.addEventListener('DOMContentLoaded', main);
