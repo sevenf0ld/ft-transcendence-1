@@ -38,26 +38,31 @@
 - AnonymousUser if after logged-in
     - [AnonymousUser requires JWT middleware](https://www.reddit.com/r/django/comments/uzlifr/scopeuser_in_djangochannels_is_always/)
     - [AnonymousUser requires Token middleware](https://stackoverflow.com/a/65654519)
+
+### auth-cybersec
 - dj-rest-auth
     - [auth-cybersec branch has implemented the set-cookie tokens](https://dj-rest-auth.readthedocs.io/en/latest/installation.html#json-web-token-jwt-support-optional)
         - [access the cookies](https://stackoverflow.com/a/29839545)
         - [forbidden in accordance with fetch standard](https://stackoverflow.com/a/73656002)
             - [filtered out](https://developer.mozilla.org/en-US/docs/Web/API/Headers/getSetCookie)
-            - disable JWT_AUTH_HTTPONLY
-            - [sammy worm](https://stackoverflow.com/a/8069697)
-            - [browser returns it](https://stackoverflow.com/a/6924921)
     - [how to use access token to prove authentication](https://dj-rest-auth.readthedocs.io/en/latest/api_endpoints.html#basic)
     - [jwt_auth.py](https://github.com/iMerica/dj-rest-auth/blob/master/dj_rest_auth/jwt_auth.py)
     - [token refresh and verify](https://github.com/iMerica/dj-rest-auth/blob/master/dj_rest_auth/urls.py)
+- HTTPONLY
+    - JWT_AUTH_HTTPONLY affects refresh token presence in body only
+    - [browser security measures and samy worm](https://stackoverflow.com/a/8069697)
+    - [browser sends it along with requests](https://stackoverflow.com/a/6924921)
 
 ### js
 - [websocket MDN documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 - websocket closed or closing - [check websocket readyState](https://stackoverflow.com/a/54061045)
 - [reconnecting to a closed ws](https://stackoverflow.com/a/38114820)
 - [sending a message to only 1 consumer instead of all in the group on error](https://stackoverflow.com/a/72764930)
+- [timeout vs interval](https://stackoverflow.com/a/2696711)
 
 ### online
 - [track online/offline with websockets](https://stackoverflow.com/q/51931038)
+    - [auth-cybersec branch has implemented the set-cookie tokens](https://dj-rest-auth.readthedocs.io/en/latest/installation.html#json-web-token-jwt-support-optional)
 - [django presence](https://trycatchdebug.net/news/1293139/django-channels-user-online-offline)
 
 ### notif
