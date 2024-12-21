@@ -33,36 +33,28 @@ class MoveJWTRefreshCookieIntoTheBody(MiddlewareMixin):
         return None
 
 # async chat server
-from django.contrib.auth.models import AnonymousUser
-from rest_framework.authtoken.models import Token
-from channels.db import database_sync_to_async
 from channels.middleware import BaseMiddleware
-
-@database_sync_to_async
-def get_user(token_key):
-    try:
-        token = Token.objects.get(key=token_key)
-        return token.user
-    except Token.DoesNotExist:
-        return AnonymousUser()
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from asgiref.sync import sync_to_async
 
 class TokenAuthMiddleware(BaseMiddleware):
     def __init__(self, inner):
         super().__init__(inner)
 
     async def __call__(self, scope, receive, send):
-        try:
-            # Extract the token from the 'Authorization' header
-            token_key = [
-                x[1].decode().replace("Token ", "") 
-                for x in scope["headers"] 
-                if x[0].decode() == "authorization"
-            ][0]
-        except IndexError:
-            token_key = None
+        # doesn't have non-raw cookies like in consumers
+        headers = dict(scope['headers'])
+        cookies = headers.get(b'cookie', b'').decode('utf-8')
+        chunk_of_cookies = cookies.split(';')
 
-        # Set the user to AnonymousUser if no token is found, else fetch the user
-        scope['user'] = AnonymousUser() if token_key is None else await get_user(token_key)
-        
-        # Call the next layer in the ASGI stack
+        access_token = None
+        for cookie in chunk_of_cookies:
+            if 'jwt-access' in cookie:
+                access_token = cookie.split('=')[-1]
+                jwt_object      = JWTAuthentication()
+                validated_token = jwt_object.get_validated_token(access_token)
+                user = await sync_to_async(jwt_object.get_user)(validated_token)
+                scope['user'] = user
+                break
+
         return await super().__call__(scope, receive, send)
