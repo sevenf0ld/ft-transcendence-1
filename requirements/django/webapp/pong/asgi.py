@@ -20,12 +20,13 @@ from channels.routing import (
     URLRouter,
 )
 # update to JWT
-from channels.auth import AuthMiddlewareStack
+#from channels.auth import AuthMiddlewareStack
+from .middleware import TokenAuthMiddleware
 import chat.routing
 
 application = ProtocolTypeRouter({
     'http': application,
-    'websocket': AuthMiddlewareStack(
+    'websocket': TokenAuthMiddleware(
         URLRouter(
             chat.routing.websocket_urlpatterns
         )

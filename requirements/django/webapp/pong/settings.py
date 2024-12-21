@@ -39,6 +39,7 @@ SESSION_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+#SESSION_COOKIE_HTTPONLY = False
 
 # maiman-m: for allauth registration
 SITE_ID = 1
@@ -143,8 +144,7 @@ REST_FRAMEWORK = {
         #'drf_social_oauth2.authentication.SocialAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        #'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
 }
 
@@ -158,6 +158,9 @@ REST_AUTH = {
     'JWT_AUTH_COOKIE': 'jwt-access',
     'JWT_AUTH_REFRESH_COOKIE': 'jwt-refresh',
     'JWT_AUTH_SECURE': True,
+    # only affects the body
+    'JWT_AUTH_HTTPONLY': True,
+    'JWT_AUTH_COOKIE_ENFORCE_CSRF_ON_UNAUTHENTICATED': True,
 }
 CSRF_TRUSTED_ORIGINS = [
     'https://localhost',
@@ -168,8 +171,10 @@ CSRF_TRUSTED_ORIGINS = [
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    #'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    #'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=5),
 }
 
 # django-allauth for social accounts

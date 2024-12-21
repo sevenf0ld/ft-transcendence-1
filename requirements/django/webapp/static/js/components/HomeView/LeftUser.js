@@ -10,6 +10,7 @@ import ModalLayout from '../../layouts/ModalLayout.js';
 import ModalSettings from './ModalSettings.js';
 import ModalHistory from './ModalHistory.js';
 import * as FETCH from './LeftUser_fetch.js';
+import TOKEN from '../../core/token.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -334,6 +335,9 @@ export default class leftPanelUser
 		const fetch_result = await logoutFetch.fetchData();
 		if (fetch_result === 'logout-successful')
 		{
+			clearInterval(TOKEN.token_id);
+			TOKEN.token_id = null;
+
 			const loginView = new LoginView(this.container);
 	
 			localStorage.clear();
