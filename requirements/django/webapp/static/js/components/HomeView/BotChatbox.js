@@ -64,7 +64,7 @@ function html_element()
 	let template = `
 		<div class="%main-1c %main-2c">
 			<div class="%hd-1c">
-				<p class="%p1-c" title-"%p1-t" id="%hd-1d">%p1-t</p>
+				<p class="%p1-c" title-"%p1-t" id="%hd-1d" @att-t1>%p1-t</p>
 				<div class="%inv-1c" id="%inv-1d">invite</div>
 				<div class="%close-1c" id="%close-1d">%close-1t</div>
 			</div>
@@ -89,6 +89,7 @@ function html_element()
 		'%hd-1c': 'ct-chatbox-hd',
 		'%hd-1d': 'btn_chatbox_profile',
 		'%p1-c': 'ct-chatbox-title truncate',
+		'@att-t1': 'title="User-1"',
 		'%p1-t': 'User-1',
 		'%inv-1c': 'ct-chatbox-inv',
 		'%inv-1d': 'btn_chatbox_invite',
@@ -360,6 +361,7 @@ export default class BotChatbox
 
 		const title = document.querySelector('.ct-chatbox-title');
 		title.innerHTML = this.target;
+		title.title = this.target;
 
 		await this.bind_events();
 		//await this.modals_render(this.container);

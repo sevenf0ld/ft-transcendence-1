@@ -168,7 +168,7 @@ export default class BotFriendPfp
 		// [A] TEMPLATE
 		let template = `
 		<div class="%header-c">
-			<h2 class="%title-c" data-user="%title">%title</h2>
+			<h2 class="%title-c" data-user="%title" @att1>%title</h2>
 			<div class="%close-c" id="%close-id">%close-t</div>
 		</div>
 		`
@@ -176,8 +176,9 @@ export default class BotFriendPfp
 		const atts =
 		{
 			'%header-c': 'ct-fn-pfp-hd',
-			'%title-c': 'ct-fn-pfp-title',
+			'%title-c': 'ct-fn-pfp-title truncate',
 			'%title': this.username,
+			'@att1': `title="${this.username}"`,
 			'%close-c': 'ct-fn-pfp-close',
 			'%close-id': 'btn_fn_pfp_close',
 			'%close-t': 'X',

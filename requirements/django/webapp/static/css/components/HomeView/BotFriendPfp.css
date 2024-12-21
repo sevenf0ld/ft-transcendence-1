@@ -32,6 +32,7 @@
 .ct-fn-pfp-ctn .ct-fn-pfp-title
 {
 	font-weight: bold;
+	max-width: 8rem;
 }
 
 .ct-fn-pfp-ctn .ct-fn-pfp-close

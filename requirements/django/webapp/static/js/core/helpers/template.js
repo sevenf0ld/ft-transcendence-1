@@ -1,4 +1,4 @@
-// file : template.js
+// file : Template.js
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
@@ -8,10 +8,11 @@
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// reference from BotFriendPfp.js
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-export default class Template
+export default class BotFriendPfp
 {
 	// --------------------------------------------- //
 	// CONSTRUCTOR
@@ -61,8 +62,8 @@ export default class Template
 	async push_important_elements()
 	{
 		this.main_ctn = document.querySelector('.ct-fn-pfp-ctn');
-		this.buttons.close = document.querySelector('.ct-fn-pfp-close');
-		this.buttons.history = document.querySelector('.ct-fn-pfp-hist');
+		this.buttons.close = document.querySelector('#btn_fn_pfp_close');
+		this.buttons.history = document.querySelector('#btn_fn_pfp_hist');
 
 		if (!this.main_ctn)
 			throw new Error('[ERR] main container not found');
@@ -94,6 +95,13 @@ export default class Template
 		event.preventDefault();
 		console.log('[EVENT] button clicked : fn-pfp-close');
 
+		const template = `
+		<p class="ct-bottom-placeholder">(placeholder)</p>
+		`;
+
+		this.container.innerHTML = '';
+		this.container.innerHTML = template;
+
 		return true;
 	}
 
@@ -120,7 +128,7 @@ export default class Template
 	async init_template()
 	{
 		let template = "";
-		template += this.html_main_ctn();
+		template += await this.html_main_ctn();
 
 		// trim new lines, spaces, and tabs
 		template = template.replace(/\s+/g, ' ');
@@ -139,13 +147,14 @@ export default class Template
 		<div class="%main-c1">
 			${await this.html_header()}
 			${await this.html_pfp()}
-			${await this.html_stats()}
 			${await this.html_buttons()}
 		</div>
 		`
 		// [B] SET atts
 		const atts =
 		{
+			'%main-c1': 'ct-fn-pfp-ctn d-flex flex-column',
+			'%footer-c': 'ct-fn-pfp-footer',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
@@ -160,7 +169,7 @@ export default class Template
 		// [A] TEMPLATE
 		let template = `
 		<div class="%header-c">
-			<h2 class="%title-c" data-user="%title">%title</h2>
+			<h2 class="%title-c" data-user="%title" @att1>%title</h2>
 			<div class="%close-c" id="%close-id">%close-t</div>
 		</div>
 		`
@@ -168,8 +177,9 @@ export default class Template
 		const atts =
 		{
 			'%header-c': 'ct-fn-pfp-hd',
-			'%title-c': 'ct-fn-pfp-title',
+			'%title-c': 'ct-fn-pfp-title truncate',
 			'%title': this.username,
+			'@att1': `title="${this.username}"`,
 			'%close-c': 'ct-fn-pfp-close',
 			'%close-id': 'btn_fn_pfp_close',
 			'%close-t': 'X',
@@ -177,6 +187,7 @@ export default class Template
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
 
+		// [C] HTML RETURN
 		return template;
 	}
 
@@ -185,14 +196,18 @@ export default class Template
 		// [-] HELPER FUNCTION
 		// [A] TEMPLATE
 		let template = `
-		<div class="%pfp-c">
-			<img class="%pfp" src="%pfp-src" alt="%pfp-alt">
-			<p class="%status">%status</p>
+		<div class="%pfp-1c">
+			<img class="%pfp-2c" src="%pfp-src" alt="%pfp-alt">
+			${await this.html_stats()}
 		</div>
 		`
 		// [B] SET atts
 		const atts =
 		{
+			'%pfp-1c': 'ct-fn-pfp-pic-ctn',
+			'%pfp-2c': 'ct-fn-pfp-pic-img',
+			'%pfp-src': `/static/assets/images/default-pfp.png`,
+			'%pfp-alt': this.username,
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
@@ -206,13 +221,26 @@ export default class Template
 		// [-] HELPER FUNCTION
 		// [A] TEMPLATE
 		let template = `
+		<div class="%main-c">
+			<div class="%lst-c">%win-t</div>
+			<div class="%lst-c">%lose-t</div>
+			<div class="%lst-c">%total-t</div>
+			<div class="%lst-c">%winrate-t</div>
+		</div>
 		`
 		// [B] SET atts
 		const atts =
 		{
+			'%main-c': 'ct-fn-pfp-stats-ctn',
+			'%lst-c': 'ct-fn-pfp-stats-list truncate',
+			'%win-t': 'Win: 100',
+			'%lose-t': 'Lose: 100',
+			'%total-t': 'Total: 100',
+			'%winrate-t': 'W.rate: 100%',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
+
 		// [C] HTML RETURN
 		return template;
 	}
@@ -222,13 +250,25 @@ export default class Template
 		// [-] HELPER FUNCTION
 		// [A] TEMPLATE
 		let template = `
+		<div class="%btn-ctn">
+			<button @att1 @att2 @att3 @att4 @att5 @att6>@att7</button>
+		</div>
 		`
 		// [B] SET atts
 		const atts =
 		{
+			'%btn-ctn': 'ct-fn-btn-ctn',
+			'@att1': 'id="btn_fn_pfp_hist"',
+			'@att2': 'class="ct-btn-neau"',
+			'@att3': `data-bs-toggle="modal"`,
+			'@att4': `data-bs-target="#modal-history"`,
+			'@att5': `data-toggle="modal"`,
+			'@att6': ``,
+			'@att7': 'Match History',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
+
 		// [C] HTML RETURN
 		return template;
 	}
