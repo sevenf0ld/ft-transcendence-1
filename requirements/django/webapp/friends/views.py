@@ -14,6 +14,8 @@ from .utils import is_existing_request
 from http import HTTPMethod
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from dj_rest_auth.jwt_auth import JWTCookieAuthentication
 
 #=================================#
 #=========friend request==========#
@@ -49,6 +51,8 @@ from rest_framework.exceptions import ValidationError
 class FriendRequestCreateAPIView(generics.CreateAPIView):
     queryset = FriendRequest.objects.filter(is_active=True)
     serializer_class = FriendRequestModelSerializer
+    authentication_classes = [JWTCookieAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -93,6 +97,8 @@ class FriendRequestCreateAPIView(generics.CreateAPIView):
 class FriendRequestDestroyAPIView(generics.DestroyAPIView):
     queryset = FriendRequest.objects.filter(is_active=True)
     serializer_class = FriendRequestModelSerializer
+    authentication_classes = [JWTCookieAuthentication]
+    permission_classes = [IsAuthenticated]
 
     # lookup_field is url related
     def get_object(self):
@@ -162,6 +168,8 @@ class FriendRequestDestroyAPIView(generics.DestroyAPIView):
 class FriendListRetrieveAPIView(generics.RetrieveAPIView):
     queryset = FriendList.objects.all()
     serializer_class = FriendListDisplayModelSerializer
+    authentication_classes = [JWTCookieAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         fl = FriendList.objects.get(user=self.request.user)
@@ -178,6 +186,8 @@ class FriendListRetrieveAPIView(generics.RetrieveAPIView):
 class FriendListUpdateAPIView(generics.UpdateAPIView):
     queryset = FriendList.objects.all()
     serializer_class = FriendListUpdateModelSerializer
+    authentication_classes = [JWTCookieAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         serializer = self.get_serializer(data=self.request.data)
