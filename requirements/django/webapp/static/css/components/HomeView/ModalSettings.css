@@ -16,6 +16,11 @@
 	padding-top: 0px;
 }
 
+#modal-settings .modal-sm
+{
+	max-width: 23rem;
+}
+
 /* -------------------------------------------------- */
 /* settings - account */
 /* -------------------------------------------------- */
@@ -70,4 +75,89 @@
 {
 	font-size: 0.8rem;
 	color: #505050;
+}
+
+#modal-settings .ct-set-acc-ctn .ct-set-acc-form > button
+{
+	margin-top: 1rem;
+}
+
+/* -------------------------------------------------- */
+/* settings - pfp
+ * -------------------------------------------------- */
+#modal-settings .ct-set-pfp-ctn
+{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2rem;
+}
+
+#modal-settings .ct-set-pfp-ctn .ct-set-pfp-img-ctn
+{
+	position: relative;
+}
+
+#modal-settings .ct-set-pfp-ctn #img_pfp
+{
+	width: 10rem;
+	height: 10rem;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+#modal-settings .ct-set-pfp-ctn .ct-set-pfp-edit
+{
+	position: absolute;
+	width: 1.8rem;
+	height: 1.8rem;
+	right: 1rem;
+	bottom: 0rem;
+}
+
+#modal-settings .ct-set-pfp-ctn #input_pfp
+{
+	display: none;
+}
+
+/* -------------------------------------------------- */
+/* settings - 2fa
+ * -------------------------------------------------- */
+#modal-settings .ct-set-2fa-ctn
+{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2rem;
+	padding: 1rem;
+}
+
+#modal-settings .ct-set-2fa-ctn .ct-set-2fa-status
+{
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+#modal-settings .ct-set-2fa-ctn .ct-set-2fa-status .ct-set-2fa-icon
+{
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+}
+
+#modal-settings .ct-set-2fa-ctn .ct-set-2fa-status .ct-set-2fa-icon.twofa-on
+{
+	background-color: var(--stfr-1);
+}
+
+#modal-settings .ct-set-2fa-ctn .ct-set-2fa-status .ct-set-2fa-icon.twofa-off
+{
+	background-color: #ff3030;
 }
