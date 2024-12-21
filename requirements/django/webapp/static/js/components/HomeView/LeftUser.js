@@ -315,8 +315,8 @@ export default class leftPanelUser
 		const fetch_result = await logoutFetch.fetchData();
 		if (fetch_result === 'logout-successful')
 		{
-			clearInterval(TOKEN.token_id);
-			TOKEN.token_id = null;
+			//clearInterval(TOKEN.token_id);
+			//TOKEN.token_id = null;
 
 			const loginView = new LoginView(this.container);
 	

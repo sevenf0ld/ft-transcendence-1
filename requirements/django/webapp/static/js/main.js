@@ -19,7 +19,7 @@ import TOKEN from './core/token.js';
 // -------------------------------------------------- //
 async function main()
 {
-	TOKEN.token_id = await setInterval(TOKEN.refresh_token, 210000);
+	//TOKEN.token_id = await setInterval(TOKEN.refresh_token, 210000);
 
 	await ROUTER.navigateTo('/login');
 
