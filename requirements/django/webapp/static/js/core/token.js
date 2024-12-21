@@ -23,20 +23,15 @@ class TokenCs
 		return cookieValue;
 	}
 
-	// supports body and cookie-based
 	async refresh_token()
 	{
-		const csrf_token = await getCookie('csrftoken');
-		//const refresh_token = await getCookie('jwt-refresh');
+		const csrf_token = await this.getCookie('csrftoken');
 		const response = await fetch('/api/jwt_token/token/refresh/', {
 			method: 'POST',
 			headers: {
 					'Content-Type': 'application/json',
 					'X-CSRFToken': csrf_token
 			},
-			//body: JSON.stringify({
-			//	refresh: refresh_token
-			//})
 		});
 
 		const data = await response.json();
@@ -59,13 +54,14 @@ class TokenCs
 
 	async verify_token()
 	{
-		const csrf_token = await getCookie('csrftoken');
-		const access_token = await getCookie('jwt-access');
+		const csrf_token = await this.getCookie('csrftoken');
+		const access_token = await this.getCookie('jwt-access');
 		const response = await fetch('/api/jwt_token/token/verify/', {
 			method: 'POST',
 			headers: {
 					'Content-Type': 'application/json',
-					'X-CSRFToken': csrf_token
+					'X-CSRFToken': csrf_token,
+					//'Authorization': `Bearer ${access_token}`
 			},
 			body: JSON.stringify({
 				token: access_token
@@ -75,7 +71,7 @@ class TokenCs
 		const data = await response.json();
 		if (response.status === 401)
 		{
-			const refresh_data = await refresh_token();
+			const refresh_data = await this.refresh_token();
 			if (refresh_data === false)
 				console.error('refresh failed after verify.');
 		}

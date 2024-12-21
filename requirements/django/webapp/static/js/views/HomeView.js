@@ -13,6 +13,7 @@ import PrimaryLayout from '../layouts/PrimaryLayout.js';
 import leftPanelUser from '../components/HomeView/LeftUser.js';
 import midTopPanel from '../components/HomeView/MidBoard.js';
 import rightPanelFriends from '../components/HomeView/RightFnList.js';
+import TOKEN from '../core/token.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -27,8 +28,12 @@ export default class HomeView
 	constructor()
 	{
 		this.container = document.body;
+
+		TOKEN.token_id = setInterval(async () => {
+    		await TOKEN.refresh_token();
+    	}, 15000);
 	}
-	
+
 	async render()
 	{
 		let parent_html;

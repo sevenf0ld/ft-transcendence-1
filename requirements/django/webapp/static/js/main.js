@@ -7,7 +7,6 @@
 // -------------------------------------------------- //
 import ROUTER from './core/router.js';
 import './core/toolkits/bootstrap.bundle.js';
-import TOKEN from './core/token.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -19,8 +18,6 @@ import TOKEN from './core/token.js';
 // -------------------------------------------------- //
 async function main()
 {
-	//TOKEN.token_id = await setInterval(TOKEN.refresh_token, 210000);
-
 	await ROUTER.navigateTo('/login');
 
 	return true;
