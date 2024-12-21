@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate
 from datetime import timedelta
 import random
 from django.core.mail import send_mail
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny
 from django.core.cache import cache
 from django.middleware.csrf import get_token
@@ -105,19 +105,13 @@ def send_otp(request):
                 fail_silently=False,
             )
             retval = Response({'detail': 'OTP sent to registered email.'}, status=status.HTTP_200_OK)
-            csrf_token = get_token(request)
-            retval.set_cookie('csrftoken', csrf_token)
-            return retval
         except smtplib.SMTPException:
             retval = Response({'detail': 'Server failed to send OTP to registered email.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            csrf_token = get_token(request)
-            retval.set_cookie('csrftoken', csrf_token)
-            return retval
     else:
         retval = Response({'detail': 'OTP verification pending.'}, status=status.HTTP_200_OK)
-        csrf_token = get_token(request)
-        retval.set_cookie('csrftoken', csrf_token)
-        return retval
+    csrf_token = get_token(request)
+    retval.set_cookie('csrftoken', csrf_token)
+    return retval
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -132,7 +126,7 @@ def verify_otp(request):
 
     if otp_sent and otp_received == otp_sent:
         cache.clear() # or set a cache for verified
-        return Response({'detail': 'OTP verification success.'}, status=status.HTTP_200_OK)
+        retval = Response({'detail': 'OTP verification success.'}, status=status.HTTP_200_OK)
     else:
         if otp_sent is None:
             content = {'detail': 'OTP has expired.'}
@@ -140,4 +134,7 @@ def verify_otp(request):
         elif otp_received != otp_sent:
             content = {'detail': 'OTP verification failed.'}
             re_status=status.HTTP_401_UNAUTHORIZED
-        return Response(content, status=re_status)
+        retval = Response(content, status=re_status)
+    csrf_token = get_token(request)
+    retval.set_cookie('csrftoken', csrf_token)
+    return retval

@@ -374,6 +374,7 @@ export default class rightPanelFriends
 		return true;
 	}
 
+
 	async addFriendClick(event)
 	{
 		event.preventDefault();
@@ -412,6 +413,25 @@ export default class rightPanelFriends
 		return true;
 	}
 
+	async reset_midBotPanel(type)
+	{
+		const default_div = `<p class="ct-bottom-placeholder">(placeholder)</p>`;
+		const bot_right_panel = document.querySelector('.ct-bottom-right');
+		const bot_left_panel = document.querySelector('.ct-bottom-left');
+		
+		if (type === 1)
+		{
+			bot_right_panel.innerHTML = default_div;
+			bot_left_panel.innerHTML = default_div;
+		}
+		else if (type === 2)
+			bot_right_panel.innerHTML = default_div;
+		else if (type === 3)
+			bot_left_panel.innerHTML = default_div;
+
+		return true;
+	}
+
 	async friendPopupClick(event)
 	{
 		event.preventDefault();
@@ -426,12 +446,14 @@ export default class rightPanelFriends
 
 		if (type === 'added')
 		{
+			await this.reset_midBotPanel(1);
 			const chatbox = new BotChatbox(parent_div, name);
 			await chatbox.render();
 		}
 
 		return true;
 	}
+
 
 	async bind_events()
 	{

@@ -31,3 +31,38 @@ class MoveJWTRefreshCookieIntoTheBody(MiddlewareMixin):
                 request._body = json.dumps(data).encode('utf-8')
 
         return None
+
+# async chat server
+from django.contrib.auth.models import AnonymousUser
+from rest_framework.authtoken.models import Token
+from channels.db import database_sync_to_async
+from channels.middleware import BaseMiddleware
+
+@database_sync_to_async
+def get_user(token_key):
+    try:
+        token = Token.objects.get(key=token_key)
+        return token.user
+    except Token.DoesNotExist:
+        return AnonymousUser()
+
+class TokenAuthMiddleware(BaseMiddleware):
+    def __init__(self, inner):
+        super().__init__(inner)
+
+    async def __call__(self, scope, receive, send):
+        try:
+            # Extract the token from the 'Authorization' header
+            token_key = [
+                x[1].decode().replace("Token ", "") 
+                for x in scope["headers"] 
+                if x[0].decode() == "authorization"
+            ][0]
+        except IndexError:
+            token_key = None
+
+        # Set the user to AnonymousUser if no token is found, else fetch the user
+        scope['user'] = AnonymousUser() if token_key is None else await get_user(token_key)
+        
+        # Call the next layer in the ASGI stack
+        return await super().__call__(scope, receive, send)

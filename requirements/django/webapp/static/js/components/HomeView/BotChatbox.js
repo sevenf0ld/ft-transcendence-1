@@ -5,6 +5,7 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
+import BotFriendPfp from './BotFriendPfp.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -62,8 +63,8 @@ function html_element()
 	// [A] TEMPLATE
 	let template = `
 		<div class="%main-1c %main-2c">
-			<div class="%hd-1c" id="%hd-1d">
-				<p class="%p1-c" title-"%p1-t">%p1-t</p>
+			<div class="%hd-1c">
+				<p class="%p1-c" title-"%p1-t" id="%hd-1d" @att-t1>%p1-t</p>
 				<div class="%inv-1c" id="%inv-1d">invite</div>
 				<div class="%close-1c" id="%close-1d">%close-1t</div>
 			</div>
@@ -73,10 +74,10 @@ function html_element()
 				${insert('user-1: how are you?')}
 				${insert('user-2: good')}
 			</div>
-			<div class="%ft-1c">
+			<form class="%ft-1c">
 				<input @att1 @att2 @att3 @att4>
 				<button @att-a1 @att-a2>@att-a3</button>
-			</div>
+			</form>
 		</div>
 	`;
 
@@ -88,6 +89,7 @@ function html_element()
 		'%hd-1c': 'ct-chatbox-hd',
 		'%hd-1d': 'btn_chatbox_profile',
 		'%p1-c': 'ct-chatbox-title truncate',
+		'@att-t1': 'title="User-1"',
 		'%p1-t': 'User-1',
 		'%inv-1c': 'ct-chatbox-inv',
 		'%inv-1d': 'btn_chatbox_invite',
@@ -102,7 +104,7 @@ function html_element()
 		'@att3': 'id="input_chatbox" autocomplete="off"',
 		'@att4': 'class="ct-chatbox-input"',
 		'@att-a1': 'id="btn_chatbox_send"',
-		'@att-a2': 'class="ct-chatbox-send"',
+		'@att-a2': 'class="ct-chatbox-send" type="submit"',
 		'@att-a3': 'Send',
 	};
 
@@ -134,8 +136,12 @@ export default class BotChatbox
 	constructor(container, name)
 	{
 		this.container = container;
-		this.name = name;
 		this.components = {};
+		this.sender = '';
+		this.target = name;
+		this.room_name = {};
+		this.websocket_url = {};
+		this.chat_socket = {};
 	}
 
 	// --- [01] getter
@@ -202,11 +208,14 @@ export default class BotChatbox
 	}
 
 	// --- [04] EVENT
-	async headerClick(event)
+	async profileClick(event)
 	{
 		event.preventDefault();
-
 		console.log('[EVENT] chatbox mssage\'s header clicked');
+
+		const parent_div = document.querySelector('.ct-bottom-left');
+		const pfp = new BotFriendPfp(parent_div, this.target);
+		await pfp.render('replace');
 
 		return true;
 	}
@@ -225,10 +234,15 @@ export default class BotChatbox
 		event.preventDefault();
 
 		console.log('[EVENT] button clicked: close chatbox');
+		
+		const child = '<p class="ct-bottom-placeholder">(placeholder)</p>';
 
 		const parent_div = document.querySelector('.ct-bottom-right');
-		const child = '<p class="ct-bottom-placeholder">(placeholder)</p>';
 		parent_div.innerHTML = child;
+
+		const pfp_ctn = document.querySelector('.ct-bottom-left');
+		pfp_ctn.innerHTML = child;
+
 
 		return true;
 	}
@@ -242,12 +256,95 @@ export default class BotChatbox
 		return true;
 	}
 
+	// ================================================== //
+	// [4.1] EVENT - WEB SOCKET RELATED
+	// ================================================== //
+	async socket_init()
+	{
+		this.sender = JSON.parse(localStorage.getItem('user')).username;
+
+		const flist = document.querySelectorAll('.fnl-item-ctn[data-type="added"]');
+		for (const friend of flist)
+		{
+			const friend_name = friend.title;
+			this.room_name[friend_name] = await this.roomName_generator(this.sender, friend_name);
+			this.websocket_url[friend_name] = `wss://${window.location.host}/ws/chat/${this.room_name[friend_name]}/`;
+			this.chat_socket[friend_name] = await new WebSocket(this.websocket_url[friend_name]);
+			this.chat_socket[friend_name].addEventListener("error", (event) => {
+				console.error("chat socket creation error: ", event);
+			});
+
+		}
+
+	}
+
+	async msg_generator(user, msg)
+	{
+		if (user === 'You')
+			return `<div class="ct-chatbox-msg text-muted">${user}: ${msg}</div>`;
+		return `<div class="ct-chatbox-msg">${user}: ${msg}</div>`;
+	}
+
+	async roomName_generator(sender, target)
+	{
+		if (sender < target)
+			return `${sender}_${target}`;
+		return `${target}_${sender}`;
+	}
+
+	async connect_socket()
+	{
+		await this.socket_init();
+		const send_btn = document.getElementById('btn_chatbox_send');
+		const input = document.getElementById('input_chatbox');
+		const chatbox_ctn = document.querySelector('.ct-chatbox-ctn .ct-chatbox-bd');
+		chatbox_ctn.innerHTML = '';
+
+		this.chat_socket[this.target].addEventListener("message", async (event) => {
+		  let data = JSON.parse(event.data);
+		  if (data.type == 'connection_established')
+			console.log("chat socket connection established:", data.message);
+		  else if (data.type === 'message_received')
+		  {
+			console.log("chat socket message received:", data.message);
+			let sender_name = data.sender === this.sender ? 'You' : data.sender;
+			let msg = await this.msg_generator(sender_name, data.message);
+			chatbox_ctn.insertAdjacentHTML(
+				'beforeend', msg
+			);
+		  }
+		  if (data.type == 'connection_closed')
+			console.log("chat socket connection closed:", data.message);
+		});
+
+		send_btn.addEventListener('click', (event) => {
+			event.preventDefault();
+			let message = input.value;
+			if (this.chat_socket[this.target].readyState === WebSocket.OPEN)
+			{
+				console.log("chat socket message sending:", message);
+				this.chat_socket[this.target].send(JSON.stringify({
+				  'message': message,
+				  'sender': this.sender,
+				  'room_name': `${this.room_name}`,
+				}));
+				input.value = '';
+			}
+			else if (this.chat_socket[this.target].readyState === WebSocket.CONNECTING)
+				console.log("chat socket is waiting on an open connection with the server.");
+			else if (this.chat_socket[this.target].readState >= 2)
+				console.error("connection with chat socket is closing or closed.");
+		});
+
+		return true;
+	}
+
 	async bind_events()
 	{
 		await btns.read_buttons();
 
 		btns.arr['profile'].addEventListener(
-			'click', async (e) => {await this.headerClick(e);}
+			'click', async (e) => {await this.profileClick(e);}
 		);
 
 		btns.arr['invite'].addEventListener(
@@ -262,6 +359,8 @@ export default class BotChatbox
 			'click', async (e) => {await this.sendMsgClick(e);}
 		);
 
+		await this.connect_socket();
+
 		return true;
 	}
 	
@@ -273,7 +372,8 @@ export default class BotChatbox
 		this.container.innerHTML = template;
 
 		const title = document.querySelector('.ct-chatbox-title');
-		title.innerHTML = this.name;
+		title.innerHTML = this.target;
+		title.title = this.target;
 
 		await this.bind_events();
 		//await this.modals_render(this.container);
@@ -281,5 +381,3 @@ export default class BotChatbox
 		return true;
 	}
 }
-
-

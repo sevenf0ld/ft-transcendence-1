@@ -66,6 +66,7 @@
 	padding: 0.3rem;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
+	word-break: break-all;
 }
 
 .ct-chatbox-ctn .ct-chatbox-ft

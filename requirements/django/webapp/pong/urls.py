@@ -29,7 +29,7 @@ urlpatterns += [
     path('', include('frontend.urls')),
     path('api/user_auth/', include('user_auth.urls')),
     # dj-rest-auth
-    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('api/jwt_token/', include('dj_rest_auth.urls')),
     # django-allauth (registration & confirmation)
     re_path(
         r'registration/account-confirm-email/(?P<key>[-:\w]+)/',

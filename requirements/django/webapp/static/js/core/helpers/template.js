@@ -1,272 +1,275 @@
-// file : template.js
+// file : Template.js
 // -------------------------------------------------- //
-// Importing-internal
+// importing-internal
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// Importing-external
+// importing-external
 // -------------------------------------------------- //
-import HtmlTrimmer from '../core/helpers/HtmlTrimmer.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
-// this is a template file for creating new project
-// elements such as layouts, views, and components
-// it should not be linked or used in any other file
-// only referrance purposes
+// reference from BotFriendPfp.js
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-// --- [LOCAL] EXPORTED COMPONENTS
-// usage : insert querySelector's value of an element
-// 		   to register as export element; first one
-// 		   is always default
-const getEle = [
-	'.example',
-];
-
-// --- [LOCAL] BUTTONS SECTION
-// button tracker
-class button
+export default class BotFriendPfp
 {
-	constructor()
+	// --------------------------------------------- //
+	// CONSTRUCTOR
+	// --------------------------------------------- //
+	constructor(container,username)
 	{
-		this.arr = {
-			'example-1': '',
-			'example-2': '',
-		};
-	}
-
-	async read_buttons()
-	{
-		for (const key in this.arr)
-		{
-			const ele = document.getElementById(`${this.arr[key]}`);
-			if (!ele)
-				throw new Error(`[ERR] button not found : ${this.arr[key]}`);
-			this.arr[key] = ele;
-		}
-		return true;
-	}
-}
-const btns = new button();
-
-// --- [LOCAL] HTML ELEMENTS SECTION
-function html_element()
-{
-	// [-] HELPER FUNCTION
-	function insert(example)
-	{
-		return "etc-" + example;
-	}
-
-	// [A] TEMPLATE
-	let template = `
-		<div class="%ele-c">
-			<button id="%tp-1">${insert('example')}</button>
-			<button id="%tp-2">${insert('example')}</button>
-		</div>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%ele-c': 'example d-flex flex-column px-5 py-4',
-		'%tp-1': 'example-1',
-		'%tp-2': 'example-2',
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-	btns.arr['example-1'] = attributes['%tp-1'];
-	btns.arr['example-2'] = attributes['%tp-2'];
-
-	// [D] HTML RETURN
-	return template;
-}
-
-// HTML elements bundle
-const ele =
-{
-	html_element,
-};
-
-// -------------------------------------------------- //
-// export
-// -------------------------------------------------- //
-export default class IntroLayout
-{
-	// --- [00] CONSTRUCTOR
-	constructor(container)
-	{
+		// COMMON-atts
 		this.container = container;
-		this.components = {};
+		this.main_ctn = '';
+		this.buttons = {
+			close: '',
+			history: '',
+		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
+		this.username = username;
 	}
-
-	// --- [01] GETTER
-	async get(element = 'default')
+	// --------------------------------------------- //
+	// MAIN-EXECUTION
+	// --------------------------------------------- //
+	async render(type)
 	{
-		if (this.read_components() === false)
+		const template = await this.init_template();
+
+		if (type.toLowerCase() === 'append')
 		{
-			throw new Error(`[ERR] this class has no export components`);
-			return false;
+			this.container.insertAdjacentHTML(
+				'beforeend', template
+			);
 		}
-		return this.compo_get(element);
-	}
-
-	// --- [02] COMPONENTS REGISTRY
-	async compo_register(name, element)
-	{
-		this.components[name] = element;
-
-		return true;
-	}
-
-	async compo_get(name)
-	{
-		return this.components[name];
-	}
-
-	async compo_remove(name)
-	{
-		delete this.components[name];
-
-		return true;
-	}
-
-	async read_components()
-	{
-		if (getEle.length === 0)
-			return false;
-		this.compo_register('default', document.querySelector(getEle[0]));
-		for (const key in getEle)
+		else if (type.toLowerCase() === 'replace')
 		{
-			const ele = document.querySelector(getEle[key]);
-			if (!ele)
-				throw new Error(`[ERR] component not found : ${getEle[key]}`);
-			const str = getEle[key].substring(1);
-			this.compo_register(str, ele);
+			this.container.innerHTML = '';
+			this.container.innerHTML = template;
+		}
+		else
+		{
+			throw new Error('[ERR] invalid render type');
 		}
 
+		await this.push_important_elements();
+		await this.bind_events();
+		await this.bind_modals();
+
 		return true;
 	}
 
-	// --- [03] HTM-LELEMENTS
+	async push_important_elements()
+	{
+		this.main_ctn = document.querySelector('.ct-fn-pfp-ctn');
+		this.buttons.close = document.querySelector('#btn_fn_pfp_close');
+		this.buttons.history = document.querySelector('#btn_fn_pfp_hist');
+
+		if (!this.main_ctn)
+			throw new Error('[ERR] main container not found');
+		if (!this.buttons.close)
+			throw new Error('[ERR] close button not found');
+		if (!this.buttons.history)
+			throw new Error('[ERR] history button not found');
+
+		return true;
+	}
+	// --------------------------------------------- //
+	// EVENT-RELATED
+	// --------------------------------------------- //
+	async bind_events()
+	{
+		this.buttons['close'].addEventListener(
+			'click', async (e) => {await this.closeClick(e);}
+		);
+
+		this.buttons['history'].addEventListener(
+			'click', async (e) => {await this.historyClick(e);}
+		);
+
+		return true;
+	}
+
+	async closeClick(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] button clicked : fn-pfp-close');
+
+		const template = `
+		<p class="ct-bottom-placeholder">(placeholder)</p>
+		`;
+
+		this.container.innerHTML = '';
+		this.container.innerHTML = template;
+
+		return true;
+	}
+
+	async historyClick(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] button clicked : fn-pfp-hist');
+
+		return true;
+	}
+	// --------------------------------------------- //
+	// BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals()
+	{
+		return true;
+	}
+	// --------------------------------------------- //
+	// FETCH-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// HTML-ELEMENT-RELATED
+	// --------------------------------------------- //
 	async init_template()
 	{
 		let template = "";
-		template += ele.html_element();
+		template += await this.html_main_ctn();
 
 		// trim new lines, spaces, and tabs
 		template = template.replace(/\s+/g, ' ');
 		template = template.replace(/>\s+</g, '><');
 		template = template.replace(/\s*=\s*/g, '=');
 		template = template.trim();
-	
+
 		return template;
 	}
 
-	// --- [04] EVENT
-	async test1Click(event)
+	async html_main_ctn()
 	{
-		event.preventDefault();
-
-		console.log('[EVENT] button clicked : example-1');
-
-		// FETCH-SECION-EXAMPLE
-		if (!await this.check_input())
-			return false;
-
-		this.alert_div.alert_clear();
-		await LOADING.disable_all();
-
-		const loginFetch = new FETCH.fetch_login();
-		const fetch_result = await loginFetch.fetchData();
-
-		console.log(fetch_result);
-		if (fetch_result === 'success')
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%main-c1">
+			${await this.html_header()}
+			${await this.html_pfp()}
+			${await this.html_buttons()}
+		</div>
+		`
+		// [B] SET atts
+		const atts =
 		{
-			await LOADING.restore_all();
-			const OTP = new LoginOTP(loginFetch);
-			await OTP.render();
-		}
+			'%main-c1': 'ct-fn-pfp-ctn d-flex flex-column',
+			'%footer-c': 'ct-fn-pfp-footer',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
 
-		await LOADING.restore_all();
-
-		return true;
+		// [C] HTML RETURN
+		return template;
 	}
 
-	async test2Click(event)
+	async html_header()
 	{
-		event.preventDefault();
-
-		console.log('[EVENT] button clicked : example-2');
-
-		// render the content of modal
-		const moda = document.querySelector('#modal-join .modal-title');
-		moda.innerHTML = 'Available Rooms (Tournament)';
-		const modata = document.querySelector('#modal-join .modal-body');
-		modata.setAttribute('data-room-type', 'tour');
-		modata.innerHTML = "";
-		const modaTour = new ModalRoomJoin(modata);
-		modaTour.render();
-
-		// MODAL SHOWS UP EVENT FOR DYANMIC CONTENT
-		const modal = document.getElementById('modal-settings');
-		modal.addEventListener('show.bs.modal', async (e) =>
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%header-c">
+			<h2 class="%title-c" data-user="%title" @att1>%title</h2>
+			<div class="%close-c" id="%close-id">%close-t</div>
+		</div>
+		`
+		// [B] SET atts
+		const atts =
 		{
-			console.log("text : ", e.relatedTarget.textContent);
-		});
+			'%header-c': 'ct-fn-pfp-hd',
+			'%title-c': 'ct-fn-pfp-title truncate',
+			'%title': this.username,
+			'@att1': `title="${this.username}"`,
+			'%close-c': 'ct-fn-pfp-close',
+			'%close-id': 'btn_fn_pfp_close',
+			'%close-t': 'X',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
 
-		return true;
+		// [C] HTML RETURN
+		return template;
 	}
 
-	async bind_events()
+	async html_pfp()
 	{
-		await btns.read_buttons();
-		btns.arr['example-1'].addEventListener(
-			'click', async (e) => {await this.test1Click(e);}
-		);
-		btns.arr['example-2'].addEventListener(
-			'click', async (e) => {await this.test2Click(e);}
-		);
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%pfp-1c">
+			<img class="%pfp-2c" src="%pfp-src" alt="%pfp-alt">
+			${await this.html_stats()}
+		</div>
+		`
+		// [B] SET atts
+		const atts =
+		{
+			'%pfp-1c': 'ct-fn-pfp-pic-ctn',
+			'%pfp-2c': 'ct-fn-pfp-pic-img',
+			'%pfp-src': `/static/assets/images/default-pfp.png`,
+			'%pfp-alt': this.username,
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
 
-		return true;
-	}
-	
-	// --- [05] RENDER
-	async modals_render()
-	{
-		let parent_html;
-
-		// ONLY THE LAYOUT. DO NOT RENDER MODAL CONTENT
-		parent_html = this.container;
-		const modal1 = new ModalLayout(
-			parent_html, "modal-settings", "Settings"
-		);
-		await modal1.render();
-
-		parent_html = await modal1.get();
-		const modalSettings = new ModalSettings(parent_html);
-		await modalSettings.render();
-
-		return true;
+		// [C] HTML RETURN
+		return template;
 	}
 
-	async render()
+	async html_stats()
 	{
-		const template = await this.init_template();
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%main-c">
+			<div class="%lst-c">%win-t</div>
+			<div class="%lst-c">%lose-t</div>
+			<div class="%lst-c">%total-t</div>
+			<div class="%lst-c">%winrate-t</div>
+		</div>
+		`
+		// [B] SET atts
+		const atts =
+		{
+			'%main-c': 'ct-fn-pfp-stats-ctn',
+			'%lst-c': 'ct-fn-pfp-stats-list truncate',
+			'%win-t': 'Win: 100',
+			'%lose-t': 'Lose: 100',
+			'%total-t': 'Total: 100',
+			'%winrate-t': 'W.rate: 100%',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
 
-		this.container.innerHTML = '';
-		this.container.innerHTML = template;
+		// [C] HTML RETURN
+		return template;
+	}
 
-		//if append is needed
-		//this.container.insertAdjacentHTML('beforeend', template);
+	async html_buttons()
+	{
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%btn-ctn">
+			<button @att1 @att2 @att3 @att4 @att5 @att6>@att7</button>
+		</div>
+		`
+		// [B] SET atts
+		const atts =
+		{
+			'%btn-ctn': 'ct-fn-btn-ctn',
+			'@att1': 'id="btn_fn_pfp_hist"',
+			'@att2': 'class="ct-btn-neau"',
+			'@att3': `data-bs-toggle="modal"`,
+			'@att4': `data-bs-target="#modal-history"`,
+			'@att5': `data-toggle="modal"`,
+			'@att6': ``,
+			'@att7': 'Match History',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
 
-		await this.bind_events();
-		await this.modals_render();
-
-		return true;
+		// [C] HTML RETURN
+		return template;
 	}
 }
