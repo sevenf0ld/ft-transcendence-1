@@ -295,6 +295,16 @@ export default class leftPanelUser
 		console.log('[EVENT] button clicked : history');
 		event.preventDefault();
 
+		let parent_div, parent_hd, parent_bd;
+
+		parent_div = document.querySelector('#modal-history');
+		parent_hd = parent_div.querySelector('.modal-title');
+		parent_bd = parent_div.querySelector('.modal-body');
+		parent_bd.innerHTML = '';
+		parent_hd.innerHTML = 'JLIAW\'s Match History';
+		const modalHistory = new ModalHistory(parent_bd);
+		await modalHistory.render();
+
 		return true;
 	}
 
@@ -302,6 +312,16 @@ export default class leftPanelUser
 	{
 		console.log('[EVENT] button clicked : settings');
 		event.preventDefault();
+
+		let parent_div, parent_hd, parent_bd;
+
+		parent_div = document.querySelector('#modal-settings');
+		parent_hd = parent_div.querySelector('.modal-title');
+		parent_bd = parent_div.querySelector('.modal-body');
+		parent_bd.innerHTML = '';
+		parent_hd.innerHTML = 'Settings';
+		const modalSettings = new ModalSettings(parent_bd);
+		await modalSettings.render();
 		
 		return true;
 	}
@@ -363,19 +383,12 @@ export default class leftPanelUser
 		);
 		await modal1.render();
 
-		parent_html = await modal1.get();
-		const modalSettings = new ModalSettings(parent_html);
-		await modalSettings.render();
-
 		parent_html = this.container;
 		const modal2 = new ModalLayout(
 			parent_html, "modal-history", "JLIAW's Match History"
 		);
 		await modal2.render();
 
-		parent_html = await modal2.get();
-		const modalHistory = new ModalHistory(parent_html);
-		await modalHistory.render();
 
 		return true;
 	}

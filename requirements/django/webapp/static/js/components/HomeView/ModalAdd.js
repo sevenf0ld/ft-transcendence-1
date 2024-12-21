@@ -57,7 +57,7 @@ function html_element()
 	// [A] TEMPLATE
 	let template = `
 		<form class="%addf-c">
-			<input type="in-t" class="%in-1c" @att1 @att2 @att3>
+			<input type="%in-t" class="%in-1c" @att1 @att2 @att3>
 			<button @att4 @att5 @att6>%addfb-t</button>
 			<div class="%addfmsg-c" role="%addfmsg-r">%addfmsg-t</div>
 		</form>
