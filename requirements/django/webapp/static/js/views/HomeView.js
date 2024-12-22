@@ -32,6 +32,11 @@ export default class HomeView
 		TOKEN.token_id = setInterval(async () => {
     		await TOKEN.refresh_token();
     	}, 15000);
+
+		const user_obj = JSON.parse(localStorage.getItem('user'));
+		this.room_name = user_obj.pk;
+		this.websocket_url = `wss://${window.location.host}/ws/online/${this.room_name}/`;
+		this.friend_socket = new WebSocket(this.websocket_url);
 	}
 
 	async render()

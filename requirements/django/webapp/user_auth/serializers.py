@@ -49,7 +49,7 @@ class UserLoginDetailsModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['pk', 'username', 'email']
         read_only_fields = ['email']
 
 #class UserAccountUpdateModelSerializer(serializers.ModelSerializer):
