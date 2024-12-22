@@ -670,4 +670,7 @@ export default class ModalSettingsItems
 		// [C] HTML RETURN
 		return template;
 	}
+	/***********************************
+	 * 2FA-SETTINGS
+	 * *********************************/
 }

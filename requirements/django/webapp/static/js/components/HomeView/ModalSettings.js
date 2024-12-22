@@ -210,7 +210,6 @@ export default class ModalSettings
 
 		const ModalSetItem = new ModalSettingsItems(this.container);
 		await ModalSetItem.render_pfp('replace');
-
 		return true;
 	}
 
