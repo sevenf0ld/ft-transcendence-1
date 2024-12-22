@@ -7,6 +7,7 @@
 // -------------------------------------------------- //
 import ModalLayout from '../../layouts/ModalLayout.js';
 import ModalRoomJoin from './ModalRoomJoin.js';
+import GameRoomView from '../../views/GameRoomView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -226,8 +227,10 @@ export default class IntroLayout
 	async localPveClick(event)
 	{
 		event.preventDefault();
-
 		console.log('[EVENT] button clicked: local-pve');
+
+		const gameRoom = new GameRoomView('local-pve');
+		await gameRoom.render();
 
 		return true;
 	}
@@ -235,8 +238,10 @@ export default class IntroLayout
 	async localPvpClick(event)
 	{
 		event.preventDefault();
-
 		console.log('[EVENT] button clicked : local-pvp');
+
+		const gameRoom = new GameRoomView('local-pvp');
+		gameRoom.render();
 
 		return true;
 	}
@@ -244,8 +249,10 @@ export default class IntroLayout
 	async localTourClick(event)
 	{
 		event.preventDefault();
-
 		console.log('[EVENT] button clicked : local-tour');
+
+		const gameRoom = new GameRoomView('local-tour');
+		gameRoom.render();
 
 		return true;
 	}

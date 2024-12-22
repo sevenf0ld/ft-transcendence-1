@@ -28,6 +28,7 @@
 @import "./components/HomeView/BotChatbox.css";
 @import "./components/HomeView/BotFriendPfp.css";
 @import "./components/HomeView/ModalSettings.css";
+@import "./components/GameView/GameLeftPanel.css";
 
 /* ...to be added */
 
@@ -68,6 +69,9 @@
 	--stfr-1: #00ff22; /* friend-online */
 	--stfr-2: #646464; /* friend-offline */
 	--stfr-3: #4a4a4a; /* friend-offline-txt */
+	/* room-theme */
+	--roomTheme-local: #1e2226; /* room-theme-local */
+	--roomTheme-online: white; /* room-theme-online */
 }
 
 html,
