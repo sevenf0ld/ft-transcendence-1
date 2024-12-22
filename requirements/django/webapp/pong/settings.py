@@ -152,6 +152,7 @@ REST_FRAMEWORK = {
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = ['https://ftpong.com'] # apex domain
 REST_AUTH = {
+    'USER_DETAILS_SERIALIZER': 'user_auth.serializers.UserLoginDetailsModelSerializer',
     'LOGOUT_ON_PASSWORD_CHANGE': True,
     'SESSION_LOGIN': False,
     'USE_JWT': True,

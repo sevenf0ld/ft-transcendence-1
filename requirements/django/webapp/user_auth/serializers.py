@@ -2,6 +2,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 import re
+from django.conf import settings
 
 try:
     from allauth.account import app_settings as allauth_account_settings
@@ -34,3 +35,19 @@ class CustomRegisterSerializer(RegisterSerializer):
         if re.search(pattern, username):
             raise serializers.ValidationError('Username is blacklisted.')
         return username
+
+class UserLoginDetailsModelSerializer(serializers.ModelSerializer):
+    @staticmethod
+    def validate_username(username):
+        if 'allauth.account' not in settings.INSTALLED_APPS:
+            return username
+
+        from allauth.account.adapter import get_adapter
+        username = get_adapter().clean_username(username)
+        return username
+
+    # exclude pk, first name and last name
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+        read_only_fields = ['email']
