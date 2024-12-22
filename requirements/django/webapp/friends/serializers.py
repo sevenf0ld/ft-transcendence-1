@@ -28,13 +28,13 @@ class FriendRequestModelSerializer(serializers.ModelSerializer):
                 'recipient': 'This field is required.'
             })
         try:
-            sender = User.objects.get(username=sender_username)
+            sender = User.objects.get(username__iexact=sender_username)
         except User.DoesNotExist:
             raise serializers.ValidationError({
                 'sender': 'Non-existent user.'
             })
         try:
-            recipient = User.objects.get(username=recipient_username)
+            recipient = User.objects.get(username__iexact=recipient_username)
         except User.DoesNotExist:
             raise serializers.ValidationError({
                 'recipient': 'Non-existent user.'
@@ -45,6 +45,7 @@ class FriendRequestModelSerializer(serializers.ModelSerializer):
         }
 
     # {'sender': <User: tmp>, 'recipient': <User: fake>}
+    # data is as designed by to_internal_value
     def validate(self, data):
         sender = data.get('sender')
         recipient = data.get('recipient')
@@ -143,13 +144,13 @@ class FriendListUpdateModelSerializer(serializers.ModelSerializer):
                 'target': 'This field is required.'
             })
         try:
-            user = User.objects.get(username=user_username)
+            user = User.objects.get(username__iexact=user_username)
         except User.DoesNotExist:
             raise serializers.ValidationError({
                 'user': 'Non-existent user.'
             })
         try:
-            target = User.objects.get(username=target_username)
+            target = User.objects.get(username__iexact=target_username)
         except User.DoesNotExist:
             raise serializers.ValidationError({
                 'target': 'Non-existent user.'
