@@ -268,7 +268,7 @@ export default class IntroLayout
 		const modata = document.querySelector('#modal-join .modal-body');
 		modata.setAttribute('data-room-type', 'pvp');
 		modata.innerHTML = "";
-		const modaPvp = new ModalRoomJoin(modata);
+		const modaPvp = new ModalRoomJoin(modata, 'online-pvp');
 		modaPvp.render();
 
 		return true;
@@ -285,7 +285,7 @@ export default class IntroLayout
 		const modata = document.querySelector('#modal-join .modal-body');
 		modata.setAttribute('data-room-type', 'tour');
 		modata.innerHTML = "";
-		const modaTour = new ModalRoomJoin(modata);
+		const modaTour = new ModalRoomJoin(modata, 'online-tour');
 		modaTour.render();
 
 		return true;

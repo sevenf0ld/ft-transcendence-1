@@ -58,8 +58,8 @@ export default class GameRoomView
 
 		const game_guide = new GameGuide(this.left, this.type);
 		const game_board = new GameBoard();
-		const action_panel = new ActionPanel();
-		const announcer = new Announcer();
+		const action_panel = new ActionPanel(this.botLeft, this.type);
+		const announcer = new Announcer(this.botRight, this.type);
 		const room_list = new RoomList();
 
 		switch (this.type)
@@ -86,8 +86,8 @@ export default class GameRoomView
 
 		await game_guide.render();
 		//await game_board.render();
-		//await action_panel.render();
-		//await announcer.render();
+		await action_panel.render();
+		await announcer.render();
 		//await room_list.render();
 		//
 		// TEMPORARY FOR DEBUG

@@ -102,25 +102,6 @@ export default class GameGuide
 		return true;
 	}
 
-	async setTheme(theme)
-	{
-		const hd = this.container.querySelector('.ct-gr-guide-header');
-		const ft = this.container.querySelector('.ct-gr-guide-footer');
-		const themes = [
-			`ct-gr-local-local-color`,
-			`ct-gr-local-online-color`,
-		];
-		for ( const t of themes )
-		{
-			hd.classList.remove(t);
-			ft.classList.remove(t);
-		}
-		hd.classList.add(theme);
-		ft.classList.add(theme);
-
-		return true;
-	}
-
 	// --------------------------------------------- //
 	// BOOSTRAP-MODAL-RELATED (SHARED-LAYOUT-BASE)
 	// --------------------------------------------- //
@@ -184,7 +165,6 @@ export default class GameGuide
 		return template;
 	}
 
-
 	/***********************************
 	 * LOCAL-PVP
 	 ***********************************/
@@ -227,7 +207,6 @@ export default class GameGuide
 	// --------------------------------------------- //
 	async bind_events_lpvp()
 	{
-		await this.setTheme('ct-gr-local-color');
 		return true;
 	}
 	// --------------------------------------------- //
@@ -279,8 +258,6 @@ export default class GameGuide
 		return template;
 	}
 
-
-
 	/***********************************
 	 * LOCAL-TOUR
 	 ***********************************/
@@ -323,8 +300,6 @@ export default class GameGuide
 	// --------------------------------------------- //
 	async bind_events_ltour()
 	{
-		await this.setTheme('ct-gr-local-color');
-
 		return true;
 	}
 	// --------------------------------------------- //
@@ -422,8 +397,6 @@ export default class GameGuide
 	// --------------------------------------------- //
 	async bind_events_lpve()
 	{
-		await this.setTheme('ct-gr-local-color');
-
 		return true;
 	}
 	// --------------------------------------------- //
@@ -516,8 +489,6 @@ export default class GameGuide
 	// --------------------------------------------- //
 	async bind_events_opvp()
 	{
-		await this.setTheme('ct-gr-online-color');
-
 		return true;
 	}
 	// --------------------------------------------- //
@@ -575,9 +546,9 @@ export default class GameGuide
 	// --------------------------------------------- //
 	// MAIN-EXECUTION (ONLINE-TOUR)
 	// --------------------------------------------- //
-	async onlinePvp_render(renderType)
+	async onlineTour_render(renderType)
 	{
-		const template = await this.init_template_opvp();
+		const template = await this.init_template_otour();
 
 		if (renderType.toLowerCase() === 'append')
 		{
@@ -595,30 +566,28 @@ export default class GameGuide
 			throw new Error('[ERR] invalid render renderType');
 		}
 
-		await this.push_important_elements_opvp();
-		await this.bind_events_opvp();
-		await this.bind_modals_opvp();
+		await this.push_important_elements_otour();
+		await this.bind_events_otour();
+		await this.bind_modals_otour();
 
 		return true;
 	}
 
-	async push_important_elements_opvp()
+	async push_important_elements_otour()
 	{
 		return true;
 	}
 	// --------------------------------------------- //
 	// EVENT-RELATED (ONLINE-TOUR)
 	// --------------------------------------------- //
-	async bind_events_opvp()
+	async bind_events_otour()
 	{
-		await this.setTheme('ct-gr-online-color');
-
 		return true;
 	}
 	// --------------------------------------------- //
 	// BOOSTRAP-MODAL-RELATED (ONLINE-TOUR)
 	// --------------------------------------------- //
-	async bind_modals_opvp()
+	async bind_modals_otour()
 	{
 		return true;
 	}
@@ -628,10 +597,10 @@ export default class GameGuide
 	// --------------------------------------------- //
 	// HTML-ELEMENT-RELATED (ONLINE-TOUR)
 	// --------------------------------------------- //
-	async init_template_opvp()
+	async init_template_otour()
 	{
 		let template = "";
-		template += await this.html_main_ctn_opvp();
+		template += await this.html_main_ctn_otour();
 
 		// trim new lines, spaces, and tabs
 		template = template.replace(/\s+/g, ' ');
@@ -642,7 +611,7 @@ export default class GameGuide
 		return template;
 	}
 
-	async html_main_ctn_opvp()
+	async html_main_ctn_otour()
 	{	
 		// [-] HELPER FUNCTION
 		// [A] TEMPLATE

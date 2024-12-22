@@ -26,34 +26,6 @@ export default class GameBoard
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 	}
 
-	async render(type)
-	{
-		await this.baseLayour_render();
-
-		switch (type)
-		{
-			case 'local-pvp':
-				await this.localPvp_render();
-				break;
-			case 'local-tour':
-				await this.localTour_render();
-				break;
-			case 'local-pve':
-				await this.localPve_render();
-				break;
-			case 'online-pvp':
-				await this.onlinePvp_render();
-				break;
-			case 'online-tour':
-				await this.onlineTour_render();
-				break;
-			default:
-				break;
-		}
-
-		return true;
-	}
-
 	/***********************************
 	 * SHARED-LAYOUT-BASE
 	 ***********************************/

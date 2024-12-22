@@ -28,7 +28,9 @@
 @import "./components/HomeView/BotChatbox.css";
 @import "./components/HomeView/BotFriendPfp.css";
 @import "./components/HomeView/ModalSettings.css";
-@import "./components/GameView/GameLeftPanel.css";
+@import "./components/GameView/GameGuide.css";
+@import "./components/GameView/ActionPanel.css";
+@import "./components/GameView/Announcer.css";
 
 /* ...to be added */
 
