@@ -66,6 +66,9 @@ class FriendRequestCreateAPIView(generics.CreateAPIView):
              return Response({'detail': f'Friend request failed as you are already friends with {recipient}.'}, status=status.HTTP_400_BAD_REQUEST)
         if sender_friendlist.is_blocked(recipient):
              return Response({'detail': f'Friend request failed as you have blocked {recipient}.'}, status=status.HTTP_400_BAD_REQUEST)
+        recipient_friendlist = FriendList.objects.get(user=recipient)
+        if recipient_friendlist.is_blocked(sender):
+             return Response({'detail': f'Friend request failed as you have been blocked by {sender}.'}, status=status.HTTP_400_BAD_REQUEST)
 
         existing = is_existing_request(sender, recipient)
         if existing is not None:
