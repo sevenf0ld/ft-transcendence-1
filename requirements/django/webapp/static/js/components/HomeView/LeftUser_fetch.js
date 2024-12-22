@@ -33,6 +33,7 @@ class fetch_logout
 			await mainFetch.setUrl('/api/user_auth/logout/');
 			await mainFetch.setMethod('POST');
 			await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+			await mainFetch.appendHeaders('Content-Type', 'application/json');
 			await mainFetch.appendBody('signned_in', 'false');
 			await mainFetch.fetchData();
 			this.fetch_obj = mainFetch;

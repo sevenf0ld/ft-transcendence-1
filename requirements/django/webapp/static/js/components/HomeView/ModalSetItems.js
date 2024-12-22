@@ -28,8 +28,11 @@ export default class ModalSettingsItems
 			'lang-cn': '',
 			'acc-submit': '',
 			'pfp-upload': '',
+			'pfp-input-upload': '',
+			'pfp-submit': '',
 			'pfp-remove': '',
-			'2fa-toggle': '',
+			'tfa-on': '',
+			'tfa-off': '',
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 	}
@@ -349,6 +352,324 @@ export default class ModalSettingsItems
 	/***********************************
 	 * PROFILE-PICTURE-SETTINGS
 	 ***********************************/
+	// --------------------------------------------- //
+	// MAIN-EXECUTION (PROFILE-PICTURE)
+	// --------------------------------------------- //
+	async render_pfp(type)
+	{
+		const template = await this.init_template_pfp();
+
+		if (type.toLowerCase() === 'append')
+		{
+			this.container.insertAdjacentHTML(
+				'beforeend', template
+			);
+		}
+		else if (type.toLowerCase() === 'replace')
+		{
+			this.container.innerHTML = '';
+			this.container.innerHTML = template;
+		}
+		else
+		{
+			throw new Error('[ERR] invalid render type');
+		}
+
+		await this.push_important_elements_pfp();
+		await this.bind_events_pfp();
+		await this.bind_modals_pfp();
+
+		return true;
+	}
+
+	async push_important_elements_pfp()
+	{
+		this.buttons['pfp-upload'] = document.getElementById('img_pfp');
+		this.buttons['pfp-input-upload'] = document.getElementById('input_pfp');
+		this.buttons['pfp-submit'] = document.getElementById('btn_pfp_submit');
+		this.buttons['pfp-remove'] = document.getElementById('btn_pfp_remove');
+
+		if (!this.buttons['pfp-upload'])
+			throw new Error('[ERR] pfp-upload button not found');
+		if (!this.buttons['pfp-remove'])
+			throw new Error('[ERR] pfp-remove button not found');
+
+		return true;
+	}
+	// --------------------------------------------- //
+	// EVENT-RELATED (PROFILE-PICTURE)
+	// --------------------------------------------- //
+	async bind_events_pfp()
+	{
+		this.buttons['pfp-upload'].addEventListener(
+			'click', async (e) => {await this.imgUploadClick(e);}
+		);
+
+		this.buttons['pfp-submit'].addEventListener(
+			'click', async (e) => {await this.submitClick(e);}
+		);
+
+		this.buttons['pfp-remove'].addEventListener(
+			'click', async (e) => {await this.removeClick(e);}
+		);
+
+		return true;
+	}
+
+	async imgUploadClick(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] button clicked : pfp-upload');
+
+		const fileInput = this.buttons['pfp-input-upload'];
+		fileInput.click();
+
+		fileInput.addEventListener('change', async (e) =>
+		{
+			const file = e.target.files[0];
+			if (!file)
+				return false;
+			if (!file.type.match('image.*'))
+			{
+				alert('error File type not supported');
+				fileInput.value = '';
+				return false
+			}
+			if (file.size > 2 * 1024 * 1024)
+			{
+				alert('error File size exceeds 2MB');
+				return false;
+			}
+			console.log("Upload Image detected : size (mb) : ", file.size / 1024 / 1024);
+			const reader = new FileReader();
+			reader.onload = () =>
+			{
+				this.buttons['pfp-upload'].src = reader.result;
+			}
+			reader.readAsDataURL(file);
+		});
+
+		return true;
+	}
+
+	async submitClick(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] button clicked : pfp-submit');
+
+		return true;
+	}
+
+	async removeClick(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] button clicked : pfp-remove');
+
+		return true;
+	}
+	// --------------------------------------------- //
+	// BOOSTRAP-MODAL-RELATED (PROFILE-PICTURE)
+	// --------------------------------------------- //
+	async bind_modals_pfp()
+	{
+		return true;
+	}
+	// --------------------------------------------- //
+	// FETCH-RELATED (PROFILE-PICTURE)
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// HTML-ELEMENT-RELATED (PROFILE-PICTURE)
+	// --------------------------------------------- //
+	async init_template_pfp()
+	{
+		let template = "";
+		template += await this.html_main_ctn_pfp();
+
+		// trim new lines, spaces, and tabs
+		template = template.replace(/\s+/g, ' ');
+		template = template.replace(/>\s+</g, '><');
+		template = template.replace(/\s*=\s*/g, '=');
+		template = template.trim();
+
+		return template;
+	}
+
+	async html_main_ctn_pfp()
+	{
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%main-c1">
+			<div class="%img-c1">
+				<img @att1 @att2>
+				<img class="%edit-c1" src="/static/assets/images/edit.svg">
+			</div>
+			<input @att3 @att4>
+			<button @att5 @att6>@txt-1</button>
+			<button @att7 @att8>@txt-2</button>
+		</div>
+		`
+		// [B] SET atts
+		const atts =
+		{
+			'%main-c1': 'ct-set-pfp-ctn',
+			'%img-c1': 'ct-set-pfp-img-ctn',
+			'@att1': 'id="img_pfp" alt="profile-picture"',
+			'@att2': 'src="/static/assets/images/default-pfp.png"',
+			'%edit-c1': 'ct-set-pfp-edit',
+			'@att3': 'id="input_pfp" type="file" accept="image/*"',
+			'@att4': 'autocomplete="off"',
+			'@att5': 'id="btn_pfp_submit" data-bs-dismiss="modal"',
+			'@att6': 'type="button"',
+			'@txt-1': 'Confirm',
+			'@att7': 'id="btn_pfp_remove" data-bs-dismiss="modal"',
+			'@att8': 'type="button"',
+			'@txt-2': 'Remove',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	/***********************************
+	 * 2FA-SETTINGS
+	 * *********************************/
+	// --------------------------------------------- //
+	// MAIN-EXECUTION (2FA)
+	// --------------------------------------------- //
+	async render_2fa(type)
+	{
+		const template = await this.init_template_2fa();
+
+		if (type.toLowerCase() === 'append')
+		{
+			this.container.insertAdjacentHTML(
+				'beforeend', template
+			);
+		}
+		else if (type.toLowerCase() === 'replace')
+		{
+			this.container.innerHTML = '';
+			this.container.innerHTML = template;
+		}
+		else
+		{
+			throw new Error('[ERR] invalid render type');
+		}
+
+		await this.push_important_elements_2fa();
+		await this.bind_events_2fa();
+		await this.bind_modals_2fa();
+
+		return true;
+	}
+
+	async push_important_elements_2fa()
+	{
+		this.buttons['tfa-on'] = document.getElementById('btn_2fa_on');
+		this.buttons['tfa-off'] = document.getElementById('btn_2fa_off');
+
+		if (!this.buttons['tfa-on'])
+			throw new Error('[ERR] tfa-on button not found');
+		if (!this.buttons['tfa-off'])
+			throw new Error('[ERR] tfa-off button not found');
+
+		return true;
+	}
+	// --------------------------------------------- //
+	// EVENT-RELATED (2FA)
+	// --------------------------------------------- //
+	async bind_events_2fa()
+	{
+		this.buttons['tfa-on'].addEventListener(
+			'click', async (e) => {await this.tfaEnableClick(e);}
+		);
+		this.buttons['tfa-off'].addEventListener(
+			'click', async (e) => {await this.tfaDisableClick(e);}
+		);
+		return true;
+	}
+
+	async tfaEnableClick(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] button clicked : tfa-on');
+
+		return true;
+	}
+
+	async tfaDisableClick(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] button clicked : tfa-off');
+
+		return true;
+	}
+
+	// --------------------------------------------- //
+	// BOOSTRAP-MODAL-RELATED (2FA)
+	// --------------------------------------------- //
+	async bind_modals_2fa()
+	{
+		return true;
+	}
+	// --------------------------------------------- //
+	// FETCH-RELATED (2FA)
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// HTML-ELEMENT-RELATED (PROFILE-PICTURE)
+	// --------------------------------------------- //
+	async init_template_2fa()
+	{
+		let template = "";
+		template += await this.html_main_ctn_2fa();
+
+		// trim new lines, spaces, and tabs
+		template = template.replace(/\s+/g, ' ');
+		template = template.replace(/>\s+</g, '><');
+		template = template.replace(/\s*=\s*/g, '=');
+		template = template.trim();
+
+		return template;
+	}
+
+	async html_main_ctn_2fa()
+	{
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%main-c1">
+			<div class="%sta-c">
+				<div class="%icon-c1"></div>
+				<p>%sta-t</p>
+			</div>
+			<button @att1 class="%btn1-c">@att2</button>
+			<button @att3 class="%btn2-c">@att4</button>
+		</div>
+		`
+		// [B] SET atts
+		const atts =
+		{
+			'%main-c1': 'ct-set-2fa-ctn',
+			'%sta-c': 'ct-set-2fa-status',
+			'%icon-c1': 'ct-set-2fa-icon twofa-off',
+			'%sta-t': '2FA Status: Disabled',
+			'@att1': 'id="btn_2fa_on" data-bs-dismiss="modal"',
+			'@att2': 'Enable 2FA',
+			'%btn1-c': 'd-block',
+			'@att3': 'id="btn_2fa_off" data-bs-dismiss="modal"',
+			'@att4': 'Disable 2FA',
+
+			'%btn2-c': 'd-none',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
 	/***********************************
 	 * 2FA-SETTINGS
 	 * *********************************/
