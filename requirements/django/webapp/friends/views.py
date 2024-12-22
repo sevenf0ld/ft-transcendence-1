@@ -63,18 +63,18 @@ class FriendRequestCreateAPIView(generics.CreateAPIView):
         recipient = serializer.validated_data['recipient']
         sender_friendlist = FriendList.objects.get(user=sender)
         if sender_friendlist.is_friend(recipient):
-             return Response({'detail': 'Friend request failed as you are already friends.'}, status=status.HTTP_400_BAD_REQUEST)
+             return Response({'detail': f'Friend request failed as you are already friends with {recipient}.'}, status=status.HTTP_400_BAD_REQUEST)
         if sender_friendlist.is_blocked(recipient):
-             return Response({'detail': 'Friend request failed as you have been blocked.'}, status=status.HTTP_400_BAD_REQUEST)
+             return Response({'detail': f'Friend request failed as you have blocked {recipient}.'}, status=status.HTTP_400_BAD_REQUEST)
 
         existing = is_existing_request(sender, recipient)
         if existing is not None:
             # outgoing (sender)
             if existing.id == sender.id:
-                return Response({'detail': f'You have previously sent a friend request to {recipient}. Cancel from the outgoing section in friend list if necessary.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'detail': f'You have previously sent a friend request to {recipient}.'}, status=status.HTTP_400_BAD_REQUEST)
             # incoming (recipient)
             elif existing.id == recipient.id:
-                return Response({'detail': f'{recipient} has previously sent you a friend request. Accept or decline accordingly from the incoming section in friend list.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'detail': f'{recipient} has previously sent you a friend request.'}, status=status.HTTP_400_BAD_REQUEST)
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
