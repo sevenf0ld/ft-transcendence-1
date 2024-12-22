@@ -1,0 +1,20 @@
+/* file : input.css */
+/* -------------------------------------------------- */
+/* home-input
+/* -------------------------------------------------- */
+.ct-home-input
+{
+	color: var(--txt-7);
+	background: var(--cor-4);
+	border: none;
+}
+
+.ct-home-input::placeholder
+{
+	color: var(--txt-8);
+}
+
+.ct-home-input:focus
+{
+	outline: none;
+}

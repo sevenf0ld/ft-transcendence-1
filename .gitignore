@@ -1,8 +1,9 @@
-.env
-
 #vim
 *.swp
 *.swo
+
+#env
+.env
 
 #python
 # Byte-compiled / optimized / DLL files

@@ -1,0 +1,86 @@
+services:
+
+#    redis:
+#      build:
+#        context: ./requirements/redis/.
+#      container_name: redis
+#      ports:
+#        - "6379:6379"
+#      restart: always
+#      networks:
+#        - net_trans
+#      privileged: true
+    redis:
+      image: redis:6-alpine
+      container_name: redis
+      ports:
+        - "6379:6379"
+      networks:
+        - net_trans
+
+    nginx:
+      build:
+        context: ./requirements/nginx/.
+      container_name: nginx
+      ports:
+        - "443:443"
+        - "80:80"
+      restart: on-failure
+      depends_on:
+        - django
+      volumes:
+        #- vol_django:/django/
+        - ./requirements/django/webapp/:/django/
+        - ./requirements/django/webapp/staticfiles/:/django/staticfiles
+      networks:
+        - net_trans
+
+    django:
+      build:
+        context: ./requirements/django/.
+      container_name: django
+      expose:
+        - "8000:8000"
+      restart: on-failure
+      depends_on:
+        - redis
+      volumes:
+        #- vol_django:/django/
+        - ./requirements/django/webapp/:/django/
+        - ./requirements/django/webapp/staticfiles/:/django/staticfiles
+      networks:
+        - net_trans
+      env_file:
+        - .env
+
+    postgres:
+      image: postgres:latest
+      container_name: postgres
+      ports:
+        - "5432:5432"
+      restart: on-failure
+      volumes:
+        - vol_pg:/var/lib/postgresql/data
+      networks:
+        - net_trans
+      env_file:
+        - .env
+
+volumes:
+
+    #vol_django:
+    #  driver: local
+    #  driver_opts:
+    #    type: none
+    #    o: bind
+    #    device: ~/data/vol_django
+    vol_pg:
+      driver: local
+      driver_opts:
+        type: none
+        o: bind
+        device: ~/data/vol_pg
+
+networks:
+  net_trans:
+    driver: bridge

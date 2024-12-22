@@ -1,0 +1,79 @@
+class TokenCs
+{
+	constructor()
+	{
+		this.token_id = null;
+	}
+
+	async getCookie(name) {
+		let cookieValue = null;
+		if (document.cookie && document.cookie !== '')
+		{
+			const cookies = document.cookie.split(';');
+			for (let i = 0; i < cookies.length; i++)
+			{
+				const cookie = cookies[i].trim();
+				if (cookie.substring(0, name.length + 1) === (name + '='))
+				{
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
+	}
+
+	async refresh_token()
+	{
+		const csrf_token = await this.getCookie('csrftoken');
+		const response = await fetch('/api/jwt_token/token/refresh/', {
+			method: 'POST',
+			headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrf_token
+			},
+		});
+
+		const data = await response.json();
+		if (response.status === 401)
+		{
+			console.error('refresh token invalid.');
+			return false;
+		}
+		else if (response.status !== 200)
+		{
+			console.error('refresh token crashed.');
+			return false;
+		}
+
+		return true;
+	}
+
+	async verify_token()
+	{
+		const csrf_token = await this.getCookie('csrftoken');
+		const access_token = await this.getCookie('jwt-access');
+		const response = await fetch('/api/jwt_token/token/verify/', {
+			method: 'POST',
+			headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrf_token,
+					//'Authorization': `Bearer ${access_token}`
+			},
+			body: JSON.stringify({
+				token: access_token
+			})
+		});
+
+		const data = await response.json();
+		if (response.status === 401)
+		{
+			const refresh_data = await this.refresh_token();
+			if (refresh_data === false)
+				console.error('refresh failed after verify.');
+		}
+	}
+}
+
+const TOKEN = new TokenCs();
+export default TOKEN;
