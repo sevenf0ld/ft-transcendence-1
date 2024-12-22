@@ -6,6 +6,7 @@
 // Importing-external
 // -------------------------------------------------- //
 import ModalLayout from '../../layouts//ModalLayout.js';
+import ModalSettingsItems from './ModalSetItems.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -30,6 +31,7 @@ class button
 			'language': '',
 			'account': '',
 			'profile': '',
+			'2fa': '',
 		};
 	}
 
@@ -57,17 +59,20 @@ function html_button()
 		<button id="%btn1-c">%btn1-t</button>
 		<button id="%btn2-c">%btn2-t</button>
 		<button id="%btn3-c">%btn3-t</button>
+		<button id="%btn4-c">%btn4-t</button>
 	`;
 
 	// [B] SET ATTRIBUTES
 	const attributes =
 	{
-		'%btn1-c': 'btn-lang',
+		'%btn1-c': 'btn_setLang',
 		'%btn1-t': 'Language',
-		'%btn2-c': 'btn-acc',
+		'%btn2-c': 'btn_setAcc',
 		'%btn2-t': 'Account',
-		'%btn3-c': 'btn-pfp',
+		'%btn3-c': 'btn_setPfp',
 		'%btn3-t': 'Profile Picture',
+		'%btn4-c': 'btn_set2FA',
+		'%btn4-t': '2FA',
 	};
 
 	for (const key in attributes)
@@ -77,6 +82,7 @@ function html_button()
 	btns.arr['language'] = attributes['%btn1-c'];
 	btns.arr['account'] = attributes['%btn2-c'];
 	btns.arr['profile'] = attributes['%btn3-c'];
+	btns.arr['2fa'] = attributes['%btn4-c'];
 
 	// [D] HTML RETURN
 	return template;
@@ -99,6 +105,7 @@ export default class ModalSettings
 	{
 		this.container = container;
 		this.components = {};
+		this.modal_title = document.querySelector('#modal-settings .modal-title');
 	}
 
 	// --- [01] GETTER
@@ -170,6 +177,12 @@ export default class ModalSettings
 		console.log('[EVENT] button clicked : language');
 		event.preventDefault();
 
+		this.container.innerHTML = '';
+		this.modal_title.innerHTML = 'Language';
+
+		const ModalSetItem = new ModalSettingsItems(this.container);
+		await ModalSetItem.render_language('replace');
+
 		return true;
 	}
 
@@ -178,6 +191,12 @@ export default class ModalSettings
 		console.log('[EVENT] button clicked : account');
 		event.preventDefault();
 
+		this.container.innerHTML = '';
+		this.modal_title.innerHTML = 'Account';
+
+		const ModalSetItem = new ModalSettingsItems(this.container);
+		await ModalSetItem.render_account('replace');
+
 		return true;
 	}
 
@@ -185,6 +204,25 @@ export default class ModalSettings
 	{
 		console.log('[EVENT] button clicked : profile');
 		event.preventDefault();
+
+		this.container.innerHTML = '';
+		this.modal_title.innerHTML = 'Profile Picture';
+
+		const ModalSetItem = new ModalSettingsItems(this.container);
+		await ModalSetItem.render_pfp('replace');
+		return true;
+	}
+
+	async twofaClick(event)
+	{
+		console.log('[EVENT] button clicked : 2fa');
+		event.preventDefault();
+
+		this.container.innerHTML = '';
+		this.modal_title.innerHTML = '2FA';
+
+		const ModalSetItem = new ModalSettingsItems(this.container);
+		await ModalSetItem.render_2fa('replace');
 
 		return true;
 	}
@@ -201,6 +239,9 @@ export default class ModalSettings
 		);
 		btns.arr['profile'].addEventListener(
 			'click', async (e) => {await this.profileClick(e);}
+		);
+		btns.arr['2fa'].addEventListener(
+			'click', async (e) => {await this.twofaClick(e);}
 		);
 
 		return true;

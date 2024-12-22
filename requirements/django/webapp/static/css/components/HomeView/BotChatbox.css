@@ -29,6 +29,8 @@
 	cursor: pointer;
 	border-radius: 0.3rem;
 	font-weight: bold;
+	background-color: #3d444d;
+	color: #1b1e22;
 }
 
 .ct-chatbox-ctn .ct-chatbox-inv
@@ -66,6 +68,7 @@
 	padding: 0.3rem;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
+	word-break: break-all;
 }
 
 .ct-chatbox-ctn .ct-chatbox-ft
