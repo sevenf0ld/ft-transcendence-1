@@ -20,6 +20,7 @@ export default class Announcer
 	{
 		// COMMON-atts
 		this.container = container;
+		this.base_ctn = '';
 		this.main_ctn = '';
 		this.buttons = {
 		};

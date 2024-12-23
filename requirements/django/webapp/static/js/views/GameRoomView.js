@@ -60,7 +60,7 @@ export default class GameRoomView
 		const game_board = new GameBoard();
 		const action_panel = new ActionPanel(this.botLeft, this.type);
 		const announcer = new Announcer(this.botRight, this.type);
-		const room_list = new RoomList();
+		const room_list = new RoomList(this.right, this.type);
 
 		switch (this.type)
 		{
@@ -88,18 +88,7 @@ export default class GameRoomView
 		//await game_board.render();
 		await action_panel.render();
 		await announcer.render();
-		//await room_list.render();
-		//
-		// TEMPORARY FOR DEBUG
-		this.right.insertAdjacentHTML('beforeend',
-			'<button id="tmp-btn-home">go back</button>'
-		);
-		const btn_home = document.querySelector("#tmp-btn-home");
-		btn_home.addEventListener('click', async () =>
-		{
-			const home_view = new HomeView();
-			await home_view.render();
-		});
+		await room_list.render();
 
 		return true;
 	}
