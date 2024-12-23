@@ -39,6 +39,8 @@ class Profile(models.Model):
 
     mfa_email_enabled = models.BooleanField(default=False)
 
+    is_online = models.BooleanField(default=False)
+
     #=================================#
     #=====default model methods=======#
     #=================================#
