@@ -2,6 +2,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 import re
+from django.conf import settings
 
 try:
     from allauth.account import app_settings as allauth_account_settings
@@ -24,7 +25,7 @@ class CustomRegisterSerializer(RegisterSerializer):
                     ('A user is already registered with this e-mail address.'),
                 )
         if User.objects.filter(email__iexact=email).exists():
-            raise serializers.ValidationError('Email address is taken.')
+            raise serializers.ValidationError('E-mail address is taken.')
         return email
 
     def validate_username(self, username):
@@ -34,3 +35,35 @@ class CustomRegisterSerializer(RegisterSerializer):
         if re.search(pattern, username):
             raise serializers.ValidationError('Username is blacklisted.')
         return username
+
+# exclude pk, first name and last name from json response
+class UserLoginDetailsModelSerializer(serializers.ModelSerializer):
+    @staticmethod
+    def validate_username(username):
+        if 'allauth.account' not in settings.INSTALLED_APPS:
+            return username
+
+        from allauth.account.adapter import get_adapter
+        username = get_adapter().clean_username(username)
+        return username
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+        read_only_fields = ['email']
+
+#class UserAccountUpdateModelSerializer(serializers.ModelSerializer):
+#    # mandatory in request
+#    current_password = serializers.CharField(required='True')
+#    new_email = serializers.EmailField()
+#    new_password = serializers.CharField()
+#    confirm_password = serializers.CharField()
+#
+#    print(current_password)
+#
+#    class Meta:
+#        model = User
+#        # not included in json response
+#        write_only_fields = ['current_password']
+#        # needed in request processing
+#        #read_only_fields = ['new_email']

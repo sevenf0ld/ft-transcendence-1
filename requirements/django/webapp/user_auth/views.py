@@ -2,13 +2,14 @@ from django.shortcuts import render
 
 # Create your views here.
 from dj_rest_auth.registration.views import RegisterView
-from .serializers import CustomRegisterSerializer
+from .serializers import (
+    CustomRegisterSerializer,
+    #UserAccountUpdateModelSerializer,
+)
 from dj_rest_auth.views import LoginView
 from dj_rest_auth.utils import jwt_encode
-from user_auth.utils import is_mfa_enabled
 from django.utils import timezone
-from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework import status, generics
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -20,6 +21,16 @@ from rest_framework.permissions import AllowAny
 from django.core.cache import cache
 from django.middleware.csrf import get_token
 import smtplib
+from dj_rest_auth.jwt_auth import JWTCookieAuthentication
+from .utils import (
+    is_mfa_enabled,
+    is_old_email,
+    is_existing_email,
+    is_old_password,
+    is_valid_password,
+    enable_mfa,
+    disable_mfa,
+)
 
 class CustomRegisterView(RegisterView):
     serializer_class = CustomRegisterSerializer
@@ -138,3 +149,89 @@ def verify_otp(request):
     csrf_token = get_token(request)
     retval.set_cookie('csrftoken', csrf_token)
     return retval
+
+#class UserAccountUpdateAPIView(generics.UpdateAPIView):
+#    queryset = User.objects.all()
+#    serializer_class = UserAccountUpdateModelSerializer
+#    #authentication_classes = [JWTCookieAuthentication]
+#    #permission_classes = [IsAuthenticated]
+#    permission_classes = [AllowAny]
+@api_view(['PATCH'])
+#@permission_classes([IsAuthenticated])
+#@authentication_classes([JWTCookieAuthentication])
+@permission_classes([AllowAny])
+def update_user_account(request):
+    user = request.user
+    if not user.is_authenticated:
+        return Response({'details': 'Unauthenticated user.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    current_pw = request.data.get('current_pw')
+    # remove after frontend form validation
+    if current_pw is None:
+        return Response({'details': 'Password required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    new_email = request.data.get('new_email')
+    new_pw = request.data.get('new_pw')
+    confirm_pw = request.data.get('confirm_pw')
+
+    # remove after frontend form validation
+    if new_email is None and new_pw is None and confirm_pw is None:
+        return Response({'details': 'All empty fields.'}, status=status.HTTP_400_BAD_REQUEST)
+    if new_pw and confirm_pw is None or confirm_pw and new_pw is None:
+        return Response({'details': 'Empty password field.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if new_email:
+        if is_old_email(user, new_email):
+            return Response({'details': 'New e-mail same as current e-mail.'}, status=status.HTTP_400_BAD_REQUEST)
+        if is_existing_email(email):
+            return Response({'details': 'E-mail address is already taken.'}, status=status.HTTP_400_BAD_REQUEST)
+        user.email = new_email
+        user.save()
+        enable_mfa(user)
+        content = {'detail': 'E-mail address updated. 2FA is automatically enabled on e-mail change.'}
+        #return Response({'details': 'E-mail address updated.'}, status=status.HTTP_200_OK)
+
+    if new_pw != confirm_pw:
+        return Response({'details': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
+    if is_old_password(user, new_pw):
+        return Response({'details': 'New password same as old password.'}, status=status.HTTP_401_UNAUTHORIZED)
+    invalidity = is_valid_password(user, new_pw)
+    if invalidity is None:
+        #user.password = make_password(new_pw)
+        user.set_password(new_pw)
+        user.save()
+        content = {'detail': 'Password updated.'}
+        #return Response({'details': 'Password updated.'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'details': invalidity}, status=status.HTTP_400_BAD_REQUEST)
+
+    if new_email and new_password:
+        content = {'detail': 'E-mail address and password updated. 2FA is automatically enabled on e-mail change.'}
+
+    return Response(content, status=status.HTTP_200_OK)
+
+@api_view(['PATCH'])
+#@permission_classes([IsAuthenticated])
+#@authentication_classes([JWTCookieAuthentication])
+@permission_classes([AllowAny])
+def update_user_mfa(request):
+    user = request.user
+    if not user.is_authenticated:
+        return Response({'details': 'Unauthenticated user.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    mfa = request.data.get('mfa')
+    if mfa is None:
+        return Response({'details': '2FA instruction required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if mfa == 'on' and is_mfa_enabled(request):
+        return Response({'details': '2FA is already enabled'}, status=status.HTTP_400_BAD_REQUEST)
+    if mfa == 'off' and not is_mfa_enabled(request):
+        return Response({'details': '2FA is already disabled'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if mfa == 'on' and not is_mfa_enabled(request):
+        enable_mfa(user)
+        content = {'detail': '2FA enabled.'}
+    elif mfa == 'off' and is_mfa_enabled(request):
+        disable_mfa(user)
+        content = {'detail': '2FA disabled.'}
+    return Response(content, status=status.HTTP_200_OK)

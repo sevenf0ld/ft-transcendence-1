@@ -35,15 +35,12 @@ class TokenCs
 		});
 
 		const data = await response.json();
-		if (response.ok)
-			//access_token = data.access;
-			console.log('refresh token successful.');
-		else if (response.status === 401)
+		if (response.status === 401)
 		{
 			console.error('refresh token invalid.');
 			return false;
 		}
-		else
+		else if (response.status !== 200)
 		{
 			console.error('refresh token crashed.');
 			return false;
