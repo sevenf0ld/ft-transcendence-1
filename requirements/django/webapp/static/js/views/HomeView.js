@@ -35,6 +35,7 @@ export default class HomeView
 
 		const user_obj = JSON.parse(localStorage.getItem('user'));
 		this.user_id = user_obj.pk;
+		this.username = user_obj.username;
 		this.websocket_url = `wss://${window.location.host}/ws/online/${this.user_id}/`;
 		this.friend_socket = new WebSocket(this.websocket_url);
 	}
@@ -47,12 +48,37 @@ export default class HomeView
 			if (data.status == 'online')
 			{
 				if (data.type == 'notify')
-					console.log('me to friends:', data.message);
-				else if (data.type == 'check')
+					console.log('me to friends (on):', data.message);
+				if (data.type == 'check')
+					console.log('friend to me:', data.message);
+			}
+			if (data.status == 'offline')
+			{
+				if (data.type == 'notify')
+					console.log('me to friends (off):', data.message);
+			}
+			if (data.status == 'playing')
+			{
+				if (data.type == 'notify')
+					console.log('me to friends (on):', data.message);
+				if (data.type == 'check')
 					console.log('friend to me:', data.message);
 			}
 		});
 
+		// homeview -> gameview (id: btn_join_room)
+		//const join_room_btn = document.getElementById('btn_join_room');
+		//join_room_btn.addEventListener('click', (event) => {
+		//	event.preventDefault();
+
+		//	if (this.friend_socket.readyState === WebSocket.OPEN)
+		//	{
+		//		this.friend_socket.send(JSON.stringify({
+		//			'sender': this.username,
+		//			'action': 'change_view',
+		//		}));
+		//	}
+		//});
 	}
 
 	async render()

@@ -377,7 +377,7 @@ export default class BotChatbox
 				this.chat_socket[this.target].send(JSON.stringify({
 				  'message': null,
 				  'sender': this.sender,
-				  'room_name': `${this.room_name}`,
+				  'room_name': this.room_name,
 				  'type': 'chat_close',
 				}));
 				input.value = '';
