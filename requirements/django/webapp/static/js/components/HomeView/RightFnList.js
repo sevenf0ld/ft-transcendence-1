@@ -104,7 +104,6 @@ async function html_friendList()
 			'%pfp-src': '/static/assets/images/default-pfp.png',
 			'%pfp-alt': 'profile picture',
 			'%name-c': `fnl-item-name ${stat} truncate`,
-
 			'%set-c': 'fnl-item-settings',
 			'%set-src': '/static/assets/images/settings.svg',
 			'%set-alt': 'settings',

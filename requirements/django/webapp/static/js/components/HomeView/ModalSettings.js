@@ -208,9 +208,8 @@ export default class ModalSettings
 		this.container.innerHTML = '';
 		this.modal_title.innerHTML = 'Profile Picture';
 
-		//const ModalSettingsItems = new ModalSettingsItems(this.container);
-		//await ModalSettingsItems.render_profile('replace');
-
+		const ModalSetItem = new ModalSettingsItems(this.container);
+		await ModalSetItem.render_pfp('replace');
 		return true;
 	}
 
@@ -222,8 +221,8 @@ export default class ModalSettings
 		this.container.innerHTML = '';
 		this.modal_title.innerHTML = '2FA';
 
-		//const ModalSettingsItems = new ModalSettingsItems(this.container);
-		//await ModalSettingsItems.render_twofa('replace');
+		const ModalSetItem = new ModalSettingsItems(this.container);
+		await ModalSetItem.render_2fa('replace');
 
 		return true;
 	}

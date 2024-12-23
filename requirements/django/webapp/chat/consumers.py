@@ -86,6 +86,7 @@ class ChatConsumer(WebsocketConsumer):
             self.channel_name
         )
 
+        # change to group send
         self.send(text_data=json.dumps({
             'type': 'disconnect',
             'message': f"{self.scope['user']} has disconnected from {self.room_group_name}.",
@@ -118,6 +119,8 @@ class ChatConsumer(WebsocketConsumer):
                     'message': f'{sender} has left the room.',
                 }
             )
+
+            # self.close()
 
     #========================================#
     #========== RECEIVE A MESSAGE ===========#
