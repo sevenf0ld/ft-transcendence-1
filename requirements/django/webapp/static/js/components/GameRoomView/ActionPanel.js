@@ -5,6 +5,7 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
+import pongEngine from '../GameLogic/PongEngine.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -181,6 +182,9 @@ export default class ActionPanel
 
 	async push_important_elements_lpvp()
 	{
+		this.buttons['start'] = this.base_ctn.querySelector('#btn_lpvp_start');
+		this.buttons['restart'] = this.base_ctn.querySelector('#btn_lpvp_restart');
+
 		return true;
 	}
 	// --------------------------------------------- //
@@ -188,8 +192,23 @@ export default class ActionPanel
 	// --------------------------------------------- //
 	async bind_events_lpvp()
 	{
+		this.buttons['start'].addEventListener(
+			'click', async (event) => { await this.lpvp_start_click(event); }
+		);
+
 		return true;
 	}
+
+	async lpvp_start_click(event)
+	{
+		event.preventDefault();
+
+		const pongGame = new pongEngine();
+		await pongGame.init('local-pvp');
+
+		return true;
+	}
+
 	// --------------------------------------------- //
 	// BOOSTRAP-MODAL-RELATED (LOCAL-PVP)
 	// --------------------------------------------- //

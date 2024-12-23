@@ -20,4 +20,5 @@
 .ct-bottom-left .ct-gr-actpanel-ctn button
 {
 	width: 11rem;
+	cursor: pointer;
 }

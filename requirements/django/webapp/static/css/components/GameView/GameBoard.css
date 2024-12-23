@@ -1,0 +1,43 @@
+/* file : GameBoard.css */
+
+.ct-top-board .ct-gr-board-waiting
+{
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  animation: glow 1.5s infinite;
+  font-family: monospace;
+}
+
+.ct-top-board:has(.ct-gr-board-waiting)
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Glow animation */
+@keyframes glow {
+  0% {
+    color: #ffffff;
+  }
+  50% {
+    color: #353c42;
+  }
+  100% {
+    color: #ffffff;
+  }
+}
+
+.ct-top-board:has(canvas#game_canvas)
+{
+  padding: 20px;
+}
+
+canvas#game_canvas
+{
+  border: 2px solid var(--gm-cor-1);
+  border-radius: 3px;
+  pointer-events: none;
+}

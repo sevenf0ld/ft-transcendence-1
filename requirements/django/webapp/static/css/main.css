@@ -32,6 +32,7 @@
 @import "./components/GameView/ActionPanel.css";
 @import "./components/GameView/Announcer.css";
 @import "./components/GameView/RoomList.css";
+@import "./components/GameView/GameBoard.css";
 
 /* ...to be added */
 
@@ -75,6 +76,9 @@
 	/* room-theme */
 	--roomTheme-local: #1e2226; /* room-theme-local */
 	--roomTheme-online: white; /* room-theme-online */
+	/* game */
+	--gm-cor-1: #3b434a; /* game-main-color */
+	--gm-cor-2:  /* game-main-color-lighter */
 }
 
 html,
