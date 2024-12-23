@@ -34,9 +34,25 @@ export default class HomeView
     	}, 15000);
 
 		const user_obj = JSON.parse(localStorage.getItem('user'));
-		this.room_name = user_obj.pk;
-		this.websocket_url = `wss://${window.location.host}/ws/online/${this.room_name}/`;
+		this.user_id = user_obj.pk;
+		this.websocket_url = `wss://${window.location.host}/ws/online/${this.user_id}/`;
 		this.friend_socket = new WebSocket(this.websocket_url);
+	}
+
+	async connect_online_status_socket()
+	{
+		this.friend_socket.addEventListener('message', async (event) => {
+			let data = JSON.parse(event.data);
+
+			if (data.status == 'online')
+			{
+				if (data.type == 'notify')
+					console.log('me to friends:', data.message);
+				else if (data.type == 'check')
+					console.log('friend to me:', data.message);
+			}
+		});
+
 	}
 
 	async render()
@@ -64,6 +80,8 @@ export default class HomeView
 		parent_html = await primary.get("ct-main-rpanel");
 		const rightpanel = new rightPanelFriends(parent_html);
 		await rightpanel.render();
+
+		await this.connect_online_status_socket()
 
 		return true;
 	}

@@ -11,25 +11,31 @@ from asgiref.sync import async_to_sync
 # on disconnect, when a user logs out, the websocket will be triggered to close. the webconsumer should again detect in which friend list this user appeared in to trigger the remove of that person from the online friends list (not actual friend list)
 
 class OnlineConsumer(WebsocketConsumer):
+    logged_in = {}
+
     # when a user logs in
     def connect(self):
         self.user = self.scope['user']
-        if not self.user.is_authenticated:
+        user_id = self.scope['url_route']['kwargs']['user_id']
+        if not self.user.is_authenticated or str(self.user.id) != user_id:
             self.close(3000)
             return
 
         self.room_name = self.user.id
         self.room_group_name = f'friends_{self.room_name}'
+        if self.room_group_name not in self.logged_in:
+            self.logged_in[self.room_group_name] = set()
 
         # find friends
         self.friends = self.get_friends()
 
         # send the online status
         async_to_sync(self.channel_layer.group_add)(
-        self.room_group_name,
+            self.room_group_name,
             self.channel_name
         )
         self.notify_friends_online()
+        self.check_friends_online()
 
         self.accept()
 
@@ -45,70 +51,97 @@ class OnlineConsumer(WebsocketConsumer):
         friends = async_to_sync(self.get_friends)()
 
         for friend in friends:
-            room_friend_name = f'friend_{friend.id}'
+            room_friend_name = f'friends_{friend.id}'
             async_to_sync(self.channel_layer.group_send)(
                 room_friend_name,
                 {
-                    'type': 'friend.online',
-                    'user': self.user.username,
-                    'update': f'{self.user.username} has come online.'
+                    'type': 'notify.online',
+                    'user': self.user.username
                 }
             )
 
-    def friend_online(self, event):
+    def notify_online(self, event):
         friend = event['user']
-        message = event['update']
 
         self.send(text_data=json.dumps({
             'status': 'online',
             'friend': friend,
-            'message': message
+            'message': f'{friend} has come online.',
+            'type': 'notify'
         }))
 
-    # when a user logs out
-    def disconnect(self):
-        self.notify_friends_offline()
+    def check_friends_online(self):
+        friends = async_to_sync(self.get_friends)()
 
-        async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name,
-            self.channel_name
-        )
+        for friend in friends:
+            room_friend_name = f'friends_{friend.id}'
+            if room_friend_name in self.logged_in:
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name,
+                    {
+                        'type': 'check.online',
+                        'user': friend.username
+                    }
+                )
 
-    def notify_friends_offline(self):
-        for friend in self.friends:
-            room_friend_name = f'friend_{friend.id}'
-            async_to_sync(self.channel_layer.group_send)(
-                room_friend_name,
-                {
-                    'type': 'friend.offline',
-                    'user': self.user.username,
-                    'update': f'{self.user.username} has gone offline.'
-                }
-            )
-
-    def friend_offline(self, event):
+    def check_online(self, event):
         friend = event['user']
-        message = event['update']
 
         self.send(text_data=json.dumps({
-            'status': 'offline',
+            'status': 'online',
             'friend': friend,
-            'message': message
+            'message': f'{friend} is online.',
+            'type': 'check'
         }))
 
-    # before a user logs out
-    def receive(self, text_data):
-        text_json = json.loads(text_data)
-        action = text_json['action']
-        sender = text_json['user']
 
-        if action == 'logout':
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    'type': 'friend.offline',
-                    'user': sender,
-                }
-            )
-
-            self.close()
+#    # when a user logs out
+#    def disconnect(self, code):
+#        self.notify_friends_offline()
+#
+#        async_to_sync(self.channel_layer.group_discard)(
+#            self.room_group_name,
+#            self.channel_name
+#        )
+#
+#    def notify_friends_offline(self):
+#        friends = async_to_sync(self.get_friends)()
+#
+#        for friend in friends:
+#            room_friend_name = f'friends_{friend.id}'
+#            async_to_sync(self.channel_layer.group_send)(
+#                room_friend_name,
+#                {
+#                    'type': 'friend.offline',
+#                    'user': self.user.username,
+#                    'update': f'{self.user.username} has gone offline.'
+#                }
+#            )
+#
+#    def friend_offline(self, event):
+#        friend = event['user']
+#        message = event['update']
+#
+#        self.send(text_data=json.dumps({
+#            'status': 'offline',
+#            'friend': friend,
+#            'message': message
+#        }))
+#
+#    # before a user logs out
+#    def receive(self, text_data):
+#        text_json = json.loads(text_data)
+#        action = text_json['action']
+#        sender = text_json['user']
+#
+#        if action == 'logout':
+#            async_to_sync(self.channel_layer.group_send)(
+#                self.room_group_name,
+#                {
+#                    'type': 'friend.offline',
+#                    'user': sender,
+#                    'update': f'{self.user.username} has gone offline.'
+#                }
+#            )
+#
+#            self.close()

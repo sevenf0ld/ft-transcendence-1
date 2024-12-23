@@ -298,7 +298,7 @@ export default class BotChatbox
 		return `${target}_${sender}`;
 	}
 
-	async connect_socket()
+	async connect_chat_socket()
 	{
 		await this.socket_init();
 		const send_btn = document.getElementById('btn_chatbox_send');
@@ -434,7 +434,7 @@ export default class BotChatbox
 			'click', async (e) => {await this.sendMsgClick(e);}
 		);
 
-		await this.connect_socket();
+		await this.connect_chat_socket();
 
 		return true;
 	}
