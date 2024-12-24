@@ -195,3 +195,24 @@
     - [get User meta field](https://stackoverflow.com/a/29423946)
     - [change the default `username_validator` property](https://stackoverflow.com/a/48030767)
 - [django lookups](https://archive.ph/rrdfG)
+
+# security
+## XSS
+- [protection as per django](https://docs.djangoproject.com/en/5.1/topics/security/#cross-site-scripting-xss-protection)
+- [examples and preventon](https://www.stackhawk.com/blog/django-xss-examples-prevention/)
+- [jwt vs cookies, xss vs csrf](https://stackoverflow.com/q/37582444)
+## SQL injection
+- [protection as per django](https://docs.djangoproject.com/en/5.1/topics/security/#sql-injection-protection)
+## password hashing
+## JWT
+- authentication vs authorization
+    - former: username + password
+    - latter: verify requests is by the logged-in user
+- [jwt vs cookies, xss vs csrf](https://stackoverflow.com/q/37582444)
+## CSRF
+- CORS
+- [protection as per django](https://docs.djangoproject.com/en/5.1/topics/security/#cross-site-request-forgery-csrf-protection)
+- [validate host header to prevent csrf](https://docs.djangoproject.com/en/5.1/topics/security/#host-header-validation)
+- [jwt vs cookies, xss vs csrf](https://stackoverflow.com/q/37582444)
+## HTTPS
+- [ssl and https as per django](https://docs.djangoproject.com/en/5.1/topics/security/#ssl-https)
