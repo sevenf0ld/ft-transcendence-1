@@ -31,7 +31,54 @@ export default class HomeView
 
 		TOKEN.token_id = setInterval(async () => {
     		await TOKEN.refresh_token();
-    	}, 15000);
+    	}, 20 * 60 * 1000);
+
+		const user_obj = JSON.parse(localStorage.getItem('user'));
+		this.user_id = user_obj.pk;
+		this.username = user_obj.username;
+		this.websocket_url = `wss://${window.location.host}/ws/online/${this.user_id}/`;
+		this.friend_socket = new WebSocket(this.websocket_url);
+	}
+
+	async connect_online_status_socket()
+	{
+		this.friend_socket.addEventListener('message', async (event) => {
+			let data = JSON.parse(event.data);
+
+			if (data.status == 'online')
+			{
+				if (data.type == 'notified')
+					console.log('friend to me (on):', data.message);
+				if (data.type == 'checking')
+					console.log('me to myself (on):', data.message);
+			}
+			if (data.status == 'offline')
+			{
+				if (data.type == 'notified')
+					console.log('friend to me (off):', data.message);
+			}
+			if (data.status == 'playing')
+			{
+				if (data.type == 'notified')
+					console.log('friend to me (playing):', data.message);
+				if (data.type == 'checking')
+					console.log('me to myself (playing):', data.message);
+			}
+		});
+
+		// homeview -> gameview (id: btn_join_room)
+		//const join_room_btn = document.getElementById('btn_join_room');
+		//join_room_btn.addEventListener('click', (event) => {
+		//	event.preventDefault();
+
+		//	if (this.friend_socket.readyState === WebSocket.OPEN)
+		//	{
+		//		this.friend_socket.send(JSON.stringify({
+		//			'sender': this.username,
+		//			'action': 'change_view',
+		//		}));
+		//	}
+		//});
 	}
 
 	async render()
@@ -59,6 +106,8 @@ export default class HomeView
 		parent_html = await primary.get("ct-main-rpanel");
 		const rightpanel = new rightPanelFriends(parent_html);
 		await rightpanel.render();
+
+		await this.connect_online_status_socket()
 
 		return true;
 	}

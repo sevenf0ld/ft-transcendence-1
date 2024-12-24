@@ -8,6 +8,7 @@
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+import GameRoomView from '../../views/GameRoomView.js';
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
@@ -79,7 +80,7 @@ function html_element()
 				<p class="%em-c">%em-t</p>
 				<p class="%info-c">%info-t</p>
 			</div>
-			<button id="%btn-id">%btn-t</button>
+			<button id="%btn-id" @att5>%btn-t</button>
 		</div>
 	`;
 
@@ -122,6 +123,7 @@ function html_element()
 		'%info-c': 'join-room-info',
 		'%info-t': 'Leave blank to create new room',
 		'%btn-id': 'btn_join_room',
+		'@att5': 'data-bs-dismiss="modal"',
 		'%btn-t': 'Enter',
 	};
 
@@ -147,10 +149,11 @@ const ele =
 export default class ModalRoomJoin
 {
 	// --- [00] CONSTRUCTOR
-	constructor(container)
+	constructor(container, gameType)
 	{
 		this.container = container;
 		this.components = {};
+		this.gameType = gameType;
 	}
 
 	// --- [01] GETTER
@@ -241,6 +244,17 @@ export default class ModalRoomJoin
 		event.preventDefault();
 
 		console.log('[EVENT] button clicked : join');
+
+		if (this.gameType === 'online-pvp')
+		{
+			const gameRoom = new GameRoomView('online-pvp');
+			gameRoom.render();
+		}
+		else if (this.gameType === 'online-tour')
+		{
+			const gameRoom = new GameRoomView('online-tour');
+			gameRoom.render();
+		}
 
 		return true;
 	}

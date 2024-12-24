@@ -1,3 +1,6 @@
+//import fetch_logout from '../../components/HomeView/LeftUser_fetch.js';
+//import LoginView from '../views/LoginView.js';
+
 class TokenCs
 {
 	constructor()
@@ -37,7 +40,14 @@ class TokenCs
 		const data = await response.json();
 		if (response.status === 401)
 		{
-			console.error('refresh token invalid.');
+			clearInterval(this.token_id);
+			this.token_id = null;
+
+			// automatically logs the user out without calling logout api or rendering loginView
+			// issue: does not close websocket properly
+			localStorage.clear();
+			location.href = '/';
+
 			return false;
 		}
 		else if (response.status !== 200)
@@ -47,31 +57,6 @@ class TokenCs
 		}
 
 		return true;
-	}
-
-	async verify_token()
-	{
-		const csrf_token = await this.getCookie('csrftoken');
-		const access_token = await this.getCookie('jwt-access');
-		const response = await fetch('/api/jwt_token/token/verify/', {
-			method: 'POST',
-			headers: {
-					'Content-Type': 'application/json',
-					'X-CSRFToken': csrf_token,
-					//'Authorization': `Bearer ${access_token}`
-			},
-			body: JSON.stringify({
-				token: access_token
-			})
-		});
-
-		const data = await response.json();
-		if (response.status === 401)
-		{
-			const refresh_data = await this.refresh_token();
-			if (refresh_data === false)
-				console.error('refresh failed after verify.');
-		}
 	}
 }
 
