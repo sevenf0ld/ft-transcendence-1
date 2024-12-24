@@ -9,6 +9,13 @@
 // developer notes
 // -------------------------------------------------- //
 // reference from BotFriendPfp.js
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// 6. bootstrap-modal-related (optional)
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //

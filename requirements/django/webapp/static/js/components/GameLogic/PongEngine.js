@@ -1,156 +1,135 @@
 // file : PongEngine.js
-import * as LOADING from '../../core/helpers/loading.js';
-export default class PongEngine {
+// -------------------------------------------------- //
+// importing-internal
+// -------------------------------------------------- //
+import EG_UTILS from './engine_utils.js';
+import EG_RENDER from './engine_render.js';
+import EG_DATA_CLASS from './engine_data.js';
+// -------------------------------------------------- //
+// importing-external
+// -------------------------------------------------- //
+// -------------------------------------------------- //
+// developer notes
+// -------------------------------------------------- //
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// 6. bootstrap-modal-related (optional)
+// [export]
+// 1. init the class and export it if:
+// 		- utility & helper functions
+// 		- object that use across entire webapp
+// 		- object contain data that shouldn't be reset
+// 2. else export class directly
+// -------------------------------------------------- //
+// main-functions
+// -------------------------------------------------- //
+export default class PongEngine
+{
+	// --------------------------------------------- //
+	// CONSTRUCTOR
+	// --------------------------------------------- //
 	constructor(gameType)
 	{
 		this.container = document.querySelector('.ct-top-board');
 		this.gameType = gameType;
-		this.canvas = null;
-		this.ctx = null;
-		this.canvas_height = 270;
-		this.canvas_width = 750;
-		this.bg_color = '#212529';
+		this.data = EG_DATA_CLASS;
+
 	}
 
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (SHARED-LAYOUT-BASE)
+	// MAIN-EXECUTION
 	// --------------------------------------------- //
 	async init() {
 		await this.init_html_template();
 
 		this.container.innerHTML = await this.init_html_template();
-		await this.push_important_elements();
+		await this.set_important_elements();
 		await this.bind_events();
 		await this.bind_modals();
 
 		return this;
 	}
 
-	async push_important_elements()
+	async set_important_elements()
 	{
-		this.canvas = document.getElementById('game_canvas');
-		this.ctx = this.canvas.getContext('2d');
-		this.canvas.width = this.canvas_width;
-		this.canvas.height = this.canvas_height;
+		this.data.reset();
+		const DATA = this.data;
+		const C = document.getElementById('game_canvas');
+		DATA.gameType = this.gameType;
+		DATA.setCanvas(C);
+		DATA.setScreenSize();
+		DATA.ctx = DATA.canvas.getContext('2d');
 
 		return true;
 	}
+
 	// --------------------------------------------- //
 	// EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events()
 	{
-		await this.btn_manage('start');
-		await this.announce('Game has started at ' + await this.timeNow());
-		await this.start_countdown();
-		await this.ended_game();
-
-		return true;
-	}
-
-	async timeNow()
-	{
-		const timeNow = new Date().getTime();
-		const time = new Date(timeNow).toLocaleTimeString(
-			'en-US', { hour: '2-digit', minute: '2-digit'
-		});
-
-		return time;
-	}
-
-	async announce(msg)
-	{
-		const ctn = document.querySelector('.ct-gr-announcer-bd');
-		const p = document.createElement('p');
-		const str = "System: " + msg;
-
-		p.textContent = str;
-		p.classList.add('ct-gr-announcer-msg');
-
-		ctn.appendChild(p);
-
-		return true;
-	}
-
-	async btn_manage(manageType)
-	{
-		const leave_btn = document.getElementById('btn_leaveRoom');
-		const restart_btn = document.getElementById('btn_lpvp_restart');
-		const start_btn = document.getElementById('btn_lpvp_start');
-
-		if (manageType === 'start')
+		console.log('bind_events: ', this.gameType);
+		switch (this.gameType)
 		{
-			await restart_btn.classList.remove('d-none');
-			await start_btn.classList.add('d-none');
-			start_btn.disabled = true;
-			leave_btn.disabled = true;
-
-			return true;
+			case 'local-pvp':
+				await this.lpvp_events();
+				break;
+			case 'local-pve':
+				await this.lpve_events();
+				break;
+			case 'local-tour':
+				await this.ltour_events();
+				break;
+			case 'online-pvp':
+				await this.opvp_events();
+				break;
+			case 'online-tour':
+				await this.otour_events();
+				break;
+			default:
+				throw new Error('Invalid game type');
+				break;
 		}
 
-		if (manageType === 'end')
-		{
-			await restart_btn.classList.add('d-none');
-			await start_btn.classList.remove('d-none');
-			start_btn.disabled = false;
-			leave_btn.disabled = false;
-
-			return true;
-		}
 
 		return true;
 	}
 
-	async sleep(ms)
+	async lpvp_events()
 	{
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-
-	async render_countdown(num)
-	{
-		const width = this.canvas.width / 2;
-		const height = this.canvas.height / 2;
-
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		this.ctx.fillStyle = '#3b434a';
-		this.ctx.font = '30px Arial';
-		this.ctx.textAlign = 'center';
-		this.ctx.textBaseline = 'middle';
-		this.ctx.fillText(num, width, height);
+		console.log('lpvp_events');
+		this.data.p1_name = 'Player 1';
+		this.data.p2_name = 'Player 2';
+		await EG_UTILS.gameStateHandler('start');
+		await EG_UTILS.gameStateHandler('end');
 
 		return true;
 	}
 
-	async start_countdown()
-	{
-		await this.render_countdown(3);
-		await this.sleep(1000);
-		await this.render_countdown(2);
-		await this.sleep(1000);
-		await this.render_countdown(1);
-		await this.sleep(1000);
-		await this.render_countdown('GO!');
-		await this.sleep(1000);
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-		return true;
-	}
-
-	async ended_game()
-	{
-		await this.announce('Game has ended at ' + await this.timeNow());
-		await this.btn_manage('end');
-
-		return true;
-	}
-
-	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED
-	// --------------------------------------------- //
-	async bind_modals()
+	async lpve_events()
 	{
 		return true;
 	}
+
+	async ltour_events()
+	{
+		return true;
+	}
+
+	async opvp_events()
+	{
+		return true;
+	}
+
+	async otour_events()
+	{
+		return true;
+	}
+
 	// --------------------------------------------- //
 	// FETCH-RELATED
 	// --------------------------------------------- //
@@ -190,5 +169,11 @@ export default class PongEngine {
 		// [C] HTML RETURN
 		return template;
 	}
-
+	// --------------------------------------------- //
+	// BOOSTRAP-MODAL-RELATED (LOCAL-PVP)
+	// --------------------------------------------- //
+	async bind_modals()
+	{
+		return true;
+	}
 }

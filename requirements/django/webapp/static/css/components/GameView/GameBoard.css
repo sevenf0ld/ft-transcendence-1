@@ -37,7 +37,34 @@
 
 canvas#game_canvas
 {
-  border: 2px solid var(--gm-cor-1);
   border-radius: 3px;
   pointer-events: none;
+  border: 2px solid var(--cor-1);
 }
+
+@keyframes breathingEffect_top {
+    0% {
+        border-top: 2px solid #464e56;
+    }
+    100% {
+        border-top: 2px solid #212529;
+    }
+}
+
+.breathing_top {
+    animation: breathingEffect_top 0.5s infinite;
+}
+
+@keyframes breathingEffect_bot {
+    0% {
+        border-bottom: 2px solid #464e56;
+    }
+    100% {
+        border-bottom: 2px solid #212529;
+    }
+}
+
+.breathing_bot {
+    animation: breathingEffect_bot 0.5s infinite;
+}
+

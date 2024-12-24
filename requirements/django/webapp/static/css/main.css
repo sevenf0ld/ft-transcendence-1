@@ -77,8 +77,7 @@
 	--roomTheme-local: #1e2226; /* room-theme-local */
 	--roomTheme-online: white; /* room-theme-online */
 	/* game */
-	--gm-cor-1: #3b434a; /* game-main-color */
-	--gm-cor-2:  /* game-main-color-lighter */
+	--gm-cor-1: #292e32; /* game-txt-color */
 }
 
 html,

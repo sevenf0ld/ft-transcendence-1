@@ -203,8 +203,8 @@ export default class ActionPanel
 	{
 		event.preventDefault();
 
-		const pongGame = new pongEngine();
-		await pongGame.init('local-pvp');
+		const pongGame = new pongEngine(this.gameType);
+		await pongGame.init();
 
 		return true;
 	}
