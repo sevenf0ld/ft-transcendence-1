@@ -118,7 +118,7 @@ function html_main()
 		'%m-c': 'd-flex justify-content-center align-items-center',
 		'%pw-c': 'ct-page-width ct-main p-4 d-flex',
 		'%lp-1c': 'ct-main-lpanel d-flex flex-column',
-		'%lp-2c': 'align-items-center w-100 p-2',
+		'%lp-2c': 'align-items-center w-100',
 		'%mp-c': 'ct-main-mpanel d-flex flex-column',
 		'%mtp-1c': 'ct-mpanel-top w-100 d-flex',
 		'%mtp-2c': 'flex-column align-items-center',

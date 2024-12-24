@@ -1,0 +1,66 @@
+/* file : GameLeftPanel.css */
+/* -------------------------------------------------- */
+/* base
+/* -------------------------------------------------- */
+.ct-main-lpanel:has(.ct-gr-guide-ctn)
+{
+	justify-content: center;
+}
+
+
+.ct-main-lpanel .ct-gr-guide-ctn
+{
+	width: 100%;
+	height: fit-content;
+	border-radius: 1rem;
+	display: flex;
+	flex-direction: column;
+	background: linear-gradient(145deg, #23282c, #1e2125);
+	box-shadow:  6px 6px 12px #191c20,
+				 -6px -6px 12px #292e32;
+	cursor: pointer;
+}
+
+.ct-main-lpanel .ct-gr-guide-ctn .ct-gr-guide-header
+{
+	text-align: center;
+	border-radius: 1rem 1rem 0 0;
+	padding: 1rem;
+	font-size: 1.1rem;
+}
+
+
+.ct-main-lpanel .ct-gr-guide-ctn .ct-gr-guide-body
+{
+	height: 34rem;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--cor-5) var(--cor-4);
+}
+
+.ct-main-lpanel .ct-gr-guide-ctn .ct-gr-guide-footer
+{
+	height: 3rem;
+	background-color: var(--cor-4);
+	border-radius: 0 0 1rem 1rem;
+}
+
+.ct-main-lpanel .ct-gr-guide-ctn .ct-gr-guide-body .ct-gr-guide-instruction
+{
+	padding: 1.5rem;
+	font-family: monospace;
+	font-size: 0.8rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	border-radius: 0.1rem;
+	line-height: 1.2rem;
+}
+
+.ct-gr-guide-instruction > .instruction-header
+{
+	font-weight: bold;
+	color: #6e6e6e;
+}
+
+
