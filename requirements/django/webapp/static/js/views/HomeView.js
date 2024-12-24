@@ -47,22 +47,22 @@ export default class HomeView
 
 			if (data.status == 'online')
 			{
-				if (data.type == 'notify')
-					console.log('me to friends (on):', data.message);
-				if (data.type == 'check')
-					console.log('friend to me:', data.message);
+				if (data.type == 'notified')
+					console.log('friend to me (on):', data.message);
+				if (data.type == 'checking')
+					console.log('me to myself (on):', data.message);
 			}
 			if (data.status == 'offline')
 			{
-				if (data.type == 'notify')
-					console.log('me to friends (off):', data.message);
+				if (data.type == 'notified')
+					console.log('friend to me (off):', data.message);
 			}
 			if (data.status == 'playing')
 			{
-				if (data.type == 'notify')
-					console.log('me to friends (on):', data.message);
-				if (data.type == 'check')
-					console.log('friend to me:', data.message);
+				if (data.type == 'notified')
+					console.log('friend to me (playing):', data.message);
+				if (data.type == 'checking')
+					console.log('me to myself (playing):', data.message);
 			}
 		});
 

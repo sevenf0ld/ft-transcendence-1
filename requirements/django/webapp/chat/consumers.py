@@ -113,6 +113,8 @@ class ChatConsumer(WebsocketConsumer):
         #        }
         #    )
 
+            # self.close()
+
     #========================================#
     #========== RECEIVE A MESSAGE ===========#
     #============== CHATTING ================#

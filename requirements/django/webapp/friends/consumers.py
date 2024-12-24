@@ -27,6 +27,8 @@ class OnlineConsumer(WebsocketConsumer):
         if self.room_group_name not in self.logged_in:
             self.logged_in[self.room_group_name] = set()
 
+        self.accept()
+
         # find friends
         self.friends = self.get_friends()
 
@@ -40,8 +42,6 @@ class OnlineConsumer(WebsocketConsumer):
         # change to check friends (and then decide in there if they are online or playing)
         self.check_friends_online()
         self.check_friends_playing()
-
-        self.accept()
 
     @database_sync_to_async
     def get_friends(self):
@@ -71,7 +71,7 @@ class OnlineConsumer(WebsocketConsumer):
             'status': 'online',
             'friend': friend,
             'message': f'{friend} has come online.',
-            'type': 'notify'
+            'type': 'notified'
         }))
 
     def check_friends_online(self):
@@ -80,23 +80,29 @@ class OnlineConsumer(WebsocketConsumer):
         for friend in friends:
             room_friend_name = f'friends_{friend.id}'
             if room_friend_name in self.logged_in:
-                async_to_sync(self.channel_layer.group_send)(
-                    self.room_group_name,
-                    {
-                        'type': 'check.online',
-                        'user': friend.username
-                    }
-                )
+                #async_to_sync(self.channel_layer.group_send)(
+                #    self.room_group_name,
+                #    {
+                #        'type': 'check.online',
+                #        'user': friend.username
+                #    }
+                #)
+                self.send(text_data=json.dumps({
+                    'status': 'online',
+                    'friend': friend.username,
+                    'message': f'{friend} is online.',
+                    'type': 'checking'
+                }))
 
-    def check_online(self, event):
-        friend = event['user']
+    #def check_online(self, event):
+    #    friend = event['user']
 
-        self.send(text_data=json.dumps({
-            'status': 'online',
-            'friend': friend,
-            'message': f'{friend} is online.',
-            'type': 'check'
-        }))
+    #    self.send(text_data=json.dumps({
+    #        'status': 'online',
+    #        'friend': friend,
+    #        'message': f'{friend} is online.',
+    #        'type': 'checking'
+    #    }))
 
     def check_friends_playing(self):
         friends = async_to_sync(self.get_friends)()
@@ -104,23 +110,29 @@ class OnlineConsumer(WebsocketConsumer):
         for friend in friends:
             room_friend_name = f'friends_{friend.id}'
             if room_friend_name in self.playing:
-                async_to_sync(self.channel_layer.group_send)(
-                    self.room_group_name,
-                    {
-                        'type': 'check.playing',
-                        'user': friend.username
-                    }
-                )
+                #async_to_sync(self.channel_layer.group_send)(
+                #    self.room_group_name,
+                #    {
+                #        'type': 'check.playing',
+                #        'user': friend.username
+                #    }
+                #)
+                self.send(text_data=json.dumps({
+                    'status': 'playing',
+                    'friend': friend.username,
+                    'message': f'{friend} is busy.',
+                    'type': 'checking'
+                }))
 
-    def check_playing(self, event):
-        friend = event['user']
+    #def check_playing(self, event):
+    #    friend = event['user']
 
-        self.send(text_data=json.dumps({
-            'status': 'playing',
-            'friend': friend,
-            'message': f'{friend} is busy.',
-            'type': 'check'
-        }))
+    #    self.send(text_data=json.dumps({
+    #        'status': 'playing',
+    #        'friend': friend,
+    #        'message': f'{friend} is busy.',
+    #        'type': 'checking'
+    #    }))
 
     # when a user logs out
     def disconnect(self, code):
@@ -156,7 +168,7 @@ class OnlineConsumer(WebsocketConsumer):
             'status': 'offline',
             'friend': friend,
             'message': f'{friend} has gone offline.',
-            'type': 'notify'
+            'type': 'notified'
         }))
 
     def receive(self, text_data):
@@ -195,6 +207,5 @@ class OnlineConsumer(WebsocketConsumer):
             'status': 'playing',
             'friend': friend,
             'message': f'{friend} is busy.',
-            'type': 'notify'
+            'type': 'notified'
         }))
-
