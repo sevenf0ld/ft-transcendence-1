@@ -272,14 +272,17 @@ export default class BotChatbox
 			this.websocket_url[friend_name] = `wss://${window.location.host}/ws/chat/${this.room_name[friend_name]}/`;
 			this.chat_socket[friend_name] = await new WebSocket(this.websocket_url[friend_name]);
 			this.chat_socket[friend_name].addEventListener("error", (event) => {
-				console.error(`chat socket creation error for room ${this.room_name[friend_name]}: `, event);
+				console.error(`[SOCKET ERROR] ${this.room_name[friend_name]}.`);
 				this.room_status[friend_name] = 'error';
 			});
 			this.chat_socket[friend_name].addEventListener("open", (event) => {
-				console.log(`chat socket for room ${this.room_name[friend_name]} is ready and open for connection.`);
+				console.log(`[SOCKET READY] ${this.room_name[friend_name]}.`);
 				this.room_status[friend_name] = 'off';
 			});
-
+			//this.chat_socket[this.target].addEventListener("close", (event) => {
+			//	console.error(`[SOCKET CLOSED] ${this.room_name[this.target]}.`);
+			//	this.room_status[this.target] = 'off';
+			//});
 		}
 
 	}
@@ -313,32 +316,16 @@ export default class BotChatbox
 		  //========================================//
     	  //================ RECEIVE ===============//
     	  //======= NOTIFICATION FROM SERVER =======//
-    	  //=============== CONNECT ================//
     	  //========================================//
-		  if (data.type === 'connect' || data.type === 'reconnect')
-		  {
-			  if (data.num_in_room === 2)
-			  {
-				  this.room_status[this.target] = 'on';
-				  console.log(`you can chat with ${this.target} as they are currently in room.`);
-			  }
-			  else
-				  console.log('you should not chat yet as nobody hears you.');
-		  }
-		  else if (data.type === 'chat_ready')
+		  if (data.type === 'chat_available')
 		  {
 			  this.room_status[this.target] = 'on';
-			  console.log(`you can chat with ${this.target} as they are currently in room.`);
+			  console.log(`[CHAT AVAILABLE] you can chat with ${this.target} as they are currently in room.`);
 		  }
-		  //========================================//
-    	  //================ RECEIVE ===============//
-    	  //======= NOTIFICATION FROM SERVER =======//
-    	  //============== DISCONNECT ==============//
-    	  //========================================//
-		  else if (data.type === 'disconnect' || data.type === 'chat_close')
+		  else if (data.type === 'chat_unavailable')
 		  {
 			  this.room_status[this.target] = 'off';
-			  console.log('you will not longer be able to chat as nobody hears you.');
+			  console.log('[CHAT UNAVAILABLE] nobody hears you.');
 		  }
 		  //========================================//
     	  //================ RECEIVE ===============//
@@ -346,7 +333,6 @@ export default class BotChatbox
     	  //========================================//
 		  else if (data.type === 'chat_reply')
 		  {
-			console.log("chat socket received a message:", data.message);
 			let sender_name = data.sender === this.sender ? 'You' : data.sender;
 			let msg = await this.msg_generator(sender_name, data.message);
 			chatbox_ctn.insertAdjacentHTML(
@@ -355,19 +341,9 @@ export default class BotChatbox
 		  }
 		});
 
-    	//================ RECEIVE ===============//
-    	//======= NOTIFICATION FROM SERVER =======//
-    	//============== DISCONNECT ==============//
-    	//========================================//
-		this.chat_socket[this.target].addEventListener("close", (event) => {
-			console.error(`chat socket for room ${this.room_name[this.target]} has been closed on one end.`);
-			this.room_status[this.target] = 'off';
-		});
-
 		//========================================//
     	//================== SEND ================//
     	//============= NOTIFY SERVER ============//
-    	//============== DISCONNECT ==============//
     	//========================================//
 		chatbox_close.addEventListener('click', (event) => {
 			event.preventDefault();
@@ -399,7 +375,7 @@ export default class BotChatbox
 				this.chat_socket[this.target].send(JSON.stringify({
 				  'message': message,
 				  'sender': this.sender,
-				  'room_name': `${this.room_name}`,
+				  'room_name': this.room_name,
 				  'type': 'chat_reply',
 				}));
 				input.value = '';
@@ -409,7 +385,6 @@ export default class BotChatbox
 			else if (this.chat_socket[this.target].readState >= 2)
 				console.error("message will not be sent. chat socket connection closed or closing.");
 		});
-
 
 		return true;
 	}

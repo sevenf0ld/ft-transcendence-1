@@ -1,0 +1,57 @@
+/* file : Announcer.css */
+/* -------------------------------------------------- */
+/* announcer */
+/* -------------------------------------------------- */
+
+.ct-bottom-right .ct-gr-announcer-ctn
+{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.ct-gr-announcer-ctn .ct-gr-announcer-hd
+{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5rem 1rem;
+	width: 100%;
+	background-color: #171b1e;
+	border-radius: 10px 10px 0 0;
+}
+
+.ct-gr-announcer-ctn .ct-gr-announcer-bd
+{
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--cor-5) var(--cor-4);
+	padding: 0.5rem;
+	font-family: monospace;
+}
+
+
+.ct-gr-announcer-ctn .ct-gr-announcer-bd .ct-gr-announcer-msg
+{
+	display: flex;
+	padding: 0.3rem;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	word-break: break-all;
+	color: gray;
+	font-size: 0.75rem;
+}
+
+.ct-gr-announcer-ctn .ct-gr-announcer-ft
+{
+	height: 1.5rem;
+	background-color: #171b1e;
+	width: 100%;
+	border-radius: 0 0 10px 10px;
+}
