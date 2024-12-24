@@ -31,7 +31,7 @@ export default class HomeView
 
 		TOKEN.token_id = setInterval(async () => {
     		await TOKEN.refresh_token();
-    	}, 15000);
+    	}, 20 * 60 * 1000);
 
 		const user_obj = JSON.parse(localStorage.getItem('user'));
 		this.user_id = user_obj.pk;
