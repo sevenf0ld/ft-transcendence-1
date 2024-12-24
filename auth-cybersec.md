@@ -197,22 +197,45 @@
 - [django lookups](https://archive.ph/rrdfG)
 
 # security
+
+## django specific
+- [django settings](https://docs.djangoproject.com/en/5.1/ref/settings/)
+
 ## XSS
+- <input type="checkbox" checked>
 - [protection as per django](https://docs.djangoproject.com/en/5.1/topics/security/#cross-site-scripting-xss-protection)
 - [examples and preventon](https://www.stackhawk.com/blog/django-xss-examples-prevention/)
 - [jwt vs cookies, xss vs csrf](https://stackoverflow.com/q/37582444)
+
 ## SQL injection
+- <input type="checkbox" checked>
 - [protection as per django](https://docs.djangoproject.com/en/5.1/topics/security/#sql-injection-protection)
+
 ## password hashing
+- <input type="checkbox" checked>
+- [password management defaults to PBKDF2](https://docs.djangoproject.com/en/5.1/topics/auth/passwords/)
+- [a brief on PBKDF2](https://dev.to/arindam-sahoo/understanding-djangos-secure-password-encryption-21j5)
+- [more on PBKDF2](https://medium.com/@shinde2732000/how-django-hashes-passwords-471bf6a355a7)
+
 ## JWT
+- <input type="checkbox" checked>
 - authentication vs authorization
     - former: username + password
     - latter: verify requests is by the logged-in user
 - [jwt vs cookies, xss vs csrf](https://stackoverflow.com/q/37582444)
+- [best practice for token lifetime](https://cloud.google.com/apigee/docs/api-platform/antipatterns/oauth-long-expiration)
+- [rotate refresh token](https://www.descope.com/blog/post/refresh-token-rotation)
+- [custom jwt creation and decoding](https://python.plainenglish.io/unlocking-secure-access-a-step-by-step-guide-to-custom-jwt-authentication-in-django-e0d52fb00fd0)
+- [set up from start to end](https://unfoldai.com/jwt-auth-in-django-guide/)
+
 ## CSRF
+- <input type="checkbox" checked>
 - CORS
 - [protection as per django](https://docs.djangoproject.com/en/5.1/topics/security/#cross-site-request-forgery-csrf-protection)
 - [validate host header to prevent csrf](https://docs.djangoproject.com/en/5.1/topics/security/#host-header-validation)
 - [jwt vs cookies, xss vs csrf](https://stackoverflow.com/q/37582444)
+- [csrf is a result of cookie misuse](https://www.invicti.com/blog/web-security/same-site-cookie-attribute-prevent-cross-site-request-forgery/)
+
 ## HTTPS
+- <input type="checkbox" checked>
 - [ssl and https as per django](https://docs.djangoproject.com/en/5.1/topics/security/#ssl-https)
