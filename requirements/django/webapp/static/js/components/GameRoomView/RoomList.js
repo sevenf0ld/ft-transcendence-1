@@ -151,7 +151,7 @@ export default class RoomList
 		<div class="%main-c1">
 			<h1 class="%rlt-c1">Room List</h1>
 			<div class="%group-c1"></div>
-			<btn class="%btn-c1" id="%btn-i1" @att-1>Leave Room</btn>
+			<button class="%btn-c1" id="%btn-i1" @att-1>Leave Room</button>
 		</div>
 		`
 		// [B] SET atts

@@ -57,10 +57,10 @@ export default class GameRoomView
 		top_title.innerHTML = "Game Room (" + this.type + ")";
 
 		const game_guide = new GameGuide(this.left, this.type);
-		const game_board = new GameBoard();
 		const action_panel = new ActionPanel(this.botLeft, this.type);
 		const announcer = new Announcer(this.botRight, this.type);
 		const room_list = new RoomList(this.right, this.type);
+		const game_board = new GameBoard(this.midTop);
 
 		switch (this.type)
 		{
@@ -85,7 +85,7 @@ export default class GameRoomView
 		}
 
 		await game_guide.render();
-		//await game_board.render();
+		await game_board.render();
 		await action_panel.render();
 		await announcer.render();
 		await room_list.render();

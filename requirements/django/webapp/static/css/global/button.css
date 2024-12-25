@@ -30,3 +30,10 @@
 				inset -7px -7px 14px #252a2e;
 }
 
+button[data-disable="true"],
+button.disabled_btn,
+button:disabled
+{
+  cursor: not-allowed;
+  color: #2f353a;
+}

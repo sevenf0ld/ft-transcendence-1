@@ -1,0 +1,70 @@
+/* file : GameBoard.css */
+
+.ct-top-board .ct-gr-board-waiting
+{
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  animation: glow 1.5s infinite;
+  font-family: monospace;
+}
+
+.ct-top-board:has(.ct-gr-board-waiting)
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Glow animation */
+@keyframes glow {
+  0% {
+    color: #ffffff;
+  }
+  50% {
+    color: #353c42;
+  }
+  100% {
+    color: #ffffff;
+  }
+}
+
+.ct-top-board:has(canvas#game_canvas)
+{
+  padding: 20px;
+}
+
+canvas#game_canvas
+{
+  border-radius: 3px;
+  pointer-events: none;
+  border: 2px solid var(--cor-1);
+}
+
+@keyframes breathingEffect_top {
+    0% {
+        border-top: 2px solid #464e56;
+    }
+    100% {
+        border-top: 2px solid #212529;
+    }
+}
+
+.breathing_top {
+    animation: breathingEffect_top 0.5s infinite;
+}
+
+@keyframes breathingEffect_bot {
+    0% {
+        border-bottom: 2px solid #464e56;
+    }
+    100% {
+        border-bottom: 2px solid #212529;
+    }
+}
+
+.breathing_bot {
+    animation: breathingEffect_bot 0.5s infinite;
+}
+
