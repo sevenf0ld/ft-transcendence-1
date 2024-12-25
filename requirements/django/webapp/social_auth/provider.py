@@ -12,6 +12,10 @@ class FortyTwoAccount(ProviderAccount):
     def get_profile_url(self):
         return self.account.extra_data.get('url')
 
+    #def get_avatar_url(self):
+    #    pfp = self.account.extra_data.get('image', {})
+    #    return pfp.get('link')
+
     def to_str(self):
         dflt = super(FortyTwoProvider, self).to_str()
         return self.account.extra_data.get('displayname', dflt)
@@ -39,6 +43,7 @@ class FortyTwoProvider(OAuth2Provider):
         return dict(
             username=data.get('login'),
             email=data.get('email'),
+            pfp=data.get('image').get('link'),
         )
 
     @property
