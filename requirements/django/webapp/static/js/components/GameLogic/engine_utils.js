@@ -26,6 +26,41 @@ class engineUtilsClass
 	// --------------------------------------------- //
 	// FUNCTIONS
 	// --------------------------------------------- //
+	async gameStateHandler(state)
+	{
+		const t = await this.getCurTime();
+
+		if (state === 'start')
+		{
+			await this.announce(`Game has started at ${t}`);
+			await this.announce('Game difficulty will INCREASE over time');
+			await this.btn_manage('start');
+			await EG_RENDER.start_countdown();
+			await EG_RENDER.randomBallDirection();
+			await this.btn_manage('game-started');
+			requestAnimationFrame(EG_RENDER.game_loop.bind(EG_RENDER));
+		}
+		else if (state === 'end')
+		{
+			await this.announce(`Game has ended at ${t}`);
+			await this.btn_manage('end');
+			await EG_DATA.reset();
+		}
+		else if (state === 'reset')
+		{
+			await this.announce(`Game has ended at ${t} (manually)`);
+			await this.btn_manage('end');
+			EG_DATA.match.end = true;
+			const ctn = document.querySelector('.ct-top-board');
+			ctn.innerHTML = '';
+			ctn.innerHTML = `
+			<div class="ct-gr-board-waiting">Waiting for host to start the game...</div>
+			`;
+		}
+
+		return true;
+	}
+
 	async getCurTime()
 	{
 		const cur = new Date().getTime();
@@ -70,7 +105,14 @@ class engineUtilsClass
 			await start_btn.classList.add('d-none');
 			start_btn.disabled = true;
 			leave_btn.disabled = true;
+			restart_btn.disabled = true;
 
+			return true;
+		}
+
+		if (manageType === 'game-started')
+		{
+			restart_btn.disabled = false;
 			return true;
 		}
 
@@ -92,38 +134,16 @@ class engineUtilsClass
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
-	async gameStateHandler(state)
-	{
-		const t = await this.getCurTime();
-
-		if (state === 'start')
-		{
-			await this.announce(`Game has started at ${t}`);
-			await this.btn_manage('start');
-			await EG_RENDER.start_countdown();
-			await EG_RENDER.randomBallDirection();
-			requestAnimationFrame(EG_RENDER.game_loop.bind(EG_RENDER));
-		}
-		else if (state === 'end')
-		{
-			await this.announce(`Game has ended at ${t}`);
-			await this.btn_manage('end');
-		}
-
-		return true;
-	}
-
 	async set_keyEvents()
 	{
 		const db = this.data;
 
 		document.addEventListener('keydown', (event) => {
-			db.keyState[event.key] = true;
-
+			db.key_state[event.key] = true;
 		});
 
 		document.addEventListener('keyup', (event) => {
-			db.keyState[event.key] = false;
+			db.key_state[event.key] = false;
 		});
 
 		return true;

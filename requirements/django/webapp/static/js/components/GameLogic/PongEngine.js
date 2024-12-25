@@ -4,7 +4,7 @@
 // -------------------------------------------------- //
 import EG_UTILS from './engine_utils.js';
 import EG_RENDER from './engine_render.js';
-import EG_DATA_CLASS from './engine_data.js';
+import EG_DATA from './engine_data.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -36,8 +36,7 @@ export default class PongEngine
 	{
 		this.container = document.querySelector('.ct-top-board');
 		this.gameType = gameType;
-		this.data = EG_DATA_CLASS;
-
+		this.data = EG_DATA;
 	}
 
 	// --------------------------------------------- //
@@ -47,6 +46,7 @@ export default class PongEngine
 		await this.init_html_template();
 
 		this.container.innerHTML = await this.init_html_template();
+		this.data.reset();
 		await this.set_important_elements();
 		await this.bind_events();
 		await this.bind_modals();
@@ -60,9 +60,15 @@ export default class PongEngine
 		const DATA = this.data;
 		const C = document.getElementById('game_canvas');
 		DATA.gameType = this.gameType;
-		DATA.setCanvas(C);
-		DATA.setScreenSize();
-		DATA.ctx = DATA.canvas.getContext('2d');
+		DATA.init_canvas(C);
+
+		return true;
+	}
+
+	async reset()
+	{
+		alert('Game has been reset!');
+		await EG_UTILS.gameStateHandler('reset');
 
 		return true;
 	}
@@ -102,10 +108,9 @@ export default class PongEngine
 	async lpvp_events()
 	{
 		console.log('lpvp_events');
-		this.data.p1_name = 'Player 1';
-		this.data.p2_name = 'Player 2';
+		this.data.player1.name = 'Player 1';
+		this.data.player2.name = 'Player 2';
 		await EG_UTILS.gameStateHandler('start');
-		await EG_UTILS.gameStateHandler('end');
 
 		return true;
 	}

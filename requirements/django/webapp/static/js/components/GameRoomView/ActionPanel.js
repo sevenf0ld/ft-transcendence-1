@@ -27,6 +27,7 @@ export default class ActionPanel
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.gameType = gameType;
+		this.currentGame = null;
 	}
 
 	async render()
@@ -196,6 +197,10 @@ export default class ActionPanel
 			'click', async (event) => { await this.lpvp_start_click(event); }
 		);
 
+		this.buttons['restart'].addEventListener(
+			'click', async (event) => { await this.lpvp_restart_click(event); }
+		);
+
 		return true;
 	}
 
@@ -205,8 +210,17 @@ export default class ActionPanel
 
 		const pongGame = new pongEngine(this.gameType);
 		await pongGame.init();
+		this.currentGame = pongGame;
 
 		return true;
+	}
+
+	async lpvp_restart_click(event)
+	{
+		event.preventDefault();
+		
+		if (this.currentGame)
+			await this.currentGame.reset();
 	}
 
 	// --------------------------------------------- //

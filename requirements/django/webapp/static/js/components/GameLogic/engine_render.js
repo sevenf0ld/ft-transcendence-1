@@ -26,18 +26,66 @@ class engineRenderClass
 	// --------------------------------------------- //
 	// FUNCTIONS
 	// --------------------------------------------- //
+	async game_loop(timestamp)
+	{
+		const db = this.data;
+
+		if (db.match.end)
+			return false;
+		if (db.match.winner !== null)
+		{
+			if (db.canvas.elem)
+			{
+				db.canvas.elem.classList.remove('breathing_bot');
+				db.canvas.elem.classList.remove('breathing_top');
+			}
+			await EG_UTILS.gameStateHandler('end');
+			return false;
+		}
+
+		db.canvas.ctx.clearRect(0, 0, db.canvas.elem.width, db.canvas.elem.height);
+		await this.render_playersName();
+		await this.render_ball();
+		await this.render_paddles();
+		await EG_UTILS.sleep(10);
+
+		db.frame.delta_time = (timestamp - db.frame.last_time) / 1000;
+		if (!db.frame.last_time || db.frame.delta_time === 'NaN')
+			db.frame.delta_time = 0;
+    	db.frame.last_time = timestamp;
+		
+		await this.game_start();
+
+		requestAnimationFrame(this.game_loop.bind(this));
+
+		return true;
+	}
+
+	async game_start()
+	{
+		const db = this.data;
+
+		db.ball.x += db.ball.dx * db.frame.delta_time;
+		db.ball.y += db.ball.dy * db.frame.delta_time;
+		this.check_horizontalCollision();
+		this.check_verticalCollision();
+		this.check_paddleCollision();
+
+		return true;
+	}
+
 	async render_countdown(num)
 	{
 		const db = this.data;
-		const width = db.canvas.width / 2;
-		const height = db.canvas.height / 2;
+		const width = db.canvas.elem.width / 2;
+		const height = db.canvas.elem.height / 2;
 
-		db.ctx.clearRect(0, 0, db.canvas.width, db.canvas.height);
-		db.ctx.fillStyle = db.txt_color;
-		db.ctx.font = 'bold 100px Monospace';
-		db.ctx.textAlign = 'center';
-		db.ctx.textBaseline = 'middle';
-		db.ctx.fillText(num, width, height);
+		db.canvas.ctx.clearRect(0, 0, db.canvas.elem.width, db.canvas.elem.height);
+		db.canvas.ctx.fillStyle = db.display.cor_txt;
+		db.canvas.ctx.font = 'bold 100px Monospace';
+		db.canvas.ctx.textAlign = 'center';
+		db.canvas.ctx.textBaseline = 'middle';
+		db.canvas.ctx.fillText(num, width, height);
 
 		return true;
 	}
@@ -55,6 +103,7 @@ class engineRenderClass
 		await this.render_countdown('GO!');
 		await EG_UTILS.sleep(1000);
 		await EG_UTILS.set_keyEvents();
+
 		return true;
 	}
 
@@ -63,11 +112,10 @@ class engineRenderClass
 		const db = this.data;
 
 		// random angle
-		// make it 0.5 - 1.5
 		let angle = Math.random() * (1.500 - 0.500) + 0.500;
 		angle = angle.toFixed(3);
 		angle = parseFloat(angle);
-		db.ball.dy = angle * db.ballSpeed;
+		db.ball.dy = angle * db.ball.speed;
 
 		// random direction
 		let dir = Math.floor(Math.random() * 2);
@@ -80,67 +128,16 @@ class engineRenderClass
 		return true;
 	}
 
-	// important - core logic
-	async game_loop(timestamp)
-	{
-		const db = this.data;
-
-		if (db.match_winner !== null)
-		{
-			if (db.canvas)
-			{
-				db.canvas.classList.remove('breathing_bot');
-				db.canvas.classList.remove('breathing_top');
-			}
-			await EG_DATA.reset();
-			return false;
-		}
-
-		db.ctx.clearRect(0, 0, db.canvas.width, db.canvas.height);
-		await this.render_score();
-		await this.render_playersName();
-		await this.render_ball();
-		await this.render_paddles();
-		await EG_UTILS.sleep(10);
-
-		db.deltaTime = (timestamp - db.lastTimeStamp) / 1000;
-		if (!db.lastTimeStamp || db.deltaTime === 'NaN')
-			db.deltaTime = 0;
-    	db.lastTimeStamp = timestamp;
-		
-		await this.game_start();
-
-		requestAnimationFrame(this.game_loop.bind(this));
-		return true;
-	}
-
-	async render_score()
-	{
-		const db = this.data;
-
-		db.ctx.fillStyle = db.txt_color;
-		db.ctx.font = '50px Monospace';
-		db.ctx.textAlign = 'center';
-		db.ctx.textBaseline = 'middle';
-
-		let height = db.canvas.height / 2 - 30;
-		let width = db.canvas.width / 4;
-		db.ctx.fillText(db.p1_score, width, height);
-		db.ctx.fillText(db.p2_score, width * 3, height);
-
-		return true;
-	}
-
 	async render_playersName()
 	{
 		const db = this.data;
 
-		let p1Name = db.p1_name;
-		let p2Name = db.p2_name;
+		let p1Name = db.player1.name;
+		let p2Name = db.player2.name;
 
-		if (!db.p1_name || typeof db.p1_name !== 'string')
+		if (!db.player1.name || typeof db.player1.name !== 'string')
 			p1Name = 'Unknown';
-		if (!db.p2_name || typeof db.p2_name !== 'string')
+		if (!db.player2.name || typeof db.player2.name !== 'string')
 			p2Name = 'Unknown';
 
 		if (p1Name.length > 10)
@@ -148,15 +145,15 @@ class engineRenderClass
 		if (p2Name.length > 10)
 			p2Name = p2Name.slice(0, 10) + '...';
 
-		db.ctx.fillStyle = db.txt_color;
-		db.ctx.font = 'bold 30px Monospace';
-		db.ctx.textAlign = 'center';
-		db.ctx.textBaseline = 'middle';
+		db.canvas.ctx.fillStyle = db.display.cor_txt;
+		db.canvas.ctx.font = 'bold 30px Monospace';
+		db.canvas.ctx.textAlign = 'center';
+		db.canvas.ctx.textBaseline = 'middle';
 
-		let height = db.canvas.height / 2 + 20;
-		let width = db.canvas.width / 2;
-		db.ctx.fillText(db.p1_name, width / 2, height);
-		db.ctx.fillText(db.p2_name, width + (width / 2), height);
+		let height = db.canvas.elem.height / 2 + 20;
+		let width = db.canvas.elem.width / 2;
+		db.canvas.ctx.fillText(db.player1.name, width / 2, height);
+		db.canvas.ctx.fillText(db.player2.name, width + (width / 2), height);
 
 		return true;
 	}
@@ -165,11 +162,11 @@ class engineRenderClass
 	{
 		const db = this.data;
 
-		db.ctx.beginPath();
-		db.ctx.arc(db.ball.x, db.ball.y, db.ball.r, 0, Math.PI * 2);
-		db.ctx.fillStyle = db.ball_color;
-		db.ctx.fill();
-		db.ctx.closePath();
+		db.canvas.ctx.beginPath();
+		db.canvas.ctx.arc(db.ball.x, db.ball.y, db.ball.r, 0, Math.PI * 2);
+		db.canvas.ctx.fillStyle = db.ball.color;
+		db.canvas.ctx.fill();
+		db.canvas.ctx.closePath();
 
 		return true;
 	}
@@ -181,35 +178,38 @@ class engineRenderClass
 		await this.paddle_generator('p1');
 		await this.paddle_generator('p2');
 
-		if (this.data.keyState['w'] &&
-			db.p1_paddle.pos_y - db.paddle_len / 2 > 0)
-			this.data.p1_paddle.pos_y -= this.data.paddleSpeed * this.data.deltaTime;
-		if (this.data.keyState['s'] &&
-			db.p1_paddle.pos_y + db.paddle_len / 2 < db.canvas.height)
-			this.data.p1_paddle.pos_y += this.data.paddleSpeed * this.data.deltaTime;
-		if (this.data.keyState['ArrowUp'] &&
-			db.p2_paddle.pos_y - db.paddle_len / 2 > 0)
-			this.data.p2_paddle.pos_y -= this.data.paddleSpeed * this.data.deltaTime;
-		if (this.data.keyState['ArrowDown'] &&
-			db.p2_paddle.pos_y + db.paddle_len / 2 < db.canvas.height)
-			this.data.p2_paddle.pos_y += this.data.paddleSpeed * this.data.deltaTime;
+		//event 
+		if ((db.key_state['w'] || db.key_state['W']) &&
+			db.player1.y - db.paddle.total_len / 2 > 0)
+			db.player1.y -= db.paddle.speed * db.frame.delta_time;
+		if ((db.key_state['s'] || db.key_state['S']) &&
+			db.player1.y + db.paddle.total_len / 2 < db.canvas.elem.height)
+			db.player1.y += db.paddle.speed * db.frame.delta_time;
+		if (db.key_state['ArrowUp'] &&
+			db.player2.y - db.paddle.total_len / 2 > 0)
+			db.player2.y -= db.paddle.speed * db.frame.delta_time;
+		if (db.key_state['ArrowDown'] &&
+			db.player2.y + db.paddle.total_len / 2 < db.canvas.elem.height)
+			db.player2.y += db.paddle.speed * db.frame.delta_time;
 
 		return true;
 	}
 
-	async paddle_generator(type = 'p1')
+	async paddle_generator(type = 'p1', color)
 	{
 		const db = this.data;
+		if(!color)
+			color = db.paddle.color;
 
-		const len = db.paddle_len;
-		const dentX = db.paddle_dentX;
-		const dentY = db.paddle_dentY;
-		let posX = db.p1_paddle.pos_x;
-		let posY = db.p1_paddle.pos_y;
+		const len = db.paddle.total_len;
+		const dentX = db.paddle.dent_x;
+		const dentY = db.paddle.dent_y;
+		let posX = db.player1.x;
+		let posY = db.player1.y;
 		if (type === 'p2')
 		{
-			posX = db.p2_paddle.pos_x;
-			posY = db.p2_paddle.pos_y;
+			posX = db.player2.x;
+			posY = db.player2.y;
 		}
 		let topY = posY - len / 2;
 		let botY = posY + len / 2;
@@ -225,40 +225,16 @@ class engineRenderClass
 			cor.pos4 = { x: posX + dentX, y: topY + dentY };
 		}
 
-		db.ctx.beginPath();
-		db.ctx.moveTo(cor.pos1.x, cor.pos1.y);
-		db.ctx.lineTo(cor.pos2.x, cor.pos2.y);
-		db.ctx.lineTo(cor.pos3.x, cor.pos3.y);
-		db.ctx.lineTo(cor.pos4.x, cor.pos4.y);
-		db.ctx.fillStyle = db.paddle_color;
-		db.ctx.fill();
-	}
-
-	async game_start()
-	{
-		const db = this.data;
-
-		db.ball.x += db.ball.dx * db.deltaTime;
-		db.ball.y += db.ball.dy * db.deltaTime;
-		this.check_horizontalCollision();
-		this.check_verticalCollision();
-		this.check_paddleCollision();
-
-		return true;
+		db.canvas.ctx.beginPath();
+		db.canvas.ctx.moveTo(cor.pos1.x, cor.pos1.y);
+		db.canvas.ctx.lineTo(cor.pos2.x, cor.pos2.y);
+		db.canvas.ctx.lineTo(cor.pos3.x, cor.pos3.y);
+		db.canvas.ctx.lineTo(cor.pos4.x, cor.pos4.y);
+		db.canvas.ctx.fillStyle = color;
+		db.canvas.ctx.fill();
 	}
 
 	async check_horizontalCollision()
-	{
-		const db = this.data;
-		const ball = db.ball;
-		const ballR = ball.x + ball.r;
-		const ballL = ball.x - ball.r;
-
-		if (ballR > db.canvas.width || ballL < 0)
-			db.match_winner = 'someone';
-	}
-
-	async check_verticalCollision()
 	{
 		const db = this.data;
 		const ball = db.ball;
@@ -271,11 +247,30 @@ class engineRenderClass
 			db.ball.dy = Math.abs(db.ball.dy);
 			this.triggerShinnyEffect('top');
 		}
-		if (ballB >= db.canvas.height)
+		if (ballB >= db.canvas.elem.height)
 		{
-			ball.y = db.canvas.height - ball.r;
+			ball.y = db.canvas.elem.height - ball.r;
 			db.ball.dy = -Math.abs(db.ball.dy);
 			this.triggerShinnyEffect('bottom');
+		}
+	}
+
+	async check_verticalCollision()
+	{
+		const db = this.data;
+		const ball = db.ball;
+		const ballR = ball.x + ball.r;
+		const ballL = ball.x - ball.r;
+
+		if (ballR >= db.canvas.elem.width)
+		{
+			db.match.winner = true;
+			alert(`${db.player1.name} wins!`);
+		}
+		if (ballL <= 0)
+		{
+			db.match.winner = true;
+			alert(`${db.player2.name} wins!`);
 		}
 	}
 
@@ -285,26 +280,55 @@ class engineRenderClass
 
 		if (pos === 'top')
 		{
-			db.canvas.classList.add('breathing_top');
+			db.canvas.elem.classList.add('breathing_top');
 			setTimeout(() => {
-				if (db.canvas)
+				if (db.canvas.elem)
 				{
-					db.canvas.classList.remove('breathing_top');
-					db.canvas.style.borderTop = `2px solid ${db.bg_color}`;
+					db.canvas.elem.classList.remove('breathing_top');
+					db.canvas.elem.style.borderTop = `2px solid ${db.display.cor_bg}`;
 				}
 			}, 500);
 		}
 		else if (pos === 'bottom')
 		{
-			db.canvas.classList.add('breathing_bot');
+			db.canvas.elem.classList.add('breathing_bot');
 			setTimeout(() => {
-				if (db.canvas)
+				if (db.canvas.elem)
 				{
-					db.canvas.classList.remove('breathing_bot');
-					db.canvas.style.borderBottom = `2px solid ${db.bg_color}`;
+					db.canvas.elem.classList.remove('breathing_bot');
+					db.canvas.elem.style.borderBottom = `2px solid ${db.display.cor_bg}`;
 				}
 			}, 500);
 		}
+
+		return true;
+	}
+
+	async triggerDifficultIncrease()
+	{
+		// increase ball speed
+		if (this.data.ball.dx < 400)
+		{
+			this.data.ball.dx *= 1.06;
+			this.data.ball.dy *= 1.03;
+		}
+		else
+		{
+			this.data.ball.dx += 20;
+			this.data.ball.dy += 10;
+		}
+
+		// random number 0.8 - 1.2
+		let angle = Math.random() * (1.100 - 0.900) + 0.800;
+		angle = angle.toFixed(3);
+		angle = parseFloat(angle);
+		this.data.ball.dy *= angle;
+
+		if (this.data.paddle.speed <= 500)
+			this.data.paddle.speed += 50;
+
+		if (this.data.paddle.total_len > 35)
+			this.data.paddle.total_len -= 3;
 
 		return true;
 	}
@@ -313,67 +337,48 @@ class engineRenderClass
 	{
 		const db = this.data;
 		const ball = db.ball;
-		const p1 = db.p1_paddle;
-		const p2 = db.p2_paddle;
+		const p1 = db.player1;
+		const p2 = db.player2;
 
 		const ballR = ball.x + ball.r;
 		const ballL = ball.x - ball.r;
 		const ballT = ball.y - ball.r;
 		const ballB = ball.y + ball.r;
 
-		const p1T = p1.pos_y - db.paddle_len / 2;
-		const p1B = p1.pos_y + db.paddle_len / 2;
+		const p1T = p1.y - db.paddle.total_len / 2;
+		const p1B = p1.y + db.paddle.total_len / 2;
 
-		const p2T = p2.pos_y - db.paddle_len / 2;
-		const p2B = p2.pos_y + db.paddle_len / 2;
+		const p2T = p2.y - db.paddle.total_len / 2;
+		const p2B = p2.y + db.paddle.total_len / 2;
 
 		// note : my position of paddle is the front-line center
 	
 		// handling situation where the ball corder hits the padding edge
-		if (ballL <= p1.pos_x || ballR >= p2.pos_x)
+		if (ballL <= p1.x || ballR >= p2.x)
 			return false;
 
 		// apply smooth collision by adding invi wall (paddleGapX and Y)
-		if (ballL <= p1.pos_x + db.paddleGapX &&
-			ballT >= p1T - db.paddleGapY && 
-			ballB <= p1B + db.paddleGapY)
+		if (ballL <= p1.x + db.paddle.dist_colli_x &&
+			ballT >= p1T - db.paddle.dist_colli_y && 
+			ballB <= p1B + db.paddle.dist_colli_y)
 		{
-			/*
-			//PHYSIC
-			const gap1 = db.p1_paddle.pos_y + db.paddle_len / 2;
-			const gap2 = db.paddle_len / 2;
-			//-1 for top, 0 for middle, 1 for bottom
-			const hitPos = (gap1 - ball.y) / gap2;
-
-			// 60 degree
-			const maxBounceAngle = Math.PI / 3;
-			const angle = maxBounceAngle * hitPos;
-
-			const speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
-			ball.dx = speed * Math.cos(angle) * (ball.dx > 0 ? 1 : -1);
-			ball.dy = speed * Math.sin(angle);
-
-			ball.x = ball.dx > 0
-				? p1.pos_x + db.paddleGapX + ball.r
-				: p1.pos_x - db.paddleGapX - ball.r;
-			*/
 			db.ball.dx *= -1;
-			db.ball.x = p1.pos_x + db.paddleGapX + ball.r;
+			db.ball.x = p1.x + db.paddle.dist_colli_x + ball.r;
+			await this.triggerDifficultIncrease();
 		}
 
-		if (ballR >= p2.pos_x - db.paddleGapX &&
-			ballT >= p2T - db.paddleGapY &&
-			ballB <= p2B + db.paddleGapY)
+		if (ballR >= p2.x - db.paddle.dist_colli_x &&
+			ballT >= p2T - db.paddle.dist_colli_y &&
+			ballB <= p2B + db.paddle.dist_colli_y)
 		{
 			//change later please add physic like p1
 			db.ball.dx *= -1;
-			db.ball.x = p2.pos_x - db.paddleGapX - ball.r;
+			db.ball.x = p2.x - db.paddle.dist_colli_x - ball.r;
+			await this.triggerDifficultIncrease();
 		}
 
 		return true;
 	}
-
-
 }
 
 const ENGINE_RENDER = new engineRenderClass();
