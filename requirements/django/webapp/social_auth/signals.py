@@ -20,25 +20,58 @@ from django.core.exceptions import ObjectDoesNotExist
 #@receiver(pre_social_login, sender=SocialLogin)
 #def update_fortytwo_pfp(sender: SocialLogin, instance, created, **kwargs):
 
+#@receiver(post_save, sender=SocialAccount)
+#def update_fortytwo_pfp(sender: SocialAccount, instance, created, **kwargs):
+#    if created:
+#        print(f'Updating profile picture for {instance.provider} user: {instance}')
+#        try:
+#            profile_data = Profile.objects.get(user=instance.user)
+#
+#            avatar_url = instance.get_avatar_url()
+#            avatar_name = avatar_url.split('/')[-1]
+#            try:
+#                img_temp = NamedTemporaryFile(delete=True)
+#                img_temp.write(urlopen(avatar_url).read())
+#                img_temp.flush()
+#
+#                profile_data.avatar.save(avatar_name, File(img_temp))
+#                profile_data.save()
+#            except (URLError, HTTPError) as e:
+#                print(f'Failed to download profile picture for {instance.provider} user: {instance}. Error: {str(e)}')
+#            except Exception as e:
+#                print(f'Failed to save profile picture for {instance.provider} user: {instance}. Error: {str(e)}')
+#        except Exception as e:
+#            print(f'An unexpected error occurred while updating profile picture for {instance.provider} user: {instance}. Error: {str(e)}')
+
+from urllib.parse import urlparse
+import os
+
 @receiver(post_save, sender=SocialAccount)
-def update_fortytwo_pfp(sender: SocialAccount, instance, created, **kwargs):
+def update_fortytwo_pfp(sender, instance, created, **kwargs):
     if created:
-        print(f'Updating profile picture for {instance.provider} user: {instance}')
+        print(f'Updating profile picture for {instance.provider} user: {instance.user}')
         try:
-            profile_data = Profile.objects.get(user=instance.user)
-
-            avatar_url = instance.get_avatar_url()
-            avatar_name = avatar_url.split('/')[-1]
+            profile = Profile.objects.get(user=instance.user)
+            avatar_url = instance.extra_data.get('image', {}).get('link')
+            if not avatar_url:
+                print(f'No avatar URL found for user: {instance.user}')
+                return
+            parsed_url = urlparse(avatar_url)
+            avatar_name = os.path.basename(parsed_url.path)
+            print(avatar_url, parsed_url, avatar_name)
             try:
-                img_temp = NamedTemporaryFile(delete=True)
-                img_temp.write(urlopen(avatar_url).read())
-                img_temp.flush()
-
-                profile_data.avatar.save(avatar_name, File(img_temp))
-                profile_data.save()
+                with urlopen(avatar_url) as response:
+                    with NamedTemporaryFile(delete=True) as img_temp:
+                        img_temp.write(response.read())
+                        img_temp.flush()
+                        profile.avatar.save(avatar_name, File(img_temp))
+                        print(f'Profile picture updated successfully for user: {instance.user} as {avatar_name}')
             except (URLError, HTTPError) as e:
-                print(f'Failed to download profile picture for {instance.provider} user: {instance}. Error: {str(e)}')
+                print(f'Failed to download profile picture: {str(e)}')
             except Exception as e:
-                print(f'Failed to save profile picture for {instance.provider} user: {instance}. Error: {str(e)}')
+                print(f'Unexpected error during profile picture saving: {str(e)}')
+        except Profile.DoesNotExist:
+            print(f'No profile found for user: {instance.user}')
         except Exception as e:
-            print(f'An unexpected error occurred while updating profile picture for {instance.provider} user: {instance}. Error: {str(e)}')
+            print(f'Unexpected error during profile update: {str(e)}')
+

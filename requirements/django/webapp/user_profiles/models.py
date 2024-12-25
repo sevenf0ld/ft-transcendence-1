@@ -5,6 +5,18 @@ from django.contrib.auth.models import User
 #from django.core.files import File
 #from urllib.request import urlopen
 #from tempfile import NamedTemporaryFile
+from django.core.validators import FileExtensionValidator
+import os
+#from allauth.socialaccount.models import SocialAccount
+
+def rename_avatar(instance, filename):
+    #if SocialAccount.objects.filter(user=instance.user).exists():
+    #    return instance.avatar
+
+    ext = os.path.splitext(filename)[1]
+    print(filename, ext)
+    avatar_name = instance.user.username + ext
+    return f'avatars/{avatar_name}'
 
 class Profile(models.Model):
     user = models.OneToOneField(
@@ -23,7 +35,13 @@ class Profile(models.Model):
 
     avatar = models.ImageField(
         default='avatars/default.jpg',
-        upload_to='avatars/',
+        #upload_to='avatars/',
+        upload_to=rename_avatar,
+        #validators=[
+        #    FileExtensionValidator(
+        #        allowed_extensions=['jpg']
+        #    ),
+        #]
     )
 
     #avatar_url = models.URLField(blank=True)
@@ -67,3 +85,13 @@ class Profile(models.Model):
     #def save(self, *args, **kwargs):
     #    self.get_remote_avatar()
     #    super(Profile, self).save(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        try:
+            current_avatar = Profile.objects.get(user=self.user)
+            if current_avatar.avatar != self.avatar:
+                current_avatar.avatar.delete(save=False)
+        except:
+            pass
+        super().save(*args, **kwargs)
+
