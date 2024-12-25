@@ -20,6 +20,7 @@ class engineUtilsClass
 	// --------------------------------------------- //
 	constructor()
 	{
+		this.data = EG_DATA;
 	}
 
 	// --------------------------------------------- //
@@ -112,6 +113,21 @@ class engineUtilsClass
 		return true;
 	}
 
+	async set_keyEvents()
+	{
+		const db = this.data;
+
+		document.addEventListener('keydown', (event) => {
+			db.keyState[event.key] = true;
+
+		});
+
+		document.addEventListener('keyup', (event) => {
+			db.keyState[event.key] = false;
+		});
+
+		return true;
+	}
 
 }
 

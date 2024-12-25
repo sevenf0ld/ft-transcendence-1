@@ -32,6 +32,9 @@ class engineData
 		this.paddle_dentY = 15;
 		this.midY = this.sHeight / 2;
 		this.ballSpeed = 200;
+		this.paddleSpeed = 150;
+		this.paddleGapX = 5;
+		this.paddleGapY = 10;
 		// dynamic
 		this.gameType = null;
 		this.canvas = null;
@@ -58,6 +61,7 @@ class engineData
 			pos_x: this.sWidth - this.paddleWall_dist,
 			pos_y: this.sHeight / 2,
 		};
+		this.keyState = {};
 	}
 
 	async reset()

@@ -54,7 +54,7 @@ class engineRenderClass
 		await EG_UTILS.sleep(1000);
 		await this.render_countdown('GO!');
 		await EG_UTILS.sleep(1000);
-
+		await EG_UTILS.set_keyEvents();
 		return true;
 	}
 
@@ -67,7 +67,6 @@ class engineRenderClass
 		let angle = Math.random() * (1.500 - 0.500) + 0.500;
 		angle = angle.toFixed(3);
 		angle = parseFloat(angle);
-		console.log('angle: ', angle);
 		db.ball.dy = angle * db.ballSpeed;
 
 		// random direction
@@ -88,8 +87,11 @@ class engineRenderClass
 
 		if (db.match_winner !== null)
 		{
-			db.canvas.classList.remove('breathing_bot');
-			db.canvas.classList.remove('breathing_top');
+			if (db.canvas)
+			{
+				db.canvas.classList.remove('breathing_bot');
+				db.canvas.classList.remove('breathing_top');
+			}
 			await EG_DATA.reset();
 			return false;
 		}
@@ -107,8 +109,8 @@ class engineRenderClass
     	db.lastTimeStamp = timestamp;
 		
 		await this.game_start();
-		requestAnimationFrame(this.game_loop.bind(this));
 
+		requestAnimationFrame(this.game_loop.bind(this));
 		return true;
 	}
 
@@ -174,8 +176,23 @@ class engineRenderClass
 
 	async render_paddles()
 	{
+		const db = this.data;
+
 		await this.paddle_generator('p1');
 		await this.paddle_generator('p2');
+
+		if (this.data.keyState['w'] &&
+			db.p1_paddle.pos_y - db.paddle_len / 2 > 0)
+			this.data.p1_paddle.pos_y -= this.data.paddleSpeed * this.data.deltaTime;
+		if (this.data.keyState['s'] &&
+			db.p1_paddle.pos_y + db.paddle_len / 2 < db.canvas.height)
+			this.data.p1_paddle.pos_y += this.data.paddleSpeed * this.data.deltaTime;
+		if (this.data.keyState['ArrowUp'] &&
+			db.p2_paddle.pos_y - db.paddle_len / 2 > 0)
+			this.data.p2_paddle.pos_y -= this.data.paddleSpeed * this.data.deltaTime;
+		if (this.data.keyState['ArrowDown'] &&
+			db.p2_paddle.pos_y + db.paddle_len / 2 < db.canvas.height)
+			this.data.p2_paddle.pos_y += this.data.paddleSpeed * this.data.deltaTime;
 
 		return true;
 	}
@@ -225,6 +242,7 @@ class engineRenderClass
 		db.ball.y += db.ball.dy * db.deltaTime;
 		this.check_horizontalCollision();
 		this.check_verticalCollision();
+		this.check_paddleCollision();
 
 		return true;
 	}
@@ -247,12 +265,18 @@ class engineRenderClass
 		const ballT = ball.y - ball.r;
 		const ballB = ball.y + ball.r;
 
-		if (ballT < 0 || ballB > db.canvas.height)
-			db.ball.dy *= -1;
-		if (ballT < 0)
-			this.triggerShinnyEffect('top')
-		if (ballB > db.canvas.height)
+		if (ballT <= 0)
+		{
+			ball.y = ball.r;
+			db.ball.dy = Math.abs(db.ball.dy);
+			this.triggerShinnyEffect('top');
+		}
+		if (ballB >= db.canvas.height)
+		{
+			ball.y = db.canvas.height - ball.r;
+			db.ball.dy = -Math.abs(db.ball.dy);
 			this.triggerShinnyEffect('bottom');
+		}
 	}
 
 	async triggerShinnyEffect(pos)
@@ -263,17 +287,87 @@ class engineRenderClass
 		{
 			db.canvas.classList.add('breathing_top');
 			setTimeout(() => {
-				db.canvas.classList.remove('breathing_top');
-				db.canvas.style.borderTop = `2px solid ${db.bg_color}`;
+				if (db.canvas)
+				{
+					db.canvas.classList.remove('breathing_top');
+					db.canvas.style.borderTop = `2px solid ${db.bg_color}`;
+				}
 			}, 500);
 		}
 		else if (pos === 'bottom')
 		{
 			db.canvas.classList.add('breathing_bot');
 			setTimeout(() => {
-				db.canvas.classList.remove('breathing_bot');
-				db.canvas.style.borderBottom = `2px solid ${db.bg_color}`;
+				if (db.canvas)
+				{
+					db.canvas.classList.remove('breathing_bot');
+					db.canvas.style.borderBottom = `2px solid ${db.bg_color}`;
+				}
 			}, 500);
+		}
+
+		return true;
+	}
+
+	async check_paddleCollision()
+	{
+		const db = this.data;
+		const ball = db.ball;
+		const p1 = db.p1_paddle;
+		const p2 = db.p2_paddle;
+
+		const ballR = ball.x + ball.r;
+		const ballL = ball.x - ball.r;
+		const ballT = ball.y - ball.r;
+		const ballB = ball.y + ball.r;
+
+		const p1T = p1.pos_y - db.paddle_len / 2;
+		const p1B = p1.pos_y + db.paddle_len / 2;
+
+		const p2T = p2.pos_y - db.paddle_len / 2;
+		const p2B = p2.pos_y + db.paddle_len / 2;
+
+		// note : my position of paddle is the front-line center
+	
+		// handling situation where the ball corder hits the padding edge
+		if (ballL <= p1.pos_x || ballR >= p2.pos_x)
+			return false;
+
+		// apply smooth collision by adding invi wall (paddleGapX and Y)
+		if (ballL <= p1.pos_x + db.paddleGapX &&
+			ballT >= p1T - db.paddleGapY && 
+			ballB <= p1B + db.paddleGapY)
+		{
+			/*
+			//PHYSIC
+			const gap1 = db.p1_paddle.pos_y + db.paddle_len / 2;
+			const gap2 = db.paddle_len / 2;
+			//-1 for top, 0 for middle, 1 for bottom
+			const hitPos = (gap1 - ball.y) / gap2;
+
+			// 60 degree
+			const maxBounceAngle = Math.PI / 3;
+			const angle = maxBounceAngle * hitPos;
+
+			const speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
+			ball.dx = speed * Math.cos(angle) * (ball.dx > 0 ? 1 : -1);
+			ball.dy = speed * Math.sin(angle);
+
+			ball.x = ball.dx > 0
+				? p1.pos_x + db.paddleGapX + ball.r
+				: p1.pos_x - db.paddleGapX - ball.r;
+			*/
+			db.ball.dx *= -1;
+			db.ball.x = p1.pos_x + db.paddleGapX + ball.r;
+		}
+
+		if (ballR >= p2.pos_x - db.paddleGapX &&
+			ballT >= p2T - db.paddleGapY &&
+			ballB <= p2B + db.paddleGapY)
+		{
+			//change later please add physic like p1
+			db.ball.dx *= -1;
+			db.ball.x = p2.pos_x - db.paddleGapX - ball.r;
 		}
 
 		return true;
