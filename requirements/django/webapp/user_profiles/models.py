@@ -2,6 +2,9 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import User
+#from django.core.files import File
+#from urllib.request import urlopen
+#from tempfile import NamedTemporaryFile
 
 class Profile(models.Model):
     user = models.OneToOneField(
@@ -23,6 +26,8 @@ class Profile(models.Model):
         upload_to='avatars/',
     )
 
+    #avatar_url = models.URLField(blank=True)
+
     language = models.CharField(
         max_length=2,
         default='En',
@@ -41,9 +46,24 @@ class Profile(models.Model):
 
     is_online = models.BooleanField(default=False)
 
+    #def get_remote_avatar(self):
+    #    if self.avatar_url and not self.avatar:
+    #        img_temp = NamedTemporaryFile(delete=True)
+    #        img_temp.write(urlopen(self.avatar_url).read())
+    #        img_temp.flush()
+    #        self.avatar.save(f"image_{self.pk}", File(img_temp))
+
     #=================================#
     #=====default model methods=======#
     #=================================#
 
     def __str__(self):
         return self.user.username
+
+    #def save(self, **kwargs):
+    #    self.get_remote_avatar()
+    #    super().save(**kwargs)
+
+    #def save(self, *args, **kwargs):
+    #    self.get_remote_avatar()
+    #    super(Profile, self).save(*args, **kwargs)

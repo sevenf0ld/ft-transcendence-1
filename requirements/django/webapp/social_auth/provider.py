@@ -12,9 +12,9 @@ class FortyTwoAccount(ProviderAccount):
     def get_profile_url(self):
         return self.account.extra_data.get('url')
 
-    #def get_avatar_url(self):
-    #    pfp = self.account.extra_data.get('image', {})
-    #    return pfp.get('link')
+    def get_avatar_url(self):
+        pfp = self.account.extra_data.get('image', {})
+        return pfp.get('link')
 
     def to_str(self):
         dflt = super(FortyTwoProvider, self).to_str()
@@ -36,6 +36,8 @@ class FortyTwoProvider(OAuth2Provider):
     def extract_extra_data(self, data):
         return dict(
             displayname=data.get('displayname'),
+            url=data.get('url'),
+            image=data.get('image'),
         )
 
     # for user population of SOCIALACCOUNT_ADAPTER
@@ -43,7 +45,7 @@ class FortyTwoProvider(OAuth2Provider):
         return dict(
             username=data.get('login'),
             email=data.get('email'),
-            pfp=data.get('image').get('link'),
+            #pfp=data.get('image').get('link'),
         )
 
     @property
