@@ -28,18 +28,27 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ftpong.com', 'api.ftpong.com', '0.0.0.0']
+#ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ftpong.com', 'api.ftpong.com', '0.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ftpong.com', '0.0.0.0']
 #config('DJANGO_ALLOWED_HOSTS')
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_COOKIE_SAMESITE = 'Strict'
 CSRF_COOKIE_SECURE = True
+# security theatre - double submitting
+#CSRF_COOKIE_HTTPONLY = True
+
+#SESSION_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SAMESITE = 'Strict'
 SESSION_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 31536000  # 1 year
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-#SESSION_COOKIE_HTTPONLY = False
+SECURE_HSTS_SECONDS = 31536000
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_HOST = 'ftpong.com'
+SECURE_SSL_REDIRECT = True
 
 # maiman-m: for allauth registration
 SITE_ID = 1
@@ -149,8 +158,8 @@ REST_FRAMEWORK = {
 }
 
 # maiman-m: add dj-rest-auth jwt support to enable jwt authentication
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ['https://ftpong.com'] # apex domain
+#CORS_ALLOW_CREDENTIALS = True
+#CORS_ALLOWED_ORIGINS = ['https://ftpong.com'] # apex domain
 REST_AUTH = {
     'USER_DETAILS_SERIALIZER': 'user_auth.serializers.UserLoginDetailsModelSerializer',
     'LOGOUT_ON_PASSWORD_CHANGE': True,
@@ -159,23 +168,25 @@ REST_AUTH = {
     'JWT_AUTH_COOKIE': 'jwt-access',
     'JWT_AUTH_REFRESH_COOKIE': 'jwt-refresh',
     'JWT_AUTH_SECURE': True,
-    # only affects the body
-    'JWT_AUTH_HTTPONLY': True,
+    # only affects the body, will still be in Set-Cookie
+    #'JWT_AUTH_HTTPONLY': True,
+    'JWT_AUTH_SAMESITE': 'Strict',
     'JWT_AUTH_COOKIE_ENFORCE_CSRF_ON_UNAUTHENTICATED': True,
 }
-CSRF_TRUSTED_ORIGINS = [
-    'https://localhost',
-    'https://ftpong.com',
-]
+#CSRF_TRUSTED_ORIGINS = [
+#    'https://localhost',
+#    'https://ftpong.com',
+#]
 
 # djangorestframework-simplejwt
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    #'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    #'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=5),
+    #'ACCESS_TOKEN_LIFETIME': timedelta(seconds=10),
+    #'REFRESH_TOKEN_LIFETIME': timedelta(minutes=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3),
+    'ROTATE_REFRESH_TOKENS': True,
 }
 
 # django-allauth for social accounts
@@ -281,6 +292,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static'] # dev
 # django.core.exceptions.ImproperlyConfigured: You're using the staticfiles app without having set the STATIC_ROOT setting to a filesystem path.
 STATIC_ROOT = BASE_DIR / 'staticfiles' # prod
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

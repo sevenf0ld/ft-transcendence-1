@@ -32,6 +32,7 @@ services:
         #- vol_django:/django/
         - ./requirements/django/webapp/:/django/
         - ./requirements/django/webapp/staticfiles/:/django/staticfiles
+        - ./requirements/django/webapp/media/:/django/media
       networks:
         - net_trans
 
@@ -48,6 +49,7 @@ services:
         #- vol_django:/django/
         - ./requirements/django/webapp/:/django/
         - ./requirements/django/webapp/staticfiles/:/django/staticfiles
+        - ./requirements/django/webapp/media/:/django/media
       networks:
         - net_trans
       env_file:

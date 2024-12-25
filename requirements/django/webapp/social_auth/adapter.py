@@ -7,6 +7,7 @@ from allauth.utils import valid_email_or_none
 
 # allauth/socialaccount/adapter.py
 class FortyTwoSocialAccountAdapter(DefaultSocialAccountAdapter):
+    # saving pfp to profile model is not suitable here
     def populate_user(self, request, sociallogin, data):
         username = data.get('username')
         email = data.get('email')
