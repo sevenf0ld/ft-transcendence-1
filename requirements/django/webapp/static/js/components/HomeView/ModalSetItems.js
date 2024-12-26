@@ -2,6 +2,7 @@
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
+//import fetch_pfp from './ModalSetItems_fetch.js'
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -416,6 +417,24 @@ export default class ModalSettingsItems
 		return true;
 	}
 
+	async getCookie(name) {
+		let cookieValue = null;
+		if (document.cookie && document.cookie !== '')
+		{
+			const cookies = document.cookie.split(';');
+			for (let i = 0; i < cookies.length; i++)
+			{
+				const cookie = cookies[i].trim();
+				if (cookie.substring(0, name.length + 1) === (name + '='))
+				{
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
+	}
+
 	async imgUploadClick(event)
 	{
 		event.preventDefault();
@@ -441,12 +460,51 @@ export default class ModalSettingsItems
 				return false;
 			}
 			console.log("Upload Image detected : size (mb) : ", file.size / 1024 / 1024);
+
 			const reader = new FileReader();
 			reader.onload = () =>
 			{
 				this.buttons['pfp-upload'].src = reader.result;
 			}
-			reader.readAsDataURL(file);
+			reader.onerror = () =>
+			{
+				console.error('IMAGE READING FAILED: ', reader.error);
+			}
+			reader.readAsDataURL(file); // readyState becomes 2 and result contains the data
+
+			//if (file)
+			//{
+			//	const pfp = await new fetch_pfp();
+			//	pfp.form_data = await new FormData();
+			//	console.log(pfp.form_data);
+			//	pfp.form_data.append('pfp', file);
+			//	const fetch_pfp_result = await pfp.fetchData();
+			//	//console.log(fetch_pfp_result);
+			//}
+			if (file)
+			{
+				const form_data = new FormData();
+				form_data.append('avatar', file);
+				const csrf_token = await this.getCookie('csrftoken');
+				const response = await fetch('/api/user_profiles/upload-avatar/', {
+					method: 'POST',
+					headers: {
+							'X-CSRFToken': csrf_token
+					},
+					body: form_data
+				});
+
+				const data = await response.json();
+				if (response.ok)
+				{
+					console.log('yay');
+				}
+				else
+				{
+					console.error(response.details);
+				}
+			}
+
 		});
 
 		return true;
