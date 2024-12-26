@@ -49,7 +49,7 @@ import os
 @receiver(post_save, sender=SocialAccount)
 def update_fortytwo_pfp(sender, instance, created, **kwargs):
     if created:
-        print(f'Updating profile picture for {instance.provider} user: {instance.user}')
+        print(f'Updating profile picture for {instance.provider} user: {instance}')
         try:
             profile = Profile.objects.get(user=instance.user)
             avatar_url = instance.extra_data.get('image', {}).get('link')
@@ -58,20 +58,18 @@ def update_fortytwo_pfp(sender, instance, created, **kwargs):
                 return
             parsed_url = urlparse(avatar_url)
             avatar_name = os.path.basename(parsed_url.path)
-            print(avatar_url, parsed_url, avatar_name)
             try:
                 with urlopen(avatar_url) as response:
                     with NamedTemporaryFile(delete=True) as img_temp:
                         img_temp.write(response.read())
                         img_temp.flush()
                         profile.avatar.save(avatar_name, File(img_temp))
-                        print(f'Profile picture updated successfully for user: {instance.user} as {avatar_name}')
             except (URLError, HTTPError) as e:
-                print(f'Failed to download profile picture: {str(e)}')
+                print(f'Failed to download profile picture for {instance.provider} user: {instance}. Error: {str(e)}')
             except Exception as e:
-                print(f'Unexpected error during profile picture saving: {str(e)}')
+                print(f'Failed to save profile picture for {instance.provider} user: {instance}. Error: {str(e)}')
         except Profile.DoesNotExist:
-            print(f'No profile found for user: {instance.user}')
+            print(f'Profile does not exist for {instance.provider} user: {instance.user}')
         except Exception as e:
-            print(f'Unexpected error during profile update: {str(e)}')
+            print(f'An unexpected error occurred while updating profile picture for {instance.provider} user: {instance}. Error: {str(e)}')
 
