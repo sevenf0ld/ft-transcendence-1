@@ -53,9 +53,47 @@ class fetch_logout
 	}
 }
 
+class fetch_home_profile
+{
+	constructor()
+	{
+		this.re_value = '';
+		this.fetch_obj = null;
+	}
+
+	async fetchData()
+	{
+		try
+		{
+			const mainFetch = new FETCH_UTILS();
+			await mainFetch.getCookie('csrftoken');
+			await mainFetch.setUrl('/api/user_profiles/view-home-profile/');
+			await mainFetch.setMethod('GET');
+			await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+			await mainFetch.appendHeaders('Content-Type', 'application/json');
+			await mainFetch.fetchData();
+			this.fetch_obj = mainFetch;
+
+			if (mainFetch.response.ok)
+				this.re_value = 'home-profile-successful';
+			else
+				this.re_value = 'home-profile-failed';
+		}
+		catch (error)
+		{
+			this.re_value = '[ERR] try-catch; Home profile failed : ' + error;
+			console.error(this.re_value);
+		}
+
+		return this.re_value;
+	}
+}
+
+
 // -------------------------------------------------- //
 // [-] EXPORTS
 // -------------------------------------------------- //
 export {
 	fetch_logout,
+	fetch_home_profile,
 };

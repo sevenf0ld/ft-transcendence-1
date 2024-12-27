@@ -16,7 +16,7 @@ export default class BotFriendPfp
 	// --------------------------------------------- //
 	// CONSTRUCTOR
 	// --------------------------------------------- //
-	constructor(container,username)
+	constructor(container,username, stats)
 	{
 		// COMMON-atts
 		this.container = container;
@@ -27,6 +27,10 @@ export default class BotFriendPfp
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.username = username;
+		this.wins = 'Won: ' + stats.wins;
+		this.losses = 'Lost: ' + stats.losses;
+		this.total = 'Total: ' + stats.played;
+		this.win_rate = 'W.rate: ' + stats.win_rate + '%';
 	}
 	// --------------------------------------------- //
 	// MAIN-EXECUTION
@@ -232,10 +236,10 @@ export default class BotFriendPfp
 		{
 			'%main-c': 'ct-fn-pfp-stats-ctn',
 			'%lst-c': 'ct-fn-pfp-stats-list truncate',
-			'%win-t': 'Win: 100',
-			'%lose-t': 'Lose: 100',
-			'%total-t': 'Total: 100',
-			'%winrate-t': 'W.rate: 100%',
+			'%win-t': this.wins,
+			'%lose-t': this.losses,
+			'%total-t': this.total,
+			'%winrate-t': this.win_rate,
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);

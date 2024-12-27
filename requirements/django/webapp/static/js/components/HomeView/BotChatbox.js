@@ -208,15 +208,51 @@ export default class BotChatbox
 		return template;
 	}
 
+	async getCookie(name) {
+		let cookieValue = null;
+		if (document.cookie && document.cookie !== '')
+		{
+			const cookies = document.cookie.split(';');
+			for (let i = 0; i < cookies.length; i++)
+			{
+				const cookie = cookies[i].trim();
+				if (cookie.substring(0, name.length + 1) === (name + '='))
+				{
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
+	}
+
 	// --- [04] EVENT
 	async profileClick(event)
 	{
 		event.preventDefault();
 		console.log('[EVENT] chatbox mssage\'s header clicked');
 
-		const parent_div = document.querySelector('.ct-bottom-left');
-		const pfp = new BotFriendPfp(parent_div, this.target);
-		await pfp.render('replace');
+		const csrf_token = await this.getCookie('csrftoken');
+		const encoded_target = encodeURIComponent(this.target);
+		const response = await fetch(`/api/user_profiles/view-friend-profile/?target=${encoded_target}`, {
+			method: 'GET',
+			headers: {
+					'X-CSRFToken': csrf_token,
+					'Content-Type': 'application/json',
+			},
+		});
+
+		const data = await response.json();
+		if (response.ok)
+		{
+			const parent_div = document.querySelector('.ct-bottom-left');
+			const pfp = new BotFriendPfp(parent_div, this.target, data);
+			await pfp.render('replace');
+		}
+		else
+		{
+			console.error(`Failed to get ${this.target}'s information.`);
+		}
 
 		return true;
 	}

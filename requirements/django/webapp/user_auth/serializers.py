@@ -40,7 +40,7 @@ class CustomRegisterSerializer(RegisterSerializer):
 
 # exclude pk, first name and last name from json response
 class UserLoginDetailsModelSerializer(serializers.ModelSerializer):
-    profile = serializers.SerializerMethodField()
+    #profile = serializers.SerializerMethodField()
 
     @staticmethod
     def validate_username(username):
@@ -51,14 +51,16 @@ class UserLoginDetailsModelSerializer(serializers.ModelSerializer):
         username = get_adapter().clean_username(username)
         return username
 
-    def get_profile(self, obj):
-        profile_data = Profile.objects.get(user=obj)
-        return ProfileModelSerializer(profile_data).data
+    #def get_profile(self, obj):
+    #    profile_data = Profile.objects.get(user=obj)
+    #    return ProfileModelSerializer(profile_data).data
 
     class Meta:
         model = User
-        fields = ['pk', 'username', 'email', 'profile']
-        read_only_fields = ['email', 'profile']
+        #fields = ['pk', 'username', 'email', 'profile']
+        #read_only_fields = ['email', 'profile']
+        fields = ['pk', 'username', 'email']
+        read_only_fields = ['email']
 
 #class UserAccountUpdateModelSerializer(serializers.ModelSerializer):
 #    # mandatory in request
