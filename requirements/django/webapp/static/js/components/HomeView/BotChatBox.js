@@ -2,6 +2,7 @@
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
+import * as FETCH from './BotChatBox_fetch.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -120,9 +121,19 @@ class BotChatBox
 		event.preventDefault();
 		console.log('[EVENT] button clicked : chatbox-profile');
 
-		const parent_div = document.querySelector('.ct-bottom-left');
-		const pfp = new BOT_FRIEND_PFP(parent_div, this.target);
-		await pfp.render('replace');
+		const friend_profile = new FETCH.fetch_friend_profile(this.target);
+		const fetch_result = await friend_profile.fetchData();
+		if (fetch_result === 'friend-profile-successful')
+		{
+			const parent_div = document.querySelector('.ct-bottom-left');
+			const pfp = new BOT_FRIEND_PFP(parent_div, this.target, friend_profile.fetch_obj.rdata);
+			await pfp.render('replace');
+		}
+		else
+		{
+			alert(`Failed to get ${this.target}'s profile info.`);
+			return false;
+		}
 
 		return true;
 	}
