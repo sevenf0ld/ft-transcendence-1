@@ -10,11 +10,11 @@ import PageTitle from '../core/helpers/PageTitle.js';
 import MediaLayout from '../layouts/MediaLayout.js';
 import PrimaryLayout from '../layouts/PrimaryLayout.js';
 //components
-import rightPanelFriends from '../components/HomeView/RightFnList.js';
 import TOKEN from '../core/token.js';
 
 import LEFT_USER from '../components/HomeView/LeftUser.js';
 import MIDTOP_GAMEMODE from '../components/HomeView/MidBoard.js';
+import RIGHT_FRIEND_LIST from '../components/HomeView/RightFnList.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -91,8 +91,9 @@ export default class HomeView
 		await MIDTOP_GAMEMODE.render('replace');
 
 		parent_html = await primary.get("ct-main-rpanel");
-		const rightpanel = new rightPanelFriends(parent_html);
-		await rightpanel.render();
+
+		RIGHT_FRIEND_LIST.container = parent_html;
+		await RIGHT_FRIEND_LIST.render('replace');
 
 		await this.connect_online_status_socket()
 
