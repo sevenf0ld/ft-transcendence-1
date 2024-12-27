@@ -8,16 +8,24 @@
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
-// reference from BotFriendPfp.js
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-export default class ModalSettingsItems
+class ModalSetItems
 {
 	// --------------------------------------------- //
 	// CONSTRUCTOR
 	// --------------------------------------------- //
-	constructor(container)
+	constructor(container, gameType)
 	{
 		// COMMON-atts
 		this.container = container;
@@ -36,14 +44,17 @@ export default class ModalSettingsItems
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 	}
-	/***********************************
-	 * LANGUAGE-SETTINGS
-	 ***********************************/
+	// ======================================================================== //
+	// LANGUAGE-SETTINGS
+	// ======================================================================== //
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (LANGUAGES)
+	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
 	async render_language(type)
 	{
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
 		const template = await this.init_template_lang();
 
 		if (type.toLowerCase() === 'append')
@@ -56,10 +67,6 @@ export default class ModalSettingsItems
 		{
 			this.container.innerHTML = '';
 			this.container.innerHTML = template;
-		}
-		else
-		{
-			throw new Error('[ERR] invalid render type');
 		}
 
 		await this.push_important_elements_lang();
@@ -85,7 +92,7 @@ export default class ModalSettingsItems
 		return true;
 	}
 	// --------------------------------------------- //
-	// EVENT-RELATED (LANGUAGES)
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_lang()
 	{
@@ -127,19 +134,11 @@ export default class ModalSettingsItems
 
 		return true;
 	}
-
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (LANGUAGES)
-	// --------------------------------------------- //
-	async bind_modals_lang()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// FETCH-RELATED (LANGUAGES)
+	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED (LANGUAGES)
+	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
 	async init_template_lang()
 	{
@@ -183,14 +182,24 @@ export default class ModalSettingsItems
 		// [C] HTML RETURN
 		return template;
 	}
-	/***********************************
-	 * ACCOUNT-SETTINGS
-	 ***********************************/
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (ACCOUNT)
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals_lang()
+	{
+		return true;
+	}
+	// ======================================================================== //
+	// ACCOUNT-SETTINGS
+	// ======================================================================== //
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
 	async render_account(type)
 	{
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
 		const template = await this.init_template_acc();
 
 		if (type.toLowerCase() === 'append')
@@ -203,10 +212,6 @@ export default class ModalSettingsItems
 		{
 			this.container.innerHTML = '';
 			this.container.innerHTML = template;
-		}
-		else
-		{
-			throw new Error('[ERR] invalid render type');
 		}
 
 		await this.push_important_elements_acc();
@@ -227,7 +232,7 @@ export default class ModalSettingsItems
 	}
 
 	// --------------------------------------------- //
-	// EVENT-RELATED (ACCOUNT)
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_acc()
 	{
@@ -246,18 +251,10 @@ export default class ModalSettingsItems
 		return true;
 	}
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (ACCOUNT)
-	// --------------------------------------------- //
-	async bind_modals_acc()
-	{
-		return true;
-	}
-
-	// --------------------------------------------- //
-	// FETCH-RELATED (ACCOUNT)
+	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED (ACCOUNT)
+	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
 	async init_template_acc()
 	{
@@ -348,15 +345,24 @@ export default class ModalSettingsItems
 		// [C] HTML RETURN
 		return template;
 	}
-
-	/***********************************
-	 * PROFILE-PICTURE-SETTINGS
-	 ***********************************/
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (PROFILE-PICTURE)
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals_acc()
+	{
+		return true;
+	}
+	// ======================================================================== //
+	// PROFILE-PICTURE-SETTINGS
+	// ======================================================================== //
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
 	async render_pfp(type)
 	{
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new error('[err] invalid render type');
+
 		const template = await this.init_template_pfp();
 
 		if (type.toLowerCase() === 'append')
@@ -369,10 +375,6 @@ export default class ModalSettingsItems
 		{
 			this.container.innerHTML = '';
 			this.container.innerHTML = template;
-		}
-		else
-		{
-			throw new Error('[ERR] invalid render type');
 		}
 
 		await this.push_important_elements_pfp();
@@ -393,11 +395,15 @@ export default class ModalSettingsItems
 			throw new Error('[ERR] pfp-upload button not found');
 		if (!this.buttons['pfp-remove'])
 			throw new Error('[ERR] pfp-remove button not found');
+		if (!this.buttons['pfp-input-upload'])
+			throw new Error('[ERR] pfp-input-upload button not found');
+		if (!this.buttons['pfp-submit'])
+			throw new Error('[ERR] pfp-submit button not found');
 
 		return true;
 	}
 	// --------------------------------------------- //
-	// EVENT-RELATED (PROFILE-PICTURE)
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_pfp()
 	{
@@ -516,17 +522,10 @@ export default class ModalSettingsItems
 		return true;
 	}
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (PROFILE-PICTURE)
-	// --------------------------------------------- //
-	async bind_modals_pfp()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// FETCH-RELATED (PROFILE-PICTURE)
+	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED (PROFILE-PICTURE)
+	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
 	async init_template_pfp()
 	{
@@ -580,15 +579,24 @@ export default class ModalSettingsItems
 		// [C] HTML RETURN
 		return template;
 	}
-
-	/***********************************
-	 * 2FA-SETTINGS
-	 * *********************************/
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (2FA)
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals_pfp()
+	{
+		return true;
+	}
+	// ======================================================================== //
+	// 2FA-SETTINGS
+	// ======================================================================== //
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
 	async render_2fa(type)
 	{
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
 		const template = await this.init_template_2fa();
 
 		if (type.toLowerCase() === 'append')
@@ -601,10 +609,6 @@ export default class ModalSettingsItems
 		{
 			this.container.innerHTML = '';
 			this.container.innerHTML = template;
-		}
-		else
-		{
-			throw new Error('[ERR] invalid render type');
 		}
 
 		await this.push_important_elements_2fa();
@@ -627,7 +631,7 @@ export default class ModalSettingsItems
 		return true;
 	}
 	// --------------------------------------------- //
-	// EVENT-RELATED (2FA)
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_2fa()
 	{
@@ -655,19 +659,11 @@ export default class ModalSettingsItems
 
 		return true;
 	}
-
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (2FA)
-	// --------------------------------------------- //
-	async bind_modals_2fa()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// FETCH-RELATED (2FA)
+	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED (PROFILE-PICTURE)
+	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
 	async init_template_2fa()
 	{
@@ -718,7 +714,14 @@ export default class ModalSettingsItems
 		// [C] HTML RETURN
 		return template;
 	}
-	/***********************************
-	 * 2FA-SETTINGS
-	 * *********************************/
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals_2fa()
+	{
+		return true;
+	}
 }
+
+const item = new ModalSetItems();
+export default item;

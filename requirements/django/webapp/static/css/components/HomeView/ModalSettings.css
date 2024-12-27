@@ -21,6 +21,16 @@
 	max-width: 23rem;
 }
 
+#modal-settings .modal-settings-ctn
+{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1.5rem;
+	border: none;
+}
+
 /* -------------------------------------------------- */
 /* settings - account */
 /* -------------------------------------------------- */

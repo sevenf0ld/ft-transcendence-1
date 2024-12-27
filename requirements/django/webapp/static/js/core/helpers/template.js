@@ -69,8 +69,8 @@ class BotFriendPfp
 	async push_important_elements()
 	{
 		this.main_ctn = document.querySelector('.ct-fn-pfp-ctn');
-		this.buttons.close = document.getElementById('btn_fn_pfp_close');
-		this.buttons.history = document.getElementById('btn_fn_pfp_hist');
+		this.buttons['close'] = document.getElementById('btn_fn_pfp_close');
+		this.buttons['history'] = document.getElementById('btn_fn_pfp_hist');
 
 		if (!this.main_ctn)
 			throw new Error('[ERR] main container not found');
@@ -316,12 +316,11 @@ class MidBoard
 	// --------------------------------------------- //
 	// CONSTRUCTOR
 	// --------------------------------------------- //
-	constructor(container, gameType)
+	constructor()
 	{
 		// COMMON-atts
-		this.container = container;
-		this.base_ctn = '';
-		this.main_ctn = '';
+		this.container = null;
+		this.main_ctn = null;
 		this.buttons = {
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES

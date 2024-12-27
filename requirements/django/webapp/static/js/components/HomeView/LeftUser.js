@@ -7,10 +7,10 @@
 // -------------------------------------------------- //
 import LoginView from '../../views/LoginView.js';
 import ModalLayout from '../../layouts/ModalLayout.js';
-import ModalSettings from './ModalSettings.js';
 import * as FETCH from './LeftUser_fetch.js';
 import TOKEN from '../../core/token.js';
 import MODAL_HISTORY from './ModalHistory.js';
+import MODAL_SETTINGS from './ModalSettings.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -142,8 +142,9 @@ class LeftUser
 		parent_bd = parent_div.querySelector('.modal-body');
 		parent_bd.innerHTML = '';
 		parent_hd.innerHTML = 'Settings';
-		const modalSettings = new ModalSettings(parent_bd);
-		await modalSettings.render();
+
+		MODAL_SETTINGS.container = parent_bd;
+		await MODAL_SETTINGS.render('replace');
 		
 		return true;
 	}
