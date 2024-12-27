@@ -24,6 +24,15 @@ def rename_avatar(instance, filename):
     return avatar_path
 
 class Profile(models.Model):
+    ENGLISH = 'EN'
+    MANDARIN = 'ZH'
+    MALAY = 'MY'
+    LANGUAGE_CHOICES = {
+        ENGLISH: 'English',
+        MANDARIN: 'Mandarin',
+        MALAY: 'Malay',
+    }
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -54,12 +63,8 @@ class Profile(models.Model):
 
     language = models.CharField(
         max_length=2,
-        default='En',
-        choices=[
-            ('EN', 'English'),
-            ('ZH', 'Mandarin'),
-            ('MY', 'Malay'),
-        ]
+        default=ENGLISH,
+        choices=LANGUAGE_CHOICES,
     )
 
     wins = models.PositiveIntegerField(default=0)

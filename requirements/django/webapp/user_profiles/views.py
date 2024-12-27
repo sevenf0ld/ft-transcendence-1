@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from .serializers import FriendProfileModelSerializer, FriendProfileTargetSerializer, ProfileModelSerializer
 from typing import Dict, Any
+from .utils import is_current_lang
 
 #class ProfileViewSet(viewsets.ModelViewSet):
 #    serializer_class = ProfileModelSerializer
@@ -70,3 +71,26 @@ class HomeProfileRetrieveAPIView(generics.RetrieveAPIView):
         self.check_object_permissions(self.request, profile)
 
         return profile
+
+@api_view(['PATCH'])
+#@permission_classes([IsAuthenticated])
+#@authentication_classes([JWTCookieAuthentication])
+@permission_classes([AllowAny])
+def update_user_language(request):
+    user = request.user
+    if not user.is_authenticated:
+        return Response({'details': 'Unauthenticated user.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    lang = request.data.get('lang')
+    if lang is None:
+        return Response({'details': 'Language selection required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if lang not in Profile.LANGUAGE_CHOICES:
+        return Response({'details': 'Selected language is not supported.'}, status=status.HTTP_400_BAD_REQUEST)
+    if is_current_lang(lang):
+        return Response({'details': f'{lang} has already been selected.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    profile = Profile.objects.get(user=user)
+    profile.language = lang
+    profile.save()
+    return Response({'details': f'{lang} has been updated.'}, status=status.HTTP_200_OK)

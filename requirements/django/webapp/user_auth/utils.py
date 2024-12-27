@@ -10,7 +10,7 @@ def is_mfa_enabled(request):
 
     return profile_data.mfa_email_enabled
 
-def is_old_email(user, email):
+def is_current_email(user, email):
     user_data = User.objects.get(user=user)
     if user_data.email.lower() == email:
         return True
@@ -21,7 +21,7 @@ def is_existing_email(email):
         return True
     return False
 
-def is_old_password(user, password):
+def is_current_password(user, password):
     if check_password(password, user.password):
         return True
     return False
