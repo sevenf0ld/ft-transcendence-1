@@ -71,7 +71,7 @@ class ModalAdd
 
 	async push_important_elements()
 	{
-		this.main_ctn = document.querySelector('.ct-board-home');
+		this.main_ctn = document.querySelector('.add-friend-ctn');
 		this.buttons['submit'] = document.getElementById('btn_add_friend_submit');
 		this.alert_div = new alert_utils(document.querySelector('.ct-alert-addFriend'));
 

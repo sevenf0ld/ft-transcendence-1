@@ -8,9 +8,9 @@
 import LoginView from '../../views/LoginView.js';
 import ModalLayout from '../../layouts/ModalLayout.js';
 import ModalSettings from './ModalSettings.js';
-import ModalHistory from './ModalHistory.js';
 import * as FETCH from './LeftUser_fetch.js';
 import TOKEN from '../../core/token.js';
+import MODAL_HISTORY from './ModalHistory.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -124,8 +124,8 @@ class LeftUser
 		parent_bd.innerHTML = '';
 		parent_hd.innerHTML = '-\'s Match History';
 
-		const modalHistory = new ModalHistory(parent_bd);
-		await modalHistory.render();
+		MODAL_HISTORY.container = parent_bd;
+		await MODAL_HISTORY.render('replace');
 
 		return true;
 	}

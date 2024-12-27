@@ -1,54 +1,147 @@
 // file : ModalHistory.js
 // -------------------------------------------------- //
-// Importing-internal
+// importing-internal
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// Importing-external
+// importing-external
 // -------------------------------------------------- //
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-// --- [LOCAL] EXPORTED COMPONENTS
-// usage : insert querySelector's value of an element
-// 		   to register as export element; first one
-// 		   is always default
-const getEle = [
-];
-
-// --- [LOCAL] BUTTONS SECTION
-// button tracker
-class button
+class ModalFnOpt
 {
+	// --------------------------------------------- //
+	// CONSTRUCTOR
+	// --------------------------------------------- //
 	constructor()
 	{
-		this.arr = {
-			'join': '',
+		// COMMON-atts
+		this.container = null;
+		this.main_ctn = null;
+		this.buttons = {
 		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
 	}
-
-	async read_buttons()
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
+	// --------------------------------------------- //
+	async render(type)
 	{
-		for (const key in this.arr)
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
+		const template = await this.init_template();
+
+		if (type === 'append')
 		{
-			const ele = document.getElementById(`${this.arr[key]}`);
-			if (!ele)
-				throw new Error(`[ERR] button not found : ${this.arr[key]}`);
-			this.arr[key] = ele;
+			this.container.insertAdjacentHTML(
+				'beforeend', template
+			);
 		}
+		else if (type === 'replace')
+		{
+			this.container.innerHTML = '';
+			this.container.innerHTML = template;
+		}
+
+		await this.push_important_elements();
+		await this.bind_events();
+		await this.bind_modals();
+
 		return true;
 	}
-}
-const btns = new button();
 
-// --- [LOCAL] HTML ELEMENTS SECTION
-function html_element()
-{
-	// [-] HELPER FUNCTION
-	function gen_list(date, result, type, target)
+	async push_important_elements()
 	{
+		this.main_ctn = document.querySelector('.history-main-ctn');
+
+		if (!this.main_ctn)
+			throw new Error('[ERR] main container not found');
+
+		return true;
+	}
+	// --------------------------------------------- //
+	// [2/4] EVENT-RELATED
+	// --------------------------------------------- //
+	async bind_events()
+	{
+		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'DemonKiller123');
+		await this.gen_list('JAN-01 (01AM)', 'lost', 'pvp', 'DemonKiller123');
+		await this.gen_list('JAN-01 (01AM)', 'won', 'tour', 'AlienInvasion');
+		await this.gen_list('JAN-01 (01AM)', 'lost', 'tour', 'AlienInvasion');
+		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
+		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
+		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
+		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
+		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
+		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
+		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
+		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
+
+		return true;
+	}
+
+	// --------------------------------------------- //
+	// [3/4] FETCH-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [4/4] HTML-ELEMENT-RELATED
+	// --------------------------------------------- //
+	async init_template()
+	{
+		let template = "";
+		template += await this.html_main_ctn();
+
+		// trim new lines, spaces, and tabs
+		template = template.replace(/\s+/g, ' ');
+		template = template.replace(/>\s+</g, '><');
+		template = template.replace(/\s*=\s*/g, '=');
+		template = template.trim();
+
+		return template;
+	}
+
+	async html_main_ctn()
+	{
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%history-c">
+			<div class="%hsttl-c">
+			</div>
+		</div>
+		`;
+		// [B] SET atts
+		const atts =
+		{
+			'%history-c': 'history-main-ctn d-flex flex-column',
+			'%hsttl-c': 'hst-list-group',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	async gen_list(date, result, type, target)
+	{
+		const container = this.main_ctn.querySelector('.hst-list-group');
+		if (!container)
+			throw new Error('[ERR] container not found');
+
 		const upperResult = result.toUpperCase();
 		let typeText = 'PVP';
 		if (type==='tour')
@@ -83,136 +176,19 @@ function html_element()
 		for (const key in attributes)
 			template = template.split(key).join(attributes[key]);
 
-		return template;
-	}
-
-	// [A] TEMPLATE
-	let template = `
-		<div class="%history-c">
-			<div class="%hsttl-c">
-				${gen_list('JAN-01 (01AM)', 'won', 'pvp', 'DemonKiller123')}
-				${gen_list('JAN-01 (01AM)', 'lost', 'pvp', 'DemonKiller123')}
-				${gen_list('JAN-01 (01AM)', 'won', 'tour', 'AlienInvasion')}
-				${gen_list('JAN-01 (01AM)', 'lost', 'tour', 'AlienInvasion')}
-				${gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal')}
-				${gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal')}
-				${gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal')}
-				${gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal')}
-				${gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal')}
-				${gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal')}
-				${gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal')}
-				${gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal')}
-			</div>
-		</div>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%history-c': 'history-main d-flex flex-column',
-		'%hsttl-c': 'hst-list-group',
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [D] HTML RETURN
-	return template;
-}
-
-// HTML elements bundle
-const ele =
-{
-	html_element,
-};
-
-// -------------------------------------------------- //
-// export
-// -------------------------------------------------- //
-export default class ModalRoomJoin
-{
-	// --- [00] CONSTRUCTOR
-	constructor(container)
-	{
-		this.container = container;
-		this.components = {};
-	}
-
-	// --- [01] GETTER
-	async get(element = 'default')
-	{
-		if (this.read_components() === false)
-		{
-			throw new Error(`[ERR] this class has no export components`);
-			return false;
-		}
-		return this.compo_get(element);
-	}
-
-	// --- [02] COMPONENTS REGISTRY
-	async compo_register(name, element)
-	{
-		this.components[name] = element;
+		container.insertAdjacentHTML('beforeend', template);
 
 		return true;
 	}
 
-	async compo_get(name)
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals()
 	{
-		return this.components[name];
-	}
-
-	async compo_remove(name)
-	{
-		delete this.components[name];
-
-		return true;
-	}
-
-	async read_components()
-	{
-		if (getEle.length === 0)
-			return false;
-		this.compo_register('default', document.querySelector(getEle[0]));
-		for (const key in getEle)
-		{
-			const ele = document.querySelector(getEle[key]);
-			if (!ele)
-				throw new Error(`[ERR] component not found : ${getEle[key]}`);
-			const str = getEle[key].substring(1);
-			this.compo_register(str, ele);
-		}
-
-		return true;
-	}
-
-	// --- [03] HTM-LELEMENTS
-	async init_template()
-	{
-		let template = "";
-		template += ele.html_element();
-
-		// trim new lines, spaces, and tabs
-		template = template.replace(/\s+/g, ' ');
-		template = template.replace(/>\s+</g, '><');
-		template = template.replace(/\s*=\s*/g, '=');
-		template = template.trim();
-	
-		return template;
-	}
-
-	// --- [04] EVENT
-	// --- [05] RENDER
-	async render()
-	{
-		const template = await this.init_template();
-
-		this.container.innerHTML = '';
-		this.container.innerHTML = template;
-
-		//await this.bind_events();
-		//await this.modals_render();
-
 		return true;
 	}
 }
+
+const item = new ModalFnOpt();
+export default item;

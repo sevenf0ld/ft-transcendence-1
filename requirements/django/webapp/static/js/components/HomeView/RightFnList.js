@@ -10,9 +10,9 @@
 	//	// --- [05] RENDER
 import ModalLayout from '../../layouts/ModalLayout.js';
 import * as FETCH from './RightFnList_fetch.js';
-import ModalFnOpt from './ModalFnOpt.js';
 import BOT_CHATBOX from './BotChatBox.js';
 import MODAL_ADD_FRIEND from './ModalAdd.js';
+import MODAL_FRIEND_OPT from './ModalFnOpt.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -406,8 +406,10 @@ export default class rightPanelFriends
 
 		// set modal body
 		const moda_body = document.querySelector('#modal-fnOpt .modal-body');
-		const modaFriendOpt = new ModalFnOpt(moda_body, type, name);
-		await modaFriendOpt.render();
+		MODAL_FRIEND_OPT.container = moda_body;
+		MODAL_FRIEND_OPT.target = name;
+		MODAL_FRIEND_OPT.type = type;
+		await MODAL_FRIEND_OPT.render('replace');
 
 		return true;
 	}
