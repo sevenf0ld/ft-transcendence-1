@@ -1,6 +1,3 @@
-//import fetch_logout from '../../components/HomeView/LeftUser_fetch.js';
-//import LoginView from '../views/LoginView.js';
-
 class TokenCs
 {
 	constructor()

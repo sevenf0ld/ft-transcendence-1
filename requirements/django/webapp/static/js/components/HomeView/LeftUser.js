@@ -161,7 +161,7 @@ class LeftUser
 			TOKEN.token_id = null;
 
 			const loginView = new LoginView(this.container);
-	
+
 			localStorage.clear();
 			location.href = '/';
 
@@ -247,6 +247,18 @@ class LeftUser
 	async html_stats()
 	{
 		// [-] HELPER FUNCTION
+		const home_profile = new FETCH.fetch_home_profile();
+		const fetch_result = await home_profile.fetchData();
+		const played = home_profile.fetch_obj.rdata.played;
+		const win_rate = home_profile.fetch_obj.rdata.win_rate + '%';
+		const wins = home_profile.fetch_obj.rdata.wins;
+		const losses = home_profile.fetch_obj.rdata.losses;
+		if (fetch_result === 'home-profile-failed')
+		{
+			alert('Failed to get profile stats.');
+			return false;
+		}
+
 		// [A] TEMPLATE
 		let template = `
 		<div class="%main-c">
@@ -283,23 +295,23 @@ class LeftUser
 			'%tlp1-c': 'ct-mid-title',
 			'%tlp1-t': 'Played',
 			'%tlp2-c': 'ct-mid-num',
-			'%tlp2-t': '0',
+			'%tlp2-t': played,
 			'%tr-c': 'ct-mid-container h-100 d-flex flex-column text-center',
 			'%trp1-c': 'ct-mid-title',
 			'%trp1-v': 'Win Rate',
 			'%trp2-c': 'ct-mid-num',
-			'%trp2-v': '0%',
+			'%trp2-v': win_rate,
 			'%ctnb-c': 'ct-stats-bot d-flex',
 			'%bl-c': 'ct-bot-left d-flex flex-column text-center',
 			'%blp1-c': 'ct-bot-title',
 			'%blp1-t': 'Wins',
 			'%blp2-c': 'ct-bot-num',
-			'%blp2-t': '0',
+			'%blp2-t': wins,
 			'%br-c': 'ct-bot-right d-flex flex-column text-center',
 			'%brp1-c': 'ct-bot-title',
 			'%brp1-v': 'Losses',
 			'%brp2-c': 'ct-bot-num',
-			'%brp2-v': '0',
+			'%brp2-v': losses,
 			'%his-id': 'btn_history',
 			'%his-c': 'ct-btn-neau w-100',
 			'%his-t': 'Match History',

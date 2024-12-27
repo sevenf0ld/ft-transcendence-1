@@ -27,6 +27,10 @@ class BotFriendPfp
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.username = null;
+		this.wins = null;
+		this.losses = null;
+		this.total = null;
+		this.win_rate = null;
 	}
 	// --------------------------------------------- //
 	// MAIN-EXECUTION
@@ -233,10 +237,10 @@ class BotFriendPfp
 		{
 			'%main-c': 'ct-fn-pfp-stats-ctn',
 			'%lst-c': 'ct-fn-pfp-stats-list truncate',
-			'%win-t': 'Win: 100',
-			'%lose-t': 'Lose: 100',
-			'%total-t': 'Total: 100',
-			'%winrate-t': 'W.rate: 100%',
+			'%win-t': this.wins,
+			'%lose-t': this.losses,
+			'%total-t': this.total,
+			'%winrate-t': this.win_rate,
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);

@@ -2,6 +2,7 @@
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
+import * as FETCH from './BotChatBox_fetch.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -120,10 +121,25 @@ class BotChatBox
 		event.preventDefault();
 		console.log('[EVENT] button clicked : chatbox-profile');
 
-		const parent_div = document.querySelector('.ct-bottom-left');
-		BOT_FRIEND_PFP.container = parent_div;
-		BOT_FRIEND_PFP.username = this.target;
-		await BOT_FRIEND_PFP.render('replace');
+		const friend_profile = new FETCH.fetch_friend_profile(this.target);
+		const fetch_result = await friend_profile.fetchData();
+		if (fetch_result === 'friend-profile-successful')
+		{
+			const parent_div = document.querySelector('.ct-bottom-left');
+			BOT_FRIEND_PFP.container = parent_div;
+			BOT_FRIEND_PFP.username = this.target;
+			const stats = friend_profile.fetch_obj.rdata;
+			BOT_FRIEND_PFP.wins = 'Won: ' + stats.wins;
+			BOT_FRIEND_PFP.losses = 'Lost: ' + stats.losses;
+			BOT_FRIEND_PFP.total = 'Total: ' + stats.played;
+			BOT_FRIEND_PFP.win_rate = 'W.rate: ' + stats.win_rate + '%';
+			await BOT_FRIEND_PFP.render('replace');
+		}
+		else
+		{
+			alert(`Failed to get ${this.target}'s profile info.`);
+			return false;
+		}
 
 		return true;
 	}
