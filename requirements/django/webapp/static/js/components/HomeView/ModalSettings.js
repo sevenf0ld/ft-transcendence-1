@@ -7,6 +7,7 @@
 // -------------------------------------------------- //
 import ModalLayout from '../../layouts//ModalLayout.js';
 import ModalSettingsItems from './ModalSetItems.js';
+import MODAL_SETTINGS_ITEMS from './ModalSetItems111.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -180,8 +181,8 @@ export default class ModalSettings
 		this.container.innerHTML = '';
 		this.modal_title.innerHTML = 'Language';
 
-		const ModalSetItem = new ModalSettingsItems(this.container);
-		await ModalSetItem.render_language('replace');
+		MODAL_SETTINGS_ITEMS.container = this.container;
+		await MODAL_SETTINGS_ITEMS.render_language('replace');
 
 		return true;
 	}
@@ -194,8 +195,8 @@ export default class ModalSettings
 		this.container.innerHTML = '';
 		this.modal_title.innerHTML = 'Account';
 
-		const ModalSetItem = new ModalSettingsItems(this.container);
-		await ModalSetItem.render_account('replace');
+		MODAL_SETTINGS_ITEMS.container = this.container;
+		await MODAL_SETTINGS_ITEMS.render_account('replace');
 
 		return true;
 	}
@@ -208,8 +209,9 @@ export default class ModalSettings
 		this.container.innerHTML = '';
 		this.modal_title.innerHTML = 'Profile Picture';
 
-		const ModalSetItem = new ModalSettingsItems(this.container);
-		await ModalSetItem.render_pfp('replace');
+		MODAL_SETTINGS_ITEMS.container = this.container;
+		await MODAL_SETTINGS_ITEMS.render_pfp('replace');
+
 		return true;
 	}
 
@@ -221,8 +223,8 @@ export default class ModalSettings
 		this.container.innerHTML = '';
 		this.modal_title.innerHTML = '2FA';
 
-		const ModalSetItem = new ModalSettingsItems(this.container);
-		await ModalSetItem.render_2fa('replace');
+		MODAL_SETTINGS_ITEMS.container = this.container;
+		await MODAL_SETTINGS_ITEMS.render_2fa('replace');
 
 		return true;
 	}
