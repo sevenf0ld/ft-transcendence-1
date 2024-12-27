@@ -15,17 +15,11 @@ import EG_DATA from './engine_data.js';
 // -------------------------------------------------- //
 class engineRenderClass
 {
-	// --------------------------------------------- //
-	// CONSTRUCTOR
-	// --------------------------------------------- //
 	constructor()
 	{
 		this.data = EG_DATA;
 	}
 
-	// --------------------------------------------- //
-	// FUNCTIONS
-	// --------------------------------------------- //
 	async game_loop(timestamp)
 	{
 		const db = this.data;
@@ -34,6 +28,7 @@ class engineRenderClass
 			return false;
 		if (db.match.winner !== null)
 		{
+			this.game_over();
 			if (db.canvas.elem)
 			{
 				db.canvas.elem.classList.remove('breathing_bot');
@@ -70,6 +65,24 @@ class engineRenderClass
 		this.check_horizontalCollision();
 		this.check_verticalCollision();
 		this.check_paddleCollision();
+
+		return true;
+	}
+
+	async game_over()
+	{
+		const db = this.data;
+
+		if (db.match.winner === db.player1.name)
+		{
+			EG_UTILS.announce(`${db.player1.name} wins!`);
+			this.render_playersName('p1');
+		}
+		if (db.match.winner === db.player2.name)
+		{
+			EG_UTILS.announce(`${db.player2.name} wins!`);
+			this.render_playersName('p2');
+		}
 
 		return true;
 	}
@@ -128,7 +141,7 @@ class engineRenderClass
 		return true;
 	}
 
-	async render_playersName()
+	async render_playersName(winner)
 	{
 		const db = this.data;
 
@@ -152,8 +165,17 @@ class engineRenderClass
 
 		let height = db.canvas.elem.height / 2 + 20;
 		let width = db.canvas.elem.width / 2;
+
 		db.canvas.ctx.fillText(db.player1.name, width / 2, height);
 		db.canvas.ctx.fillText(db.player2.name, width + (width / 2), height);
+
+		let winner_color = db.display.cor_txt;
+		db.canvas.ctx.fillStyle = db.display.cor_txt_win;
+		if (winner === 'p1')
+			db.canvas.ctx.fillText(db.player1.name, width / 2, height);
+		if (winner === 'p2')
+			db.canvas.ctx.fillText(db.player2.name, width + (width / 2), height);
+		db.canvas.ctx.fillStyle = db.display.cor_txt;
 
 		return true;
 	}
@@ -264,12 +286,14 @@ class engineRenderClass
 
 		if (ballR >= db.canvas.elem.width)
 		{
-			db.match.winner = true;
+			db.player1.wins++;
+			db.match.winner = db.player1.name;
 			alert(`${db.player1.name} wins!`);
 		}
 		if (ballL <= 0)
 		{
-			db.match.winner = true;
+			db.player2.wins++;
+			db.match.winner = db.player2.name;
 			alert(`${db.player2.name} wins!`);
 		}
 	}
@@ -371,7 +395,6 @@ class engineRenderClass
 			ballT >= p2T - db.paddle.dist_colli_y &&
 			ballB <= p2B + db.paddle.dist_colli_y)
 		{
-			//change later please add physic like p1
 			db.ball.dx *= -1;
 			db.ball.x = p2.x - db.paddle.dist_colli_x - ball.r;
 			await this.triggerDifficultIncrease();

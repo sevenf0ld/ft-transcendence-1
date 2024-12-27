@@ -12,7 +12,7 @@ import ModalLayout from '../../layouts/ModalLayout.js';
 import ModalAddFriend from './ModalAdd.js';
 import * as FETCH from './RightFnList_fetch.js';
 import ModalFnOpt from './ModalFnOpt.js';
-import BotChatbox from './BotChatbox.js';
+import BOT_CHATBOX from './BotChatBox.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -446,8 +446,9 @@ export default class rightPanelFriends
 		if (type === 'added')
 		{
 			await this.reset_midBotPanel(1);
-			const chatbox = new BotChatbox(parent_div, name);
-			await chatbox.render();
+			BOT_CHATBOX.container = parent_div;
+			BOT_CHATBOX.target = name;
+			await BOT_CHATBOX.render('replace');
 		}
 
 		return true;

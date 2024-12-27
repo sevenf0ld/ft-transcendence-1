@@ -6,6 +6,7 @@
 // Importing-external
 // -------------------------------------------------- //
 import BotFriendPfp from './BotFriendPfp.js';
+import WS_MANAGER from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -280,6 +281,9 @@ export default class BotChatbox
 		const pfp_ctn = document.querySelector('.ct-bottom-left');
 		pfp_ctn.innerHTML = child;
 
+		//websocket close
+		await WS_MANAGER.close_curent_liveChat();
+		await WS_MANAGER.init_liveChat();
 
 		return true;
 	}
@@ -290,39 +294,30 @@ export default class BotChatbox
 
 		console.log('[EVENT] button clicked: send message');
 
+		const input = document.getElementById('input_chatbox');
+		let message = document.getElementById('input_chatbox').value;
+
+		if (WS_MANAGER.liveChat.ws.readyState === WebSocket.OPEN)
+		{
+			WS_MANAGER.liveChat.ws.send(JSON.stringify({
+			  'message': message,
+			  'sender': this.sender,
+			  'room_name': this.room_name,
+			  'type': 'chat_reply',
+			}));
+			input.value = '';
+		}
+		else if (WS_MANAGER.liveChat.ws.readyState === WebSocket.CONNECTING)
+			console.log("message is not sent. chat socket is waiting for an open connection.");
+		else if (WS_MANAGER.liveChat.ws.readState >= 2)
+			console.error("message will not be sent. chat socket connection closed or closing.");
+
 		return true;
 	}
 
 	// ================================================== //
 	// [4.1] EVENT - WEB SOCKET RELATED
 	// ================================================== //
-	async socket_init()
-	{
-		this.sender = JSON.parse(localStorage.getItem('user')).username;
-
-		const flist = document.querySelectorAll('.fnl-item-ctn[data-type="added"]');
-		for (const friend of flist)
-		{
-			const friend_name = friend.title;
-			this.room_name[friend_name] = await this.roomName_generator(this.sender, friend_name);
-			this.websocket_url[friend_name] = `wss://${window.location.host}/ws/chat/${this.room_name[friend_name]}/`;
-			this.chat_socket[friend_name] = await new WebSocket(this.websocket_url[friend_name]);
-			this.chat_socket[friend_name].addEventListener("error", (event) => {
-				console.error(`[SOCKET ERROR] ${this.room_name[friend_name]}.`);
-				this.room_status[friend_name] = 'error';
-			});
-			this.chat_socket[friend_name].addEventListener("open", (event) => {
-				console.log(`[SOCKET READY] ${this.room_name[friend_name]}.`);
-				this.room_status[friend_name] = 'off';
-			});
-			//this.chat_socket[this.target].addEventListener("close", (event) => {
-			//	console.error(`[SOCKET CLOSED] ${this.room_name[this.target]}.`);
-			//	this.room_status[this.target] = 'off';
-			//});
-		}
-
-	}
-
 	async msg_generator(user, msg)
 	{
 		if (user === 'You')
@@ -337,32 +332,58 @@ export default class BotChatbox
 		return `${target}_${sender}`;
 	}
 
+	async socket_init()
+	{
+		this.sender = JSON.parse(localStorage.getItem('user')).username;
+
+		await WS_MANAGER.close_curent_liveChat();
+		await WS_MANAGER.init_liveChat();
+		//if target is in the added section
+		if (!document.querySelector(`.fnl-item-ctn[data-type="added"][title="${this.target}"]`))
+			return console.log(`[SOCKET ERROR] ${this.target} is not in the added section.`);
+		else
+			console.log(`[SOCKET READY] ${this.target} is in the added section.`);
+
+		WS_MANAGER.liveChat.sender = this.sender;
+		WS_MANAGER.liveChat.target = this.target;
+		const roomName = await this.roomName_generator(this.sender, this.target);
+		WS_MANAGER.liveChat.room_name = roomName;
+		WS_MANAGER.liveChat.url = `wss://${window.location.host}/ws/chat/${roomName}/`;
+		WS_MANAGER.liveChat.ws = await new WebSocket(WS_MANAGER.liveChat.url);
+		console.log('TEST--------------------- ', WS_MANAGER.liveChat);
+		WS_MANAGER.liveChat.ws.addEventListener("error", (event) => {
+			console.error(`[SOCKET ERROR] ${roomName}.`);
+			//WS_MANAGER.liveChat.ws = undefined;
+		});
+		WS_MANAGER.liveChat.ws.addEventListener("open", (event) => {
+			console.log(`[SOCKET READY] ${roomName}.`);
+		});
+		WS_MANAGER.liveChat.ws.addEventListener("close", (event) => {
+			console.log(`[SOCKET CLOSED] ${roomName}.`);
+			//WS_MANAGER.liveChat.ws = undefined;
+		});
+	}
+
 	async connect_chat_socket()
 	{
 		await this.socket_init();
 		const send_btn = document.getElementById('btn_chatbox_send');
-		const input = document.getElementById('input_chatbox');
 		const chatbox_ctn = document.querySelector('.ct-chatbox-ctn .ct-chatbox-bd');
-		chatbox_ctn.innerHTML = '';
 		const chatbox_close = document.getElementById('btn_chatbox_close');
 
-		this.chat_socket[this.target].addEventListener("message", async (event) => {
-		  let data = JSON.parse(event.data);
+		chatbox_ctn.innerHTML = '';
 
+		WS_MANAGER.liveChat.ws.addEventListener("message", async (event) =>
+		{
+			let data = JSON.parse(event.data);
 		  //========================================//
     	  //================ RECEIVE ===============//
     	  //======= NOTIFICATION FROM SERVER =======//
     	  //========================================//
 		  if (data.type === 'chat_available')
-		  {
-			  this.room_status[this.target] = 'on';
-			  console.log(`[CHAT AVAILABLE] you can chat with ${this.target} as they are currently in room.`);
-		  }
+			  console.log(`[CHAT AVAILABLE] ${this.target} - in room.`);
 		  else if (data.type === 'chat_unavailable')
-		  {
-			  this.room_status[this.target] = 'off';
-			  console.log('[CHAT UNAVAILABLE] nobody hears you.');
-		  }
+			  console.log(`[CHAT UNAVAILABLE] ${this.target} - not in room.`);
 		  //========================================//
     	  //================ RECEIVE ===============//
     	  //================ CHATTING ==============//
@@ -377,54 +398,10 @@ export default class BotChatbox
 		  }
 		});
 
-		//========================================//
-    	//================== SEND ================//
-    	//============= NOTIFY SERVER ============//
-    	//========================================//
-		chatbox_close.addEventListener('click', (event) => {
-			event.preventDefault();
-
-			if (this.chat_socket[this.target].readyState === WebSocket.OPEN)
-			{
-				this.chat_socket[this.target].send(JSON.stringify({
-				  'message': null,
-				  'sender': this.sender,
-				  'room_name': this.room_name,
-				  'type': 'chat_close',
-				}));
-				input.value = '';
-			}
-			this.chat_socket[this.target].close();
-			this.room_status[this.target] = 'off';
-		});
-
-		//========================================//
-    	//================== SEND ================//
-    	//================ CHATTING ==============//
-    	//========================================//
-		send_btn.addEventListener('click', (event) => {
-			event.preventDefault();
-			let message = input.value;
-
-			if (this.chat_socket[this.target].readyState === WebSocket.OPEN)
-			{
-				this.chat_socket[this.target].send(JSON.stringify({
-				  'message': message,
-				  'sender': this.sender,
-				  'room_name': this.room_name,
-				  'type': 'chat_reply',
-				}));
-				input.value = '';
-			}
-			else if (this.chat_socket[this.target].readyState === WebSocket.CONNECTING)
-				console.log("message is not sent. chat socket is waiting for an open connection.");
-			else if (this.chat_socket[this.target].readState >= 2)
-				console.error("message will not be sent. chat socket connection closed or closing.");
-		});
-
 		return true;
 	}
 
+	// bind events
 	async bind_events()
 	{
 		await btns.read_buttons();
@@ -446,6 +423,13 @@ export default class BotChatbox
 		);
 
 		await this.connect_chat_socket();
+
+		while (true)
+		{
+			//check websocket every 1 second
+			await new Promise(r => setTimeout(r, 1000));
+			console.log(`[SOCKET CHECK-RECUR]`, WS_MANAGER.liveChat.ws);
+		}
 
 		return true;
 	}

@@ -18,53 +18,6 @@ class engineData
 	// --------------------------------------------- //
 	constructor()
 	{
-		/* refactor 
-		this.sHeight = 270;
-		this.sWidth = 750;
-		this.bg_color = '#212529';
-		this.txt_color = '#292e32';
-		this.ball_color = '#f8f9fa';
-		this.paddle_color = '#f8f9fa';
-
-		this.paddleWall_dist = 30;
-		this.paddle_dentX = 5;
-		this.paddle_dentY = 15;
-		this.midY = this.sHeight / 2;
-		this.paddleGapX = 15;
-		this.paddleGapY = 10;
-		// dynamic
-		this.ballSpeed = 200;
-		this.paddleSpeed = 150;
-		this.paddle_len = 70;
-		this.gameType = null;
-		this.canvas = null;
-		this.ctx = null;
-		this.p1_score = 0;
-		this.p1_name = null;
-		this.p2_score = 0;
-		this.p2_name = null;
-		this.match_winner = null;
-		this.match_end = false;
-		this.match_pause = false;
-		this.ball = {
-			x: this.sWidth / 2,
-			y: this.sHeight / 2,
-			r: 5,
-			dx: 1 * this.ballSpeed,
-			dy: 3 * this.ballSpeed
-		};
-		this.lastTimeStamp = 0;
-		this.deltaTime = 0;
-		this.p1_paddle = {
-			pos_x: this.paddleWall_dist,
-			pos_y: this.sHeight / 2,
-		};
-		this.p2_paddle = {
-			pos_x: this.sWidth - this.paddleWall_dist,
-			pos_y: this.sHeight / 2,
-		};
-		this.keyState = {};
-		*/
 		this.init_display();
 		this.obj_ball();
 		this.obj_paddle();
@@ -91,6 +44,7 @@ class engineData
 			w: 750,
 			cor_bg: '#212529',
 			cor_txt: '#292e32',
+			cor_txt_win: '#3d5838',
 			cen_y: undefined,
 			cen_x: undefined,
 		};
@@ -159,6 +113,7 @@ class engineData
 			name: null,
 			x: undefined,
 			y: undefined,
+			wins: 0,
 		};
 
 		this.player1.x = this.paddle.dist_wall;
@@ -169,6 +124,7 @@ class engineData
 			name: null,
 			x: undefined,
 			y: undefined,
+			wins: 0,
 		};
 		
 		this.player2.x = this.display.w - this.paddle.dist_wall;

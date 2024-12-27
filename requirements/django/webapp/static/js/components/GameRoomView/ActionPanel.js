@@ -9,6 +9,15 @@ import pongEngine from '../GameLogic/PongEngine.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
@@ -59,11 +68,11 @@ export default class ActionPanel
 		return true;
 	}
 
-	/***********************************
-	 * SHARED-LAYOUT-BASE
-	 ***********************************/
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// SHARED-LAYOUT-BASE
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (SHARED-LAYOUT-BASE)
+	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
 	async baseLayour_render(renderType)
 	{
@@ -96,25 +105,19 @@ export default class ActionPanel
 	{
 		return true;
 	}
+
 	// --------------------------------------------- //
-	// EVENT-RELATED (SHARED-LAYOUT-BASE)
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_base()
 	{
 		return true;
 	}
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (SHARED-LAYOUT-BASE)
-	// --------------------------------------------- //
-	async bind_modals_base()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// FETCH-RELATED (SHARED-LAYOUT-BASE)
+	// [3/4] FETCH-RELATED 
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED (SHARED-LAYOUT-BASE)
+	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
 	async init_template_base()
 	{
@@ -136,7 +139,7 @@ export default class ActionPanel
 		// [A] TEMPLATE
 		let template = `
 		<div class="%main-c1"></div>
-		`
+		`;
 		// [B] SET atts
 		const atts =
 		{
@@ -148,11 +151,19 @@ export default class ActionPanel
 		// [C] HTML RETURN
 		return template;
 	}
-	/***********************************
-	 * LOCAL-PVP
-	 ***********************************/
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (LOCAL-PVP)
+	// [A] BOOSTRAP-MODAL-RELATED 
+	// --------------------------------------------- //
+	async bind_modals_base()
+	{
+		return true;
+	}
+
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// LOCAL-PVP
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
 	async localPvp_render(renderType)
 	{
@@ -189,7 +200,7 @@ export default class ActionPanel
 		return true;
 	}
 	// --------------------------------------------- //
-	// EVENT-RELATED (LOCAL-PVP)
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_lpvp()
 	{
@@ -222,19 +233,11 @@ export default class ActionPanel
 		if (this.currentGame)
 			await this.currentGame.reset();
 	}
-
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (LOCAL-PVP)
-	// --------------------------------------------- //
-	async bind_modals_lpvp()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// FETCH-RELATED (LOCAL-PVP)
+	// [3/4] FETCH-RELATED (LOCAL-PVP)
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED (LOCAL-PVP)
+	// [4/4] HTML-ELEMENT-RELATED (LOCAL-PVP)
 	// --------------------------------------------- //
 	async init_template_lpvp()
 	{
@@ -257,7 +260,7 @@ export default class ActionPanel
 		let template = `
 			<button @att1 @att2 @att3>@text1</button>
 			<button @att4 @att5 @att6>@text2</button>
-		`
+		`;
 		// [B] SET atts
 		const atts =
 		{
@@ -276,11 +279,19 @@ export default class ActionPanel
 		// [C] HTML RETURN
 		return template;
 	}
-	/***********************************
-	 * LOCAL-TOUR
-	 ***********************************/
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (LOCAL-TOUR)
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals_lpvp()
+	{
+		return true;
+	}
+
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// LOCAL-TOUR
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
 	async localTour_render(renderType)
 	{
@@ -314,24 +325,17 @@ export default class ActionPanel
 		return true;
 	}
 	// --------------------------------------------- //
-	// EVENT-RELATED (LOCAL-TOUR)
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_ltour()
 	{
 		return true;
 	}
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (LOCAL-TOUR)
-	// --------------------------------------------- //
-	async bind_modals_ltour()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// FETCH-RELATED (LOCAL-TOUR)
+	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED (LOCAL-TOUR)
+	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
 	async init_template_ltour()
 	{
@@ -355,7 +359,7 @@ export default class ActionPanel
 		<button @att01 @att02 @att03>@text01</button>
 		<button @att04 @att05 @att06>@text02</button>
 		<button @att07 @att08 @att09>@text03</button>
-		`
+		`;
 		// [B] SET atts
 		const atts =
 		{
@@ -378,11 +382,19 @@ export default class ActionPanel
 		// [C] HTML RETURN
 		return template;
 	}
-	/***********************************
-	 * LOCAL-PVE
-	 ***********************************/
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (LOCAL-PVE)
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals_ltour()
+	{
+		return true;
+	}
+
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// LOCAL-PVE
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION (LOCAL-PVE)
 	// --------------------------------------------- //
 	async localPve_render(renderType)
 	{
@@ -416,24 +428,17 @@ export default class ActionPanel
 		return true;
 	}
 	// --------------------------------------------- //
-	// EVENT-RELATED (LOCAL-PVE)
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_lpve()
 	{
 		return true;
 	}
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (LOCAL-PVE)
-	// --------------------------------------------- //
-	async bind_modals_lpve()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// FETCH-RELATED (LOCAL-PVE)
+	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED (LOCAL-PVE)
+	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
 	async init_template_lpve()
 	{
@@ -456,7 +461,7 @@ export default class ActionPanel
 		let template = `
 		<button @att1 @att2 @att3>@text1</button>
 		<button @att4 @att5 @att6>@text2</button>
-		`
+		`;
 		// [B] SET atts
 		const atts =
 		{
@@ -475,11 +480,19 @@ export default class ActionPanel
 		// [C] HTML RETURN
 		return template;
 	}
-	/***********************************
-	 * ONLINE-PVP
-	 ***********************************/
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (ONLINE-PVP)
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals_lpve()
+	{
+		return true;
+	}
+
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// ONLINE-PVP
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
 	async onlinePvp_render(renderType)
 	{
@@ -513,24 +526,17 @@ export default class ActionPanel
 		return true;
 	}
 	// --------------------------------------------- //
-	// EVENT-RELATED (ONLINE-PVP)
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_opvp()
 	{
 		return true;
 	}
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (ONLINE-PVP)
-	// --------------------------------------------- //
-	async bind_modals_opvp()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// FETCH-RELATED (ONLINE-PVP)
+	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED (ONLINE-PVP)
+	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
 	async init_template_opvp()
 	{
@@ -553,7 +559,7 @@ export default class ActionPanel
 		let template = `
 		<button @att1 @att2 @att3>@text1</button>
 		<button @att4 @att5 @att6>@text2</button>
-		`
+		`;
 
 		// [B] SET atts
 		const atts =
@@ -573,11 +579,19 @@ export default class ActionPanel
 		// [C] HTML RETURN
 		return template;
 	}
-	/***********************************
-	 * ONLINE-TOUR
-	 ***********************************/
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (ONLINE-TOUR)
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals_opvp()
+	{
+		return true;
+	}
+
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// ONLINE-TOUR
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
 	async onlineTour_render(renderType)
 	{
@@ -611,24 +625,17 @@ export default class ActionPanel
 		return true;
 	}
 	// --------------------------------------------- //
-	// EVENT-RELATED (ONLINE-TOUR)
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_otour()
 	{
 		return true;
 	}
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (ONLINE-TOUR)
-	// --------------------------------------------- //
-	async bind_modals_otour()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// FETCH-RELATED (ONLINE-TOUR)
+	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED (ONLINE-TOUR)
+	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
 	async init_template_otour()
 	{
@@ -643,7 +650,6 @@ export default class ActionPanel
 
 		return template;
 	}
-
 	async html_main_ctn_otour()
 	{	
 		// [-] HELPER FUNCTION
@@ -651,7 +657,7 @@ export default class ActionPanel
 		let template = `
 			<button @att1 @att2 @att3>@text1</button>
 			<button @att4 @att5 @att6>@text2</button>
-		`
+		`;
 
 		// [B] SET atts
 		const atts =
@@ -670,5 +676,12 @@ export default class ActionPanel
 
 		// [C] HTML RETURN
 		return template;
+	}
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals_otour()
+	{
+		return true;
 	}
 }

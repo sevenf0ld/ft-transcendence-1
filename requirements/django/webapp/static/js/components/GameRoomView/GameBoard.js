@@ -8,6 +8,15 @@
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
@@ -33,11 +42,11 @@ export default class GameBoard
 		return true;
 	}
 
-	/***********************************
-	 * SHARED-LAYOUT-BASE
-	 ***********************************/
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// SHARED-LAYOUT-BASE
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// --------------------------------------------- //
-	// MAIN-EXECUTION (SHARED-LAYOUT-BASE)
+	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
 	async baseLayour_render(renderType)
 	{
@@ -71,25 +80,17 @@ export default class GameBoard
 		return true;
 	}
 	// --------------------------------------------- //
-	// EVENT-RELATED (SHARED-LAYOUT-BASE)
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_base()
 	{
 		return true;
 	}
-
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (SHARED-LAYOUT-BASE)
-	// --------------------------------------------- //
-	async bind_modals_base()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// FETCH-RELATED (SHARED-LAYOUT-BASE)
+	// [3/4] FETCH-RELATED 
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED (SHARED-LAYOUT-BASE)
+	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
 	async init_template_base()
 	{
@@ -122,5 +123,12 @@ export default class GameBoard
 
 		// [C] HTML RETURN
 		return template;
+	}
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED 
+	// --------------------------------------------- //
+	async bind_modals_base()
+	{
+		return true;
 	}
 }
