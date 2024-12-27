@@ -19,8 +19,6 @@ from channels.routing import (
     ProtocolTypeRouter,
     URLRouter,
 )
-# update to JWT
-#from channels.auth import AuthMiddlewareStack
 from .middleware import TokenAuthMiddleware
 import chat.routing
 import friends.routing
