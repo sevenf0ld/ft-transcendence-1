@@ -44,6 +44,7 @@ urlpatterns += [
     path('api/social_auth/', include('social_auth.urls')),
     path('api/friends/', include('friends.urls')),
     path('api/user_profiles/', include('user_profiles.urls')),
+    path('api/games/', include('games.urls')),
 ]
 
 from django.conf import settings
