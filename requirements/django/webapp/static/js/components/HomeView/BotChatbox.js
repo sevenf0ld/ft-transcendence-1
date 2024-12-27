@@ -6,6 +6,7 @@
 // Importing-external
 // -------------------------------------------------- //
 import BotFriendPfp from './BotFriendPfp.js';
+import WS_MANAGER from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -264,26 +265,30 @@ export default class BotChatbox
 	{
 		this.sender = JSON.parse(localStorage.getItem('user')).username;
 
-		const flist = document.querySelectorAll('.fnl-item-ctn[data-type="added"]');
-		for (const friend of flist)
-		{
-			const friend_name = friend.title;
-			this.room_name[friend_name] = await this.roomName_generator(this.sender, friend_name);
-			this.websocket_url[friend_name] = `wss://${window.location.host}/ws/chat/${this.room_name[friend_name]}/`;
-			this.chat_socket[friend_name] = await new WebSocket(this.websocket_url[friend_name]);
-			this.chat_socket[friend_name].addEventListener("error", (event) => {
-				console.error(`[SOCKET ERROR] ${this.room_name[friend_name]}.`);
-				this.room_status[friend_name] = 'error';
-			});
-			this.chat_socket[friend_name].addEventListener("open", (event) => {
-				console.log(`[SOCKET READY] ${this.room_name[friend_name]}.`);
-				this.room_status[friend_name] = 'off';
-			});
-			//this.chat_socket[this.target].addEventListener("close", (event) => {
-			//	console.error(`[SOCKET CLOSED] ${this.room_name[this.target]}.`);
-			//	this.room_status[this.target] = 'off';
-			//});
-		}
+		await WS_MANAGER.close_liveChat();
+		//if target is in the added section
+		if (!document.querySelector(`.fnl-item-ctn[data-type="added"][title="${this.target}"]`))
+			return console.log(`[SOCKET ERROR] ${this.target} is not in the added section.`);
+		else
+			console.log(`[SOCKET READY] ${this.target} is in the added section.`);
+
+		WS_MANAGER.liveChat.sender = this.sender;
+		WS_MANAGER.liveChat.target = this.target;
+		console.log(`[DEBUG SENDER - TARGET] ${this.sender} - ${this.target}`);
+		const roomName = await this.roomName_generator(this.sender, this.target);
+		WS_MANAGER.liveChat.url = `wss://${window.location.host}/ws/chat/${roomName}/`;
+		WS_MANAGER.liveChat.ws = await new WebSocket(WS_MANAGER.liveChat.url);
+		WS_MANAGER.liveChat.ws.addEventListener("error", (event) => {
+			console.error(`[SOCKET ERROR] ${roomName}.`);
+			WS_MANAGER.liveChat.ws = undefined;
+		});
+		WS_MANAGER.liveChat.ws.addEventListener("open", (event) => {
+			console.log(`[SOCKET READY] ${roomName}.`);
+		});
+		WS_MANAGER.liveChat.ws.addEventListener("close", (event) => {
+			console.log(`[SOCKET CLOSED] ${roomName}.`);
+			WS_MANAGER.liveChat.ws = undefined;
+		});
 
 	}
 
@@ -307,11 +312,13 @@ export default class BotChatbox
 		const send_btn = document.getElementById('btn_chatbox_send');
 		const input = document.getElementById('input_chatbox');
 		const chatbox_ctn = document.querySelector('.ct-chatbox-ctn .ct-chatbox-bd');
-		chatbox_ctn.innerHTML = '';
 		const chatbox_close = document.getElementById('btn_chatbox_close');
 
-		this.chat_socket[this.target].addEventListener("message", async (event) => {
-		  let data = JSON.parse(event.data);
+		chatbox_ctn.innerHTML = '';
+
+		WS_MANAGER.liveChat.ws.addEventListener("message", async (event) =>
+		{
+			let data = JSON.parse(event.data);
 
 		  //========================================//
     	  //================ RECEIVE ===============//
@@ -345,9 +352,11 @@ export default class BotChatbox
     	//================== SEND ================//
     	//============= NOTIFY SERVER ============//
     	//========================================//
-		chatbox_close.addEventListener('click', (event) => {
+		chatbox_close.addEventListener('click', async (event) => {
 			event.preventDefault();
 
+			await WS_MANAGER.close_liveChat();
+			/*
 			if (this.chat_socket[this.target].readyState === WebSocket.OPEN)
 			{
 				this.chat_socket[this.target].send(JSON.stringify({
@@ -360,6 +369,8 @@ export default class BotChatbox
 			}
 			this.chat_socket[this.target].close();
 			this.room_status[this.target] = 'off';
+			*/
+			return true;
 		});
 
 		//========================================//
