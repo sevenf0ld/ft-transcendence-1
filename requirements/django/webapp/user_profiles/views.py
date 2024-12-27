@@ -3,13 +3,14 @@ from django.shortcuts import render
 # Create your views here.
 #from rest_framework import viewsets
 from .models import Profile
-#from .serializers import ProfileModelSerializer
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny
 from dj_rest_auth.jwt_auth import JWTCookieAuthentication
 from django.contrib.auth.models import User
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
+from .serializers import FriendProfileModelSerializer, FriendProfileTargetSerializer, ProfileModelSerializer
+from typing import Dict, Any
 
 #class ProfileViewSet(viewsets.ModelViewSet):
 #    serializer_class = ProfileModelSerializer
@@ -34,3 +35,38 @@ def upload_avatar(request):
     profile_data.save()
     return Response({'details': 'Profile picture uploaded.'}, status=status.HTTP_200_OK)
 
+class FriendProfileRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = FriendProfileModelSerializer
+
+    def get_serializer_context(self) -> Dict[str, Any]:
+        context: Dict[str, Any] = super().get_serializer_context()
+        query = FriendProfileTargetSerializer(data=self.request.query_params)
+        context['request'] = self.request
+
+        if query.is_valid(raise_exception=True):
+            data = query.validated_data
+            self.query_data = data
+            context['target'] = self.query_data.get('target')
+        return context
+
+    def get_object(self):
+        target =  self.get_serializer_context().get('target')
+        print(target)
+        target_data = User.objects.get(username__iexact=target)
+
+        fp = Profile.objects.get(user=target_data)
+
+        self.check_object_permissions(self.request, fp)
+
+        return fp
+
+class HomeProfileRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileModelSerializer
+
+    def get_object(self):
+        profile = Profile.objects.get(user=self.request.user)
+
+        self.check_object_permissions(self.request, profile)
+
+        return profile
