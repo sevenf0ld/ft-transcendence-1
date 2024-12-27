@@ -74,10 +74,10 @@ class BotChatBox
 	async push_important_elements()
 	{
 		this.main_ctn = document.querySelector('.ct-chatbox-ctn');
-		this.buttons['profile'] = document.querySelector('#btn_chatbox_profile');
-		this.buttons['close'] = document.querySelector('#btn_chatbox_close');
-		this.buttons['invite'] = document.querySelector('#btn_chatbox_invite');
-		this.buttons['send-msg'] = document.querySelector('#btn_chatbox_send');
+		this.buttons['profile'] = document.getElementById('btn_chatbox_profile');
+		this.buttons['close'] = document.getElementById('btn_chatbox_close');
+		this.buttons['invite'] = document.getElementById('btn_chatbox_invite');
+		this.buttons['send-msg'] = document.getElementById('btn_chatbox_send');
 
 		if (!this.main_ctn)
 			throw new Error('[ERR] main container not found');

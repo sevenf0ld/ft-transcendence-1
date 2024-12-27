@@ -69,8 +69,8 @@ class BotFriendPfp
 	async push_important_elements()
 	{
 		this.main_ctn = document.querySelector('.ct-fn-pfp-ctn');
-		this.buttons.close = document.querySelector('#btn_fn_pfp_close');
-		this.buttons.history = document.querySelector('#btn_fn_pfp_hist');
+		this.buttons.close = document.getElementById('btn_fn_pfp_close');
+		this.buttons.history = document.getElementById('btn_fn_pfp_hist');
 
 		if (!this.main_ctn)
 			throw new Error('[ERR] main container not found');
