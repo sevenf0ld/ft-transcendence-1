@@ -32,6 +32,7 @@ class engineUtilsClass
 
 		if (state === 'start')
 		{
+			await this.announce();
 			await this.announce(`Game has started at ${t}`);
 			await this.announce('Game difficulty will INCREASE over time');
 			await this.btn_manage('start');
@@ -64,11 +65,14 @@ class engineUtilsClass
 	async getCurTime()
 	{
 		const cur = new Date().getTime();
+
 		const time = new Date(cur).toLocaleTimeString(
 			'en-US',
 			{
 				hour: '2-digit',
-				minute: '2-digit'
+				minute: '2-digit',
+				second: '2-digit',
+				hour12: true
 			}
 		);
 
@@ -89,6 +93,10 @@ class engineUtilsClass
 		p.textContent = msg_str;
 
 		ctn.appendChild(p);
+
+		// clear board
+		if (!msg)
+			ctn.innerHTML = '';
 
 		return true;
 	}
