@@ -1,4 +1,4 @@
-// file : BotChatbox.js
+// file : BotFriendPfp.js
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
@@ -11,22 +11,26 @@
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-export default class BotFriendPfp
+class BotFriendPfp
 {
 	// --------------------------------------------- //
 	// CONSTRUCTOR
 	// --------------------------------------------- //
-	constructor(container,username)
+	constructor()
 	{
 		// COMMON-atts
-		this.container = container;
+		this.container = '';
 		this.main_ctn = '';
 		this.buttons = {
 			close: '',
 			history: '',
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
-		this.username = username;
+		this.username = null;
+		this.wins = null;
+		this.losses = null;
+		this.total = null;
+		this.win_rate = null;
 	}
 	// --------------------------------------------- //
 	// MAIN-EXECUTION
@@ -61,15 +65,16 @@ export default class BotFriendPfp
 	async push_important_elements()
 	{
 		this.main_ctn = document.querySelector('.ct-fn-pfp-ctn');
-		this.buttons.close = document.querySelector('#btn_fn_pfp_close');
-		this.buttons.history = document.querySelector('#btn_fn_pfp_hist');
+		this.buttons.close = document.getElementById('btn_fn_pfp_close');
+		this.buttons.history = document.getElementById('btn_fn_pfp_hist');
 
 		if (!this.main_ctn)
 			throw new Error('[ERR] main container not found');
-		if (!this.buttons.close)
-			throw new Error('[ERR] close button not found');
-		if (!this.buttons.history)
-			throw new Error('[ERR] history button not found');
+		for (const key in this.buttons)
+		{
+			if (!this.buttons[key])
+				throw new Error(`[ERR] button not found : ${key}`);
+		}
 
 		return true;
 	}
@@ -232,10 +237,10 @@ export default class BotFriendPfp
 		{
 			'%main-c': 'ct-fn-pfp-stats-ctn',
 			'%lst-c': 'ct-fn-pfp-stats-list truncate',
-			'%win-t': 'Win: 100',
-			'%lose-t': 'Lose: 100',
-			'%total-t': 'Total: 100',
-			'%winrate-t': 'W.rate: 100%',
+			'%win-t': this.wins,
+			'%lose-t': this.losses,
+			'%total-t': this.total,
+			'%winrate-t': this.win_rate,
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
@@ -272,3 +277,6 @@ export default class BotFriendPfp
 		return template;
 	}
 }
+
+const item = new BotFriendPfp();
+export default item;

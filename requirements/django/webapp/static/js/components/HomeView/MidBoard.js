@@ -1,9 +1,9 @@
 // file : MidBoard.js
 // -------------------------------------------------- //
-// Importing-internal
+// importing-internal
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// Importing-external
+// importing-external
 // -------------------------------------------------- //
 import ModalLayout from '../../layouts/ModalLayout.js';
 import ModalRoomJoin from './ModalRoomJoin.js';
@@ -11,219 +11,115 @@ import GameRoomView from '../../views/GameRoomView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-// --- [LOCAL] EXPORTED COMPONENTS
-// usage : insert querySelector's value of an element
-// 		   to register as export element; first one
-// 		   is always default
-const getEle = [
-	'#modal-join',
-];
-
-// --- [LOCAL] BUTTONS SECTION
-// button tracker
-class button
+class MidBoard
 {
+	// --------------------------------------------- //
+	// CONSTRUCTOR
+	// --------------------------------------------- //
 	constructor()
 	{
-		this.arr = {
+		// COMMON-atts
+		this.container = null;
+		this.main_ctn = null;
+		this.buttons = {
 			'local-pvp': '',
 			'local-pve': '',
 			'local-tour': '',
 			'remote-pvp': '',
 			'remote-tour': '',
 		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
 	}
-
-	async read_buttons()
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
+	// --------------------------------------------- //
+	async render(type)
 	{
-		for (const key in this.arr)
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
+		const template = await this.init_template();
+
+		if (type === 'append')
 		{
-			const ele = document.getElementById(`${this.arr[key]}`);
-			if (!ele)
-				throw new Error(`[ERR] button not found : ${this.arr[key]}`);
-			this.arr[key] = ele;
+			this.container.insertAdjacentHTML(
+				'beforeend', template
+			);
 		}
-		return true;
-	}
-}
-const btns = new button();
-
-// --- [LOCAL] HTML ELEMENTS SECTION
-/*
- <div class="ct-board-home h-100 d-flex flex-column justify-content-around">
-		<div class="ct-home-section d-flex flex-column justify-content-center align-items-center">
-			<h3>Local</h3>
-			<div class="ct-section-btns d-flex">
-				<button id="btn_local_pve" class="ct-btn-neau">PVE</button>
-				<button id="btn_local_pvp" class="ct-btn-neau">PVP</button>
-				<button id="btn_local_tour" class="ct-btn-neau">
-					Tournament
-				</button>
-			</div>
-		</div>
-		<div class="ct-home-section d-flex flex-column justify-content-center align-items-center">
-			<h3>Remote</h3>
-			<div class="ct-section-btns d-flex">
-				<button id="btn_remo_pvp" class="ct-btn-neau">PVP</button>
-				<button id="btn_remo_tour" class="ct-btn-neau">
-					Tournament
-				</button>
-			</div>
-		</div>
-</div>
-*/
-function html_element()
-{
-	// [-] HELPER FUNCTION
-	async function insert(btnId, name)
-	{
-		let template = `
-		`;
-		return 
-	}
-
-	// [A] TEMPLATE
-	let template = `
-		<div class="%main-1c %main-2c">
-			<div class="%sec-1c %sec-2c">
-				<h3>Online</h3>
-				<div class="%bg-c">
-					<button id="%btn4-d" @att1 @att2>%btn4-t</button>
-					<button id="%btn5-d" @att1 @att2>%btn5-t</button>
-				</div>
-			</div>
-			<div class="%sec-1c %sec-2c">
-				<h3>Local</h3>
-				<div class="%bg-c">
-					<button id="%btn1-d" @att1>%btn1-t</button>
-					<button id="%btn2-d" @att1>%btn2-t</button>
-					<button id="%btn3-d" @att1>%btn3-t</button>
-				</div>
-			</div>
-		</div>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%main-1c': 'ct-board-home h-100 d-flex',
-		'%main-2c': 'flex-column justify-content-around',
-		'%sec-1c': 'ct-home-section d-flex flex-column',
-		'%sec-2c': 'justify-content-center align-items-center',
-		'%bg-c': 'ct-section-btns d-flex',
-		'%btn1-d': 'btn_local_pve',
-		'%btn2-d': 'btn_local_pvp',
-		'%btn3-d': 'btn_local_tour',
-		'%btn4-d': 'btn_remo_pvp',
-		'%btn5-d': 'btn_remo_tour',
-		'@att1': 'class="ct-btn-neau"',
-		'@att2': 'data-bs-toggle="modal" data-bs-target="#modal-join"',
-		'%btn1-t': 'PVE',
-		'%btn2-t': 'PVP',
-		'%btn3-t': 'Tournament',
-		'%btn4-t': 'PVP',
-		'%btn5-t': 'Tournament',
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-	btns.arr['local-pve'] = attributes['%btn1-d'];
-	btns.arr['local-pvp'] = attributes['%btn2-d'];
-	btns.arr['local-tour'] = attributes['%btn3-d'];
-	btns.arr['remote-pvp'] = attributes['%btn4-d'];
-	btns.arr['remote-tour'] = attributes['%btn5-d'];
-
-	// [D] HTML RETURN
-	return template;
-}
-
-// HTML elements bundle
-const ele =
-{
-	html_element,
-};
-
-// -------------------------------------------------- //
-// export
-// -------------------------------------------------- //
-export default class IntroLayout
-{
-	// --- [00] CONSTRUCTOR
-	constructor(container)
-	{
-		this.container = container;
-		this.components = {};
-	}
-
-	// --- [01] GETTER
-	async get(element = 'default')
-	{
-		if (this.read_components() === false)
+		else if (type === 'replace')
 		{
-			throw new Error(`[Err] this class has no export components`);
-			return false;
+			this.container.innerHTML = '';
+			this.container.innerHTML = template;
 		}
-		return this.compo_get(element);
-	}
 
-	// --- [02] COMPONENTS REGISTRY
-	async compo_register(name, element)
-	{
-		this.components[name] = element;
+		await this.push_important_elements();
+		await this.bind_events();
+		await this.bind_modals();
 
 		return true;
 	}
 
-	async compo_get(name)
+	async push_important_elements()
 	{
-		return this.components[name];
-	}
+		this.main_ctn = document.querySelector('.ct-board-home');
+		this.buttons['local-pvp'] = document.getElementById('btn_local_pvp');
+		this.buttons['local-pve'] = document.getElementById('btn_local_pve');
+		this.buttons['local-tour'] = document.getElementById('btn_local_tour');
+		this.buttons['remote-pvp'] = document.getElementById('btn_remote_pvp');
+		this.buttons['remote-tour'] = document.getElementById('btn_remote_tour');
 
-	async compo_remove(name)
-	{
-		delete this.components[name];
-
-		return true;
-	}
-
-	async read_components()
-	{
-		if (getEle.length === 0)
-			return false;
-		this.compo_register('default', document.querySelector(getEle[0]));
-		for (const key in getEle)
+		if (!this.main_ctn)
+			throw new Error('[ERR] main container not found');
+		for (const key in this.buttons)
 		{
-			const ele = document.querySelector(getEle[key]);
-			if (!ele)
-				throw new Error(`[ERR] component not found : ${getEle[key]}`);
-			const str = getEle[key].substring(1);
-			this.compo_register(str, ele);
+			if (!this.buttons[key])
+				throw new Error(`[ERR] button not found : ${key}`);
 		}
 
 		return true;
 	}
-
-	// --- [03] HTM-LELEMENTS
-	async init_template()
+	// --------------------------------------------- //
+	// [2/4] EVENT-RELATED
+	// --------------------------------------------- //
+	async bind_events()
 	{
-		let template = "";
-		template += ele.html_element();
+		this.buttons['local-pvp'].addEventListener(
+			'click', async (event) => { await this.localPvpClick(event); }
+		);
 
-		// trim new lines, spaces, and tabs
-		template = template.replace(/\s+/g, ' ');
-		template = template.replace(/>\s+</g, '><');
-		template = template.replace(/\s*=\s*/g, '=');
-		template = template.trim();
-	
-		return template;
+		this.buttons['local-pve'].addEventListener(
+			'click', async (event) => { await this.localPveClick(event); }
+		);
+
+		this.buttons['local-tour'].addEventListener(
+			'click', async (event) => { await this.localTourClick(event); }
+		);
+
+		this.buttons['remote-pvp'].addEventListener(
+			'click', async (event) => { await this.remotePvpClick(event); }
+		);
+
+		this.buttons['remote-tour'].addEventListener(
+			'click', async (event) => { await this.remoteTourClick(event); }
+		);
+
+		await this.set_titles();
+
+		return true;
 	}
 
-	// --- [04] EVENT
 	async localPveClick(event)
 	{
 		event.preventDefault();
@@ -291,39 +187,92 @@ export default class IntroLayout
 		return true;
 	}
 
-	async bind_events()
+	async set_titles()
 	{
-		await btns.read_buttons();
-
-		btns.arr['local-pve'].addEventListener(
-			'click', async (e) => {await this.localPveClick(e);
-		});
-
-		btns.arr['local-pvp'].addEventListener(
-			'click', async (e) => {await this.localPvpClick(e);
-		});
-
-		btns.arr['local-tour'].addEventListener(
-			'click', async (e) => {await this.localTourClick(e);
-		});
-
-		btns.arr['remote-pvp'].addEventListener(
-			'click', async (e) => {await this.remotePvpClick(e);
-		});
-
-		btns.arr['remote-tour'].addEventListener(
-			'click', async (e) => {await this.remoteTourClick(e);
-		});
+		const title = document.querySelector('.ct-top-title');
+		title.innerHTML = 'Game Mode';
 
 		return true;
 	}
-	
-	// --- [05] RENDER
-	async modals_render(container)
+
+	// --------------------------------------------- //
+	// [3/4] FETCH-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [4/4] HTML-ELEMENT-RELATED
+	// --------------------------------------------- //
+	async init_template()
+	{
+		let template = "";
+		template += await this.html_main_ctn();
+
+		// trim new lines, spaces, and tabs
+		template = template.replace(/\s+/g, ' ');
+		template = template.replace(/>\s+</g, '><');
+		template = template.replace(/\s*=\s*/g, '=');
+		template = template.trim();
+
+		return template;
+	}
+
+	async html_main_ctn()
+	{
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%main-1c %main-2c">
+			<div class="%sec-1c %sec-2c">
+				<h3>Online</h3>
+				<div class="%bg-c">
+					<button id="%btn4-d" @att1 @att2>%btn4-t</button>
+					<button id="%btn5-d" @att1 @att2>%btn5-t</button>
+				</div>
+			</div>
+			<div class="%sec-1c %sec-2c">
+				<h3>Local</h3>
+				<div class="%bg-c">
+					<button id="%btn1-d" @att1>%btn1-t</button>
+					<button id="%btn2-d" @att1>%btn2-t</button>
+					<button id="%btn3-d" @att1>%btn3-t</button>
+				</div>
+			</div>
+		</div>
+		`;
+		// [B] SET atts
+		const atts =
+		{
+			'%main-1c': 'ct-board-home h-100 d-flex',
+			'%main-2c': 'flex-column justify-content-around',
+			'%sec-1c': 'ct-home-section d-flex flex-column',
+			'%sec-2c': 'justify-content-center align-items-center',
+			'%bg-c': 'ct-section-btns d-flex',
+			'%btn1-d': 'btn_local_pve',
+			'%btn2-d': 'btn_local_pvp',
+			'%btn3-d': 'btn_local_tour',
+			'%btn4-d': 'btn_remote_pvp',
+			'%btn5-d': 'btn_remote_tour',
+			'@att1': 'class="ct-btn-neau"',
+			'@att2': 'data-bs-toggle="modal" data-bs-target="#modal-join"',
+			'%btn1-t': 'PVE',
+			'%btn2-t': 'PVP',
+			'%btn3-t': 'Tournament',
+			'%btn4-t': 'PVP',
+			'%btn5-t': 'Tournament',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals()
 	{
 		let parent_html;
 
-		parent_html = container;
+		parent_html = document.querySelector('.ct-mpanel-top');
 		const modal1 = new ModalLayout(
 			parent_html, "modal-join", "Available Rooms (PVP)"
 		);
@@ -331,22 +280,7 @@ export default class IntroLayout
 
 		return true;
 	}
-
-	async render()
-	{
-		const template = await this.init_template();
-		const title = this.container.querySelector('.ct-top-title');
-		this.container = this.container.querySelector('.ct-top-board');
-
-		title.innerHTML = 'Game Mode';
-		this.container.innerHTML = '';
-		this.container.innerHTML = template;
-
-		await this.bind_events();
-		await this.modals_render(this.container);
-
-		return true;
-	}
 }
 
-
+const item = new MidBoard();
+export default item;

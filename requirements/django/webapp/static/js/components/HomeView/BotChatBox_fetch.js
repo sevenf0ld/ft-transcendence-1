@@ -1,4 +1,4 @@
-// file : LeftUser_fetch.js
+// file : BotChatBox_fetch.js
 // -------------------------------------------------- //
 // Importing-internal
 // -------------------------------------------------- //
@@ -15,59 +15,24 @@ import { fetch_utils as FETCH_UTILS } from '../../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 // [1B] MAIN-FETCH-LOGOUT
 // -------------------------------------------------- //
-class fetch_logout
+class fetch_friend_profile
 {
-	// --- [00] CONSTRUCTOR
-	constructor()
+	constructor(target)
 	{
 		this.re_value = '';
 		this.fetch_obj = null;
+		this.target = target;
 	}
 
 	async fetchData()
 	{
 		try
 		{
+			const encoded_target = encodeURIComponent(this.target);
+
 			const mainFetch = new FETCH_UTILS();
 			await mainFetch.getCookie('csrftoken');
-			await mainFetch.setUrl('/api/user_auth/logout/');
-			await mainFetch.setMethod('POST');
-			await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
-			await mainFetch.appendHeaders('Content-Type', 'application/json');
-			await mainFetch.appendBody('signned_in', 'false');
-			await mainFetch.fetchData();
-			this.fetch_obj = mainFetch;
-
-			if (mainFetch.response.ok)
-				this.re_value = 'logout-successful';
-			else
-				this.re_value = 'logout-failed';
-		}
-		catch (error)
-		{
-			this.re_value = '[ERR] try-catch; Logout failed : ' + error;
-			console.error(this.re_value);
-		}
-
-		return this.re_value;
-	}
-}
-
-class fetch_home_profile
-{
-	constructor()
-	{
-		this.re_value = '';
-		this.fetch_obj = null;
-	}
-
-	async fetchData()
-	{
-		try
-		{
-			const mainFetch = new FETCH_UTILS();
-			await mainFetch.getCookie('csrftoken');
-			await mainFetch.setUrl('/api/user_profiles/view-home-profile/');
+			await mainFetch.setUrl(`/api/user_profiles/view-friend-profile/?target=${encoded_target}`);
 			await mainFetch.setMethod('GET');
 			await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
 			await mainFetch.appendHeaders('Content-Type', 'application/json');
@@ -75,13 +40,13 @@ class fetch_home_profile
 			this.fetch_obj = mainFetch;
 
 			if (mainFetch.response.ok)
-				this.re_value = 'home-profile-successful';
+				this.re_value = 'friend-profile-successful';
 			else
-				this.re_value = 'home-profile-failed';
+				this.re_value = 'friend-profile-failed';
 		}
 		catch (error)
 		{
-			this.re_value = '[ERR] try-catch; Home profile failed : ' + error;
+			this.re_value = '[ERR] try-catch; Friend profile failed : ' + error;
 			console.error(this.re_value);
 		}
 
@@ -89,11 +54,9 @@ class fetch_home_profile
 	}
 }
 
-
 // -------------------------------------------------- //
 // [-] EXPORTS
 // -------------------------------------------------- //
 export {
-	fetch_logout,
-	fetch_home_profile,
+	fetch_friend_profile,
 };

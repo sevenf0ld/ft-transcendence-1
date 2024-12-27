@@ -2,7 +2,6 @@
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
-//import fetch_pfp from './ModalSetItems_fetch.js'
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -472,15 +471,6 @@ export default class ModalSettingsItems
 			}
 			reader.readAsDataURL(file); // readyState becomes 2 and result contains the data
 
-			//if (file)
-			//{
-			//	const pfp = await new fetch_pfp();
-			//	pfp.form_data = await new FormData();
-			//	console.log(pfp.form_data);
-			//	pfp.form_data.append('pfp', file);
-			//	const fetch_pfp_result = await pfp.fetchData();
-			//	//console.log(fetch_pfp_result);
-			//}
 			if (file)
 			{
 				const form_data = new FormData();
@@ -497,7 +487,7 @@ export default class ModalSettingsItems
 				const data = await response.json();
 				if (response.ok)
 				{
-					console.log('yay');
+					console.log('Profile avatar uploaded.');
 				}
 				else
 				{

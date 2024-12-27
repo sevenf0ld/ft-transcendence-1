@@ -3,6 +3,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 import re
 from django.conf import settings
+from user_profiles.serializers import ProfileModelSerializer
+from user_profiles.models import Profile
 
 try:
     from allauth.account import app_settings as allauth_account_settings
@@ -38,6 +40,8 @@ class CustomRegisterSerializer(RegisterSerializer):
 
 # exclude pk, first name and last name from json response
 class UserLoginDetailsModelSerializer(serializers.ModelSerializer):
+    #profile = serializers.SerializerMethodField()
+
     @staticmethod
     def validate_username(username):
         if 'allauth.account' not in settings.INSTALLED_APPS:
@@ -47,8 +51,14 @@ class UserLoginDetailsModelSerializer(serializers.ModelSerializer):
         username = get_adapter().clean_username(username)
         return username
 
+    #def get_profile(self, obj):
+    #    profile_data = Profile.objects.get(user=obj)
+    #    return ProfileModelSerializer(profile_data).data
+
     class Meta:
         model = User
+        #fields = ['pk', 'username', 'email', 'profile']
+        #read_only_fields = ['email', 'profile']
         fields = ['pk', 'username', 'email']
         read_only_fields = ['email']
 

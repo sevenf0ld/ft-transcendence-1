@@ -9,10 +9,10 @@
 //import ModalAdd from './ModalAdd.js';
 	//	// --- [05] RENDER
 import ModalLayout from '../../layouts/ModalLayout.js';
-import ModalAddFriend from './ModalAdd.js';
 import * as FETCH from './RightFnList_fetch.js';
-import ModalFnOpt from './ModalFnOpt.js';
-import BotChatbox from './BotChatbox.js';
+import BOT_CHATBOX from './BotChatBox.js';
+import MODAL_ADD_FRIEND from './ModalAdd.js';
+import MODAL_FRIEND_OPT from './ModalFnOpt.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -373,7 +373,6 @@ export default class rightPanelFriends
 		return true;
 	}
 
-
 	async addFriendClick(event)
 	{
 		event.preventDefault();
@@ -384,8 +383,9 @@ export default class rightPanelFriends
 		moda.innerHTML = 'Add Friend';
 		const modata = document.querySelector('#modal-addFriend .modal-body');
 		modata.innerHTML = "";
-		const modaAdd = new ModalAddFriend(modata);
-		modaAdd.render();
+
+		MODAL_ADD_FRIEND.container = modata;
+		await MODAL_ADD_FRIEND.render('replace');
 
 		return true;
 	}
@@ -406,8 +406,10 @@ export default class rightPanelFriends
 
 		// set modal body
 		const moda_body = document.querySelector('#modal-fnOpt .modal-body');
-		const modaFriendOpt = new ModalFnOpt(moda_body, type, name);
-		await modaFriendOpt.render();
+		MODAL_FRIEND_OPT.container = moda_body;
+		MODAL_FRIEND_OPT.target = name;
+		MODAL_FRIEND_OPT.type = type;
+		await MODAL_FRIEND_OPT.render('replace');
 
 		return true;
 	}
@@ -446,8 +448,9 @@ export default class rightPanelFriends
 		if (type === 'added')
 		{
 			await this.reset_midBotPanel(1);
-			const chatbox = new BotChatbox(parent_div, name);
-			await chatbox.render();
+			BOT_CHATBOX.container = parent_div;
+			BOT_CHATBOX.target = name;
+			await BOT_CHATBOX.render('replace');
 		}
 
 		return true;

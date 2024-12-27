@@ -24,9 +24,9 @@ import smtplib
 from dj_rest_auth.jwt_auth import JWTCookieAuthentication
 from .utils import (
     is_mfa_enabled,
-    is_old_email,
+    is_current_email,
     is_existing_email,
-    is_old_password,
+    is_current_password,
     is_valid_password,
     enable_mfa,
     disable_mfa,
@@ -181,7 +181,7 @@ def update_user_account(request):
         return Response({'details': 'Empty password field.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if new_email:
-        if is_old_email(user, new_email):
+        if is_current_email(user, new_email):
             return Response({'details': 'New e-mail same as current e-mail.'}, status=status.HTTP_400_BAD_REQUEST)
         if is_existing_email(email):
             return Response({'details': 'E-mail address is already taken.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -193,7 +193,7 @@ def update_user_account(request):
 
     if new_pw != confirm_pw:
         return Response({'details': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
-    if is_old_password(user, new_pw):
+    if is_current_password(user, new_pw):
         return Response({'details': 'New password same as old password.'}, status=status.HTTP_401_UNAUTHORIZED)
     invalidity = is_valid_password(user, new_pw)
     if invalidity is None:
@@ -224,9 +224,9 @@ def update_user_mfa(request):
         return Response({'details': '2FA instruction required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if mfa == 'on' and is_mfa_enabled(request):
-        return Response({'details': '2FA is already enabled'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'details': '2FA is already enabled.'}, status=status.HTTP_400_BAD_REQUEST)
     if mfa == 'off' and not is_mfa_enabled(request):
-        return Response({'details': '2FA is already disabled'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'details': '2FA is already disabled.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if mfa == 'on' and not is_mfa_enabled(request):
         enable_mfa(user)

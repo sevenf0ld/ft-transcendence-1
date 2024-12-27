@@ -3,6 +3,9 @@ from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 from .views import (
     upload_avatar,
+    FriendProfileRetrieveAPIView,
+    HomeProfileRetrieveAPIView,
+    update_user_language,
 )
 
 app_name = 'user_profiles'
@@ -16,4 +19,7 @@ app_name = 'user_profiles'
 
 urlpatterns = [
     path('upload-avatar/', upload_avatar),
+    path('view-friend-profile/', FriendProfileRetrieveAPIView.as_view()),
+    path('view-home-profile/', HomeProfileRetrieveAPIView.as_view()),
+    path('update-user-language/', update_user_language),
 ]
