@@ -42,7 +42,6 @@ class LeftUser
 			'signout': '',
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
-		this.username = null;
 	}
 	// --------------------------------------------- //
 	// [1/4] MAIN-EXECUTION
