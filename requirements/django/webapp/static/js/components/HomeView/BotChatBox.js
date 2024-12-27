@@ -121,8 +121,9 @@ class BotChatBox
 		console.log('[EVENT] button clicked : chatbox-profile');
 
 		const parent_div = document.querySelector('.ct-bottom-left');
-		const pfp = new BOT_FRIEND_PFP(parent_div, this.target);
-		await pfp.render('replace');
+		BOT_FRIEND_PFP.container = parent_div;
+		BOT_FRIEND_PFP.username = this.target;
+		await BOT_FRIEND_PFP.render('replace');
 
 		return true;
 	}
