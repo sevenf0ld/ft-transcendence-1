@@ -14,6 +14,7 @@ import leftPanelUser from '../components/HomeView/LeftUser.js';
 import midTopPanel from '../components/HomeView/MidBoard.js';
 import rightPanelFriends from '../components/HomeView/RightFnList.js';
 import TOKEN from '../core/token.js';
+import LEFT_USER from '../components/HomeView/LeftUser.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -65,20 +66,6 @@ export default class HomeView
 					console.log('me to myself (playing):', data.message);
 			}
 		});
-
-		// homeview -> gameview (id: btn_join_room)
-		//const join_room_btn = document.getElementById('btn_join_room');
-		//join_room_btn.addEventListener('click', (event) => {
-		//	event.preventDefault();
-
-		//	if (this.friend_socket.readyState === WebSocket.OPEN)
-		//	{
-		//		this.friend_socket.send(JSON.stringify({
-		//			'sender': this.username,
-		//			'action': 'change_view',
-		//		}));
-		//	}
-		//});
 	}
 
 	async render()
@@ -96,8 +83,8 @@ export default class HomeView
 		await primary.render();
 
 		parent_html = await primary.get("ct-main-lpanel");
-		const leftpanel = new leftPanelUser(parent_html);
-		await leftpanel.render();
+		LEFT_USER.container = parent_html;
+		await LEFT_USER.render('replace');
 
 		parent_html = await primary.get("ct-mpanel-top");
 		const midtoppanel = new midTopPanel(parent_html);
