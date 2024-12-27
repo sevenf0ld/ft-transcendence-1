@@ -1,4 +1,4 @@
-// file : BotChatbox.js
+// file : BotFriendPfp.js
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
@@ -16,7 +16,7 @@ export default class BotFriendPfp
 	// --------------------------------------------- //
 	// CONSTRUCTOR
 	// --------------------------------------------- //
-	constructor(container,username)
+	constructor(container, username)
 	{
 		// COMMON-atts
 		this.container = container;
