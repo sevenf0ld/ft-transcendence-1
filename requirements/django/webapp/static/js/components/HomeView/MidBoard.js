@@ -6,8 +6,8 @@
 // importing-external
 // -------------------------------------------------- //
 import ModalLayout from '../../layouts/ModalLayout.js';
-import ModalRoomJoin from './ModalRoomJoin.js';
 import GameRoomView from '../../views/GameRoomView.js';
+import MODAL_ROOM_JOIN from './ModalRoomJoin.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -164,8 +164,10 @@ class MidBoard
 		const modata = document.querySelector('#modal-join .modal-body');
 		modata.setAttribute('data-room-type', 'pvp');
 		modata.innerHTML = "";
-		const modaPvp = new ModalRoomJoin(modata, 'online-pvp');
-		modaPvp.render();
+
+		MODAL_ROOM_JOIN.container = modata;
+		MODAL_ROOM_JOIN.gameType = 'online-pvp';
+		await MODAL_ROOM_JOIN.render('replace');
 
 		return true;
 	}
@@ -181,8 +183,10 @@ class MidBoard
 		const modata = document.querySelector('#modal-join .modal-body');
 		modata.setAttribute('data-room-type', 'tour');
 		modata.innerHTML = "";
-		const modaTour = new ModalRoomJoin(modata, 'online-tour');
-		modaTour.render();
+
+		MODAL_ROOM_JOIN.container = modata;
+		MODAL_ROOM_JOIN.gameType = 'online-tour';
+		await MODAL_ROOM_JOIN.render('replace');
 
 		return true;
 	}
