@@ -26,18 +26,13 @@ class websocketManager
 			url: undefined,
 			sender: undefined,
 			target: undefined,
+			room_name: undefined,
 		};
 	}
 
-	async close_liveChat()
+	async close_curent_liveChat()
 	{
-		if (this.liveChat.ws === undefined)
-		{
-			await this.init_liveChat();
-			return;
-		}
-
-		if (this.liveChat.ws.readyState === WebSocket.OPEN)
+		if (this.liveChat.ws && this.liveChat.ws.readyState === WebSocket.OPEN)
 		{
 			this.liveChat.ws.send(JSON.stringify({
 			  'message': null,
@@ -46,7 +41,6 @@ class websocketManager
 			  'type': 'chat_close',
 			}));
 			this.liveChat.ws.close();
-			await this.init_liveChat();
 		}
 	}
 }
