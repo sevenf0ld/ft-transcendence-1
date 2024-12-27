@@ -9,7 +9,6 @@ import * as FETCH from './ModalAdd_fetch.js';
 import * as LOADING from '../../core/helpers/loading.js';
 import alert_utils from '../../core/helpers/alert-utils.js';
 import rightPanelFriends from './RightFnList.js';
-
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //

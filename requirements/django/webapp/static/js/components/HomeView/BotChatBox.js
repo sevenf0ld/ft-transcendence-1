@@ -1,4 +1,4 @@
-// file : BotChatBoxNew.js
+// file : BotChatBox.js
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
@@ -319,8 +319,8 @@ class BotChatBox
 			'%hd-1c': 'ct-chatbox-hd',
 			'%hd-1d': 'btn_chatbox_profile',
 			'%p1-c': 'ct-chatbox-title truncate',
-			'@att-t1': 'title="User-1"',
-			'%p1-t': 'User-1',
+			'@att-t1': `title="${this.target}"`,
+			'%p1-t': `${this.target}`,
 			'%inv-1c': 'ct-chatbox-inv',
 			'%inv-1d': 'btn_chatbox_invite',
 			'%close-1c': 'ct-chatbox-close',

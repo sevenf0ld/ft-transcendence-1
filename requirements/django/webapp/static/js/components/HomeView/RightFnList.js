@@ -373,7 +373,6 @@ export default class rightPanelFriends
 		return true;
 	}
 
-
 	async addFriendClick(event)
 	{
 		event.preventDefault();
