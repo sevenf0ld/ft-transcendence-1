@@ -11,19 +11,15 @@ import EG_DATA from './engine_data.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
 // [section-structure]
-// 1. constructor
+// -. constructor
 // 2. main-execution
 // 3. event-related
 // 4. fetch-related
 // 5. html-element-related
-// 6. bootstrap-modal-related (optional)
-// [export]
-// 1. init the class and export it if:
-// 		- utility & helper functions
-// 		- object that use across entire webapp
-// 		- object contain data that shouldn't be reset
-// 2. else export class directly
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
@@ -175,7 +171,7 @@ export default class PongEngine
 		return template;
 	}
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED (LOCAL-PVP)
+	// BOOSTRAP-MODAL-RELATED
 	// --------------------------------------------- //
 	async bind_modals()
 	{

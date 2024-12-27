@@ -23,9 +23,6 @@ class engineUtilsClass
 		this.data = EG_DATA;
 	}
 
-	// --------------------------------------------- //
-	// FUNCTIONS
-	// --------------------------------------------- //
 	async gameStateHandler(state)
 	{
 		const t = await this.getCurTime();

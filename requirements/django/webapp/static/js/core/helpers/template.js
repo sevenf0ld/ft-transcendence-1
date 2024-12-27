@@ -8,55 +8,55 @@
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
-// reference from BotFriendPfp.js
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
 // [section-structure]
 // 1. constructor
 // 2. main-execution
 // 3. event-related
 // 4. fetch-related
 // 5. html-element-related
-// 6. bootstrap-modal-related (optional)
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-export default class BotFriendPfp
+class BotFriendPfp
 {
 	// --------------------------------------------- //
 	// CONSTRUCTOR
 	// --------------------------------------------- //
-	constructor(container,username)
+	constructor()
 	{
 		// COMMON-atts
-		this.container = container;
-		this.main_ctn = '';
+		this.container = null;
+		this.main_ctn = null;
 		this.buttons = {
-			close: '',
-			history: '',
+			'close': '',
+			'history': '',
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
-		this.username = username;
+		this.username = null;
 	}
 	// --------------------------------------------- //
-	// MAIN-EXECUTION
+	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
 	async render(type)
 	{
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
 		const template = await this.init_template();
 
-		if (type.toLowerCase() === 'append')
+		if (type === 'append')
 		{
 			this.container.insertAdjacentHTML(
 				'beforeend', template
 			);
 		}
-		else if (type.toLowerCase() === 'replace')
+		else if (type === 'replace')
 		{
 			this.container.innerHTML = '';
 			this.container.innerHTML = template;
-		}
-		else
-		{
-			throw new Error('[ERR] invalid render type');
 		}
 
 		await this.push_important_elements();
@@ -74,15 +74,16 @@ export default class BotFriendPfp
 
 		if (!this.main_ctn)
 			throw new Error('[ERR] main container not found');
-		if (!this.buttons.close)
-			throw new Error('[ERR] close button not found');
-		if (!this.buttons.history)
-			throw new Error('[ERR] history button not found');
+		for (const key in this.buttons)
+		{
+			if (!this.buttons[key])
+				throw new Error(`[ERR] button not found : ${key}`);
+		}
 
 		return true;
 	}
 	// --------------------------------------------- //
-	// EVENT-RELATED
+	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events()
 	{
@@ -104,7 +105,7 @@ export default class BotFriendPfp
 
 		const template = `
 		<p class="ct-bottom-placeholder">(placeholder)</p>
-		`;
+		`;;
 
 		this.container.innerHTML = '';
 		this.container.innerHTML = template;
@@ -120,17 +121,10 @@ export default class BotFriendPfp
 		return true;
 	}
 	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED
-	// --------------------------------------------- //
-	async bind_modals()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// FETCH-RELATED
+	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
 	// --------------------------------------------- //
-	// HTML-ELEMENT-RELATED
+	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
 	async init_template()
 	{
@@ -156,7 +150,7 @@ export default class BotFriendPfp
 			${await this.html_pfp()}
 			${await this.html_buttons()}
 		</div>
-		`
+		`;
 		// [B] SET atts
 		const atts =
 		{
@@ -179,7 +173,7 @@ export default class BotFriendPfp
 			<h2 class="%title-c" data-user="%title" @att1>%title</h2>
 			<div class="%close-c" id="%close-id">%close-t</div>
 		</div>
-		`
+		`;
 		// [B] SET atts
 		const atts =
 		{
@@ -207,7 +201,7 @@ export default class BotFriendPfp
 			<img class="%pfp-2c" src="%pfp-src" alt="%pfp-alt">
 			${await this.html_stats()}
 		</div>
-		`
+		`;
 		// [B] SET atts
 		const atts =
 		{
@@ -234,7 +228,7 @@ export default class BotFriendPfp
 			<div class="%lst-c">%total-t</div>
 			<div class="%lst-c">%winrate-t</div>
 		</div>
-		`
+		`;
 		// [B] SET atts
 		const atts =
 		{
@@ -260,7 +254,7 @@ export default class BotFriendPfp
 		<div class="%btn-ctn">
 			<button @att1 @att2 @att3 @att4 @att5 @att6>@att7</button>
 		</div>
-		`
+		`;
 		// [B] SET atts
 		const atts =
 		{
@@ -279,4 +273,15 @@ export default class BotFriendPfp
 		// [C] HTML RETURN
 		return template;
 	}
+
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals()
+	{
+		return true;
+	}
 }
+
+const item = new BotFriendPfp();
+export default item;

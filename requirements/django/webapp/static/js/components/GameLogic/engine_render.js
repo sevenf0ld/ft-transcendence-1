@@ -15,17 +15,11 @@ import EG_DATA from './engine_data.js';
 // -------------------------------------------------- //
 class engineRenderClass
 {
-	// --------------------------------------------- //
-	// CONSTRUCTOR
-	// --------------------------------------------- //
 	constructor()
 	{
 		this.data = EG_DATA;
 	}
 
-	// --------------------------------------------- //
-	// FUNCTIONS
-	// --------------------------------------------- //
 	async game_loop(timestamp)
 	{
 		const db = this.data;
@@ -401,7 +395,6 @@ class engineRenderClass
 			ballT >= p2T - db.paddle.dist_colli_y &&
 			ballB <= p2B + db.paddle.dist_colli_y)
 		{
-			//change later please add physic like p1
 			db.ball.dx *= -1;
 			db.ball.x = p2.x - db.paddle.dist_colli_x - ball.r;
 			await this.triggerDifficultIncrease();
