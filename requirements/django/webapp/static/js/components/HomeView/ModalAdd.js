@@ -1,9 +1,9 @@
-// file : ModalAdd.js
+// file : MidBoard.js
 // -------------------------------------------------- //
-// Importing-internal
+// importing-internal
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// Importing-external
+// importing-external
 // -------------------------------------------------- //
 import * as FETCH from './ModalAdd_fetch.js';
 import * as LOADING from '../../core/helpers/loading.js';
@@ -12,181 +12,96 @@ import rightPanelFriends from './RightFnList.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-// --- [LOCAL] EXPORTED COMPONENTS
-// usage : insert querySelector's value of an element
-// 		   to register as export element; first one
-// 		   is always default
-const getEle = [
-	'.ct-home-input',
-	'.add-friend-btn',
-];
-
-// --- [LOCAL] BUTTONS SECTION
-// button tracker
-class button
+class ModalAdd
 {
+	// --------------------------------------------- //
+	// CONSTRUCTOR
+	// --------------------------------------------- //
 	constructor()
 	{
-		this.arr = {
+		// COMMON-atts
+		this.container = null;
+		this.main_ctn = null;
+		this.buttons = {
 			'submit': '',
 		};
-	}
-
-	async read_buttons()
-	{
-		for (const key in this.arr)
-		{
-			const ele = document.getElementById(`${this.arr[key]}`);
-			if (!ele)
-				throw new Error(`[ERR] button not found : ${this.arr[key]}`);
-			this.arr[key] = ele;
-		}
-		return true;
-	}
-}
-const btns = new button();
-
-// --- [LOCAL] HTML ELEMENTS SECTION
-function html_element()
-{
-	// [-] HELPER FUNCTION
-	// [A] TEMPLATE
-	let template = `
-		<form class="%addf-c">
-			<input type="%in-t" class="%in-1c" @att1 @att2 @att3>
-			<button @att4 @att5 @att6>%addfb-t</button>
-			<div class="%addfmsg-c" role="%addfmsg-r">%addfmsg-t</div>
-		</form>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%addf-c': 'add-friend-ctn',
-		'%in-t': 'text',
-		'%in-1c': 'add-friend-input ct-home-input',
-		'@att1': 'placeholder="Enter username"',
-		'@att2': 'required autocomplete="off"',
-		'@att3': 'maxlength="16"',
-		'@att4': 'id="btn_add_friend_submit"',
-		'@att5': 'class="add-friend-btn"',
-		'@att6': 'type="submit"',
-		'%addfb-t': 'Add Friend',
-		'%addfmsg-c': 'ct-alert-addFriend alert d-none',
-		'%addfmsg-r': 'alert',
-		'%addfmsg-t': 'User not found',
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-	btns.arr.submit = 'btn_add_friend_submit';
-
-	// [D] HTML RETURN
-	return template;
-}
-
-// HTML elements bundle
-const ele =
-{
-	html_element,
-};
-
-// -------------------------------------------------- //
-// export
-// -------------------------------------------------- //
-export default class ModalAddFriend
-{
-	// --- [00] CONSTRUCTOR
-	constructor(container)
-	{
-		this.container = container;
-		this.components = {};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.alert_div = null;
 	}
-
-	// --- [01] GETTER
-	async get(element = 'default')
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
+	// --------------------------------------------- //
+	async render(type)
 	{
-		if (this.read_components() === false)
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
+		const template = await this.init_template();
+
+		if (type === 'append')
 		{
-			throw new Error(`[ERR] this class has no export components`);
-			return false;
+			this.container.insertAdjacentHTML(
+				'beforeend', template
+			);
 		}
-		return this.compo_get(element);
-	}
-
-	// --- [02] COMPONENTS REGISTRY
-	async compo_register(name, element)
-	{
-		this.components[name] = element;
-
-		return true;
-	}
-
-	async compo_get(name)
-	{
-		return this.components[name];
-	}
-
-	async compo_remove(name)
-	{
-		delete this.components[name];
-
-		return true;
-	}
-
-	async read_components()
-	{
-		if (getEle.length === 0)
-			return false;
-		this.compo_register('default', document.querySelector(getEle[0]));
-		for (const key in getEle)
+		else if (type === 'replace')
 		{
-			const ele = document.querySelector(getEle[key]);
-			if (!ele)
-				throw new Error(`[ERR] component not found : ${getEle[key]}`);
-			const str = getEle[key].substring(1);
-			this.compo_register(str, ele);
+			this.container.innerHTML = '';
+			this.container.innerHTML = template;
 		}
 
+		await this.push_important_elements();
+		await this.bind_events();
+		await this.bind_modals();
+
 		return true;
 	}
 
-	// --- [03] HTM-LELEMENTS
-	async init_template()
+	async push_important_elements()
 	{
-		let template = "";
-		template += ele.html_element();
+		this.main_ctn = document.querySelector('.ct-board-home');
+		this.buttons['submit'] = document.getElementById('btn_add_friend_submit');
+		this.alert_div = new alert_utils(document.querySelector('.ct-alert-addFriend'));
 
-		// trim new lines, spaces, and tabs
-		template = template.replace(/\s+/g, ' ');
-		template = template.replace(/>\s+</g, '><');
-		template = template.replace(/\s*=\s*/g, '=');
-		template = template.trim();
-	
-		return template;
-	}
-
-	async check_input()
-	{
-		const username = document.querySelector('.add-friend-input').value;
-		if (username.length < 3 || username.length > 16)
+		if (!this.alert_div)
+			throw new Error('[ERR] alert-div not found');
+		if (!this.main_ctn)
+			throw new Error('[ERR] main container not found');
+		for (const key in this.buttons)
 		{
-			this.alert_div.alert_clear();
-			this.alert_div.alert_danger('Please enter a valid username');
-			return false;
+			if (!this.buttons[key])
+				throw new Error(`[ERR] button not found : ${key}`);
 		}
 
 		return true;
 	}
+	// --------------------------------------------- //
+	// [2/4] EVENT-RELATED
+	// --------------------------------------------- //
+	async bind_events()
+	{
+		this.buttons['submit'].addEventListener(
+			'click', async (event) => { await this.submitClick(event); }
+		);
 
-	// --- [04] EVENT
-	async submit_click(event)
+		await this.field_handle();
+
+		return true;
+	}
+
+	async submitClick(event)
 	{
 		console.log('[EVENT] button clicked : submit-add-friend');
 		event.preventDefault();
@@ -265,49 +180,80 @@ export default class ModalAddFriend
 		return true;
 	}
 
-	async modals_events()
+	async check_input()
 	{
-		const modal = document.querySelector('.modal#modal-addFriend');
-
-		// when modals are shown
-		modal.addEventListener('shown.bs.modal', async () =>
+		const username = document.querySelector('.add-friend-input').value;
+		if (username.length < 3 || username.length > 16)
 		{
-		});
-
-		// when modals are hidden
-		modal.addEventListener('hidden.bs.modal', async () =>
-		{
-		});
+			this.alert_div.alert_clear();
+			this.alert_div.alert_danger('Please enter a valid username');
+			return false;
+		}
 
 		return true;
 	}
-
-	async bind_events()
+	// --------------------------------------------- //
+	// [3/4] FETCH-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [4/4] HTML-ELEMENT-RELATED
+	// --------------------------------------------- //
+	async init_template()
 	{
-		await btns.read_buttons();
+		let template = "";
+		template += await this.html_main_ctn();
 
-		btns.arr['submit'].addEventListener(
-			'click', async (e) => {await this.submit_click(e);}
-		);
+		// trim new lines, spaces, and tabs
+		template = template.replace(/\s+/g, ' ');
+		template = template.replace(/>\s+</g, '><');
+		template = template.replace(/\s*=\s*/g, '=');
+		template = template.trim();
 
-		await this.field_handle();
-		await this.modals_events();
-
-		return true;
+		return template;
 	}
 
-	// --- [05] RENDER
-	async render()
+	async html_main_ctn()
 	{
-		const template = await this.init_template();
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<form class="%addf-c">
+			<input type="%in-t" class="%in-1c" @att1 @att2 @att3>
+			<button @att4 @att5 @att6>%addfb-t</button>
+			<div class="%addfmsg-c" role="%addfmsg-r">%addfmsg-t</div>
+		</form>
+		`;
+		// [B] SET atts
+		const atts =
+		{
+			'%addf-c': 'add-friend-ctn',
+			'%in-t': 'text',
+			'%in-1c': 'add-friend-input ct-home-input',
+			'@att1': 'placeholder="Enter username"',
+			'@att2': 'required autocomplete="off"',
+			'@att3': 'maxlength="16"',
+			'@att4': 'id="btn_add_friend_submit"',
+			'@att5': 'class="add-friend-btn"',
+			'@att6': 'type="submit"',
+			'%addfb-t': 'Add Friend',
+			'%addfmsg-c': 'ct-alert-addFriend alert d-none',
+			'%addfmsg-r': 'alert',
+			'%addfmsg-t': 'User not found',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
 
-		this.container.innerHTML = '';
-		this.container.innerHTML = template;
-		this.alert_div = new alert_utils(document.querySelector('.ct-alert-addFriend'));
-
-		await this.bind_events();
-		//await this.modals_render();
-
+		// [C] HTML RETURN
+		return template;
+	}
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals()
+	{
 		return true;
 	}
 }
+
+const item = new ModalAdd();
+export default item;

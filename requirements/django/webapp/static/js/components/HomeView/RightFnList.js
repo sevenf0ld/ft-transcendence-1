@@ -9,10 +9,10 @@
 //import ModalAdd from './ModalAdd.js';
 	//	// --- [05] RENDER
 import ModalLayout from '../../layouts/ModalLayout.js';
-import ModalAddFriend from './ModalAdd.js';
 import * as FETCH from './RightFnList_fetch.js';
 import ModalFnOpt from './ModalFnOpt.js';
 import BOT_CHATBOX from './BotChatBox.js';
+import MODAL_ADD_FRIEND from './ModalAdd.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -383,8 +383,9 @@ export default class rightPanelFriends
 		moda.innerHTML = 'Add Friend';
 		const modata = document.querySelector('#modal-addFriend .modal-body');
 		modata.innerHTML = "";
-		const modaAdd = new ModalAddFriend(modata);
-		modaAdd.render();
+
+		MODAL_ADD_FRIEND.container = modata;
+		await MODAL_ADD_FRIEND.render('replace');
 
 		return true;
 	}

@@ -41,7 +41,7 @@ class MidBoard
 			'remote-tour': '',
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
-}
+	}
 	// --------------------------------------------- //
 	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
