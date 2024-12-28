@@ -17,7 +17,7 @@ import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
-export default class PageNotFoundView
+class PageNotFoundView
 {
 	constructor()
 	{
@@ -41,3 +41,6 @@ export default class PageNotFoundView
 		return true;
 	}
 }
+
+const item = new PageNotFoundView();
+export default item;

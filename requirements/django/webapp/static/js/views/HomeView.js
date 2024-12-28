@@ -22,21 +22,33 @@ import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
-export default class HomeView
+class HomeView
 {
 	constructor()
 	{
 		this.container = document.body;
+		this.user_id = null;
+		this.username = null;
+		this.websocket_url = null;
+		this.friend_socket = null;
+	}
 
-		TOKEN.token_id = setInterval(async () => {
-    		await TOKEN.refresh_token();
-    	}, 20 * 60 * 1000);
-
+	async socket_init()
+	{
 		const user_obj = JSON.parse(localStorage.getItem('user'));
+
+		if (user_obj == null)
+		{
+			throw new Error('user not found');
+			return false;
+		}
+
 		this.user_id = user_obj.pk;
 		this.username = user_obj.username;
 		this.websocket_url = `wss://${window.location.host}/ws/online/${this.user_id}/`;
 		this.friend_socket = new WebSocket(this.websocket_url);
+
+		return true;
 	}
 
 	async connect_online_status_socket()
@@ -68,6 +80,12 @@ export default class HomeView
 
 	async render()
 	{
+		if (TOKEN.token_id == null)
+		{
+			await TOKEN.start_refresh_token();
+			await this.socket_init();
+		}
+
 		let parent_html;
 
 		const page_title = PAGE_TITLE;
@@ -100,3 +118,6 @@ export default class HomeView
 		return true;
 	}
 }
+
+const item = new HomeView();
+export default item;

@@ -19,11 +19,11 @@ import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
-export default class SignupView
+class SignupView
 {
-	constructor(container)
+	constructor()
 	{
-		this.container = container;
+		this.container = document.body;
 	}
 	
 	async render()
@@ -33,7 +33,7 @@ export default class SignupView
 		await page_title.update('Sign Up');
 
 		const media = MEDIA_LAYOUT;
-		media.container = document.body;
+		media.container = this.container;
 		await media.render('replace');
 
 		const media_div = media.main_ctn;
@@ -47,3 +47,6 @@ export default class SignupView
 		return true;
 	}
 }
+
+const item = new SignupView();
+export default item;

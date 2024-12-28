@@ -5,11 +5,11 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import LoginView from '../views/LoginView.js';
 import * as FormValiSignup from '../core/helpers/formVali-su.js';
-import * as FETCH from './SignupCard_fetch.js';
 import * as LOADING from '../core/helpers/loading.js';
 import ALERT_UTILS from '../core/helpers/alert-utils.js';
+import FETCH from './SignupCard_fetch.js';
+import LOGIN_VIEW from '../views/LoginView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -128,7 +128,8 @@ class SignupCard
 		await this.alert_div.setMsg(string_div);
 		await this.alert_div.alert_render();
 
-		const registerFetch = new FETCH.fetch_register();
+		const registerFetch = FETCH;
+		await registerFetch.init();
 		const result = await registerFetch.fetchData();
 		await new Promise(r => setTimeout(r, 1000));
 
@@ -152,7 +153,7 @@ class SignupCard
 			await this.alert_div.alert_render();
 			await new Promise(r => setTimeout(r, 2500));
 
-			const login = new LoginView();
+			const login = LOGIN_VIEW;
 			await login.render();
 		}
 		else
@@ -194,7 +195,7 @@ class SignupCard
 		console.log('[EVENT] button clicked : back to login');
 		event.preventDefault();
 
-		const login = new LoginView();
+		const login = LOGIN_VIEW;
 		await login.render();
 
 		return true;

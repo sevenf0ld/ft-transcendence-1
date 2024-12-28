@@ -19,7 +19,7 @@ import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
-export default class LoginView
+class LoginView
 {
 	constructor()
 	{
@@ -47,3 +47,6 @@ export default class LoginView
 		return true;
 	}
 }
+
+const item = new LoginView();
+export default item;

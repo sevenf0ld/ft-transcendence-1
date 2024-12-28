@@ -2,11 +2,11 @@
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
-import LoginView from '../views/LoginView.js';
-import HomeView from '../views/HomeView.js';
 import * as LOADING from '../core/helpers/loading.js';
 import * as FETCH from './LoginCard_fetch.js';
 import ALERT_UTILS from '../core/helpers/alert-utils.js';
+import LOGIN_VIEW from '../views/LoginView.js';
+import HOME_VIEW from '../views/HomeView.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -156,7 +156,7 @@ class LoginOTP
 				);
 
 				await new Promise(r => setTimeout(r, 1500));
-				const HOME = new HomeView();
+				const HOME = HOME_VIEW;
 				await HOME.render();
 			}
 			else
@@ -179,7 +179,7 @@ class LoginOTP
 		event.preventDefault();
 		console.log('[EVENT] button clicked : goback');
 
-		const LOGIN = new LoginView();
+		const LOGIN = LOGIN_VIEW;
 		await LOGIN.render();
 
 		return true;

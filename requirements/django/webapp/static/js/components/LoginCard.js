@@ -9,9 +9,9 @@ import LOGIN_OTP from './LoginOTP.js';
 import * as FETCH from './LoginCard_fetch.js';
 import * as LOADING from '../core/helpers/loading.js';
 import ROUTER from '../core/router.js';
-import HomeView from '../views/HomeView.js';
-import SignupView from '../views/SignupView.js';
 import ALERT_UTILS from '../core/helpers/alert-utils.js';
+import SIGNUP_VIEW from '../views/SignupView.js';
+import HOME_VIEW from '../views/HomeView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -28,7 +28,8 @@ import ALERT_UTILS from '../core/helpers/alert-utils.js';
 // Special-events
 // -------------------------------------------------- //
 // It's for the intra button
-const intraFetch = new FETCH.fetch_intra();
+const intraFetch = FETCH.FETCH_INTRA;
+await intraFetch.init();
 document.addEventListener('DOMContentLoaded', async (e) => {
 	const result = await intraFetch.run();
 	if (result === 'exchange-successful')
@@ -36,8 +37,8 @@ document.addEventListener('DOMContentLoaded', async (e) => {
 		await localStorage.setItem('user', JSON.stringify(
 			intraFetch.fetch_obj.rdata['user'])
 		);
-		const HOME = new HomeView();
-		HOME.render();
+		const HOME = HOME_VIEW;
+		await HOME.render();
 	}
 });
 // -------------------------------------------------- //
@@ -141,7 +142,8 @@ class LoginCard
 		this.alert_div.alert_clear();
 		await LOADING.disable_all();
 
-		const loginFetch = new FETCH.fetch_login();
+		const loginFetch = FETCH.FETCH_LOGIN;
+		await loginFetch.init();
 		const fetch_result = await loginFetch.fetchData();
 
 		console.log('[FETCH] login-button : ', fetch_result);
@@ -175,7 +177,8 @@ class LoginCard
 
 			localStorage.setItem('user', JSON.stringify(loginFetch.fetch_obj.rdata['user']));
 			await new Promise(r => setTimeout(r, 2000));
-			await ROUTER.navigateTo('/homepage');
+			const HOME = HOME_VIEW;
+			await HOME.render();
 		}
 
 		await LOADING.restore_all();
@@ -198,7 +201,8 @@ class LoginCard
 		event.preventDefault();
 		console.log('[EVENT] button clicked : login-signup');
 
-		await ROUTER.navigateTo('/register');
+		const signup = SIGNUP_VIEW;
+		await signup.render();
 
 		return true;
 	}

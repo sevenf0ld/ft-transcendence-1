@@ -19,6 +19,16 @@ class fetch_register
 {
 	constructor()
 	{
+		this.val_username = null;
+		this.val_email = null;
+		this.val_password = null;
+		this.val_password_confirm = null;
+		this.re_value = '';
+		this.fetch_obj = null;
+	}
+
+	async init()
+	{
 		this.val_username = document.getElementById('username').value;
 		this.val_email = document.getElementById('email').value;
 		this.val_password = document.getElementById('password').value;
@@ -63,6 +73,5 @@ class fetch_register
 // -------------------------------------------------- //
 // [-] EXPORTS
 // -------------------------------------------------- //
-export {
-	fetch_register
-};
+const item = new fetch_register();
+export default item;

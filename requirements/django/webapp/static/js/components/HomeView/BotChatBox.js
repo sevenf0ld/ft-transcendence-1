@@ -2,7 +2,7 @@
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
-import * as FETCH from './BotChatBox_fetch.js';
+import FETCH from './BotChatBox_fetch.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -121,7 +121,9 @@ class BotChatBox
 		event.preventDefault();
 		console.log('[EVENT] button clicked : chatbox-profile');
 
-		const friend_profile = new FETCH.fetch_friend_profile(this.target);
+		const friend_profile = FETCH;
+		await friend_profile.init();
+		friend_profile.target = this.target;
 		const fetch_result = await friend_profile.fetchData();
 		if (fetch_result === 'friend-profile-successful')
 		{

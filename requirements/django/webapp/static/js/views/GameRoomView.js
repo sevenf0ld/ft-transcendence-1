@@ -6,7 +6,6 @@
 // Importing-external
 // -------------------------------------------------- //
 //layout
-import HomeView from './HomeView.js';
 import PAGE_TITLE from '../core/helpers/PageTitle.js';
 import ACTION_PANEL from '../components/GameRoomView/ActionPanel.js';
 import ANNOUNCER from '../components/GameRoomView/Announcer.js';
@@ -22,16 +21,28 @@ import ROOM_LIST from '../components/GameRoomView/RoomList.js';
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
-export default class GameRoomView
+class GameRoomView
 {
-	constructor(gameType)
+	constructor()
 	{
-		this.type = gameType;
+		this.type = null;
+		this.left = null;
+		this.midTop = null;
+		this.botLeft = null;
+		this.botRight = null;
+		this.right = null;
+	}
+
+	async init()
+	{
+		this.type = null;
 		this.left = document.querySelector(".ct-main-lpanel");
 		this.midTop = document.querySelector(".ct-top-board");
 		this.botLeft = document.querySelector(".ct-bottom-left");
 		this.botRight = document.querySelector(".ct-bottom-right");
 		this.right = document.querySelector(".ct-main-rpanel");
+
+		return true;
 	}
 
 	async clear()
@@ -109,5 +120,7 @@ export default class GameRoomView
 
 		return true;
 	}
-
 }
+
+const item = new GameRoomView();
+export default item;

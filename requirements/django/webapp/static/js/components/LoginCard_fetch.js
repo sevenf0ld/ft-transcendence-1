@@ -20,6 +20,17 @@ class fetch_login
 	// --- [00] CONSTRUCTOR
 	constructor()
 	{
+		this.val_username = null;
+		this.val_password = null;
+		this.current_phase = 1;
+		this.fetch_utils_holder = null;
+		this.otp = '';
+		this.re_value = '';
+		this.fetch_obj = null;
+	}
+
+	async init()
+	{
 		this.val_username = document.getElementById('username').value;
 		this.val_password = document.getElementById('password').value;
 		this.current_phase = 1;
@@ -27,6 +38,8 @@ class fetch_login
 		this.otp = '';
 		this.re_value = '';
 		this.fetch_obj = null;
+
+		return true;
 	}
 
 	async set_phase(phase)
@@ -239,7 +252,15 @@ class fetch_intra
 		this.re_value = '';
 		this.fetch_obj = null;
 	}
-	
+
+	async init()
+	{
+		this.re_value = '';
+		this.fetch_obj = null;
+
+		return true;
+	}
+
 	async generate_state()
 	{
 		let counter = 0;
@@ -329,7 +350,10 @@ class fetch_intra
 // -------------------------------------------------- //
 // [-] EXPORTS
 // -------------------------------------------------- //
+const FETCH_LOGIN = new fetch_login();
+const FETCH_INTRA = new fetch_intra();
+
 export {
-	fetch_login,
-	fetch_intra
+	FETCH_LOGIN,
+	FETCH_INTRA,
 };

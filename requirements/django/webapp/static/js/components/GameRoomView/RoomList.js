@@ -5,7 +5,7 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import HomeView from '../../views/HomeView.js';
+import HOME_VIEW from '../../views/HomeView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -126,8 +126,8 @@ class RoomList
 		const btn_home = document.querySelector("#btn_leaveRoom");
 		btn_home.addEventListener('click', async () =>
 		{
-			const home_view = new HomeView();
-			await home_view.render();
+			const HOME = HOME_VIEW;
+			await HOME.render();
 		});
 
 		return true;

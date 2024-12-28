@@ -17,11 +17,20 @@ import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 class fetch_friend_profile
 {
-	constructor(target)
+	constructor()
 	{
-		this.re_value = '';
+		this.re_value = null;
 		this.fetch_obj = null;
-		this.target = target;
+		this.target = null;
+	}
+
+	async init()
+	{
+		this.re_value = null;
+		this.fetch_obj = null;
+		this.target = null;
+
+		return true;
 	}
 
 	async fetchData()
@@ -55,9 +64,5 @@ class fetch_friend_profile
 	}
 }
 
-// -------------------------------------------------- //
-// [-] EXPORTS
-// -------------------------------------------------- //
-export {
-	fetch_friend_profile,
-};
+const item = new fetch_friend_profile();
+export default item;

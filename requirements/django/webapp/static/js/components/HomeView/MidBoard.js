@@ -5,9 +5,9 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import GameRoomView from '../../views/GameRoomView.js';
 import MODAL_ROOM_JOIN from './ModalRoomJoin.js';
 import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
+import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -125,7 +125,9 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked: local-pve');
 
-		const gameRoom = new GameRoomView('local-pve');
+		const gameRoom = GAME_ROOM_VIEW;
+		await gameRoom.init();
+		gameRoom.type = 'local-pve';
 		await gameRoom.render();
 
 		return true;
@@ -136,7 +138,9 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked : local-pvp');
 
-		const gameRoom = new GameRoomView('local-pvp');
+		const gameRoom = GAME_ROOM_VIEW;
+		await gameRoom.init();
+		gameRoom.type = 'local-pvp';
 		gameRoom.render();
 
 		return true;
@@ -147,7 +151,9 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked : local-tour');
 
-		const gameRoom = new GameRoomView('local-tour');
+		const gameRoom = GAME_ROOM_VIEW;
+		await gameRoom.init();
+		gameRoom.type = 'local-tour';
 		gameRoom.render();
 
 		return true;

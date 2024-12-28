@@ -24,6 +24,14 @@ class fetch_friendList
 		this.fetch_obj = null;
 	}
 
+	async init()
+	{
+		this.re_value = '';
+		this.fetch_obj = null;
+
+		return true;
+	}
+
 	async fetchData()
 	{
 		const user = JSON.parse(localStorage.getItem('user'));
@@ -55,6 +63,5 @@ class fetch_friendList
 // -------------------------------------------------- //
 // [-] EXPORTS
 // -------------------------------------------------- //
-export {
-	fetch_friendList,
-};
+const item = new fetch_friendList();
+export default item;

@@ -6,11 +6,11 @@ import * as FETCH from './LeftUser_fetch.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import LoginView from '../../views/LoginView.js';
 import TOKEN from '../../core/token.js';
 import MODAL_HISTORY from './ModalHistory.js';
 import MODAL_SETTINGS from './ModalSettings.js';
 import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
+import LOGIN_VIEW from '../../views/LoginView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -154,18 +154,18 @@ class LeftUser
 		event.preventDefault();
 		console.log('[EVENT] button clicked : logout');
 
-		const logoutFetch = new FETCH.fetch_logout();
+		const logoutFetch = FETCH.FETCH_LOGOUT;
+		await logoutFetch.init();
 		const fetch_result = await logoutFetch.fetchData();
 		if (fetch_result === 'logout-successful')
 		{
-			clearInterval(TOKEN.token_id);
-			TOKEN.token_id = null;
-
-			const loginView = new LoginView(this.container);
+			if (TOKEN.token_id)
+				await TOKEN.stop_refresh_token();
 
 			localStorage.clear();
 			location.href = '/';
 
+			const loginView = LOGIN_VIEW;
 			await loginView.render();
 		}
 		else
@@ -248,7 +248,8 @@ class LeftUser
 	async html_stats()
 	{
 		// [-] HELPER FUNCTION
-		const home_profile = new FETCH.fetch_home_profile();
+		const home_profile = FETCH.FETCH_HOME_PROFILE;
+		await home_profile.init();
 		const fetch_result = await home_profile.fetchData();
 		const played = home_profile.fetch_obj.rdata.played;
 		const win_rate = home_profile.fetch_obj.rdata.win_rate + '%';

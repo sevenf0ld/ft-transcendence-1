@@ -5,7 +5,7 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import GameRoomView from '../../views/GameRoomView.js';
+import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -105,13 +105,17 @@ class ModalRoomJoin
 
 		if (this.gameType === 'online-pvp')
 		{
-			const gameRoom = new GameRoomView('online-pvp');
-			gameRoom.render();
+			const gameRoom = GAME_ROOM_VIEW;
+			await gameRoom.init();
+			gameRoom.type = 'online-pvp';
+			await gameRoom.render();
 		}
 		else if (this.gameType === 'online-tour')
 		{
-			const gameRoom = new GameRoomView('online-tour');
-			gameRoom.render();
+			const gameRoom = GAME_ROOM_VIEW;
+			await gameRoom.init();
+			gameRoom.type = 'online-tour';
+			await gameRoom.render();
 		}
 
 		return true;

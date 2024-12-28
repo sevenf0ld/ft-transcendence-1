@@ -24,6 +24,14 @@ class fetch_addFriend
 		this.fetch_obj = null;
 	}
 
+	async init()
+	{
+		this.re_value = '';
+		this.fetch_obj = null;
+
+		return true;
+	}
+
 	async fetchData()
 	{
 		try
@@ -64,7 +72,6 @@ class fetch_addFriend
 // -------------------------------------------------- //
 // [-] EXPORTS
 // -------------------------------------------------- //
-export {
-	fetch_addFriend,
-};
+const item = new fetch_addFriend();
+export default item;
 

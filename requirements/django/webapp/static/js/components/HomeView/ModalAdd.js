@@ -5,10 +5,10 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import * as FETCH from './ModalAdd_fetch.js';
 import * as LOADING from '../../core/helpers/loading.js';
 import ALERT_UTILS from '../../core/helpers/alert-utils.js';
 import RIGHT_FRIEND_LIST from './RightFnList.js';
+import FETCH from './ModalAdd_fetch.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -116,7 +116,8 @@ class ModalAdd
 		await LOADING.disable_all();
 
 		//send data to backend
-		const addFetch = new FETCH.fetch_addFriend();
+		const addFetch = FETCH;
+		await addFetch.init();
 		const fetch_result = await addFetch.fetchData();
 
 		this.alert_div.alert_info('Sending request...');

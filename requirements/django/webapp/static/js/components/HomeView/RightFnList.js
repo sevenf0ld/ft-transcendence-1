@@ -5,7 +5,7 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import * as FETCH from './RightFnList_fetch.js';
+import FETCH from './RightFnList_fetch.js';
 import BOT_CHATBOX from './BotChatBox.js';
 import MODAL_ADD_FRIEND from './ModalAdd.js';
 import MODAL_FRIEND_OPT from './ModalFnOpt.js';
@@ -348,7 +348,9 @@ class RightFnList
 		// "num_of_blocked":0,"outgoing":["temp"],"num_of_outgoing":1,
 		// "incoming":["fake"],"num_of_incoming":1}
 		/*=================================================================*/
-		const flistFetch = new FETCH.fetch_friendList();
+
+		const flistFetch = FETCH;
+		await flistFetch.init();
 		const fresult = await flistFetch.fetchData();
 		async function fetch_friend_list(type)
 		{

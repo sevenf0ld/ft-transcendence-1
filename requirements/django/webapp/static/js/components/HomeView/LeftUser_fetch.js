@@ -24,6 +24,14 @@ class fetch_logout
 		this.fetch_obj = null;
 	}
 
+	async init()
+	{
+		this.re_value = '';
+		this.fetch_obj = null;
+
+		return true;
+	}
+
 	async fetchData()
 	{
 		try
@@ -62,6 +70,12 @@ class fetch_home_profile
 		this.fetch_obj = null;
 	}
 
+	async init()
+	{
+		this.re_value = '';
+		this.fetch_obj = null;
+	}
+
 	async fetchData()
 	{
 		try
@@ -95,7 +109,10 @@ class fetch_home_profile
 // -------------------------------------------------- //
 // [-] EXPORTS
 // -------------------------------------------------- //
+const FETCH_LOGOUT = new fetch_logout();
+const FETCH_HOME_PROFILE = new fetch_home_profile();
+
 export {
-	fetch_logout,
-	fetch_home_profile,
+	FETCH_LOGOUT,
+	FETCH_HOME_PROFILE
 };
