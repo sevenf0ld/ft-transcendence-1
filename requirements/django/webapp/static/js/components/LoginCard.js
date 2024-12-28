@@ -1,21 +1,29 @@
 // file : LoginCard.js
 // -------------------------------------------------- //
-// Importing-internal
+// importing-internal
 // -------------------------------------------------- //
+import LOGIN_OTP from './LoginOTP.js';
 // -------------------------------------------------- //
-// Importing-external
+// importing-external
 // -------------------------------------------------- //
 import * as FETCH from './LoginCard_fetch.js';
 import * as LOADING from '../core/helpers/loading.js';
-import LoginOTP from './LoginOTP.js';
-import alert_utils from '../core/helpers/alert-utils.js';
 import ROUTER from '../core/router.js';
-// tmp-obsolete-imports
 import HomeView from '../views/HomeView.js';
 import SignupView from '../views/SignupView.js';
+import ALERT_UTILS from '../core/helpers/alert-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // Special-events
 // -------------------------------------------------- //
@@ -35,321 +43,97 @@ document.addEventListener('DOMContentLoaded', async (e) => {
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-// --- [LOCAL] EXPORTED COMPONENT
-// usage : insert querySelector's value of an element
-// 		   to register as export element; first one
-// 		   is always default
-const getEle = [
-];
-
-// --- [LOCAL] BUTTONS SECTION
-// button tracker
-class button
+class LoginCard
 {
+	// --------------------------------------------- //
+	// CONSTRUCTOR
+	// --------------------------------------------- //
 	constructor()
 	{
-		this.arr = {
-			'login': '',
-			'intra': '',
-			'signup': '',
+		// COMMON-atts
+		this.container = null;
+		this.main_ctn = null;
+		this.buttons = {
+			'login': null,
+			'intra': null,
+			'signup': null,
 		};
-	}
-
-	async read_buttons()
-	{
-		for (const key in this.arr)
-		{
-			const ele = document.getElementById(`${this.arr[key]}`);
-			if (!ele)
-				throw new Error(`[ERR] button not found : ${this.arr[key]}`);
-			this.arr[key] = ele;
-		}
-		return true;
-	}
-}
-const btns = new button();
-
-// HTML ELEMENTS
-function html_header()
-{
-	// [-] HELPER FUNCTION
-
-	// [A] TEMPLATE
-	let template = `
-		<p class="%p-c">%p-t</p>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%p-c': `ct-login-header text-center`,
-		'%p-t': `42PONG - SIGN IN`,
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-
-	// [D] HTML RETURN
-	return template;
-}
-
-
-function html_formGroup()
-{
-	// [-] HELPER FUNCTION
-
-	// [A] TEMPLATE
-	let template = `
-		<form class="%form-c">
-			<div class="%formgp-c">
-				<label for="%id1">Username</label>
-				<input id="%id1" type="%t1" @cas placeholder="%p1" @auto>
-			</div>
-			<div class="%formgp-c %last">
-				<label for="%id2">Password</label>
-				<input id="%id2" type="%t2" @cas placeholder="%p2" @auto>
-			</div>
-			<button id="%lbid" class="%lbc" type="submit">Sign In</button>
-			<div @att1 @att2></div>
-		</form>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%form-c': `ct-login-form d-flex flex-column`,
-		'%formgp-c': 'ct-form-group d-flex flex-column',
-		'%last': 'mb-3',
-		'@cas': `class="p-2 form-control form-control-sm"`,
-		'@auto': `required="" autocomplete="off" spellcheck="false"`,
-		'%id1': `username`,
-		'%t1': `text`,
-		'%p1': `Enter your username`,
-		'%id2': `password`,
-		'%t2': `password`,
-		'%p2': `Enter your password`,
-		'@att1': `class="alert d-none"`,
-		'@att2': `role="alert" id="alert_login"`,
-		'%lbid': `btn_login`,
-		'%lbc': `ct-btn-dark btn no-hover`,
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-	btns.arr['login'] = attributes['%lbid'];
-
-	// [D] HTML RETURN
-	return template;
-} 
-
-function html_continueLine()
-{
-	// [-] HELPER FUNCTION
-
-	// [A] TEMPLATE
-	let template = `
-		<div class="%div-c">
-			<hr class="%hr-c">
-			<span class="%span-c">%span-t</span>
-			<hr class="%hr-c">
-		</div>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%div-c': `d-flex align-items-center`,
-		'%hr-c': `flex-grow-1`,
-		'%span-c': `px-2 text-muted`,
-		'%span-t': `or continue`,
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-
-	// [D] HTML RETURN
-	return template;
-}
-
-function html_buttonIntra()
-{
-	// [-] HELPER FUNCTION
-
-	// [A] TEMPLATE
-	let template = `
-	<button id="%ibid" class="%1ibc %2ibc">
-		<span>%span-t1</span>
-		<span>%span-t2</span>
-	</button>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%ibid': `btn_intra`,
-		'%1ibc': `btn btn-light d-flex`,
-		'%2ibc': `justify-content-center align-items-center`,
-		'%span-t1': `(42)`,
-		'%span-t2': `Sign in with Intra`,
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-	btns.arr['intra'] = attributes['%ibid'];
-
-	// [D] HTML RETURN
-	return template;
-}
-
-function html_signUpLine()
-{
-	// [-] HELPER FUNCTION
-
-	// [A] TEMPLATE
-	let template = `
-	<div class="%div-c">
-		<span>%span-t</span>
-		<a id="%aid" href="#">%a-t</a>
-	</div>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%div-c': `small text-muted text-center`,
-		'%span-t': `Don't have an account?`,
-		'%aid': `btn_signup`,
-		'%a-t': `Sign Up`,
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-	btns.arr['signup'] = attributes['%aid'];
-
-	// [D] HTML RETURN
-	return template;
-}
-
-// HTML elements bundle
-const ele =
-{
-	html_header,
-	html_formGroup,
-	html_continueLine,
-	html_buttonIntra,
-	html_signUpLine,
-};
-
-// -------------------------------------------------- //
-// export
-// -------------------------------------------------- //
-export default class LoginCard
-{
-	// --- [00] CONSTRUCTOR
-	constructor(container)
-	{
-		this.container = container;
-		this.components = {};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.alert_div = null;
 	}
-
-	// --- [01] GETTER
-	async get(element = 'default')
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
+	// --------------------------------------------- //
+	async render(type)
 	{
-		if (this.read_components() === false)
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
+		const template = await this.init_template();
+
+		if (type === 'append')
 		{
-			throw new Error(`[ERR] this class has no export components`);
-			return false;
+			this.container.insertAdjacentHTML(
+				'beforeend', template
+			);
 		}
-		return this.compo_get(element);
-	}
-
-	// --- [02] COMPONENTS REGISTRY
-	async compo_register(name, element)
-	{
-		this.components[name] = element;
-
-		return true;
-	}
-
-	async compo_get(name)
-	{
-		return this.components[name];
-	}
-
-	async compo_remove(name)
-	{
-		delete this.components[name];
-
-		return true;
-	}
-
-	async read_components()
-	{
-		if (getEle.length === 0)
-			return false;
-		this.compo_register('default', document.querySelector(getEle[0]));
-		for (const key in getEle)
+		else if (type === 'replace')
 		{
-			const ele = document.querySelector(getEle[key]);
-			if (!ele)
-				throw new Error(`[ERR] component not found : ${getEle[key]}`);
-			const str = getEle[key].substring(1);
-			this.compo_register(str, ele);
+			this.container.innerHTML = '';
+			this.container.innerHTML = template;
 		}
 
+		await this.push_important_elements();
+		await this.bind_events();
+		await this.bind_modals();
+
 		return true;
 	}
-
-	// --- [03] HTM-LELEMENTS
-	async init_template()
+	async push_important_elements()
 	{
-		let template = "";
-		template += ele.html_header();
-		template += ele.html_formGroup();
-		template += ele.html_continueLine();
-		template += ele.html_buttonIntra();
-		template += ele.html_signUpLine();
+		this.main_ctn = document.querySelector('.ct-login-card-ctn');
+		this.buttons['login'] = document.getElementById('btn_login');
+		this.buttons['intra'] = document.getElementById('btn_intra');
+		this.buttons['signup'] = document.getElementById('btn_signup');
 
-		// trim new lines, spaces, and tabs
-		template = template.replace(/\s+/g, ' ');
-		template = template.replace(/>\s+</g, '><');
-		template = template.replace(/\s*=\s*/g, '=');
-		template = template.trim();
+		await ALERT_UTILS.init();
+		ALERT_UTILS.container = document.getElementById('alert_login');
+		this.alert_div = ALERT_UTILS;
 
-		return template;
-	}
-
-	async check_input()
-	{
-		const username = document.getElementById('username').value;
-		const password = document.getElementById('password').value;
-		if (username === '' || password === '')
+		if (!this.main_ctn)
+			throw new Error('[ERR] main container not found');
+		for (const key in this.buttons)
 		{
-			await this.alert_div.setType('alert-danger');
-			await this.alert_div.setMsg('Please enter your username and password!');
-			await this.alert_div.alert_render();
-			return false;
+			if (!this.buttons[key])
+				throw new Error(`[ERR] button not found : ${key}`);
 		}
 
 		return true;
 	}
+	// --------------------------------------------- //
+	// [2/4] EVENT-RELATED
+	// --------------------------------------------- //
+	async bind_events()
+	{
+		this.buttons['login'].addEventListener(
+			'click', async (event) => {await this.loginClick(event);}
+		);
 
-	// --- [04] EVENT
+		this.buttons['intra'].addEventListener(
+			'click', async (event) => {await this.intraClick(event);}
+		);
+
+		this.buttons['signup'].addEventListener(
+			'click', async (event) => {await this.signupClick(event);}
+		);
+
+		return true;
+	}
+
 	async loginClick(event)
 	{
-		console.log('[EVENT] button clicked : login');
 		event.preventDefault();
+		console.log('[EVENT] button clicked : login-submit');
 
 		if (!await this.check_input())
 			return false;
@@ -364,8 +148,9 @@ export default class LoginCard
 		if (fetch_result === 'login-otp')
 		{
 			await LOADING.restore_all();
-			const OTP = new LoginOTP(loginFetch);
-			await OTP.render();
+			LOGIN_OTP.container = document.getElementById('media');
+			LOGIN_OTP.loginFetch_obj = loginFetch;
+			await LOGIN_OTP.render('replace');
 		}
 		if (fetch_result === 'p1-failed')
 		{
@@ -400,8 +185,8 @@ export default class LoginCard
 
 	async intraClick(event)
 	{
-		console.log('[EVENT] button clicked : intra');
 		event.preventDefault();
+		console.log('[EVENT] button clicked : login-intra');
 
 		await intraFetch.redirect(event);
 
@@ -410,46 +195,237 @@ export default class LoginCard
 
 	async signupClick(event)
 	{
-		console.log('[EVENT] button clicked : signup');
 		event.preventDefault();
+		console.log('[EVENT] button clicked : login-signup');
 
 		await ROUTER.navigateTo('/register');
 
 		return true;
 	}
-
-	async bind_events()
+	// --------------------------------------------- //
+	// [3/4] FETCH-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [4/4] HTML-ELEMENT-RELATED
+	// --------------------------------------------- //
+	async init_template()
 	{
-		await btns.read_buttons();
+		let template = "";
+		template += await this.html_main_ctn();
 
-		btns.arr['login'].addEventListener(
-			'click', async (e) => {await this.loginClick(e);}
-		);
-		btns.arr['intra'].addEventListener(
-			'click', async (e) => {await this.intraClick(e);}
-		);
-		btns.arr['signup'].addEventListener(
-			'click', async (e) => {await this.signupClick(e);}
-		);
+		// trim new lines, spaces, and tabs
+		template = template.replace(/\s+/g, ' ');
+		template = template.replace(/>\s+</g, '><');
+		template = template.replace(/\s*=\s*/g, '=');
+		template = template.trim();
+
+		return template;
+	}
+
+	async html_main_ctn()
+	{
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%main-c1">
+			${await this.html_header()}
+			${await this.html_formGroup()}
+			${await this.html_continueLine()}
+			${await this.html_buttonIntra()}
+			${await this.html_signUpLine()}
+		</div>
+		`;
+		// [B] SET atts
+		const atts =
+		{
+			'%main-c1': 'ct-login-card-ctn',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	async html_header()
+	{
+		// [-] HELPER FUNCTION
+
+		// [A] TEMPLATE
+		let template = `
+			<p class="%p-c">%p-t</p>
+		`;
+
+		// [B] SET atts
+		const attributes =
+		{
+			'%p-c': `ct-login-header text-center`,
+			'%p-t': `42PONG - SIGN IN`,
+		};
+
+		for (const key in attributes)
+			template = template.split(key).join(attributes[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	async html_formGroup()
+	{
+		// [-] HELPER FUNCTION
+
+		// [A] TEMPLATE
+		let template = `
+			<form class="%form-c">
+				<div class="%formgp-c">
+					<label for="%id1">Username</label>
+					<input id="%id1" type="%t1" @cas placeholder="%p1" @auto>
+				</div>
+				<div class="%formgp-c %last">
+					<label for="%id2">Password</label>
+					<input id="%id2" type="%t2" @cas placeholder="%p2" @auto>
+				</div>
+				<button id="%lbid" class="%lbc" type="submit">Sign In</button>
+				<div @att1 @att2></div>
+			</form>
+		`;
+
+		// [B] SET atts
+		const attributes =
+		{
+			'%form-c': `ct-login-form d-flex flex-column`,
+			'%formgp-c': 'ct-form-group d-flex flex-column',
+			'%last': 'mb-3',
+			'@cas': `class="p-2 form-control form-control-sm"`,
+			'@auto': `required="" autocomplete="off" spellcheck="false"`,
+			'%id1': `username`,
+			'%t1': `text`,
+			'%p1': `Enter your username`,
+			'%id2': `password`,
+			'%t2': `password`,
+			'%p2': `Enter your password`,
+			'@att1': `class="alert d-none"`,
+			'@att2': `role="alert" id="alert_login"`,
+			'%lbid': `btn_login`,
+			'%lbc': `ct-btn-dark btn no-hover`,
+		};
+
+		for (const key in attributes)
+			template = template.split(key).join(attributes[key]);
+
+		// [C] HTML RETURN
+		return template;
+	} 
+
+	async html_continueLine()
+	{
+		// [-] HELPER FUNCTION
+
+		// [A] TEMPLATE
+		let template = `
+			<div class="%div-c">
+				<hr class="%hr-c">
+				<span class="%span-c">%span-t</span>
+				<hr class="%hr-c">
+			</div>
+		`;
+
+		// [B] SET atts
+		const attributes =
+		{
+			'%div-c': `d-flex align-items-center`,
+			'%hr-c': `flex-grow-1`,
+			'%span-c': `px-2 text-muted`,
+			'%span-t': `or continue`,
+		};
+
+		for (const key in attributes)
+			template = template.split(key).join(attributes[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	async html_buttonIntra()
+	{
+		// [-] HELPER FUNCTION
+
+		// [A] TEMPLATE
+		let template = `
+		<button id="%ibid" class="%1ibc %2ibc">
+			<span>%span-t1</span>
+			<span>%span-t2</span>
+		</button>
+		`;
+
+		// [B] SET atts
+		const attributes =
+		{
+			'%ibid': `btn_intra`,
+			'%1ibc': `btn btn-light d-flex`,
+			'%2ibc': `justify-content-center align-items-center`,
+			'%span-t1': `(42)`,
+			'%span-t2': `Sign in with Intra`,
+		};
+
+		for (const key in attributes)
+			template = template.split(key).join(attributes[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	async html_signUpLine()
+	{
+		// [-] HELPER FUNCTION
+
+		// [A] TEMPLATE
+		let template = `
+		<div class="%div-c">
+			<span>%span-t</span>
+			<a id="%aid" href="#">%a-t</a>
+		</div>
+		`;
+
+		// [B] SET atts
+		const attributes =
+		{
+			'%div-c': `small text-muted text-center`,
+			'%span-t': `Don't have an account?`,
+			'%aid': `btn_signup`,
+			'%a-t': `Sign Up`,
+		};
+
+		for (const key in attributes)
+			template = template.split(key).join(attributes[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	async check_input()
+	{
+		const username = document.getElementById('username').value;
+		const password = document.getElementById('password').value;
+		if (username === '' || password === '')
+		{
+			await this.alert_div.setType('alert-danger');
+			await this.alert_div.setMsg('Please enter your username and password!');
+			await this.alert_div.alert_render();
+			return false;
+		}
 
 		return true;
 	}
 
-	// --- [05] RENDER
-	async render()
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals()
 	{
-		const template = await this.init_template();
-		
-		// [ for modals ]
-		// this.container.insertAdjacentHTML('beforeend', template);
-		
-		this.container.innerHTML = '';
-		this.container.innerHTML = template;
-		this.alert_div = new alert_utils(document.getElementById('alert_login'));
-
-		await this.bind_events();
-		//await this.modals_render();
-
 		return true;
 	}
 }
+
+const item = new LoginCard();
+export default item;

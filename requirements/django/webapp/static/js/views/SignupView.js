@@ -10,7 +10,7 @@ import PageTitle from '../core/helpers/PageTitle.js';
 import MediaLayout from '../layouts/MediaLayout.js';
 import IntroLayout from '../layouts/IntroLayout.js';
 //components
-import SignupCard from '../components/SignupCard.js';
+import SIGNUP_CARD from '../components/SignupCard.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -39,8 +39,8 @@ export default class SignupView
 
 		await layout.render();
 
-		const signup = new SignupCard(await layout.get());
-		await signup.render();
+		SIGNUP_CARD.container = await layout.get();
+		await SIGNUP_CARD.render('replace');
 
 		return true;
 	}

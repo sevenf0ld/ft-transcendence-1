@@ -10,7 +10,7 @@ import PageTitle from '../core/helpers/PageTitle.js';
 import MediaLayout from '../layouts/MediaLayout.js';
 import IntroLayout from '../layouts/IntroLayout.js';
 //components
-import LoginCard from '../components/LoginCard.js';
+import LOGIN_CARD from '../components/LoginCard.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -38,8 +38,9 @@ export default class LoginView
 		const layout = new IntroLayout(await media.get());
 		await layout.render();
 
-		const login = new LoginCard(await layout.get());
-		await login.render();
+		const parent_div = document.querySelector('.ct-intro');
+		LOGIN_CARD.container = parent_div;
+		await LOGIN_CARD.render('replace');
 
 		return true;
 	}

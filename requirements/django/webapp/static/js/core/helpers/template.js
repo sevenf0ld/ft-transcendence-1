@@ -31,8 +31,8 @@ class BotFriendPfp
 		this.container = null;
 		this.main_ctn = null;
 		this.buttons = {
-			'close': '',
-			'history': '',
+			'close': null,
+			'history': null,
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.username = null;
@@ -88,11 +88,11 @@ class BotFriendPfp
 	async bind_events()
 	{
 		this.buttons['close'].addEventListener(
-			'click', async (e) => {await this.closeClick(e);}
+			'click', async (event) => {await this.closeClick(event);}
 		);
 
 		this.buttons['history'].addEventListener(
-			'click', async (e) => {await this.historyClick(e);}
+			'click', async (event) => {await this.historyClick(event);}
 		);
 
 		return true;
