@@ -5,7 +5,7 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
-import { fetch_utils as FETCH_UTILS } from '../../core/helpers/fetch-utils.js';
+import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -30,7 +30,8 @@ class fetch_friend_profile
 		{
 			const encoded_target = encodeURIComponent(this.target);
 
-			const mainFetch = new FETCH_UTILS();
+			await FETCH_UTILS.init();
+			const mainFetch = FETCH_UTILS;
 			await mainFetch.getCookie('csrftoken');
 			await mainFetch.setUrl(`/api/user_profiles/view-friend-profile/?target=${encoded_target}`);
 			await mainFetch.setMethod('GET');

@@ -5,8 +5,8 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import { fetch_utils as FETCH_UTILS } from '../../core/helpers/fetch-utils.js';
 import rightPanelFriends from './RightFnList.js';
+import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -144,7 +144,8 @@ class ModalFnOpt
 			return false;
 
 		//curl -X PATCH -H "Content-type: application/json" -d '{"user": "what", "target": "who"}' 'https://localhost:8000/api/friends/friend-list-av/unfriend/' --insecure
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-list-av/unfriend/');
 		await mainFetch.setMethod('PATCH');
@@ -178,7 +179,8 @@ class ModalFnOpt
 			return false;
 	
 		//curl -X PATCH -H "Content-type: application/json" -d '{"user": "what", "target": "how"}' 'https://localhost:8000/api/friends/friend-list-av/block/' --insecure
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-list-av/block/');
 		await mainFetch.setMethod('PATCH');
@@ -211,7 +213,8 @@ class ModalFnOpt
 			return false;
 
 		//curl -X DELETE -H "Content-type: application/json" -d '{"sender": "when", "recipient": "what"}' 'https://localhost:8000/api/friends/friend-request-av/cancel/' --insecur
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-request-av/cancel/');
 		await mainFetch.setMethod('DELETE');
@@ -243,7 +246,8 @@ class ModalFnOpt
 
 		//curl -X DELETE -H "Content-type: application/json" -d '{"sender": "what", "recipient": "when"}' 'https://localhost:8000/api/friends/friend-request-av/accept/' --insecure
 		//
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-request-av/accept/');
 		await mainFetch.setMethod('DELETE');
@@ -274,7 +278,8 @@ class ModalFnOpt
 		console.log('decline request');
 
 		//curl -X DELETE -H "Content-type: application/json" -d '{"sender": "what", "recipient": "when"}' 'https://localhost:8000/api/friends/friend-request-av/decline/' --insecure
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-request-av/decline/');
 		await mainFetch.setMethod('DELETE');
@@ -305,7 +310,8 @@ class ModalFnOpt
 		console.log('unblock');
 
 		//curl -X PATCH -H "Content-type: application/json" -d '{"user": "what", "target": "how"}' 'https://localhost:8000/api/friends/friend-list-av/unblock/' --insecure
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-list-av/unblock/');
 		await mainFetch.setMethod('PATCH');

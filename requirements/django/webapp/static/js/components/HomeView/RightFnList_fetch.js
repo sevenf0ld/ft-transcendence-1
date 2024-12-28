@@ -5,7 +5,7 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
-import { fetch_utils as FETCH_UTILS } from '../../core/helpers/fetch-utils.js';
+import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -27,7 +27,8 @@ class fetch_friendList
 	async fetchData()
 	{
 		const user = JSON.parse(localStorage.getItem('user'));
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-list-av/retrieve/');
 		await mainFetch.setMethod('GET');

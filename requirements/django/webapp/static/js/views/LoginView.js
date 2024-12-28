@@ -9,8 +9,8 @@
 import PageTitle from '../core/helpers/PageTitle.js';
 import MediaLayout from '../layouts/MediaLayout.js';
 import IntroLayout from '../layouts/IntroLayout.js';
-//components
 import LOGIN_CARD from '../components/LoginCard.js';
+import PAGE_TITLE from '../core/helpers/PageTitle.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -29,8 +29,9 @@ export default class LoginView
 	
 	async render()
 	{
-		const page_title = new PageTitle();
-		page_title.update('Sign In');
+		const page_title = PAGE_TITLE;
+		await page_title.init();
+		await page_title.update('Sign In');
 
 		const media = new MediaLayout();
 		await media.render();

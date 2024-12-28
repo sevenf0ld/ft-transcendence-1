@@ -6,15 +6,16 @@
 // Importing-external
 // -------------------------------------------------- //
 //layout
-import PageTitle from '../core/helpers/PageTitle.js';
-//components
 import GameGuide from '../components/GameRoomView/GameGuide.js';
 import GameBoard from '../components/GameRoomView/GameBoard.js';
 import ActionPanel from '../components/GameRoomView/ActionPanel.js';
 import Announcer from '../components/GameRoomView/Announcer.js';
 import RoomList from '../components/GameRoomView/RoomList.js';
-// temporary
 import HomeView from './HomeView.js';
+
+import PAGE_TITLE from '../core/helpers/PageTitle.js';
+
+
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -51,7 +52,8 @@ export default class GameRoomView
 	{
 		await this.clear();
 
-		const page_title = new PageTitle();
+		const page_title = PAGE_TITLE;
+		await page_title.init();
 		const top_title = document.querySelector(".ct-top-title");
 
 		top_title.innerHTML = "Game Room (" + this.type + ")";
@@ -65,19 +67,19 @@ export default class GameRoomView
 		switch (this.type)
 		{
 			case 'local-pvp':
-				page_title.update('Local PVP Room');
+				await page_title.update('Local PVP Room');
 				break;
 			case 'local-tour':
-				page_title.update('Local Tour Room');
+				await page_title.update('Local Tour Room');
 				break;
 			case 'local-pve':
-				page_title.update('Local PVE Room');
+				await page_title.update('Local PVE Room');
 				break;
 			case 'online-pvp':
-				page_title.update('Online PVP Room');
+				await page_title.update('Online PVP Room');
 				break;
 			case 'online-tour':
-				page_title.update('Online Tour Room');
+				await page_title.update('Online Tour Room');
 				break;
 			default:
 				throw new Error("Invalid room type");

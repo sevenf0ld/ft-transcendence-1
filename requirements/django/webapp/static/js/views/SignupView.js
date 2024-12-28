@@ -6,7 +6,7 @@
 // Importing-external
 // -------------------------------------------------- //
 //layout
-import PageTitle from '../core/helpers/PageTitle.js';
+import PAGE_TITLE from '../core/helpers/PageTitle.js';
 import MediaLayout from '../layouts/MediaLayout.js';
 import IntroLayout from '../layouts/IntroLayout.js';
 //components
@@ -29,8 +29,9 @@ export default class SignupView
 	
 	async render()
 	{
-		const page_title = new PageTitle();
-		page_title.update('Sign Up');
+		const page_title = PAGE_TITLE;
+		await page_title.init();
+		await page_title.update('Sign Up');
 
 		const media = new MediaLayout();
 		await media.render();

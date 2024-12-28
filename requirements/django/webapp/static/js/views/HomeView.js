@@ -6,15 +6,13 @@
 // Importing-external
 // -------------------------------------------------- //
 //layout
-import PageTitle from '../core/helpers/PageTitle.js';
 import MediaLayout from '../layouts/MediaLayout.js';
 import PrimaryLayout from '../layouts/PrimaryLayout.js';
-//components
 import TOKEN from '../core/token.js';
-
 import LEFT_USER from '../components/HomeView/LeftUser.js';
 import MIDTOP_GAMEMODE from '../components/HomeView/MidBoard.js';
 import RIGHT_FRIEND_LIST from '../components/HomeView/RightFnList.js';
+import PAGE_TITLE from '../core/helpers/PageTitle.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -72,8 +70,9 @@ export default class HomeView
 	{
 		let parent_html;
 
-		const page_title = new PageTitle();
-		page_title.update('Home');
+		const page_title = PAGE_TITLE;
+		await page_title.init();
+		await page_title.update('Home');
 
 		const media = new MediaLayout();
 		await media.render();

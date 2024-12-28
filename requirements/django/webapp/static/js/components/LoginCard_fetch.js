@@ -5,7 +5,7 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
-import { fetch_utils as FETCH_UTILS } from '../core/helpers/fetch-utils.js';
+import FETCH_UTILS from '../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -49,7 +49,8 @@ class fetch_login
 		if (this.current_phase !== 1)
 			return false;
 
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl(url);
 		await mainFetch.setMethod('POST');
@@ -95,7 +96,8 @@ class fetch_login
 		if (this.current_phase !== 2)
 			return false;
 
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.copy_object(this.fetch_utils_holder);
 		await mainFetch.setUrl(url);
 		await mainFetch.appendBody('phase', 'two');
@@ -123,7 +125,8 @@ class fetch_login
 		if (this.current_phase !== 3)
 			return false;
 
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.copy_object(this.fetch_utils_holder);
 		await mainFetch.setUrl(url);
 		await mainFetch.appendBody('username', this.val_username);
@@ -166,7 +169,8 @@ class fetch_login
 		if (this.current_phase !== 4)
 			return false;
 
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.copy_object(this.fetch_utils_holder);
 		await mainFetch.setUrl(url);
 		await mainFetch.appendBody('phase', 'four');
@@ -267,7 +271,8 @@ class fetch_intra
 		{
 			try 
 			{
-				const mainFetch = new FETCH_UTILS();
+				await FETCH_UTILS.init();
+				const mainFetch = FETCH_UTILS;
 				await mainFetch.getCookie('csrftoken');
 				await mainFetch.setUrl('/api/social_auth/forty-two-login/');
 				await mainFetch.setMethod('POST');
