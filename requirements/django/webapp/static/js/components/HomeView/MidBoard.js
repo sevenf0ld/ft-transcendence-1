@@ -5,9 +5,9 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import ModalLayout from '../../layouts/ModalLayout.js';
 import GameRoomView from '../../views/GameRoomView.js';
 import MODAL_ROOM_JOIN from './ModalRoomJoin.js';
+import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -277,10 +277,11 @@ class MidBoard
 		let parent_html;
 
 		parent_html = document.querySelector('.ct-mpanel-top');
-		const modal1 = new ModalLayout(
-			parent_html, "modal-join", "Available Rooms (PVP)"
-		);
-		await modal1.render();
+		const modal1 = MODAL_LAYOUT;
+		modal1.container = parent_html;
+		modal1.name = 'modal-join';
+		modal1.title = 'Available Rooms (PVP)';
+		await modal1.render('append');
 
 		return true;
 	}

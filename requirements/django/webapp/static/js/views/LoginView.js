@@ -6,11 +6,10 @@
 // Importing-external
 // -------------------------------------------------- //
 //layout
-import PageTitle from '../core/helpers/PageTitle.js';
-import MediaLayout from '../layouts/MediaLayout.js';
-import IntroLayout from '../layouts/IntroLayout.js';
 import LOGIN_CARD from '../components/LoginCard.js';
 import PAGE_TITLE from '../core/helpers/PageTitle.js';
+import INTRO_LAYOUT from '../layouts/IntroLayout.js';
+import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -33,14 +32,16 @@ export default class LoginView
 		await page_title.init();
 		await page_title.update('Sign In');
 
-		const media = new MediaLayout();
-		await media.render();
+		const media = MEDIA_LAYOUT;
+		media.container = document.body;
+		await media.render('replace');
 
-		const layout = new IntroLayout(await media.get());
-		await layout.render();
+		const media_div = media.main_ctn;
+		const layout = INTRO_LAYOUT;
+		layout.container = media_div;
+		await layout.render('replace');
 
-		const parent_div = document.querySelector('.ct-intro');
-		LOGIN_CARD.container = parent_div;
+		LOGIN_CARD.container = layout.main_ctn;
 		await LOGIN_CARD.render('replace');
 
 		return true;

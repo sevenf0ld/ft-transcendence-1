@@ -12,10 +12,7 @@ import ActionPanel from '../components/GameRoomView/ActionPanel.js';
 import Announcer from '../components/GameRoomView/Announcer.js';
 import RoomList from '../components/GameRoomView/RoomList.js';
 import HomeView from './HomeView.js';
-
 import PAGE_TITLE from '../core/helpers/PageTitle.js';
-
-
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //

@@ -7,10 +7,9 @@
 // -------------------------------------------------- //
 //layout
 import PAGE_TITLE from '../core/helpers/PageTitle.js';
-import MediaLayout from '../layouts/MediaLayout.js';
-import IntroLayout from '../layouts/IntroLayout.js';
-//components
 import SIGNUP_CARD from '../components/SignupCard.js';
+import INTRO_LAYOUT from '../layouts/IntroLayout.js';
+import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -33,14 +32,16 @@ export default class SignupView
 		await page_title.init();
 		await page_title.update('Sign Up');
 
-		const media = new MediaLayout();
-		await media.render();
+		const media = MEDIA_LAYOUT;
+		media.container = document.body;
+		await media.render('replace');
 
-		const layout = new IntroLayout(await media.get());
+		const media_div = media.main_ctn;
+		const layout = INTRO_LAYOUT;
+		layout.container = media_div;
+		await layout.render('replace');
 
-		await layout.render();
-
-		SIGNUP_CARD.container = await layout.get();
+		SIGNUP_CARD.container = layout.main_ctn;
 		await SIGNUP_CARD.render('replace');
 
 		return true;

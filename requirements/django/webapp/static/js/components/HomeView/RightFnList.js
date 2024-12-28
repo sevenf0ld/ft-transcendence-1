@@ -5,11 +5,11 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import ModalLayout from '../../layouts/ModalLayout.js';
 import * as FETCH from './RightFnList_fetch.js';
 import BOT_CHATBOX from './BotChatBox.js';
 import MODAL_ADD_FRIEND from './ModalAdd.js';
 import MODAL_FRIEND_OPT from './ModalFnOpt.js';
+import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -480,16 +480,18 @@ class RightFnList
 		let parent_html;
 
 		parent_html = this.container;
+		const modal1 = MODAL_LAYOUT;
+		modal1.container = parent_html;
+		modal1.name = 'modal-addFriend';
+		modal1.title = 'Add Friend';
+		await modal1.render('append');
 
-		const modal1 = new ModalLayout(
-			parent_html, "modal-addFriend", "Add Friend"
-		);
-		await modal1.render()
-
-		const modal2 = new ModalLayout(
-			parent_html, "modal-fnOpt", "Friend Options"
-		);
-		await modal2.render()
+		parent_html = this.container;
+		const modal2 = MODAL_LAYOUT;
+		modal2.container = parent_html;
+		modal2.name = 'modal-fnOpt';
+		modal2.title = 'Friend Options';
+		await modal2.render('append');
 
 		return true;
 	}

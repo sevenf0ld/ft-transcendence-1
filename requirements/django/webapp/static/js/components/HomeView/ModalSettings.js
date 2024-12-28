@@ -5,7 +5,6 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import ModalLayout from '../../layouts//ModalLayout.js';
 import MODAL_SETTINGS_ITEMS from './ModalSetItems.js';
 // -------------------------------------------------- //
 // developer notes

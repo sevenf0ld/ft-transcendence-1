@@ -6,8 +6,8 @@
 // Importing-external
 // -------------------------------------------------- //
 //layout
-import PageTitle from '../core/helpers/PageTitle.js';
-import MediaLayout from '../layouts/MediaLayout.js';
+import PAGE_TITLE from '../core/helpers/PageTitle.js';
+import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -25,13 +25,15 @@ export default class PageNotFoundView
 	
 	async render()
 	{
-		const page_title = new PageTitle();
-		page_title.update('404 - Page Not Found');
+		const page_title = PAGE_TITLE;
+		await page_title.init();
+		await page_title.update('404 - Page Not Found');
 
-		const media = new MediaLayout();
-		await media.render();
+		const media = MEDIA_LAYOUT;
+		media.container = document.body;
+		await media.render('replace');
 
-		const media_layout = await media.get();
+		const media_layout = media.main_ctn;
 		media_layout.innerHTML = `
 		<p>404 - Page Not Found</p>
 		`;

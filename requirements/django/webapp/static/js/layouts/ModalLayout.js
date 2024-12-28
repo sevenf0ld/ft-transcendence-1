@@ -1,172 +1,102 @@
 // file : ModalLayout.js
 // -------------------------------------------------- //
-// Importing-internal
+// importing-internal
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// Importing-external
+// importing-external
 // -------------------------------------------------- //
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-// --- [LOCAL] EXPORTED COMPONENT
-// usage : insert querySelector's value of an element
-// 		   to register as export element; first one
-// 		   is always default
-const getEle = [
-	'.modal-body',
-	'.modal-header',
-	'.modal-footer',
-];
-
-// --- [LOCAL] BUTTONS SECTION
-// button tracker class
-class button
+class ModalLayout
 {
+	// --------------------------------------------- //
+	// CONSTRUCTOR
+	// --------------------------------------------- //
 	constructor()
 	{
-		this.arr = {
+		// COMMON-atts
+		this.container = null;
+		this.main_ctn = null;
+		this.buttons = {
 		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
+		this.header = null;
+		this.body = null;
+		this.footer = null;
+		this.name = null;
+		this.title = null;
 	}
-
-	async read_buttons()
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
+	// --------------------------------------------- //
+	async render(type)
 	{
-		for (const key in this.arr)
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
+		const template = await this.init_template();
+
+		if (type === 'append')
 		{
-			const ele = document.getElementById(`${this.arr[key]}`);
-			if (!ele)
-				throw new Error(`[ERR] button not found : ${this.arr[key]}`);
-			this.arr[key] = ele;
+			this.container.insertAdjacentHTML(
+				'beforeend', template
+			);
 		}
-		return true;
-	}
-}
-const btns = new button();
-
-// HTML ELEMENTS
-function html_modalCard(modal_name, title)
-{
-	// [-] HELPER FUNCTION
-	// div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
-
-	// [A] TEMPLATE
-	let template = `
-	<div @1att1 @1att2 @1att3 @1att4 @1att5>
-		<div class="%dlog-1c %dlog-2c">
-			<div class="%cnt-c">
-				<div class="%hdr-c">
-					<h1 class="%ttl-c">%ttl-t</h1>
-				</div>
-				<div class="%bdy-c"></div>
-				<div class="%ftr-c"></div>
-			</div>
-		</div>
-	</div>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'@1att1': `class="modal"`,
-		'@1att2': `id="${modal_name}"`,
-		'@1att3': `tabindex="-1"`,
-		'@1att4': `aria-labelledby="${modal_name}"`,
-		'@1att5': `aria-hidden="true"`,
-		'%dlog-1c': `modal-dialog modal-sm modal-dialog-centered`,
-		'%dlog-2c': `modal-dialog-scrollable`,
-		'%cnt-c': `modal-content`,
-		'%hdr-c': `modal-header`,
-		'%ttl-c': `modal-title text-center w-100`,
-		'%ttl-t': `${title}`,
-		'%bdy-c': `modal-body`,
-		'%ftr-c': `modal-footer`,
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-
-	// [D] HTML RETURN
-	return template;
-}
-
-const ele =
-{
-	html_modalCard,
-};
-
-// -------------------------------------------------- //
-// export
-// -------------------------------------------------- //
-export default class ModalLayout
-{
-	// --- [00] CONSTRUCTOR
-	constructor(container, modal_name, title)
-	{
-		this.container = container;
-		this.components = {};
-		this.modal_name = modal_name;
-		this.modal_title = title;
-	}
-
-	// --- [01] GETTER
-	async get(element = 'default')
-	{
-		getEle[0] = `#${this.modal_name} .modal-body`;
-
-		if (this.read_components() === false)
+		else if (type === 'replace')
 		{
-			throw new Error(`[ERR] this class has no export components`);
-			return false;
-		}
-		return this.compo_get(element);
-	}
-
-	// --- [02] COMPONENTS REGISTRY
-	async compo_register(name, element)
-	{
-		this.components[name] = element;
-
-		return true;
-	}
-
-	async compo_get(name)
-	{
-		return this.components[name];
-	}
-
-	async compo_remove(name)
-	{
-		delete this.components[name];
-
-		return true;
-	}
-
-	async read_components()
-	{
-		if (getEle.length === 0)
-			return false;
-		this.compo_register('default', document.querySelector(getEle[0]));
-		for (const key in getEle)
-		{
-			const ele = document.querySelector(getEle[key]);
-			if (!ele)
-				throw new Error(`[ERR] component not found : ${getEle[key]}`);
-			const str = getEle[key].substring(1);
-			this.compo_register(str, ele);
+			this.container.innerHTML = '';
+			this.container.innerHTML = template;
 		}
 
+		await this.push_important_elements();
+
 		return true;
 	}
 
-	// --- [03] HTM-LELEMENTS
+	async push_important_elements()
+	{
+		this.main_ctn = document.querySelector(`#${this.name}`);
+		this.header = document.querySelector(`#${this.name} .modal-header`);
+		this.body = document.querySelector(`#${this.name} .modal-body`);
+		this.footer = document.querySelector(`#${this.name} .modal-footer`);
+
+		if (!this.main_ctn)
+			throw new Error('[ERR] main container not found');
+		if (!this.header)
+			throw new Error('[ERR] header not found');
+		if (!this.body)
+			throw new Error('[ERR] body not found');
+		if (!this.footer)
+			throw new Error('[ERR] footer not found');
+
+		return true;
+	}
+	// --------------------------------------------- //
+	// [2/4] EVENT-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [3/4] FETCH-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [4/4] HTML-ELEMENT-RELATED
+	// --------------------------------------------- //
 	async init_template()
 	{
 		let template = "";
-		template += ele.html_modalCard(this.modal_name,this.modal_title);
+		template += await this.html_main_ctn();
 
 		// trim new lines, spaces, and tabs
 		template = template.replace(/\s+/g, ' ');
@@ -177,17 +107,50 @@ export default class ModalLayout
 		return template;
 	}
 
-	// --- [04] EVENT
-
-	// --- [05] RENDER
-	async render()
+	async html_main_ctn()
 	{
-		let template = await this.init_template();
-		this.container.insertAdjacentHTML('beforeend', template);
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div @1att1 @1att2 @1att3 @1att4 @1att5>
+			<div class="%dlog-1c %dlog-2c">
+				<div class="%cnt-c">
+					<div class="%hdr-c">
+						<h1 class="%ttl-c">%ttl-t</h1>
+					</div>
+					<div class="%bdy-c"></div>
+					<div class="%ftr-c"></div>
+				</div>
+			</div>
+		</div>
+		`;
+		// [B] SET atts
+		const atts =
+		{
+			'@1att1': `class="modal"`,
+			'@1att2': `id="${this.name}"`,
+			'@1att3': `tabindex="-1"`,
+			'@1att4': `aria-labelledby="${this.name}"`,
+			'@1att5': `aria-hidden="true"`,
+			'%dlog-1c': `modal-dialog modal-sm modal-dialog-centered`,
+			'%dlog-2c': `modal-dialog-scrollable`,
+			'%cnt-c': `modal-content`,
+			'%hdr-c': `modal-header`,
+			'%ttl-c': `modal-title text-center w-100`,
+			'%ttl-t': `${this.title}`,
+			'%bdy-c': `modal-body`,
+			'%ftr-c': `modal-footer`,
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
 
-		//await this.bind_events();
-		//await this.modals_render();
-
-		return true;
+		// [C] HTML RETURN
+		return template;
 	}
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
 }
+
+const item = new ModalLayout();
+export default item;

@@ -6,13 +6,13 @@
 // Importing-external
 // -------------------------------------------------- //
 //layout
-import MediaLayout from '../layouts/MediaLayout.js';
-import PrimaryLayout from '../layouts/PrimaryLayout.js';
+import PRIMARY_LAYOUT from '../layouts/PrimaryLayout.js';
 import TOKEN from '../core/token.js';
 import LEFT_USER from '../components/HomeView/LeftUser.js';
 import MIDTOP_GAMEMODE from '../components/HomeView/MidBoard.js';
 import RIGHT_FRIEND_LIST from '../components/HomeView/RightFnList.js';
 import PAGE_TITLE from '../core/helpers/PageTitle.js';
+import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -74,23 +74,24 @@ export default class HomeView
 		await page_title.init();
 		await page_title.update('Home');
 
-		const media = new MediaLayout();
-		await media.render();
+		const media = MEDIA_LAYOUT;
+		media.container = document.body;
+		await media.render('replace');
 
-		parent_html = await media.get();
-		const primary = new PrimaryLayout(parent_html);
-		await primary.render();
+		parent_html = media.main_ctn;
+		const primary = PRIMARY_LAYOUT;
+		primary.container = parent_html;
+		await primary.render('replace');
 
-		parent_html = await primary.get("ct-main-lpanel");
+		parent_html = primary.lpanel;
 		LEFT_USER.container = parent_html;
 		await LEFT_USER.render('replace');
 
-		parent_html = await primary.get("ct-top-board");
+		parent_html = primary.top_board;
 		MIDTOP_GAMEMODE.container = parent_html;
 		await MIDTOP_GAMEMODE.render('replace');
 
-		parent_html = await primary.get("ct-main-rpanel");
-
+		parent_html = primary.rpanel;
 		RIGHT_FRIEND_LIST.container = parent_html;
 		await RIGHT_FRIEND_LIST.render('replace');
 

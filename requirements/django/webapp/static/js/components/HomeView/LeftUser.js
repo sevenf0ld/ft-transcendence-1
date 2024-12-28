@@ -2,15 +2,15 @@
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
+import * as FETCH from './LeftUser_fetch.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
 import LoginView from '../../views/LoginView.js';
-import ModalLayout from '../../layouts/ModalLayout.js';
-import * as FETCH from './LeftUser_fetch.js';
 import TOKEN from '../../core/token.js';
 import MODAL_HISTORY from './ModalHistory.js';
 import MODAL_SETTINGS from './ModalSettings.js';
+import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -373,16 +373,17 @@ class LeftUser
 		let parent_html;
 
 		parent_html = this.container;
-		const modal1 = new ModalLayout(
-			parent_html, "modal-settings", "Settings"
-		);
-		await modal1.render();
+		const modal1 = MODAL_LAYOUT;
+		modal1.container = parent_html;
+		modal1.name = 'modal-settings';
+		modal1.title = 'Settings';
+		await modal1.render('append');
 
-		parent_html = this.container;
-		const modal2 = new ModalLayout(
-			parent_html, "modal-history", "JLIAW's Match History"
-		);
-		await modal2.render();
+		const modal2 = MODAL_LAYOUT;
+		modal2.container = parent_html;
+		modal2.name = 'modal-history';
+		modal2.title = 'Match History';
+		await modal2.render('append');
 
 		return true;
 	}
