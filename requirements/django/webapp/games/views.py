@@ -29,3 +29,11 @@ class GameHistoryRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = GameHistoryModelSerializer
     lookup_field = 'user__username'
     lookup_url_kwarg = 'target'
+
+    def get_serializer_context(self):
+        context = super(GameHistoryRetrieveAPIView, self).get_serializer_context()
+        target_username = self.kwargs.get(self.lookup_url_kwarg)
+        if target_username:
+            target_user = User.objects.get(username__iexact=target_username)
+            context['target'] = target_user
+        return context
