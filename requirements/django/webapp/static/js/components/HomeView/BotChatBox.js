@@ -125,6 +125,7 @@ class BotChatBox
 		await friend_profile.init();
 		friend_profile.target = this.target;
 		const fetch_result = await friend_profile.fetchData();
+    
 		if (fetch_result === 'friend-profile-successful')
 		{
 			const parent_div = document.querySelector('.ct-bottom-left');

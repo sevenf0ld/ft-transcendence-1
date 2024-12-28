@@ -3,76 +3,93 @@ from django.db import models
 # Create your models here.
 from django.contrib.auth.models import User
 
+# PVP
 class Match(models.Model):
-    player = models.ForeignKey(
+    host = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='player'
+        related_name='match_host',
+        blank=True,
+        null=True
     )
 
-    opponent = models.ForeignKey(
+    started = models.BooleanField(
+        default=False,
+        blank=True,
+        null=True
+    )
+
+    p1 = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='opponent'
+        related_name='p1',
+        blank=True,
+        null=True
     )
 
-    player_score = models.PositiveIntegerField(default=0)
+    p2 = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='p2',
+        blank=True,
+        null=True
+    )
 
-    opponent_score = models.PositiveIntegerField(default=0)
+    s1 = models.PositiveIntegerField(default=0)
+
+    s2 = models.PositiveIntegerField(default=0)
+
+    winner = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='match_winner'
+    )
 
     match_time = models.DateTimeField(auto_now_add=True)
 
-    king = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-        related_name='match_king'
-    )
-
-    #def determine_king(self):
-    #    self.king = None
-    #    if self.player_score > self.opponent_score:
-    #        self.king = self.player
-    #    elif self.opponent_score> > self.player_score
-    #        self.king = self.opponent
-    #    self.save()
-
     #=================================#
     #=====default model methods=======#
     #=================================#
 
     def __str__(self):
-        return f'{self.player.username} vs {self.opponent.username} at {self.match_time}'
+        return f'{self.p1.username} vs {self.p2.username}'
 
+# multiple rounds of PVP
 class Tournament(models.Model):
+    host = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='tnm_host',
+        blank=True,
+        null=True
+    )
+
+    started = models.BooleanField(default=False)
+
     matches = models.ManyToManyField(Match)
 
-    tournament_time = models.DateTimeField(auto_now_add=True)
-
-    status = models.CharField(
-        max_length=50,
-        choices=[
-            ('ongoing', 'Ongoing'),
-            ('completed', 'Completed'),
-            ('upcoming', 'Upcoming')
-        ]
-    )
-
-    champion = models.ForeignKey(
+    winner = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name='tournament_champion'
+        related_name='tnm_winner'
     )
+
+    tnm_time = models.DateTimeField(auto_now_add=True)
 
     #=================================#
     #=====default model methods=======#
     #=================================#
 
     def __str__(self):
-        return f'tournament taking place at {self.tournament_time}'
+        if self.started is False:
+            status = 'open'
+        else:
+            status = 'ongoing'
+        return f'tournament is {status}'
 
 class GameHistory(models.Model):
     user = models.OneToOneField(
@@ -84,11 +101,11 @@ class GameHistory(models.Model):
     matches = models.ManyToManyField(
         Match,
         blank=True,
-        related_name='matches'
+        related_name='pvp'
     )
 
     tournaments = models.ManyToManyField(
         Tournament,
         blank=True,
-        related_name='tournaments'
+        related_name='tnm'
     )

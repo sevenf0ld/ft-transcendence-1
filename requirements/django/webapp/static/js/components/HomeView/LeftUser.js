@@ -213,7 +213,7 @@ class LeftUser
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
-
+    
 		// [C] HTML RETURN
 		return template;
 	}
@@ -385,7 +385,7 @@ class LeftUser
 		modal2.name = 'modal-history';
 		modal2.title = 'Match History';
 		await modal2.render('append');
-
+    
 		return true;
 	}
 }

@@ -64,5 +64,6 @@ class fetch_friend_profile
 	}
 }
 
+
 const item = new fetch_friend_profile();
 export default item;
