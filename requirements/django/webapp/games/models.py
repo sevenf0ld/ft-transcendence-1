@@ -85,10 +85,10 @@ class Tournament(models.Model):
     #=================================#
 
     def __str__(self):
-        if started is False:
-            status = 'ongoing'
-        else:
+        if self.started is False:
             status = 'open'
+        else:
+            status = 'ongoing'
         return f'tournament is {status}'
 
 class GameHistory(models.Model):
@@ -101,11 +101,11 @@ class GameHistory(models.Model):
     matches = models.ManyToManyField(
         Match,
         blank=True,
-        related_name='matches'
+        related_name='pvp'
     )
 
     tournaments = models.ManyToManyField(
         Tournament,
         blank=True,
-        related_name='tournaments'
+        related_name='tnm'
     )
