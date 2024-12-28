@@ -19,4 +19,4 @@ class constClass
 }
 
 const CONST = new constClass();
-export const APP_NAME = '42PONG';
+export default CONST;

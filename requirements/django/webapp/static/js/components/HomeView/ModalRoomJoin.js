@@ -1,54 +1,245 @@
 // file : ModalRoomJoin.js
 // -------------------------------------------------- //
-// Importing-internal
+// importing-internal
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// Importing-external
+// importing-external
 // -------------------------------------------------- //
+import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
-import GameRoomView from '../../views/GameRoomView.js';
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-// --- [LOCAL] EXPORTED COMPONENTS
-// usage : insert querySelector's value of an element
-// 		   to register as export element; first one
-// 		   is always default
-const getEle = [
-];
-
-// --- [LOCAL] BUTTONS SECTION
-// button tracker
-class button
+class ModalRoomJoin
 {
+	// --------------------------------------------- //
+	// CONSTRUCTOR
+	// --------------------------------------------- //
 	constructor()
 	{
-		this.arr = {
+		// COMMON-atts
+		this.container = null;
+		this.main_ctn = null;
+		this.buttons = {
 			'join': '',
 		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
+		this.gameType = null;
 	}
-
-	async read_buttons()
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
+	// --------------------------------------------- //
+	async render(type)
 	{
-		for (const key in this.arr)
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
+		const template = await this.init_template();
+
+		if (type === 'append')
 		{
-			const ele = document.getElementById(`${this.arr[key]}`);
-			if (!ele)
-				throw new Error(`[ERR] button not found : ${this.arr[key]}`);
-			this.arr[key] = ele;
+			this.container.insertAdjacentHTML(
+				'beforeend', template
+			);
 		}
+		else if (type === 'replace')
+		{
+			this.container.innerHTML = '';
+			this.container.innerHTML = template;
+		}
+
+		await this.push_important_elements();
+		await this.bind_events();
+		await this.bind_modals();
+
 		return true;
 	}
-}
-const btns = new button();
 
-// --- [LOCAL] HTML ELEMENTS SECTION
-function html_element()
-{
-	// [-] HELPER FUNCTION
-	function room_display_board()
+	async push_important_elements()
+	{
+		this.main_ctn = document.querySelector('.join-room-main');
+		this.buttons['join'] = document.getElementById('btn_join_room');
+
+		if (!this.main_ctn)
+			throw new Error('[ERR] main container not found');
+		for (const key in this.buttons)
+		{
+			if (!this.buttons[key])
+				throw new Error(`[ERR] button not found : ${key}`);
+		}
+
+		return true;
+	}
+	// --------------------------------------------- //
+	// [2/4] EVENT-RELATED
+	// --------------------------------------------- //
+	async bind_events()
+	{
+
+		this.buttons['join'].addEventListener(
+			'click', async (event) => {await this.joinClick(event);}
+		);
+
+		await this.roomListClick();
+		await this.input_number_only();
+
+		return true;
+	}
+
+	async joinClick(event)
+	{
+		event.preventDefault();
+
+		console.log('[EVENT] button clicked : join');
+
+		if (this.gameType === 'online-pvp')
+		{
+			const gameRoom = GAME_ROOM_VIEW;
+			await gameRoom.init();
+			gameRoom.type = 'online-pvp';
+			await gameRoom.render();
+		}
+		else if (this.gameType === 'online-tour')
+		{
+			const gameRoom = GAME_ROOM_VIEW;
+			await gameRoom.init();
+			gameRoom.type = 'online-tour';
+			await gameRoom.render();
+		}
+
+		return true;
+	}
+
+	async roomListClick()
+	{
+		const btns = document.querySelectorAll(
+			'.join-room-main .room-board-list'
+		);
+		for (const btn of btns)
+		{
+			btn.addEventListener('click', async (e) =>
+			{
+				const roomid = e.currentTarget.getAttribute('data-roomid');
+				const input = document.querySelector('#room-join-code');
+				if (input)
+					input.value = roomid;
+			});
+		}
+
+		return true;
+	}
+
+	async input_number_only()
+	{
+		const input = document.querySelector('#room-join-code');
+
+		input.addEventListener('keypress', (e) =>
+		{
+			const key = e.key;
+			const regex = /[0-9]/;
+			if (!regex.test(key))
+				e.preventDefault();
+		});
+
+		return true;
+	}
+	// --------------------------------------------- //
+	// [3/4] FETCH-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [4/4] HTML-ELEMENT-RELATED
+	// --------------------------------------------- //
+	async init_template()
+	{
+		let template = "";
+		template += await this.html_main_ctn();
+
+		// trim new lines, spaces, and tabs
+		template = template.replace(/\s+/g, ' ');
+		template = template.replace(/>\s+</g, '><');
+		template = template.replace(/\s*=\s*/g, '=');
+		template = template.trim();
+
+		return template;
+	}
+
+	async html_main_ctn()
+	{
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		const str = await this.room_display_board();
+		let template = `
+		<div class="%main-1c %main-2c">
+			${str}
+			<div class="%ip-c">
+				<input id="%dpi-id" type="%dpi-ty" @att1 @att2 @att3 @att4>
+				<p class="%em-c">%em-t</p>
+				<p class="%info-c">%info-t</p>
+			</div>
+			<button id="%btn-id" @att5>%btn-t</button>
+		</div>
+		`;
+		// [B] SET atts
+		const atts =
+		{
+			'%main-1c': 'join-room-main h-100 w-100 d-flex',
+			'%main-2c': 'flex-column justify-content-center align-items-center',
+			'%rdb-c': 'room-board d-flex flex-column',
+			'%rdttl-c': 'list-title-gp d-flex',
+			'%rdtt-status-c': 'rdtt-status',
+			'%rdtt-status-t': 'Status',
+			'%rdtt-roomid-c': 'rdtt-roomid',
+			'%rdtt-roomid-t': 'ID',
+			'%rdtt-slot-c': 'rdtt-slot',
+			'%rdtt-slot-t': 'Slot',
+			'%rdtt-name-c': 'rdtt-name',
+			'%rdtt-name-t': 'Host',
+			'%rdbl-c': 'room-board-list-group d-flex flex-column',
+			'%list-c': 'room-board-list',
+			'%st-c': 'rbl-status',
+			'%st-dt': 'online',
+			'%romid-c': 'rbl-roomid',
+			'%romid-t': '77384',
+			'%romslot-c': 'rbl-slot',
+			'%romslot-t': '(2/4)',
+			'%nam-c': 'rbl-name truncate',
+			// tooltip
+			'@att1': 'data-bs-toggle="tooltip" title="killerhunter789"',
+			'%nam-t': 'killerhunter789',
+			'%ip-c': 'input-group d-flex flex-column',
+			'%dpi-id': 'room-join-code',
+			'%dpi-ty': 'text',
+			'@att1': 'placeholder="Enter Room ID"',
+			'@att2': 'autocomplete="off"',
+			'@att3': 'maxlength="5" required',
+			'@att4': 'class="ct-home-input"',
+			'%em-c': 'join-room-err',
+			'%em-t': '',
+			'%info-c': 'join-room-info',
+			'%info-t': 'Leave blank to create new room',
+			'%btn-id': 'btn_join_room',
+			'@att5': 'data-bs-dismiss="modal"',
+			'%btn-t': 'Enter',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	async room_display_board()
 	{
 		const template = `
 			<div class="%rdb-c">
@@ -71,230 +262,15 @@ function html_element()
 		return template;
 	}
 
-	// [A] TEMPLATE
-	let template = `
-		<div class="%main-1c %main-2c">
-			${room_display_board()}
-			<div class="%ip-c">
-				<input id="%dpi-id" type="%dpi-ty" @att1 @att2 @att3 @att4>
-				<p class="%em-c">%em-t</p>
-				<p class="%info-c">%info-t</p>
-			</div>
-			<button id="%btn-id" @att5>%btn-t</button>
-		</div>
-	`;
 
-	// [B] SET ATTRIBUTES
-	const attributes =
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals()
 	{
-		'%main-1c': 'join-room-main h-100 w-100 d-flex',
-		'%main-2c': 'flex-column justify-content-center align-items-center',
-		'%rdb-c': 'room-board d-flex flex-column',
-		'%rdttl-c': 'list-title-gp d-flex',
-		'%rdtt-status-c': 'rdtt-status',
-		'%rdtt-status-t': 'Status',
-		'%rdtt-roomid-c': 'rdtt-roomid',
-		'%rdtt-roomid-t': 'ID',
-		'%rdtt-slot-c': 'rdtt-slot',
-		'%rdtt-slot-t': 'Slot',
-		'%rdtt-name-c': 'rdtt-name',
-		'%rdtt-name-t': 'Host',
-		'%rdbl-c': 'room-board-list-group d-flex flex-column',
-		'%list-c': 'room-board-list',
-		'%st-c': 'rbl-status',
-		'%st-dt': 'online',
-		'%romid-c': 'rbl-roomid',
-		'%romid-t': '77384',
-		'%romslot-c': 'rbl-slot',
-		'%romslot-t': '(2/4)',
-		'%nam-c': 'rbl-name truncate',
-		// tooltip
-		'@att1': 'data-bs-toggle="tooltip" title="killerhunter789"',
-		'%nam-t': 'killerhunter789',
-		'%ip-c': 'input-group d-flex flex-column',
-		'%dpi-id': 'room-join-code',
-		'%dpi-ty': 'text',
-		'@att1': 'placeholder="Enter Room ID"',
-		'@att2': 'autocomplete="off"',
-		'@att3': 'maxlength="5" required',
-		'@att4': 'class="ct-home-input"',
-		'%em-c': 'join-room-err',
-		'%em-t': '',
-		'%info-c': 'join-room-info',
-		'%info-t': 'Leave blank to create new room',
-		'%btn-id': 'btn_join_room',
-		'@att5': 'data-bs-dismiss="modal"',
-		'%btn-t': 'Enter',
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-	btns.arr['join'] = attributes['%btn-id'];
-
-	// [D] HTML RETURN
-	return template;
-}
-
-// HTML elements bundle
-const ele =
-{
-	html_element,
-};
-
-// -------------------------------------------------- //
-// export
-// -------------------------------------------------- //
-export default class ModalRoomJoin
-{
-	// --- [00] CONSTRUCTOR
-	constructor(container, gameType)
-	{
-		this.container = container;
-		this.components = {};
-		this.gameType = gameType;
-	}
-
-	// --- [01] GETTER
-	async get(element = 'default')
-	{
-		if (this.read_components() === false)
-		{
-			throw new Error(`[ERR] this class has no export components`);
-			return false;
-		}
-		return this.compo_get(element);
-	}
-
-	// --- [02] COMPONENTS REGISTRY
-	async compo_register(name, element)
-	{
-		this.components[name] = element;
-
-		return true;
-	}
-
-	async compo_get(name)
-	{
-		return this.components[name];
-	}
-
-	async compo_remove(name)
-	{
-		delete this.components[name];
-
-		return true;
-	}
-
-	async read_components()
-	{
-		if (getEle.length === 0)
-			return false;
-		this.compo_register('default', document.querySelector(getEle[0]));
-		for (const key in getEle)
-		{
-			const ele = document.querySelector(getEle[key]);
-			if (!ele)
-				throw new Error(`[ERR] component not found : ${getEle[key]}`);
-			const str = getEle[key].substring(1);
-			this.compo_register(str, ele);
-		}
-
-		return true;
-	}
-
-	// --- [03] HTM-LELEMENTS
-	async init_template()
-	{
-		let template = "";
-		template += ele.html_element();
-
-		// trim new lines, spaces, and tabs
-		template = template.replace(/\s+/g, ' ');
-		template = template.replace(/>\s+</g, '><');
-		template = template.replace(/\s*=\s*/g, '=');
-		template = template.trim();
-	
-		return template;
-	}
-
-	// --- [04] EVENT
-	async roomListClick()
-	{
-		const btns = document.querySelectorAll(
-			'.join-room-main .room-board-list'
-		);
-		for (const btn of btns)
-		{
-			btn.addEventListener('click', async (e) =>
-			{
-				const roomid = e.currentTarget.getAttribute('data-roomid');
-				const input = document.querySelector('#room-join-code');
-				if (input)
-					input.value = roomid;
-			});
-		}
-
-		return true;
-	}
-
-	async joinClick(event)
-	{
-		event.preventDefault();
-
-		console.log('[EVENT] button clicked : join');
-
-		if (this.gameType === 'online-pvp')
-		{
-			const gameRoom = new GameRoomView('online-pvp');
-			gameRoom.render();
-		}
-		else if (this.gameType === 'online-tour')
-		{
-			const gameRoom = new GameRoomView('online-tour');
-			gameRoom.render();
-		}
-
-		return true;
-	}
-
-	async input_number_only()
-	{
-		const input = document.querySelector('#room-join-code');
-
-		input.addEventListener('keypress', (e) =>
-		{
-			const key = e.key;
-			const regex = /[0-9]/;
-			if (!regex.test(key))
-				e.preventDefault();
-		});
-
-		return true;
-	}
-
-	async bind_events()
-	{
-		await btns.read_buttons();
-		btns.arr['join'].addEventListener(
-			'click', async (e) => {await this.joinClick(e);
-		});
-		await this.roomListClick();
-		await this.input_number_only();
-	}
-	
-	// --- [05] RENDER
-	async render()
-	{
-		const template = await this.init_template();
-
-		this.container.innerHTML = '';
-		this.container.innerHTML = template;
-
-		await this.bind_events();
-		//await this.modals_render();
-
 		return true;
 	}
 }
+
+const item = new ModalRoomJoin();
+export default item;

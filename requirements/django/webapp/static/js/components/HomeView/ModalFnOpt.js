@@ -5,8 +5,8 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import { fetch_utils as FETCH_UTILS } from '../../core/helpers/fetch-utils.js';
-import rightPanelFriends from './RightFnList.js';
+import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
+import RIGHT_FRIENDS_LIST from './RightFnList.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -87,6 +87,8 @@ class ModalFnOpt
 			throw new Error('[ERR] main container not found');
 		for (const key in this.buttons)
 		{
+		const rightPanel = new rightPanelFriends(parentHtml);
+		await rightPanel.render();
 			if (!this.buttons[key])
 				throw new Error(`[ERR] button not found : ${key}`);
 		}
@@ -144,7 +146,8 @@ class ModalFnOpt
 			return false;
 
 		//curl -X PATCH -H "Content-type: application/json" -d '{"user": "what", "target": "who"}' 'https://localhost:8000/api/friends/friend-list-av/unfriend/' --insecure
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-list-av/unfriend/');
 		await mainFetch.setMethod('PATCH');
@@ -178,7 +181,8 @@ class ModalFnOpt
 			return false;
 	
 		//curl -X PATCH -H "Content-type: application/json" -d '{"user": "what", "target": "how"}' 'https://localhost:8000/api/friends/friend-list-av/block/' --insecure
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-list-av/block/');
 		await mainFetch.setMethod('PATCH');
@@ -211,7 +215,8 @@ class ModalFnOpt
 			return false;
 
 		//curl -X DELETE -H "Content-type: application/json" -d '{"sender": "when", "recipient": "what"}' 'https://localhost:8000/api/friends/friend-request-av/cancel/' --insecur
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-request-av/cancel/');
 		await mainFetch.setMethod('DELETE');
@@ -243,8 +248,11 @@ class ModalFnOpt
 
 		//curl -X DELETE -H "Content-type: application/json" -d '{"sender": "what", "recipient": "when"}' 'https://localhost:8000/api/friends/friend-request-av/accept/' --insecure
 		//
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
+		const rightPanel = new rightPanelFriends(parentHtml);
+		await rightPanel.render();
 		await mainFetch.setUrl('/api/friends/friend-request-av/accept/');
 		await mainFetch.setMethod('DELETE');
 		await mainFetch.appendHeaders('Content-Type', 'application/json');
@@ -274,7 +282,8 @@ class ModalFnOpt
 		console.log('decline request');
 
 		//curl -X DELETE -H "Content-type: application/json" -d '{"sender": "what", "recipient": "when"}' 'https://localhost:8000/api/friends/friend-request-av/decline/' --insecure
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-request-av/decline/');
 		await mainFetch.setMethod('DELETE');
@@ -305,7 +314,8 @@ class ModalFnOpt
 		console.log('unblock');
 
 		//curl -X PATCH -H "Content-type: application/json" -d '{"user": "what", "target": "how"}' 'https://localhost:8000/api/friends/friend-list-av/unblock/' --insecure
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/friends/friend-list-av/unblock/');
 		await mainFetch.setMethod('PATCH');
@@ -313,6 +323,8 @@ class ModalFnOpt
 		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
 		await mainFetch.appendBody('user', this.user);
 		await mainFetch.appendBody('target', this.target);
+		const rightPanel = new rightPanelFriends(parentHtml);
+		await rightPanel.render();
 		await mainFetch.fetchData();
 
 		//tomorrow change to bs-alert-display-div
@@ -371,7 +383,8 @@ class ModalFnOpt
 	async refresh()
 	{
 		const parentHtml = document.querySelector('.ct-main-rpanel');
-		const rightPanel = new rightPanelFriends(parentHtml);
+		const rightPanel = RIGHT_FRIENDS_LIST;
+		rightPanel.container = parentHtml;
 		await rightPanel.render();
 
 		return true;

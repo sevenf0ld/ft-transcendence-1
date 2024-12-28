@@ -1,300 +1,113 @@
-// file : SignupCard.js
+// file : SIgnupCard.js
 // -------------------------------------------------- //
-// Importing-internal
+// importing-internal
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// Importing-external
+// importing-external
 // -------------------------------------------------- //
-import LoginView from '../views/LoginView.js';
 import * as FormValiSignup from '../core/helpers/formVali-su.js';
-import * as FETCH from './SignupCard_fetch.js';
 import * as LOADING from '../core/helpers/loading.js';
-import alert_utils from '../core/helpers/alert-utils.js';
+import ALERT_UTILS from '../core/helpers/alert-utils.js';
+import FETCH from './SignupCard_fetch.js';
+import LOGIN_VIEW from '../views/LoginView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-// --- [LOCAL] EXPORTED COMPONENT
-// usage : insert querySelector's value of an element
-// 		   to register as export element; first one
-// 		   is always default
-const getEle = [
-];
-
-// --- [LOCAL] BUTTONS SECTION
-// button tracker
-class button
+class SignupCard
 {
+	// --------------------------------------------- //
+	// CONSTRUCTOR
+	// --------------------------------------------- //
 	constructor()
 	{
-		this.arr = {
-			'signup': '',
-			'back': '',
+		// COMMON-atts
+		this.container = null;
+		this.main_ctn = null;
+		this.buttons = {
+			'back': null,
+			'signup': null,
 		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
+		this.alert_div = null;
 	}
-
-	async read_buttons()
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
+	// --------------------------------------------- //
+	async render(type)
 	{
-		for (const key in this.arr)
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
+		const template = await this.init_template();
+
+		if (type === 'append')
 		{
-			const ele = document.getElementById(`${this.arr[key]}`);
-			if (!ele)
-				throw new Error(`[ERR] button not found : ${this.arr[key]}`);
-			this.arr[key] = ele;
+			this.container.insertAdjacentHTML(
+				'beforeend', template
+			);
 		}
-		return true;
-	}
-}
-const btns = new button();
-
-// --- [LOCAL] HTML ELEMENTS SECTION
-// HTML ELEMENTS
-function html_header()
-{
-	// [-] HELPER FUNCTION
-
-	// [A] TEMPLATE
-	let template = `
-		<p class="%p-c">%p-t</p>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%p-c': `ct-signup-header text-center`,
-		'%p-t': `42PONG - SIGN UP`,
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-
-	// [D] HTML RETURN
-	return template;
-}
-
-function html_formGroup()
-{
-	// [-] HELPER FUNCTION
-	function insert(name, type, err_id)
-	{
-		let name_str = name;
-		if (name === 'confirm')
-			name_str = 'password again';
-
-		let name_firstCap = name.charAt(0).toUpperCase() + name.slice(1);
-		if (name === 'confirm')
-			name_firstCap = 'Confirm Password';
-
-		let in_template = `
-			<div class="%formgp-c" @auto>
-				<label for="${name}">${name_firstCap}</label>
-				<input @at1 @at2 @at3 @at4 @auto>
-				<p id="err_signup_${err_id}" class="truncate"></p>
-			</div>
-		`;
-
-		let attributes =
+		else if (type === 'replace')
 		{
-			'@at1': `id="${name}"`,
-			'@at2': `type="${type}"`,
-			'@at3': `class="%in-c"`,
-			'@at4': `placeholder="Enter ${name_str}"`,
-			'@auto': `required="" autocomplete="off" spellcheck="false"`,
-		};
-
-		for (const key in attributes)
-			in_template = in_template.split(key).join(attributes[key]);
-
-		return in_template;
-	}
-
-	// [A] TEMPLATE
-	let template = `
-			<form class="%form-c">
-				${insert('username', 'text', '1')}
-				${insert('email', 'email', '2')}
-				${insert('password', 'password', '3')}
-				${insert('confirm', 'password', '4')}
-				<div @att1 @att2></div>
-				<button id="%bi" class="%bc" type="submit">Submit</button>
-			</form>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%form-c': `ct-su-form d-flex flex-column`,
-		'%formgp-c': 'ct-su-formdiv d-flex flex-column',
-		'%in-c': `p-2 form-control form-control-sm`,
-		'%bi': `btn_signup`,
-		'%bc': `ct-btn-dark btn no-hover mt-2`,
-		'@att1': `class="alert d-none"`,
-		'@att2': `role="alert" id="alert_register"`,
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-	btns.arr['signup'] = attributes['%bi'];
-
-	// [D] HTML RETURN
-	return template;
-}
-
-function html_loginLine()
-{
-	// [-] HELPER FUNCTION
-
-	// [A] TEMPLATE
-	let template = `
-		<a id="%bid" href="#" class="%bc">%bt</a>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%bid': `btn_back_to_login`,
-		'%bc': `small text-center text-muted`,
-		'%bt': `Back to Login`,
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-	btns.arr['back'] = attributes['%bid'];
-
-	// [D] HTML RETURN
-	return template;
-}
-
-// HTML elements bundle
-const ele =
-{
-	html_header,
-	html_formGroup,
-	html_loginLine,
-};
-
-// -------------------------------------------------- //
-// export
-// -------------------------------------------------- //
-export default class SignupCard
-{
-	constructor(container)
-	{
-		this.container = container;
-		this.components = {};
-	}
-
-	// --- [01] GETTER
-	async get(element = 'default')
-	{
-		if (this.read_components() === false)
-		{
-			throw new Error(`[ERR] this class has no export components`);
-			return false;
+			this.container.innerHTML = '';
+			this.container.innerHTML = template;
 		}
-		return this.compo_get(element);
-	}
 
-	// --- [02] COMPONENTS REGISTRY
-	async compo_register(name, element)
-	{
-		this.components[name] = element;
+		await this.push_important_elements();
+		await this.bind_events();
+		await this.bind_modals();
 
 		return true;
 	}
 
-	async compo_get(name)
+	async push_important_elements()
 	{
-		return this.components[name];
-	}
+		this.main_ctn = document.querySelector('.ct-signup-ctn');
+		this.buttons['signup'] = document.getElementById('btn_signup_submit');
+		this.buttons['back'] = document.getElementById('btn_back_to_login');
+		await ALERT_UTILS.init();
+		ALERT_UTILS.container = document.getElementById('alert_register');
+		this.alert_div = ALERT_UTILS;
 
-	async compo_remove(name)
-	{
-		delete this.components[name];
-
-		return true;
-	}
-
-	async read_components()
-	{
-		if (getEle.length === 0)
-			return false;
-		this.compo_register('default', document.querySelector(getEle[0]));
-		for (const key in getEle)
+		if (!this.main_ctn)
+			throw new Error('[ERR] main container not found');
+		for (const key in this.buttons)
 		{
-			const ele = document.querySelector(getEle[key]);
-			if (!ele)
-				throw new Error(`[ERR] component not found : ${getEle[key]}`);
-			const str = getEle[key].substring(1);
-			this.compo_register(str, ele);
+			if (!this.buttons[key])
+				throw new Error(`[ERR] button not found : ${key}`);
 		}
 
 		return true;
 	}
-
-	// --- [03] HTM-LELEMENTS
-	async init_template()
+	// --------------------------------------------- //
+	// [2/4] EVENT-RELATED
+	// --------------------------------------------- //
+	async bind_events()
 	{
-		let template = "";
-		template += ele.html_header();
-		template += ele.html_formGroup();
-		template += ele.html_loginLine();
+		await this.form_limit_addon();
 
-		// trim new lines, spaces, and tabs
-		template = template.replace(/\s+/g, ' ');
-		template = template.replace(/>\s+</g, '><');
-		template = template.replace(/\s*=\s*/g, '=');
-		template = template.trim();
+		this.buttons['back'].addEventListener(
+			'click', async (e) => {await this.backLoginClick(e);}
+		);
 
-		return template;
-	}
-
-	// special-add : inputs field additonal limit
-	async form_limit_addon()
-	{
-		// limit username input length
-		const inputs = document.querySelector('#username');
-		inputs.setAttribute('maxlength', '10');
-
-		// limit password input length
-		const password = document.querySelector('#password');
-		password.setAttribute('maxlength', '16');
-		const msg = document.getElementById('err_signup_3');
-		//if maxed during input, show error
-		password.addEventListener('input', function()
-		{
-			if (this.value.length >= 16)
-			{
-				msg.innerText = 'maximum reached (16 characters)';
-				msg.style.display = 'block';
-			}
-		});
-
-		// limit username input char type (alphanumeric)
-		inputs.addEventListener('input', function()
-		{
-			this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
-		});
-
-		// limit email input char type (alphanumeric + @ + .)
-		const email = document.querySelector('#email');
-		email.addEventListener('input', function()
-		{
-			this.value = this.value.replace(/[^a-zA-Z0-9@.]/g, '');
-		});
+		this.buttons['signup'].addEventListener(
+			'click', async (e) => {await this.submitClick(e);}
+		);
 
 		return true;
 	}
 
-	// --- [04] EVENT
 	async submitClick()
 	{
 		console.log('[EVENT] button clicked : submit');
@@ -315,7 +128,8 @@ export default class SignupCard
 		await this.alert_div.setMsg(string_div);
 		await this.alert_div.alert_render();
 
-		const registerFetch = new FETCH.fetch_register();
+		const registerFetch = FETCH;
+		await registerFetch.init();
 		const result = await registerFetch.fetchData();
 		await new Promise(r => setTimeout(r, 1000));
 
@@ -339,7 +153,7 @@ export default class SignupCard
 			await this.alert_div.alert_render();
 			await new Promise(r => setTimeout(r, 2500));
 
-			const login = new LoginView();
+			const login = LOGIN_VIEW;
 			await login.render();
 		}
 		else
@@ -381,40 +195,213 @@ export default class SignupCard
 		console.log('[EVENT] button clicked : back to login');
 		event.preventDefault();
 
-		const login = new LoginView();
+		const login = LOGIN_VIEW;
 		await login.render();
 
 		return true;
 	}
 
-	async bind_events()
+	async form_limit_addon()
 	{
-		await btns.read_buttons();
+		// limit username input length
+		const inputs = document.querySelector('#username');
+		inputs.setAttribute('maxlength', '10');
 
-		btns.arr['signup'].addEventListener(
-			'click', async (e) => {await this.submitClick(e);}
-		);
+		// limit password input length
+		const password = document.querySelector('#password');
+		password.setAttribute('maxlength', '16');
+		const msg = document.getElementById('err_signup_3');
+		//if maxed during input, show error
+		password.addEventListener('input', function()
+		{
+			if (this.value.length >= 16)
+			{
+				msg.innerText = 'maximum reached (16 characters)';
+				msg.style.display = 'block';
+			}
+		});
 
-		btns.arr['back'].addEventListener(
-			'click', async (e) => {await this.backLoginClick(e);}
-		);
+		// limit username input char type (alphanumeric)
+		inputs.addEventListener('input', function()
+		{
+			this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
+		});
+
+		// limit email input char type (alphanumeric + @ + .)
+		const email = document.querySelector('#email');
+		email.addEventListener('input', function()
+		{
+			this.value = this.value.replace(/[^a-zA-Z0-9@.]/g, '');
+		});
 
 		return true;
 	}
-
-	// --- [05] RENDER
-	async render()
+	// --------------------------------------------- //
+	// [3/4] FETCH-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [4/4] HTML-ELEMENT-RELATED
+	// --------------------------------------------- //
+	async init_template()
 	{
-		const template = await this.init_template();
-		
-		this.container.innerHTML = '';
-		this.container.innerHTML = template;
-		this.alert_div = new alert_utils(document.getElementById('alert_register'));
-		await this.form_limit_addon();
+		let template = "";
+		template += await this.html_main_ctn();
 
-		await this.bind_events();
-		//await this.modals_render();
+		// trim new lines, spaces, and tabs
+		template = template.replace(/\s+/g, ' ');
+		template = template.replace(/>\s+</g, '><');
+		template = template.replace(/\s*=\s*/g, '=');
+		template = template.trim();
 
+		return template;
+	}
+
+	async html_main_ctn()
+	{
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%main-c1">
+			${await this.html_header()}
+			${await this.html_formGroup()}
+			${await this.html_loginLine()}
+		</div>
+		`;
+		// [B] SET atts
+		const atts =
+		{
+			'%main-c1': 'ct-signup-ctn d-flex flex-column',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	async html_header()
+	{
+		// [-] HELPER FUNCTION
+
+		// [A] TEMPLATE
+		let template = `
+			<p class="%p-c">%p-t</p>
+		`;
+
+		// [B] SET ATTRIBUTES
+		const attributes =
+		{
+			'%p-c': `ct-signup-header text-center`,
+			'%p-t': `42PONG - SIGN UP`,
+		};
+
+		for (const key in attributes)
+			template = template.split(key).join(attributes[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	async fg_insert(name, type, err_id)
+	{
+		let name_str = name;
+		if (name === 'confirm')
+			name_str = 'password again';
+
+		let name_firstCap = name.charAt(0).toUpperCase() + name.slice(1);
+		if (name === 'confirm')
+			name_firstCap = 'Confirm Password';
+
+		let in_template = `
+			<div class="%formgp-c" @auto>
+				<label for="${name}">${name_firstCap}</label>
+				<input @at1 @at2 @at3 @at4 @auto>
+				<p id="err_signup_${err_id}" class="truncate"></p>
+			</div>
+		`;
+
+		let attributes =
+		{
+			'@at1': `id="${name}"`,
+			'@at2': `type="${type}"`,
+			'@at3': `class="%in-c"`,
+			'@at4': `placeholder="Enter ${name_str}"`,
+			'@auto': `required="" autocomplete="off" spellcheck="false"`,
+		};
+
+		for (const key in attributes)
+			in_template = in_template.split(key).join(attributes[key]);
+
+		return in_template;
+	}
+
+	async html_formGroup()
+	{
+		// [-] HELPER FUNCTION
+
+		// [A] TEMPLATE
+		let template = `
+				<form class="%form-c">
+					${await this.fg_insert('username', 'text', '1')}
+					${await this.fg_insert('email', 'email', '2')}
+					${await this.fg_insert('password', 'password', '3')}
+					${await this.fg_insert('confirm', 'password', '4')}
+					<div @att1 @att2></div>
+					<button id="%bi" class="%bc" type="submit">Submit</button>
+				</form>
+		`;
+
+		// [B] SET atts
+		const attributes =
+		{
+			'%form-c': `ct-su-form d-flex flex-column`,
+			'%formgp-c': 'ct-su-formdiv d-flex flex-column',
+			'%in-c': `p-2 form-control form-control-sm`,
+			'%bi': `btn_signup_submit`,
+			'%bc': `ct-btn-dark btn no-hover mt-2`,
+			'@att1': `class="alert d-none"`,
+			'@att2': `role="alert" id="alert_register"`,
+		};
+
+		for (const key in attributes)
+			template = template.split(key).join(attributes[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	async html_loginLine()
+	{
+		// [-] HELPER FUNCTION
+
+		// [A] TEMPLATE
+		let template = `
+			<a id="%bid" href="#" class="%bc">%bt</a>
+		`;
+
+		// [B] SET atts
+		const attributes =
+		{
+			'%bid': `btn_back_to_login`,
+			'%bc': `small text-center text-muted`,
+			'%bt': `Back to Login`,
+		};
+
+		for (const key in attributes)
+			template = template.split(key).join(attributes[key]);
+
+		// [C] HTML RETURN
+		return template;
+	}
+
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals()
+	{
 		return true;
 	}
 }
+
+const item = new SignupCard();
+export default item;

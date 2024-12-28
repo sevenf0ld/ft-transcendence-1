@@ -7,6 +7,7 @@
 // -------------------------------------------------- //
 import ROUTER from './core/router.js';
 import './core/toolkits/bootstrap.bundle.js';
+import LOGIN_VIEW from './views/LoginView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -18,20 +19,8 @@ import './core/toolkits/bootstrap.bundle.js';
 // -------------------------------------------------- //
 async function main()
 {
-	await ROUTER.navigateTo('/login');
-
+	await LOGIN_VIEW.render();
 	return true;
 }
 
-document.addEventListener('keydown', async (event) =>
-{
-    if ((event.ctrlKey && event.key === 'r') || event.key === 'F5')
-	{
-        event.preventDefault();
-    
-		console.log('Nah do\'nt refresh, this is a SPA.');
-	}
-})
-
-window.onpopstate = ROUTER.router;
 document.addEventListener('DOMContentLoaded', main);

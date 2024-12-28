@@ -14,18 +14,31 @@
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
-export default class PageTitle
+class PageTitle
 {
-	constructor(title)
+	constructor()
 	{
-		this.title = title;
+		this.title = null;
+	}
+
+	async init()
+	{
+		this.title = null;
+
+		return true;
 	}
 
 	async update(title)
 	{
+		if (!title)
+			return false;
+
 		const new_title = "42Pong | " + title;
 		document.title = new_title;
 
 		return true;
 	}
 }
+
+const item = new PageTitle();
+export default item;

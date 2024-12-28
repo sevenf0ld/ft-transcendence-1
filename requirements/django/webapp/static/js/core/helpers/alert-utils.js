@@ -8,21 +8,30 @@
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
-export default class alert_utils
+class alert_utils
 {
 	// --- [00] CONSTRUCTOR
-	constructor(alert_div)
+	constructor()
 	{
-		this.alert_div = alert_div;
-		this.type = '';
-		this.msg = '';
+		this.container = null;
+		this.type = null;
+		this.msg = null;
+	}
+
+	async init()
+	{
+		this.container = null;
+		this.type = null;
+		this.msg = null;
+
+		return true;
 	}
 
 	// --- [00] SETTERS
 	async setType(type)
 	{
 		if (this.type)
-			this.alert_div.classList.remove(this.type);
+			this.container.classList.remove(this.type);
 		this.type = type;
 		return true;
 	}
@@ -36,22 +45,22 @@ export default class alert_utils
 	// --- [00] RENDER
 	async alert_clear()
 	{
-		this.alert_div.textContent = '';
-		if (this.type && this.alert_div.classList.contains(this.type))
-			this.alert_div.classList.remove(this.type);
-		if (!this.alert_div.classList.contains('d-none'))
-			this.alert_div.classList.add('d-none');
+		this.container.textContent = '';
+		if (this.type && this.container.classList.contains(this.type))
+			this.container.classList.remove(this.type);
+		if (!this.container.classList.contains('d-none'))
+			this.container.classList.add('d-none');
 	}
 
 	async alert_render()
 	{
 		if (this.type === '' || this.msg === '')
 			throw new Error('[ERR] alert_utils : type or msg not set');
-		if (!this.alert_div.classList.contains('d-none'))
+		if (!this.container.classList.contains('d-none'))
 			throw new Error('[ERR] alert_utils : alert not hidden');
-		this.alert_div.textContent = this.msg;
-		this.alert_div.classList.add(this.type);
-		this.alert_div.classList.remove('d-none');
+		this.container.textContent = this.msg;
+		this.container.classList.add(this.type);
+		this.container.classList.remove('d-none');
 	}
 
 	async alert_danger(string)
@@ -98,4 +107,5 @@ export default class alert_utils
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
-export { alert_utils };
+const item = new alert_utils();
+export default item;

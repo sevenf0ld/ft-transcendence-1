@@ -37,8 +37,7 @@ class TokenCs
 		const data = await response.json();
 		if (response.status === 401)
 		{
-			clearInterval(this.token_id);
-			this.token_id = null;
+			await this.stop_refresh_token();
 
 			// automatically logs the user out without calling logout api or rendering loginView
 			// issue: does not close websocket properly
@@ -52,6 +51,25 @@ class TokenCs
 			console.error('refresh token crashed.');
 			return false;
 		}
+
+		return true;
+	}
+
+	async start_refresh_token()
+	{
+		this.token_id = setInterval(async () => {
+			await this.refresh_token();
+		}, 20 * 60 * 1000);
+
+		return true;
+	}
+
+	async stop_refresh_token()
+	{
+		localStorage.clear();
+		clearInterval(this.token_id);
+		this.token_id = null;
+		// clear the cookies as well (todo)
 
 		return true;
 	}

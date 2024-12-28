@@ -5,7 +5,7 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
-import { fetch_utils as FETCH_UTILS } from '../core/helpers/fetch-utils.js';
+import FETCH_UTILS from '../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -19,6 +19,16 @@ class fetch_register
 {
 	constructor()
 	{
+		this.val_username = null;
+		this.val_email = null;
+		this.val_password = null;
+		this.val_password_confirm = null;
+		this.re_value = '';
+		this.fetch_obj = null;
+	}
+
+	async init()
+	{
 		this.val_username = document.getElementById('username').value;
 		this.val_email = document.getElementById('email').value;
 		this.val_password = document.getElementById('password').value;
@@ -29,7 +39,8 @@ class fetch_register
 
 	async fetchData()
 	{
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl('/api/user_auth/register/');
 		await mainFetch.setMethod('POST');
@@ -62,6 +73,5 @@ class fetch_register
 // -------------------------------------------------- //
 // [-] EXPORTS
 // -------------------------------------------------- //
-export {
-	fetch_register
-};
+const item = new fetch_register();
+export default item;

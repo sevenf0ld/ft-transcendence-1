@@ -5,7 +5,7 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
-import { fetch_utils as FETCH_UTILS } from '../../core/helpers/fetch-utils.js';
+import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -24,11 +24,20 @@ class fetch_logout
 		this.fetch_obj = null;
 	}
 
+	async init()
+	{
+		this.re_value = '';
+		this.fetch_obj = null;
+
+		return true;
+	}
+
 	async fetchData()
 	{
 		try
 		{
-			const mainFetch = new FETCH_UTILS();
+			await FETCH_UTILS.init();
+			const mainFetch = FETCH_UTILS;
 			await mainFetch.getCookie('csrftoken');
 			await mainFetch.setUrl('/api/user_auth/logout/');
 			await mainFetch.setMethod('POST');
@@ -61,11 +70,18 @@ class fetch_home_profile
 		this.fetch_obj = null;
 	}
 
+	async init()
+	{
+		this.re_value = '';
+		this.fetch_obj = null;
+	}
+
 	async fetchData()
 	{
 		try
 		{
-			const mainFetch = new FETCH_UTILS();
+			await FETCH_UTILS.init();
+			const mainFetch = FETCH_UTILS;
 			await mainFetch.getCookie('csrftoken');
 			await mainFetch.setUrl('/api/user_profiles/view-home-profile/');
 			await mainFetch.setMethod('GET');
@@ -89,11 +105,13 @@ class fetch_home_profile
 	}
 }
 
-
 // -------------------------------------------------- //
 // [-] EXPORTS
 // -------------------------------------------------- //
+const FETCH_LOGOUT = new fetch_logout();
+const FETCH_HOME_PROFILE = new fetch_home_profile();
+
 export {
-	fetch_logout,
-	fetch_home_profile,
+	FETCH_LOGOUT,
+	FETCH_HOME_PROFILE
 };

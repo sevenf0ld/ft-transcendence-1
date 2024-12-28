@@ -6,11 +6,10 @@
 // Importing-external
 // -------------------------------------------------- //
 //layout
-import PageTitle from '../core/helpers/PageTitle.js';
-import MediaLayout from '../layouts/MediaLayout.js';
-import IntroLayout from '../layouts/IntroLayout.js';
-//components
-import LoginCard from '../components/LoginCard.js';
+import LOGIN_CARD from '../components/LoginCard.js';
+import PAGE_TITLE from '../core/helpers/PageTitle.js';
+import INTRO_LAYOUT from '../layouts/IntroLayout.js';
+import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -20,7 +19,7 @@ import LoginCard from '../components/LoginCard.js';
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
-export default class LoginView
+class LoginView
 {
 	constructor()
 	{
@@ -29,18 +28,25 @@ export default class LoginView
 	
 	async render()
 	{
-		const page_title = new PageTitle();
-		page_title.update('Sign In');
+		const page_title = PAGE_TITLE;
+		await page_title.init();
+		await page_title.update('Sign In');
 
-		const media = new MediaLayout();
-		await media.render();
+		const media = MEDIA_LAYOUT;
+		media.container = document.body;
+		await media.render('replace');
 
-		const layout = new IntroLayout(await media.get());
-		await layout.render();
+		const media_div = media.main_ctn;
+		const layout = INTRO_LAYOUT;
+		layout.container = media_div;
+		await layout.render('replace');
 
-		const login = new LoginCard(await layout.get());
-		await login.render();
+		LOGIN_CARD.container = layout.main_ctn;
+		await LOGIN_CARD.render('replace');
 
 		return true;
 	}
 }
+
+const item = new LoginView();
+export default item;

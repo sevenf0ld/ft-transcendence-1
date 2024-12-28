@@ -5,7 +5,7 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
-import { fetch_utils as FETCH_UTILS } from '../../core/helpers/fetch-utils.js';
+import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -24,6 +24,14 @@ class fetch_addFriend
 		this.fetch_obj = null;
 	}
 
+	async init()
+	{
+		this.re_value = '';
+		this.fetch_obj = null;
+
+		return true;
+	}
+
 	async fetchData()
 	{
 		try
@@ -34,7 +42,8 @@ class fetch_addFriend
 			const userReq = local_obj.username;
 			const userTarget = input.value;
 
-			const mainFetch = new FETCH_UTILS();
+			await FETCH_UTILS.init();
+			const mainFetch = FETCH_UTILS;
 			await mainFetch.getCookie('csrftoken');
 			await mainFetch.setUrl('/api/friends/friend-request-av/create/');
 			await mainFetch.setMethod('POST');
@@ -63,7 +72,6 @@ class fetch_addFriend
 // -------------------------------------------------- //
 // [-] EXPORTS
 // -------------------------------------------------- //
-export {
-	fetch_addFriend,
-};
+const item = new fetch_addFriend();
+export default item;
 
