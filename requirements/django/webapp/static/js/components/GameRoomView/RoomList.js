@@ -12,15 +12,15 @@ import HomeView from '../../views/HomeView.js';
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-export default class RoomList
+class RoomList
 {
 	// --------------------------------------------- //
 	// CONSTRUCTOR
 	// --------------------------------------------- //
-	constructor(container, gameType)
+	constructor()
 	{
 		// COMMON-atts
-		this.container = container;
+		this.container = null;
 		this.base_ctn = null;
 		this.lobby_ctn = null;
 		this.playing_ctn = null;
@@ -30,7 +30,24 @@ export default class RoomList
 		this.buttons = {
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
-		this.gameType = gameType;
+		this.gameType = null;
+	}
+
+	async init()
+	{
+		// COMMON-atts
+		this.container = null;
+		this.base_ctn = null;
+		this.lobby_ctn = null;
+		this.playing_ctn = null;
+		this.waiting_ctn = null;
+		this.eliminated_ctn = null;
+		this.roomTitle = null;
+		this.buttons = {
+		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
+		this.gameType = null;
+		return true;
 	}
 
 	async render()
@@ -193,7 +210,7 @@ export default class RoomList
 		return template;
 	}
 
-	async playerListGenerator(container, username, groupType, playerType)
+	async playerListGenerator(container, username, groupType, playerType, pstatus = 'online')
 	{
 		// [-] HELPER FUNCTION
 		let icon = '';
@@ -224,7 +241,7 @@ export default class RoomList
 			'%img-src1': '/static/assets/images/default-pfp.png',
 			'%img-alt1': 'profile picture',
 			'%status-c1': 'fnl-item-status',
-			'%status-t1': 'online',
+			'%status-t1': pstatus,
 			'%name-c1': 'fnl-item-name online',
 			'%name-t1': username,
 			'%ptype-c1': 'fnl-item-icon',
@@ -331,7 +348,7 @@ export default class RoomList
 		this.roomTitle.setAttribute('data-room-type', 'pvp');
 
 		await this.playerListGenerator(this.lobby_ctn, 'You', 'Lobby', 'host');
-		await this.playerListGenerator(this.lobby_ctn, 'Player 2', 'Lobby', 'guest');
+		await this.playerListGenerator(this.lobby_ctn, 'Player 2', 'Lobby', 'guest', 'offline');
 
 		await this.playerListCheckEmpty([this.lobby_ctn, this.playing_ctn]);
 		await this.updateRoomPlayerCount(2);
@@ -542,7 +559,7 @@ export default class RoomList
 		this.roomTitle.setAttribute('data-room-type', 'pvp');
 
 		await this.playerListGenerator(this.lobby_ctn, 'you', 'lobby', 'host');
-		await this.playerListGenerator(this.lobby_ctn, 'PONG-AI', 'Lobby', 'guest');
+		await this.playerListGenerator(this.lobby_ctn, 'PONG-AI', 'Lobby', 'guest', 'offline');
 		await this.playerListCheckEmpty([this.lobby_ctn, this.playing_ctn]);
 
 		await this.updateRoomPlayerCount(2);
@@ -808,4 +825,5 @@ export default class RoomList
 	}
 }
 
-
+const item = new RoomList();
+export default item;

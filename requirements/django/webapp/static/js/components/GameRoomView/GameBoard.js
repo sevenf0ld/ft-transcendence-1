@@ -20,19 +20,30 @@
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-export default class GameBoard
+class GameBoard
 {
 	// --------------------------------------------- //
 	// CONSTRUCTOR
 	// --------------------------------------------- //
-	constructor(container)
+	constructor()
 	{
 		// COMMON-atts
-		this.container = container;
-		this.main_ctn = '';
+		this.container = null;
+		this.main_ctn = null;
 		this.buttons = {
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
+	}
+
+	async init()
+	{
+		// COMMON-atts
+		this.container = null;
+		this.main_ctn = null;
+		this.buttons = {
+		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
+		return true;
 	}
 
 	async render()
@@ -41,10 +52,6 @@ export default class GameBoard
 
 		return true;
 	}
-
-	// ======================================================================== //
-	// SHARED-LAYOUT-BASE
-	// ======================================================================== //
 	// --------------------------------------------- //
 	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
@@ -132,3 +139,6 @@ export default class GameBoard
 		return true;
 	}
 }
+
+const item = new GameBoard();
+export default item;

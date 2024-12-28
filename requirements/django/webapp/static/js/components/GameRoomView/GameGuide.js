@@ -20,21 +20,34 @@
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-export default class GameGuide
+class GameGuide
 {
 	// --------------------------------------------- //
 	// CONSTRUCTOR
 	// --------------------------------------------- //
-	constructor(container, gameType)
+	constructor()
 	{
 		// COMMON-atts
-		this.container = container;
-		this.base_ctn = '';
-		this.main_ctn = '';
+		this.container = null;
+		this.base_ctn = null;
+		this.main_ctn = null;
 		this.buttons = {
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
-		this.gameType = gameType;
+		this.gameType = null;
+	}
+
+	async init()
+	{
+		// COMMON-atts
+		this.container = null;
+		this.base_ctn = null;
+		this.main_ctn = null;
+		this.buttons = {
+		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
+		this.gameType = null;
+		return true;
 	}
 
 	async render()
@@ -641,3 +654,6 @@ export default class GameGuide
 		return true;
 	}
 }
+
+const item = new GameGuide();
+export default item;

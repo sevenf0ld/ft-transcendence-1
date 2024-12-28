@@ -5,7 +5,7 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import pongEngine from '../GameLogic/PongEngine.js';
+import PONG_ENGINE from '../GameLogic/PongEngine.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -21,22 +21,36 @@ import pongEngine from '../GameLogic/PongEngine.js';
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-export default class ActionPanel
+class ActionPanel
 {
 	// --------------------------------------------- //
 	// CONSTRUCTOR
 	// --------------------------------------------- //
-	constructor(container, gameType)
+	constructor()
 	{
 		// COMMON-atts
-		this.container = container;
-		this.base_ctn = '';
-		this.main_ctn = '';
+		this.container = null;
+		this.base_ctn = null;
+		this.main_ctn = null;
 		this.buttons = {
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
-		this.gameType = gameType;
+		this.gameType = null;
 		this.currentGame = null;
+	}
+
+	async init()
+	{
+		// COMMON-atts
+		this.container = null;
+		this.base_ctn = null;
+		this.main_ctn = null;
+		this.buttons = {
+		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
+		this.gameType = null;
+		this.currentGame = null;
+		return true;
 	}
 
 	async render()
@@ -219,7 +233,8 @@ export default class ActionPanel
 	{
 		event.preventDefault();
 
-		const pongGame = new pongEngine(this.gameType);
+		const pongGame = PONG_ENGINE;
+		pongGame.gameType = this.gameType;
 		await pongGame.init();
 		this.currentGame = pongGame;
 
@@ -685,3 +700,6 @@ export default class ActionPanel
 		return true;
 	}
 }
+
+const item = new ActionPanel();
+export default item;
