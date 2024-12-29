@@ -213,6 +213,9 @@ class RightFnList
 		const type = name_div.getAttribute('data-type');
 		const parent_div = document.querySelector('.ct-bottom-right');
 
+		if (await this.check_opened_chat(name))
+			return false;
+
 		if (type === 'added')
 		{
 			await this.reset_midBotPanel(1);
@@ -223,6 +226,22 @@ class RightFnList
 
 		return true;
 	}
+
+	async check_opened_chat(name)
+	{
+		const chatbox = document.querySelector('.ct-chatbox-title');
+
+		if (chatbox === null)
+			return false;
+
+		const chatbox_name = chatbox.getAttribute('title');
+
+		if (chatbox_name === name)
+			return true;
+
+		return false;
+	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //

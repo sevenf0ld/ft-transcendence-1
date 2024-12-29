@@ -8,6 +8,7 @@
 import MODAL_ROOM_JOIN from './ModalRoomJoin.js';
 import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
+import WEB_SOCKET from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -125,6 +126,8 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked: local-pve');
 
+		await WEB_SOCKET.close_curent_liveChat();
+
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-pve';
@@ -138,6 +141,8 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked : local-pvp');
 
+		await WEB_SOCKET.close_curent_liveChat();
+
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-pvp';
@@ -150,6 +155,8 @@ class MidBoard
 	{
 		event.preventDefault();
 		console.log('[EVENT] button clicked : local-tour');
+
+		await WEB_SOCKET.close_curent_liveChat();
 
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
