@@ -22,9 +22,10 @@ from channels.routing import (
 from .middleware import TokenAuthMiddleware
 import chat.routing
 import friends.routing
+import games.routing
 
-websocket_urlpatterns = chat.routing.websocket_urlpatterns + friends.routing.websocket_urlpatterns
-
+websocket_urlpatterns = chat.routing.websocket_urlpatterns + friends.routing.websocket_urlpatterns + games.routing.websocket_urlpatterns
+ 
 application = ProtocolTypeRouter({
     'http': application,
     'websocket': TokenAuthMiddleware(

@@ -14,7 +14,7 @@ class ChatConsumer(WebsocketConsumer):
     def connect(self):
         user = self.scope['user']
         if not user.is_authenticated:
-            self.close()
+            self.close(3000)
             return
 
         self.room_name = self.scope['url_route']['kwargs']['room_name']

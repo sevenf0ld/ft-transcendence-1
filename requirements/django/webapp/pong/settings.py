@@ -153,7 +153,8 @@ REST_FRAMEWORK = {
         #'drf_social_oauth2.authentication.SocialAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        #'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ],
 }
 
@@ -171,7 +172,7 @@ REST_AUTH = {
     # only affects the body, will still be in Set-Cookie
     #'JWT_AUTH_HTTPONLY': True,
     'JWT_AUTH_SAMESITE': 'Strict',
-    'JWT_AUTH_COOKIE_ENFORCE_CSRF_ON_UNAUTHENTICATED': True,
+    #'JWT_AUTH_COOKIE_ENFORCE_CSRF_ON_UNAUTHENTICATED': True,
 }
 #CSRF_TRUSTED_ORIGINS = [
 #    'https://localhost',
