@@ -30,11 +30,13 @@ class websocketManager
 			target: undefined,
 			room_name: undefined,
 		};
+
+		return true;
 	}
 
 	async close_curent_liveChat()
 	{
-		if (this.liveChat.ws && this.liveChat.ws.readyState === WebSocket.OPEN)
+		if (this.liveChat.ws && this.liveChat.ws.readyState >= 2)
 		{
 			this.liveChat.ws.send(JSON.stringify({
 			  'message': null,
@@ -44,6 +46,8 @@ class websocketManager
 			}));
 			this.liveChat.ws.close();
 		}
+		
+		return true;
 	}
 
 	async init_friendSocket()
@@ -55,6 +59,16 @@ class websocketManager
 			url: undefined,
 			sender: undefined,
 		};
+
+		return true;
+	}
+
+	async close_friendSocket()
+	{
+		if (this.liveChat.ws && this.liveChat.ws.readyState >= 2)
+			this.liveChat.ws.close();
+
+		return true;
 	}
 	
 	async read_friendSocket()
@@ -75,7 +89,7 @@ class websocketManager
 		return true;
 	}
 
-	async connect_online_status_socket()
+	async friendSocket_connect_home_status()
 	{
 		this.friend.ws.addEventListener('message', async (event) => {
 			let data = JSON.parse(event.data);
@@ -108,9 +122,11 @@ class websocketManager
 					console.log('me to myself (playing):', data.message);
 			}
 		});
+
+		return true;
 	}
 
-	async update_inroom_status(type)
+	async friendSocket_gameroom_status(type)
 	{
 		console.log('update_inroom_status:', type);
 		if (type === 'join')
@@ -135,6 +151,8 @@ class websocketManager
 		}
 		else
 			throw new Error('[ERR] unknown type');
+
+		return true;
 	}
 }
 

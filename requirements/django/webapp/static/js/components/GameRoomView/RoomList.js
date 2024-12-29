@@ -127,7 +127,7 @@ class RoomList
 		const btn_home = document.querySelector("#btn_leaveRoom");
 		btn_home.addEventListener('click', async () =>
 		{
-			await WEB_SOCKETS.update_inroom_status('leave');
+			await WEB_SOCKETS.friendSocket_gameroom_status('leave');
 
 			const HOME = HOME_VIEW;
 			await HOME.render();

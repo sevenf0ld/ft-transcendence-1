@@ -66,7 +66,7 @@ class HomeView
 
 		await WEB_SOCKET.init_friendSocket();
 		await WEB_SOCKET.read_friendSocket();
-		await WEB_SOCKET.connect_online_status_socket();
+		await WEB_SOCKET.friendSocket_connect_home_status();
 
 		return true;
 	}
