@@ -164,13 +164,13 @@ class LeftUser
 				await TOKEN.stop_refresh_token();
 
 			await WEB_SOCKET.close_curent_liveChat();
+			await WEB_SOCKET.close_friendSocket();
 
 			localStorage.clear();
 			location.href = '/';
 
 			const loginView = LOGIN_VIEW;
 			await loginView.render();
-			
 		}
 		else
 		{

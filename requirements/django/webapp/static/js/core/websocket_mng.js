@@ -5,6 +5,7 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
+import RIGHT_FRIEND_LIST from '../components/HomeView/RightFnList.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -16,6 +17,7 @@ class websocketManager
 	constructor()
 	{
 		this.init_liveChat();
+		this.init_friendSocket();
 	}
 
 	async init_liveChat()
@@ -28,11 +30,13 @@ class websocketManager
 			target: undefined,
 			room_name: undefined,
 		};
+
+		return true;
 	}
 
 	async close_curent_liveChat()
 	{
-		if (this.liveChat.ws && this.liveChat.ws.readyState === WebSocket.OPEN)
+		if (this.liveChat.ws && this.liveChat.ws.readyState >= 2)
 		{
 			this.liveChat.ws.send(JSON.stringify({
 			  'message': null,
@@ -42,6 +46,113 @@ class websocketManager
 			}));
 			this.liveChat.ws.close();
 		}
+		
+		return true;
+	}
+
+	async init_friendSocket()
+	{
+		this.friend =
+		{
+			user_id: null,
+			ws: undefined,
+			url: undefined,
+			sender: undefined,
+		};
+
+		return true;
+	}
+
+	async close_friendSocket()
+	{
+		if (this.liveChat.ws && this.liveChat.ws.readyState >= 2)
+			this.liveChat.ws.close();
+
+		return true;
+	}
+	
+	async read_friendSocket()
+	{
+		const user_obj = JSON.parse(localStorage.getItem('user'));
+
+		if (user_obj == null)
+		{
+			throw new Error('user not found');
+			return false;
+		}
+
+		this.friend.user_id = user_obj.pk;
+		this.friend.sender = user_obj.username;
+		this.friend.url = `wss://${window.location.host}/ws/online/${this.friend.user_id}/`;
+		this.friend.ws = new WebSocket(this.friend.url);
+
+		return true;
+	}
+
+	async friendSocket_connect_home_status()
+	{
+		this.friend.ws.addEventListener('message', async (event) => {
+			let data = JSON.parse(event.data);
+
+			if (data.status == 'online')
+			{
+				await RIGHT_FRIEND_LIST.update_online_status(data.friend, 'online');
+
+				if (data.type == 'return')
+					console.log('friend to me (return):', data.message);
+				if (data.type == 'notified')
+					console.log('friend to me (on):', data.message);
+				if (data.type == 'checking')
+					console.log('me to myself (on):', data.message);
+			}
+			if (data.status == 'offline')
+			{
+				await RIGHT_FRIEND_LIST.update_online_status(data.friend, 'offline');
+
+				if (data.type == 'notified')
+					console.log('friend to me (off):', data.message);
+			}
+			if (data.status == 'playing')
+			{
+				await RIGHT_FRIEND_LIST.update_online_status(data.friend, 'playing');
+
+				if (data.type == 'notified')
+					console.log('friend to me (playing):', data.message);
+				if (data.type == 'checking')
+					console.log('me to myself (playing):', data.message);
+			}
+		});
+
+		return true;
+	}
+
+	async friendSocket_gameroom_status(type)
+	{
+		console.log('update_inroom_status:', type);
+		if (type === 'join')
+		{
+			if (this.friend.ws && this.friend.ws.readyState === WebSocket.OPEN)
+			{
+				this.friend.ws.send(JSON.stringify({
+				  'user': this.friend.sender,
+				  'action': 'change_game_view',
+				}));
+			}
+		}
+		else if (type === 'leave')
+		{
+			if (this.friend.ws && this.friend.ws.readyState === WebSocket.OPEN)
+			{
+				this.friend.ws.send(JSON.stringify({
+				  'user': this.friend.sender,
+				  'action': 'change_home_view',
+				}));
+			}
+		}
+		else
+			throw new Error('[ERR] unknown type');
+
+		return true;
 	}
 }
 

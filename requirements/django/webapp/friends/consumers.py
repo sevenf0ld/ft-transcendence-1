@@ -24,8 +24,7 @@ class OnlineConsumer(WebsocketConsumer):
 
         self.room_name = self.user.id
         self.room_group_name = f'friends_{self.room_name}'
-        if self.room_group_name not in self.logged_in:
-            self.logged_in[self.room_group_name] = set()
+        self.add_to_logged_in()
 
         self.accept()
 
@@ -55,14 +54,16 @@ class OnlineConsumer(WebsocketConsumer):
         friends = async_to_sync(self.get_friends)()
 
         for friend in friends:
-            room_friend_name = f'friends_{friend.id}'
-            async_to_sync(self.channel_layer.group_send)(
-                room_friend_name,
-                {
-                    'type': 'notify.online',
-                    'user': self.user.username
-                }
-            )
+            username = friend.username
+            if all(username not in users for users in self.playing.values()):
+                room_friend_name = f'friends_{friend.id}'
+                async_to_sync(self.channel_layer.group_send)(
+                    room_friend_name,
+                    {
+                        'type': 'notify.online',
+                        'user': self.user.username
+                    }
+                )
 
     def notify_online(self, event):
         friend = event['user']
@@ -138,10 +139,8 @@ class OnlineConsumer(WebsocketConsumer):
     def disconnect(self, code):
         self.notify_friends_offline()
 
-        if self.room_group_name in self.logged_in:
-            del self.logged_in[self.room_group_name]
-        if self.room_group_name in self.playing:
-            del self.playing[self.room_group_name]
+        self.remove_from_logged_in()
+        self.remove_from_playing()
 
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
@@ -152,14 +151,16 @@ class OnlineConsumer(WebsocketConsumer):
         friends = async_to_sync(self.get_friends)()
 
         for friend in friends:
-            room_friend_name = f'friends_{friend.id}'
-            async_to_sync(self.channel_layer.group_send)(
-                room_friend_name,
-                {
-                    'type': 'notify.offline',
-                    'user': self.user.username,
-                }
-            )
+            username = friend.username
+            if all(username not in users for users in self.playing.values()):
+                room_friend_name = f'friends_{friend.id}'
+                async_to_sync(self.channel_layer.group_send)(
+                    room_friend_name,
+                    {
+                        'type': 'notify.offline',
+                        'user': self.user.username,
+                    }
+                )
 
     def notify_offline(self, event):
         friend = event['user']
@@ -179,26 +180,27 @@ class OnlineConsumer(WebsocketConsumer):
         # before a user logs out (detected by disconnect)
         #if action == 'logout':
 
-        if action == 'change_view':
+        if action == 'change_game_view':
             self.notify_friends_playing()
+        if action == 'change_home_view':
+            self.notify_friends_return()
 
     def notify_friends_playing(self):
         friends = async_to_sync(self.get_friends)()
 
-        if self.room_group_name not in self.playing:
-            self.playing[self.room_group_name] = set()
-        if self.room_group_name in self.logged_in:
-            del self.logged_in[self.room_group_name]
+        self.logged_in_to_playing()
 
         for friend in friends:
-            room_friend_name = f'friends_{friend.id}'
-            async_to_sync(self.channel_layer.group_send)(
-                room_friend_name,
-                {
-                    'type': 'notify.playing',
-                    'user': self.user.username,
-                }
-            )
+            username = friend.username
+            if all(username not in users for users in self.playing.values()):
+                room_friend_name = f'friends_{friend.id}'
+                async_to_sync(self.channel_layer.group_send)(
+                    room_friend_name,
+                    {
+                        'type': 'notify.playing',
+                        'user': self.user.username,
+                    }
+                )
 
     def notify_playing(self, event):
         friend = event['user']
@@ -209,3 +211,55 @@ class OnlineConsumer(WebsocketConsumer):
             'message': f'{friend} is busy.',
             'type': 'notified'
         }))
+
+    def notify_friends_return(self):
+        friends = async_to_sync(self.get_friends)()
+
+        self.remove_from_playing()
+        self.add_to_logged_in()
+
+        for friend in friends:
+            username = friend.username
+            if all(username not in users for users in self.playing.values()):
+                room_friend_name = f'friends_{friend.id}'
+                async_to_sync(self.channel_layer.group_send)(
+                    room_friend_name,
+                    {
+                        'type': 'notify.return',
+                        'user': self.user.username,
+                    }
+                )
+
+    def notify_return(self, event):
+        friend = event['user']
+
+        self.send(text_data=json.dumps({
+            'status': 'online',
+            'friend': friend,
+            'message': f'{friend} is no longer playing.',
+            'type': 'return'
+        }))
+
+    def add_to_logged_in(self):
+        if self.room_group_name not in self.logged_in:
+            self.logged_in[self.room_group_name] = set()
+        self.logged_in[self.room_group_name].add(self.user.username)
+
+    def remove_from_logged_in(self):
+        if self.room_group_name in self.logged_in:
+            self.logged_in[self.room_group_name].discard(self.user.username)
+            if not self.logged_in[self.room_group_name]:  # Clean up
+                del self.logged_in[self.room_group_name]
+    
+    def logged_in_to_playing(self):
+        if self.room_group_name not in self.playing:
+            self.playing[self.room_group_name] = set()
+        self.playing[self.room_group_name].add(self.user.username)
+    
+        self.remove_from_logged_in()
+    
+    def remove_from_playing(self):
+        if self.room_group_name in self.playing:
+            self.playing[self.room_group_name].discard(self.user.username)
+            if not self.playing[self.room_group_name]:  # Clean up
+                del self.playing[self.room_group_name]
