@@ -179,8 +179,10 @@ class OnlineConsumer(WebsocketConsumer):
         # before a user logs out (detected by disconnect)
         #if action == 'logout':
 
-        if action == 'change_view':
+        if action == 'change_game_view':
             self.notify_friends_playing()
+        if action == 'change_home_view':
+            self.notify_friends_return()
 
     def notify_friends_playing(self):
         friends = async_to_sync(self.get_friends)()
@@ -209,3 +211,32 @@ class OnlineConsumer(WebsocketConsumer):
             'message': f'{friend} is busy.',
             'type': 'notified'
         }))
+
+    def notify_friends_return(self):
+        friends = async_to_sync(self.get_friends)()
+
+        if self.room_group_name in self.playing:
+            del self.playing[self.room_group_name] = set()
+        if self.room_group_name not in self.logged_in:
+            self.logged_in[self.room_group_name] = set()
+
+        for friend in friends:
+            room_friend_name = f'friends_{friend.id}'
+            async_to_sync(self.channel_layer.group_send)(
+                room_friend_name,
+                {
+                    'type': 'notify.return',
+                    'user': self.user.username,
+                }
+            )
+
+    def notify_return(self, event):
+        friend = event['user']
+
+        self.send(text_data=json.dumps({
+            'status': 'online',
+            'friend': friend,
+            'message': f'{friend} is no longer playing.',
+            'type': 'return'
+        }))
+
