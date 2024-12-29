@@ -1,5 +1,4 @@
-## game
-
+# game history
 ### match history
 - RETRIEVE
     - use [lookup](https://medium.com/@thenavarro97/mastering-django-rest-frameworks-class-based-api-views-187a15bb2709)s
@@ -50,3 +49,19 @@
     - `{"pvp":[{"match_date":"Dec 28","match_time":"06:13 PM","status":"LOST","game_type":"PVP","opponent":"upt"},{"match_date":"Dec 28","match_time":"03:10 PM","status":"WON","game_type":"PVP","opponent":"maiman-m"}],"tnm":[]}`
 
 ### tournament history
+
+# lobby
+## general
+- [setting a min or max on an Int field](https://stackoverflow.com/a/12026867) and calling full_clean to trigger validation
+- [create custom joke](https://medium.com/@johannes.setiawan/django-rest-framework-a-way-to-create-better-rest-api-view-class-in-django-6dfcc0294518) and IsEventOwner
+- [further configuration of the Meta class in serializer](https://sourcery.blog/comprehensive-guide-to-serializers-in-django-rest-framework/) apart from which fields to include or exclude]
+
+### match lobby
+
+### tournament lobby
+
+# remote game
+
+### match (pvp)
+
+### tournament (multiple rounds of pvp)

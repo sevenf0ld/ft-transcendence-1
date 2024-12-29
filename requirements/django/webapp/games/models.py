@@ -114,13 +114,21 @@ class GameHistory(models.Model):
 class Room(models.Model):
     MAXIMUM = 5
 
+    PVP = 'PVP'
+    TOURNAMENT = 'TNM'
+    ROOM_CHOICES = {
+        PVP: 'pvp',
+        TOURNAMENT: 'tournament'
+    }
+
     started = models.BooleanField(default=False)
 
     # 6 digits max
     room_id = models.PositiveIntegerField(
         validators=[
             MaxValueValidator(999999),
-        ]
+        ],
+        unique=True
     )
 
     members = models.PositiveIntegerField(
@@ -139,4 +147,10 @@ class Room(models.Model):
         related_name='room_host',
         blank=True,
         null=True
+    )
+
+    room_type = models.CharField(
+        max_length=3,
+        default=PVP,
+        choices=ROOM_CHOICES,
     )
