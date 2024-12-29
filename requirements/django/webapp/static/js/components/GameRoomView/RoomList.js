@@ -6,6 +6,7 @@
 // importing-external
 // -------------------------------------------------- //
 import HOME_VIEW from '../../views/HomeView.js';
+import WEB_SOCKETS from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -126,6 +127,8 @@ class RoomList
 		const btn_home = document.querySelector("#btn_leaveRoom");
 		btn_home.addEventListener('click', async () =>
 		{
+			await WEB_SOCKETS.update_inroom_status('leave');
+
 			const HOME = HOME_VIEW;
 			await HOME.render();
 		});
