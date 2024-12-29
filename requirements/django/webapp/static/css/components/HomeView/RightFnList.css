@@ -109,6 +109,11 @@
 	background-color: var(--stfr-1);
 }
 
+.category-list-ctn .fnl-item-ctn .fnl-item-status.playing
+{
+	background-color: var(--stfr-4);
+}
+
 .category-list-ctn .fnl-item-ctn .fnl-item-pfp.online
 {
 }
