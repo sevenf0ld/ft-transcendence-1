@@ -385,7 +385,7 @@ class ModalFnOpt
 		const parentHtml = document.querySelector('.ct-main-rpanel');
 		const rightPanel = RIGHT_FRIENDS_LIST;
 		rightPanel.container = parentHtml;
-		await rightPanel.render();
+		await rightPanel.render('replace');
 
 		return true;
 	}
