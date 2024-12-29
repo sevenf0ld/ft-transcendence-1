@@ -210,7 +210,7 @@ class RoomList
 		return template;
 	}
 
-	async playerListGenerator(container, username, groupType, playerType, pstatus = 'online')
+	async playerListGenerator(container, username, groupType, playerType, pstatus = 'playing')
 	{
 		// [-] HELPER FUNCTION
 		let icon = '';
@@ -242,7 +242,7 @@ class RoomList
 			'%img-alt1': 'profile picture',
 			'%status-c1': 'fnl-item-status',
 			'%status-t1': pstatus,
-			'%name-c1': 'fnl-item-name online',
+			'%name-c1': `fnl-item-name ${pstatus}`,
 			'%name-t1': username,
 			'%ptype-c1': 'fnl-item-icon',
 			'%ptype-src1': icon,

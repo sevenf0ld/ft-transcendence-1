@@ -127,6 +127,7 @@ class MidBoard
 		console.log('[EVENT] button clicked: local-pve');
 
 		await WEB_SOCKET.close_curent_liveChat();
+		await WEB_SOCKET.update_join_game_status();
 
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
@@ -142,6 +143,7 @@ class MidBoard
 		console.log('[EVENT] button clicked : local-pvp');
 
 		await WEB_SOCKET.close_curent_liveChat();
+		await WEB_SOCKET.update_join_game_status();
 
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
@@ -157,6 +159,7 @@ class MidBoard
 		console.log('[EVENT] button clicked : local-tour');
 
 		await WEB_SOCKET.close_curent_liveChat();
+		await WEB_SOCKET.update_join_game_status();
 
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
