@@ -87,8 +87,6 @@ class ModalFnOpt
 			throw new Error('[ERR] main container not found');
 		for (const key in this.buttons)
 		{
-		const rightPanel = new rightPanelFriends(parentHtml);
-		await rightPanel.render();
 			if (!this.buttons[key])
 				throw new Error(`[ERR] button not found : ${key}`);
 		}
@@ -251,8 +249,6 @@ class ModalFnOpt
 		await FETCH_UTILS.init();
 		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
-		const rightPanel = new rightPanelFriends(parentHtml);
-		await rightPanel.render();
 		await mainFetch.setUrl('/api/friends/friend-request-av/accept/');
 		await mainFetch.setMethod('DELETE');
 		await mainFetch.appendHeaders('Content-Type', 'application/json');
@@ -323,8 +319,6 @@ class ModalFnOpt
 		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
 		await mainFetch.appendBody('user', this.user);
 		await mainFetch.appendBody('target', this.target);
-		const rightPanel = new rightPanelFriends(parentHtml);
-		await rightPanel.render();
 		await mainFetch.fetchData();
 
 		//tomorrow change to bs-alert-display-div

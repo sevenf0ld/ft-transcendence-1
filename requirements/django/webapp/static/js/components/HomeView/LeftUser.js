@@ -11,6 +11,7 @@ import MODAL_HISTORY from './ModalHistory.js';
 import MODAL_SETTINGS from './ModalSettings.js';
 import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 import LOGIN_VIEW from '../../views/LoginView.js';
+import WEB_SOCKET from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -162,11 +163,14 @@ class LeftUser
 			if (TOKEN.token_id)
 				await TOKEN.stop_refresh_token();
 
+			await WEB_SOCKET.close_curent_liveChat();
+
 			localStorage.clear();
 			location.href = '/';
 
 			const loginView = LOGIN_VIEW;
 			await loginView.render();
+			
 		}
 		else
 		{

@@ -6,6 +6,7 @@
 // importing-external
 // -------------------------------------------------- //
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
+import WEB_SOCKET from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -105,6 +106,8 @@ class ModalRoomJoin
 
 		if (this.gameType === 'online-pvp')
 		{
+			await WEB_SOCKET.close_curent_liveChat();
+
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
 			gameRoom.type = 'online-pvp';
@@ -112,6 +115,8 @@ class ModalRoomJoin
 		}
 		else if (this.gameType === 'online-tour')
 		{
+			await WEB_SOCKET.close_curent_liveChat();
+
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
 			gameRoom.type = 'online-tour';
