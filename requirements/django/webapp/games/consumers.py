@@ -1,7 +1,8 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
-rom channels.db import database_sync_to_async
+from channels.db import database_sync_to_async
+from .serializers import RoomModelSerializer
 
 MAX_PVP_MEMBERS = 2
 MAX_TNM_MEMBERS = 5
@@ -23,13 +24,35 @@ class LobbyConsumer(WebsocketConsumer):
             'lobby',
             self.channel_name
         )
-        self.display_rooms()
+        self.display_lobby()
 
     @database_sync_to_async
     def get_rooms(self):
-        try:
-            rooms = Room.objects.all()
+        rooms = Room.objects.all()
+        if rooms.exists():
+            return rooms
+        return []
 
+    def display_lobby(self):
+        rooms = async_to_sync(self.get_rooms)()
+
+        if rooms:
+            serializer = RoomModelSerializer(rooms, many=True)
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_name,
+                {
+                    'type': 'display.rooms',
+                    'rooms': serializer.data
+                }
+            )
+
+    def display_rooms(self, event):
+        rooms = event['rooms']
+
+        self.send(text_data=json.dumps({
+            'rooms': rooms
+        }))
 
     def disconnect(self, code):
         pass

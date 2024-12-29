@@ -98,3 +98,8 @@ class RoomCreateModelSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'room_id': {'required': False},
         }
+
+class RoomModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = '__all__'
