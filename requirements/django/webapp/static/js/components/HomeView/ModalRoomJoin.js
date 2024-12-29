@@ -107,6 +107,7 @@ class ModalRoomJoin
 		if (this.gameType === 'online-pvp')
 		{
 			await WEB_SOCKET.close_curent_liveChat();
+			await WEB_SOCKET.update_inroom_status('join');
 
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
@@ -116,6 +117,7 @@ class ModalRoomJoin
 		else if (this.gameType === 'online-tour')
 		{
 			await WEB_SOCKET.close_curent_liveChat();
+			await WEB_SOCKET.update_inroom_status('join');
 
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();

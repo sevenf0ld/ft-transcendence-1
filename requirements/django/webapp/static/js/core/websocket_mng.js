@@ -84,6 +84,8 @@ class websocketManager
 			{
 				await RIGHT_FRIEND_LIST.update_online_status(data.friend, 'online');
 
+				if (data.type == 'return')
+					console.log('friend to me (return):', data.message);
 				if (data.type == 'notified')
 					console.log('friend to me (on):', data.message);
 				if (data.type == 'checking')
@@ -108,16 +110,31 @@ class websocketManager
 		});
 	}
 
-	async update_join_game_status()
+	async update_inroom_status(type)
 	{
-		console.log('update_join_game_status');
-		if (this.friend.ws && this.friend.ws.readyState === WebSocket.OPEN)
+		console.log('update_inroom_status:', type);
+		if (type === 'join')
 		{
-			this.friend.ws.send(JSON.stringify({
-			  'user': this.friend.sender,
-			  'action': 'change_view',
-			}));
+			if (this.friend.ws && this.friend.ws.readyState === WebSocket.OPEN)
+			{
+				this.friend.ws.send(JSON.stringify({
+				  'user': this.friend.sender,
+				  'action': 'change_game_view',
+				}));
+			}
 		}
+		else if (type === 'leave')
+		{
+			if (this.friend.ws && this.friend.ws.readyState === WebSocket.OPEN)
+			{
+				this.friend.ws.send(JSON.stringify({
+				  'user': this.friend.sender,
+				  'action': 'change_home_view',
+				}));
+			}
+		}
+		else
+			throw new Error('[ERR] unknown type');
 	}
 }
 
