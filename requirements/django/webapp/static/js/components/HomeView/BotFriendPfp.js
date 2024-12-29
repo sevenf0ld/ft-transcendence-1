@@ -35,6 +35,8 @@ class BotFriendPfp
 			history: '',
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
+		// NOTE : BELOW ATT ARE ASSIGNED BEFORE RENDERING
+		// PLEASE REFER TO BOTCHATBOX.JS / PROFILECLICK EVENT
 		this.username = null;
 		this.wins = null;
 		this.losses = null;

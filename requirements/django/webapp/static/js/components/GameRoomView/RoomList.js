@@ -6,6 +6,7 @@
 // importing-external
 // -------------------------------------------------- //
 import HOME_VIEW from '../../views/HomeView.js';
+import WEB_SOCKETS from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -126,6 +127,8 @@ class RoomList
 		const btn_home = document.querySelector("#btn_leaveRoom");
 		btn_home.addEventListener('click', async () =>
 		{
+			await WEB_SOCKETS.friendSocket_gameroom_status('leave');
+
 			const HOME = HOME_VIEW;
 			await HOME.render();
 		});
@@ -210,7 +213,7 @@ class RoomList
 		return template;
 	}
 
-	async playerListGenerator(container, username, groupType, playerType, pstatus = 'online')
+	async playerListGenerator(container, username, groupType, playerType, pstatus = 'playing')
 	{
 		// [-] HELPER FUNCTION
 		let icon = '';
@@ -242,7 +245,7 @@ class RoomList
 			'%img-alt1': 'profile picture',
 			'%status-c1': 'fnl-item-status',
 			'%status-t1': pstatus,
-			'%name-c1': 'fnl-item-name online',
+			'%name-c1': `fnl-item-name ${pstatus}`,
 			'%name-t1': username,
 			'%ptype-c1': 'fnl-item-icon',
 			'%ptype-src1': icon,

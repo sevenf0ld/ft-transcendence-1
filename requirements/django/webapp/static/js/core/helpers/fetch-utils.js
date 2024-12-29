@@ -2,6 +2,7 @@
 // -------------------------------------------------- //
 // Importing-internal
 // -------------------------------------------------- //
+import TOKEN from '../token.js';
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
@@ -144,6 +145,11 @@ class fetch_utils
 		await this.read_check();
 		const response = await fetch(this.url, this.object);
 		this.robject = response;
+		if (response.status === 401)
+		{
+			await TOKEN.token_expired_handler();
+			return false;
+		}
 		if (response.status !== 204)
 		{
 			this.response = response;

@@ -242,6 +242,48 @@ class RightFnList
 		return false;
 	}
 
+	async update_online_status(username, online_status)
+	{
+		const selector_str = `.fnl-item-ctn[data-type="added"][title="${username}"] .fnl-item-status`;
+		const selector_str1 = `.fnl-item-ctn[data-type="added"][title="${username}"] .fnl-item-name`;
+		const friend_item = document.querySelector(selector_str);
+		const friend_item1 = document.querySelector(selector_str1);
+
+
+		if (friend_item === null || friend_item1 === null)
+		{
+			throw new Error(`[ERR] friend not found : ${username}`);
+			return false;
+		}
+
+		friend_item.classList.remove('online');
+		friend_item.classList.remove('offline');
+		friend_item.classList.remove('playing');
+		friend_item1.classList.remove('online');
+		friend_item1.classList.remove('offline');
+		friend_item1.classList.remove('playing');
+
+		if (online_status === 'online')
+		{
+			friend_item.classList.add('online');
+			friend_item1.classList.add('online');
+		}
+		else if (online_status === 'offline')
+		{
+			friend_item.classList.add('offline');
+			friend_item1.classList.add('offline');
+		}
+		else if (online_status === 'playing')
+		{
+			friend_item.classList.add('playing');
+			friend_item1.classList.add('playing');
+		}
+		else
+			throw new Error(`[ERR] invalid status : ${online_status}`);
+
+		return true;
+	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
@@ -386,7 +428,7 @@ class RightFnList
 					if (friends.length === 0)
 						template += '<p class="%empty-c">%empty-t</p>';
 					for (const friend of friends)
-						template += friend_generate(friend, 'online', 'added');
+						template += friend_generate(friend, 'offline', 'added');
 				}
 				else if (type === 'pending')
 				{

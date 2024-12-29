@@ -1,3 +1,17 @@
+// file : token.js
+// -------------------------------------------------- //
+// Importing-internal
+// -------------------------------------------------- //
+// -------------------------------------------------- //
+// Importing-external
+// -------------------------------------------------- //
+import WEB_SOCKET from './websocket_mng.js';
+// -------------------------------------------------- //
+// developer notes
+// -------------------------------------------------- //
+// -------------------------------------------------- //
+// main-function
+// -------------------------------------------------- //
 class TokenCs
 {
 	constructor()
@@ -37,13 +51,8 @@ class TokenCs
 		const data = await response.json();
 		if (response.status === 401)
 		{
-			await this.stop_refresh_token();
-
-			// automatically logs the user out without calling logout api or rendering loginView
-			// issue: does not close websocket properly
-			localStorage.clear();
-			location.href = '/';
-
+			console.error('Token expired.');
+			await this.token_expired_handler();
 			return false;
 		}
 		else if (response.status !== 200)
@@ -57,9 +66,12 @@ class TokenCs
 
 	async start_refresh_token()
 	{
+		const minute = 20;
+		const ms = minute * 60 * 1000;
+
 		this.token_id = setInterval(async () => {
 			await this.refresh_token();
-		}, 20 * 60 * 1000);
+		}, 40);
 
 		return true;
 	}
@@ -70,6 +82,27 @@ class TokenCs
 		clearInterval(this.token_id);
 		this.token_id = null;
 		// clear the cookies as well (todo)
+
+		return true;
+	}
+
+	async token_expired_handler()
+	{
+		alert('Token expired. Please login again.');
+
+		await this.stop_refresh_token();
+		location.href = '/';
+
+		// // Clear all cookies
+		document.cookie.split(";").forEach(cookie => {
+			document.cookie = cookie.trim().split("=")[0] + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+		});
+
+		// Clear local storage
+		localStorage.clear();
+
+		// close all websockets
+		await WEB_SOCKET.close_all_websockets();
 
 		return true;
 	}

@@ -2,10 +2,10 @@
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
-import FETCH from './BotChatBox_fetch.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
+import FETCH from './BotFriendPfp_fetch.js';
 import BOT_FRIEND_PFP from './BotFriendPfp.js';
 import WS_MANAGER from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
@@ -143,7 +143,6 @@ class BotChatBox
 		}
 		else
 		{
-			alert(`Failed to get ${this.target}'s profile info.`);
 			return false;
 		}
 
