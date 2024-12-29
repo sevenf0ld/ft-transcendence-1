@@ -31,8 +31,8 @@ class BotFriendPfp
 		this.container = null;
 		this.main_ctn = null;
 		this.buttons = {
-			'close': '',
-			'history': '',
+			'close': null,
+			'history': null,
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.username = null;
@@ -69,8 +69,8 @@ class BotFriendPfp
 	async push_important_elements()
 	{
 		this.main_ctn = document.querySelector('.ct-fn-pfp-ctn');
-		this.buttons.close = document.getElementById('btn_fn_pfp_close');
-		this.buttons.history = document.getElementById('btn_fn_pfp_hist');
+		this.buttons['close'] = document.getElementById('btn_fn_pfp_close');
+		this.buttons['history'] = document.getElementById('btn_fn_pfp_hist');
 
 		if (!this.main_ctn)
 			throw new Error('[ERR] main container not found');
@@ -88,11 +88,11 @@ class BotFriendPfp
 	async bind_events()
 	{
 		this.buttons['close'].addEventListener(
-			'click', async (e) => {await this.closeClick(e);}
+			'click', async (event) => {await this.closeClick(event);}
 		);
 
 		this.buttons['history'].addEventListener(
-			'click', async (e) => {await this.historyClick(e);}
+			'click', async (event) => {await this.historyClick(event);}
 		);
 
 		return true;
@@ -284,4 +284,66 @@ class BotFriendPfp
 }
 
 const item = new BotFriendPfp();
+export default item;
+
+
+// COPY AND PASTE
+/
+// file : MidBoard.js
+// -------------------------------------------------- //
+// importing-internal
+// -------------------------------------------------- //
+// -------------------------------------------------- //
+// importing-external
+// -------------------------------------------------- //
+// -------------------------------------------------- //
+// developer notes
+// -------------------------------------------------- //
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
+// -------------------------------------------------- //
+// main-functions
+// -------------------------------------------------- //
+class MidBoard
+{
+	// --------------------------------------------- //
+	// CONSTRUCTOR
+	// --------------------------------------------- //
+	constructor()
+	{
+		// COMMON-atts
+		this.container = null;
+		this.main_ctn = null;
+		this.buttons = {
+		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
+	}
+	// ======================================================================== //
+	// SHARED-LAYOUT-BASE
+	// ======================================================================== //
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [2/4] EVENT-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [3/4] FETCH-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [4/4] HTML-ELEMENT-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+}
+
+const item = new MidBoard();
 export default item;

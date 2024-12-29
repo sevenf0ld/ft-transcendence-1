@@ -6,11 +6,10 @@
 // Importing-external
 // -------------------------------------------------- //
 //layout
-import PageTitle from '../core/helpers/PageTitle.js';
-import MediaLayout from '../layouts/MediaLayout.js';
-import IntroLayout from '../layouts/IntroLayout.js';
-//components
-import SignupCard from '../components/SignupCard.js';
+import PAGE_TITLE from '../core/helpers/PageTitle.js';
+import SIGNUP_CARD from '../components/SignupCard.js';
+import INTRO_LAYOUT from '../layouts/IntroLayout.js';
+import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -20,28 +19,34 @@ import SignupCard from '../components/SignupCard.js';
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
-export default class SignupView
+class SignupView
 {
-	constructor(container)
+	constructor()
 	{
-		this.container = container;
+		this.container = document.body;
 	}
 	
 	async render()
 	{
-		const page_title = new PageTitle();
-		page_title.update('Sign Up');
+		const page_title = PAGE_TITLE;
+		await page_title.init();
+		await page_title.update('Sign Up');
 
-		const media = new MediaLayout();
-		await media.render();
+		const media = MEDIA_LAYOUT;
+		media.container = this.container;
+		await media.render('replace');
 
-		const layout = new IntroLayout(await media.get());
+		const media_div = media.main_ctn;
+		const layout = INTRO_LAYOUT;
+		layout.container = media_div;
+		await layout.render('replace');
 
-		await layout.render();
-
-		const signup = new SignupCard(await layout.get());
-		await signup.render();
+		SIGNUP_CARD.container = layout.main_ctn;
+		await SIGNUP_CARD.render('replace');
 
 		return true;
 	}
 }
+
+const item = new SignupView();
+export default item;

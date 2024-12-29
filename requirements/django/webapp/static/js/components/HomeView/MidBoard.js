@@ -5,9 +5,9 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import ModalLayout from '../../layouts/ModalLayout.js';
-import ModalRoomJoin from './ModalRoomJoin.js';
-import GameRoomView from '../../views/GameRoomView.js';
+import MODAL_ROOM_JOIN from './ModalRoomJoin.js';
+import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
+import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -125,7 +125,9 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked: local-pve');
 
-		const gameRoom = new GameRoomView('local-pve');
+		const gameRoom = GAME_ROOM_VIEW;
+		await gameRoom.init();
+		gameRoom.type = 'local-pve';
 		await gameRoom.render();
 
 		return true;
@@ -136,7 +138,9 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked : local-pvp');
 
-		const gameRoom = new GameRoomView('local-pvp');
+		const gameRoom = GAME_ROOM_VIEW;
+		await gameRoom.init();
+		gameRoom.type = 'local-pvp';
 		gameRoom.render();
 
 		return true;
@@ -147,7 +151,9 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked : local-tour');
 
-		const gameRoom = new GameRoomView('local-tour');
+		const gameRoom = GAME_ROOM_VIEW;
+		await gameRoom.init();
+		gameRoom.type = 'local-tour';
 		gameRoom.render();
 
 		return true;
@@ -164,8 +170,10 @@ class MidBoard
 		const modata = document.querySelector('#modal-join .modal-body');
 		modata.setAttribute('data-room-type', 'pvp');
 		modata.innerHTML = "";
-		const modaPvp = new ModalRoomJoin(modata, 'online-pvp');
-		modaPvp.render();
+
+		MODAL_ROOM_JOIN.container = modata;
+		MODAL_ROOM_JOIN.gameType = 'online-pvp';
+		await MODAL_ROOM_JOIN.render('replace');
 
 		return true;
 	}
@@ -181,8 +189,10 @@ class MidBoard
 		const modata = document.querySelector('#modal-join .modal-body');
 		modata.setAttribute('data-room-type', 'tour');
 		modata.innerHTML = "";
-		const modaTour = new ModalRoomJoin(modata, 'online-tour');
-		modaTour.render();
+
+		MODAL_ROOM_JOIN.container = modata;
+		MODAL_ROOM_JOIN.gameType = 'online-tour';
+		await MODAL_ROOM_JOIN.render('replace');
 
 		return true;
 	}
@@ -273,10 +283,11 @@ class MidBoard
 		let parent_html;
 
 		parent_html = document.querySelector('.ct-mpanel-top');
-		const modal1 = new ModalLayout(
-			parent_html, "modal-join", "Available Rooms (PVP)"
-		);
-		await modal1.render();
+		const modal1 = MODAL_LAYOUT;
+		modal1.container = parent_html;
+		modal1.name = 'modal-join';
+		modal1.title = 'Available Rooms (PVP)';
+		await modal1.render('append');
 
 		return true;
 	}

@@ -5,10 +5,10 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import * as FETCH from './ModalAdd_fetch.js';
 import * as LOADING from '../../core/helpers/loading.js';
-import alert_utils from '../../core/helpers/alert-utils.js';
-import rightPanelFriends from './RightFnList.js';
+import ALERT_UTILS from '../../core/helpers/alert-utils.js';
+import RIGHT_FRIEND_LIST from './RightFnList.js';
+import FETCH from './ModalAdd_fetch.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -73,7 +73,10 @@ class ModalAdd
 	{
 		this.main_ctn = document.querySelector('.add-friend-ctn');
 		this.buttons['submit'] = document.getElementById('btn_add_friend_submit');
-		this.alert_div = new alert_utils(document.querySelector('.ct-alert-addFriend'));
+
+		await ALERT_UTILS.init();
+		ALERT_UTILS.container = document.querySelector('.ct-alert-addFriend');
+		this.alert_div = ALERT_UTILS;
 
 		if (!this.alert_div)
 			throw new Error('[ERR] alert-div not found');
@@ -113,7 +116,8 @@ class ModalAdd
 		await LOADING.disable_all();
 
 		//send data to backend
-		const addFetch = new FETCH.fetch_addFriend();
+		const addFetch = FETCH;
+		await addFetch.init();
 		const fetch_result = await addFetch.fetchData();
 
 		this.alert_div.alert_info('Sending request...');
@@ -137,8 +141,9 @@ class ModalAdd
 			await modal.hide();
 
 			const parent_div = document.querySelector('.ct-main-rpanel');
-			const rightpanel = new rightPanelFriends(parent_div);
-			await rightpanel.render();
+
+			RIGHT_FRIEND_LIST.container = parent_div;
+			await RIGHT_FRIEND_LIST.render('replace');
 
 			await LOADING.restore_all();
 		}

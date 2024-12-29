@@ -52,9 +52,6 @@ class ModalSetItems
 	// --------------------------------------------- //
 	async render_language(type)
 	{
-		if (!type || type !== 'append' && type !== 'replace')
-			throw new Error('[ERR] invalid render type');
-
 		const template = await this.init_template_lang();
 
 		if (type.toLowerCase() === 'append')
@@ -67,6 +64,10 @@ class ModalSetItems
 		{
 			this.container.innerHTML = '';
 			this.container.innerHTML = template;
+		}
+		else
+		{
+			throw new Error('[ERR] invalid render type');
 		}
 
 		await this.push_important_elements_lang();
@@ -197,9 +198,6 @@ class ModalSetItems
 	// --------------------------------------------- //
 	async render_account(type)
 	{
-		if (!type || type !== 'append' && type !== 'replace')
-			throw new Error('[ERR] invalid render type');
-
 		const template = await this.init_template_acc();
 
 		if (type.toLowerCase() === 'append')
@@ -212,6 +210,10 @@ class ModalSetItems
 		{
 			this.container.innerHTML = '';
 			this.container.innerHTML = template;
+		}
+		else
+		{
+			throw new Error('[ERR] invalid render type');
 		}
 
 		await this.push_important_elements_acc();
@@ -360,9 +362,6 @@ class ModalSetItems
 	// --------------------------------------------- //
 	async render_pfp(type)
 	{
-		if (!type || type !== 'append' && type !== 'replace')
-			throw new error('[err] invalid render type');
-
 		const template = await this.init_template_pfp();
 
 		if (type.toLowerCase() === 'append')
@@ -375,6 +374,10 @@ class ModalSetItems
 		{
 			this.container.innerHTML = '';
 			this.container.innerHTML = template;
+		}
+		else
+		{
+			throw new Error('[ERR] invalid render type');
 		}
 
 		await this.push_important_elements_pfp();
@@ -594,9 +597,6 @@ class ModalSetItems
 	// --------------------------------------------- //
 	async render_2fa(type)
 	{
-		if (!type || type !== 'append' && type !== 'replace')
-			throw new Error('[ERR] invalid render type');
-
 		const template = await this.init_template_2fa();
 
 		if (type.toLowerCase() === 'append')
@@ -609,6 +609,10 @@ class ModalSetItems
 		{
 			this.container.innerHTML = '';
 			this.container.innerHTML = template;
+		}
+		else
+		{
+			throw new Error('[ERR] invalid render type');
 		}
 
 		await this.push_important_elements_2fa();

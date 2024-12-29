@@ -2,15 +2,15 @@
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
+import * as FETCH from './LeftUser_fetch.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
-import LoginView from '../../views/LoginView.js';
-import ModalLayout from '../../layouts/ModalLayout.js';
-import ModalSettings from './ModalSettings.js';
-import * as FETCH from './LeftUser_fetch.js';
 import TOKEN from '../../core/token.js';
 import MODAL_HISTORY from './ModalHistory.js';
+import MODAL_SETTINGS from './ModalSettings.js';
+import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
+import LOGIN_VIEW from '../../views/LoginView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -142,8 +142,9 @@ class LeftUser
 		parent_bd = parent_div.querySelector('.modal-body');
 		parent_bd.innerHTML = '';
 		parent_hd.innerHTML = 'Settings';
-		const modalSettings = new ModalSettings(parent_bd);
-		await modalSettings.render();
+
+		MODAL_SETTINGS.container = parent_bd;
+		await MODAL_SETTINGS.render('replace');
 		
 		return true;
 	}
@@ -153,18 +154,18 @@ class LeftUser
 		event.preventDefault();
 		console.log('[EVENT] button clicked : logout');
 
-		const logoutFetch = new FETCH.fetch_logout();
+		const logoutFetch = FETCH.FETCH_LOGOUT;
+		await logoutFetch.init();
 		const fetch_result = await logoutFetch.fetchData();
 		if (fetch_result === 'logout-successful')
 		{
-			clearInterval(TOKEN.token_id);
-			TOKEN.token_id = null;
-
-			const loginView = new LoginView(this.container);
+			if (TOKEN.token_id)
+				await TOKEN.stop_refresh_token();
 
 			localStorage.clear();
 			location.href = '/';
 
+			const loginView = LOGIN_VIEW;
 			await loginView.render();
 		}
 		else
@@ -212,7 +213,7 @@ class LeftUser
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
-
+    
 		// [C] HTML RETURN
 		return template;
 	}
@@ -247,7 +248,8 @@ class LeftUser
 	async html_stats()
 	{
 		// [-] HELPER FUNCTION
-		const home_profile = new FETCH.fetch_home_profile();
+		const home_profile = FETCH.FETCH_HOME_PROFILE;
+		await home_profile.init();
 		const fetch_result = await home_profile.fetchData();
 		const played = home_profile.fetch_obj.rdata.played;
 		const win_rate = home_profile.fetch_obj.rdata.win_rate + '%';
@@ -372,17 +374,18 @@ class LeftUser
 		let parent_html;
 
 		parent_html = this.container;
-		const modal1 = new ModalLayout(
-			parent_html, "modal-settings", "Settings"
-		);
-		await modal1.render();
+		const modal1 = MODAL_LAYOUT;
+		modal1.container = parent_html;
+		modal1.name = 'modal-settings';
+		modal1.title = 'Settings';
+		await modal1.render('append');
 
-		parent_html = this.container;
-		const modal2 = new ModalLayout(
-			parent_html, "modal-history", "JLIAW's Match History"
-		);
-		await modal2.render();
-
+		const modal2 = MODAL_LAYOUT;
+		modal2.container = parent_html;
+		modal2.name = 'modal-history';
+		modal2.title = 'Match History';
+		await modal2.render('append');
+    
 		return true;
 	}
 }

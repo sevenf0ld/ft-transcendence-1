@@ -5,7 +5,7 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
-import { fetch_utils as FETCH_UTILS } from '../core/helpers/fetch-utils.js';
+import FETCH_UTILS from '../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -20,6 +20,17 @@ class fetch_login
 	// --- [00] CONSTRUCTOR
 	constructor()
 	{
+		this.val_username = null;
+		this.val_password = null;
+		this.current_phase = 1;
+		this.fetch_utils_holder = null;
+		this.otp = '';
+		this.re_value = '';
+		this.fetch_obj = null;
+	}
+
+	async init()
+	{
 		this.val_username = document.getElementById('username').value;
 		this.val_password = document.getElementById('password').value;
 		this.current_phase = 1;
@@ -27,6 +38,8 @@ class fetch_login
 		this.otp = '';
 		this.re_value = '';
 		this.fetch_obj = null;
+
+		return true;
 	}
 
 	async set_phase(phase)
@@ -49,7 +62,8 @@ class fetch_login
 		if (this.current_phase !== 1)
 			return false;
 
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.getCookie('csrftoken');
 		await mainFetch.setUrl(url);
 		await mainFetch.setMethod('POST');
@@ -95,7 +109,8 @@ class fetch_login
 		if (this.current_phase !== 2)
 			return false;
 
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.copy_object(this.fetch_utils_holder);
 		await mainFetch.setUrl(url);
 		await mainFetch.appendBody('phase', 'two');
@@ -123,7 +138,8 @@ class fetch_login
 		if (this.current_phase !== 3)
 			return false;
 
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.copy_object(this.fetch_utils_holder);
 		await mainFetch.setUrl(url);
 		await mainFetch.appendBody('username', this.val_username);
@@ -166,7 +182,8 @@ class fetch_login
 		if (this.current_phase !== 4)
 			return false;
 
-		const mainFetch = new FETCH_UTILS();
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
 		await mainFetch.copy_object(this.fetch_utils_holder);
 		await mainFetch.setUrl(url);
 		await mainFetch.appendBody('phase', 'four');
@@ -235,7 +252,15 @@ class fetch_intra
 		this.re_value = '';
 		this.fetch_obj = null;
 	}
-	
+
+	async init()
+	{
+		this.re_value = '';
+		this.fetch_obj = null;
+
+		return true;
+	}
+
 	async generate_state()
 	{
 		let counter = 0;
@@ -267,7 +292,8 @@ class fetch_intra
 		{
 			try 
 			{
-				const mainFetch = new FETCH_UTILS();
+				await FETCH_UTILS.init();
+				const mainFetch = FETCH_UTILS;
 				await mainFetch.getCookie('csrftoken');
 				await mainFetch.setUrl('/api/social_auth/forty-two-login/');
 				await mainFetch.setMethod('POST');
@@ -324,7 +350,10 @@ class fetch_intra
 // -------------------------------------------------- //
 // [-] EXPORTS
 // -------------------------------------------------- //
+const FETCH_LOGIN = new fetch_login();
+const FETCH_INTRA = new fetch_intra();
+
 export {
-	fetch_login,
-	fetch_intra
+	FETCH_LOGIN,
+	FETCH_INTRA,
 };

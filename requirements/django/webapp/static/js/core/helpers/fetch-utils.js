@@ -11,7 +11,7 @@
 // -------------------------------------------------- //
 // main-function
 // -------------------------------------------------- //
-export default class fetch_utils
+class fetch_utils
 {
 	// --- [00] CONSTRUCTOR
 	constructor()
@@ -29,13 +29,35 @@ export default class fetch_utils
 		this.robject = {};
 	}
 
+	async init()
+	{
+		this.csrfToken = '';
+		this.url = '';
+		this.object = 
+		{
+			'method': '',
+			'headers': {},
+			'body': JSON.stringify({}),
+		};
+		this.response = {};
+		this.rdata = {};
+		this.robject = {};
+	}
+
 	// --- [00] DEEP-COPY
 	async copy_object(obj)
 	{
-		this.csrfToken = obj.csrfToken;
-		this.url = obj.url;
-		this.object['method'] = obj.object['method'];
-		this.object['headers'] = JSON.parse(JSON.stringify(obj.object['headers']));
+		this.csrfToken = null;
+		this.url = null;
+		this.object = 
+		{
+			'method': null,
+			'headers': null,
+			'body': JSON.stringify({}),
+		};
+		this.response = null;
+		this.rdata = null;
+		this.robject = null;
 
 		return true;
 	}
@@ -142,6 +164,5 @@ export default class fetch_utils
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
-export {
-	fetch_utils,
-};
+const item = new fetch_utils();
+export default item;

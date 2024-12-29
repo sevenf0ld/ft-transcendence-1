@@ -23,26 +23,25 @@ import EG_DATA from './engine_data.js';
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-export default class PongEngine
+class PongEngine
 {
 	// --------------------------------------------- //
 	// CONSTRUCTOR
 	// --------------------------------------------- //
-	constructor(gameType)
+	constructor()
 	{
-		this.container = document.querySelector('.ct-top-board');
-		this.gameType = gameType;
+		this.container = null;
+		this.gameType = null;
 		this.data = EG_DATA;
 	}
 
 	// --------------------------------------------- //
 	// MAIN-EXECUTION
 	// --------------------------------------------- //
-	async init() {
-		await this.init_html_template();
-
+	async init()
+	{
+		this.container = document.querySelector('.ct-top-board');
 		this.container.innerHTML = await this.init_html_template();
-		this.data.reset();
 		await this.set_important_elements();
 		await this.bind_events();
 		await this.bind_modals();
@@ -178,3 +177,6 @@ export default class PongEngine
 		return true;
 	}
 }
+
+const item = new PongEngine();
+export default item;

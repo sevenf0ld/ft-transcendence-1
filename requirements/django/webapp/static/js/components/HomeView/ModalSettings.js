@@ -1,177 +1,115 @@
 // file : ModalSettings.js
 // -------------------------------------------------- //
-// Importing-internal
+// importing-internal
 // -------------------------------------------------- //
 // -------------------------------------------------- //
-// Importing-external
+// importing-external
 // -------------------------------------------------- //
-import ModalLayout from '../../layouts//ModalLayout.js';
-import ModalSettingsItems from './ModalSetItems.js';
+import MODAL_SETTINGS_ITEMS from './ModalSetItems.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
+// THIS IS A FILE WHICH REFERENCES THE TEMPLATE (TEMPLATE.JS)
+// [section-structure]
+// 1. constructor
+// 2. main-execution
+// 3. event-related
+// 4. fetch-related
+// 5. html-element-related
+// a. bootstrap-modal-related (optional)
+// # init the class and export it.
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
-// --- [LOCAL] EXPORTED COMPONENTS
-// usage : insert querySelector's value of an element
-// 		   to register as export element; first one
-// 		   is always default
-const getEle = [
-	'.ct-template',
-];
-
-// --- [LOCAL] BUTTONS SECTION
-// button tracker
-class button
+class ModalSettings
 {
-	constructor()
+	// --------------------------------------------- //
+	// CONSTRUCTOR
+	// --------------------------------------------- //
+	constructor(container, gameType)
 	{
-		this.arr = {
+		// COMMON-atts
+		this.container = null;
+		this.main_ctn = null;
+		this.buttons = {
 			'language': '',
 			'account': '',
 			'profile': '',
 			'2fa': '',
 		};
+		// ELEMENT-SPECIFIC-ATTRIBUTES
+		this.modal_title = null;
 	}
-
-	async read_buttons()
+	// --------------------------------------------- //
+	// [1/4] MAIN-EXECUTION
+	// --------------------------------------------- //
+	async render(type)
 	{
-		for (const key in this.arr)
+		if (!type || type !== 'append' && type !== 'replace')
+			throw new Error('[ERR] invalid render type');
+
+		const template = await this.init_template();
+
+		if (type === 'append')
 		{
-			const ele = document.getElementById(`${this.arr[key]}`);
-			if (!ele)
-				throw new Error(`[ERR] button not found : ${this.arr[key]}`);
-			this.arr[key] = ele;
+			this.container.insertAdjacentHTML(
+				'beforeend', template
+			);
 		}
-		return true;
-	}
-}
-const btns = new button();
-
-// --- [LOCAL] HTML ELEMENTS SECTION
-function html_button()
-{
-	// [-] HELPER FUNCTION
-
-	// [A] TEMPLATE
-	let template = `
-		<button id="%btn1-c">%btn1-t</button>
-		<button id="%btn2-c">%btn2-t</button>
-		<button id="%btn3-c">%btn3-t</button>
-		<button id="%btn4-c">%btn4-t</button>
-	`;
-
-	// [B] SET ATTRIBUTES
-	const attributes =
-	{
-		'%btn1-c': 'btn_setLang',
-		'%btn1-t': 'Language',
-		'%btn2-c': 'btn_setAcc',
-		'%btn2-t': 'Account',
-		'%btn3-c': 'btn_setPfp',
-		'%btn3-t': 'Profile Picture',
-		'%btn4-c': 'btn_set2FA',
-		'%btn4-t': '2FA',
-	};
-
-	for (const key in attributes)
-		template = template.split(key).join(attributes[key]);
-
-	// [C] PUSH TO BUTTONS TRACKER
-	btns.arr['language'] = attributes['%btn1-c'];
-	btns.arr['account'] = attributes['%btn2-c'];
-	btns.arr['profile'] = attributes['%btn3-c'];
-	btns.arr['2fa'] = attributes['%btn4-c'];
-
-	// [D] HTML RETURN
-	return template;
-}
-
-// HTML elements bundle
-const ele =
-{
-	html_button,
-};
-
-// -------------------------------------------------- //
-// export
-// -------------------------------------------------- //
-
-export default class ModalSettings
-{
-	// --- [00] CONSTRUCTOR
-	constructor(container)
-	{
-		this.container = container;
-		this.components = {};
-		this.modal_title = document.querySelector('#modal-settings .modal-title');
-	}
-
-	// --- [01] GETTER
-	async get(element = 'default')
-	{
-		if (this.read_components() === false)
+		else if (type === 'replace')
 		{
-			throw new Error(`[ERR] this class has no export components`);
-			return false;
+			this.container.innerHTML = '';
+			this.container.innerHTML = template;
 		}
-		return this.compo_get(element);
-	}
 
-	// --- [02] COMPONENTS REGISTRY
-	async compo_register(name, element)
-	{
-		this.components[name] = element;
+		await this.push_important_elements();
+		await this.bind_events();
+		await this.bind_modals();
 
 		return true;
 	}
 
-	async compo_get(name)
+	async push_important_elements()
 	{
-		return this.components[name];
-	}
+		this.main_ctn = document.querySelector('.modal-settings-ctn');
+		this.buttons['language'] = document.getElementById('btn_setLang');
+		this.buttons['account'] = document.getElementById('btn_setAcc');
+		this.buttons['profile'] = document.getElementById('btn_setPfp');
+		this.buttons['2fa'] = document.getElementById('btn_set2FA');
+		this.modal_title = document.querySelector(
+			'#modal-settings .modal-title'
+		);
 
-	async compo_remove(name)
-	{
-		delete this.components[name];
-
-		return true;
-	}
-
-	async read_components()
-	{
-		if (getEle.length === 0)
-			return false;
-		this.compo_register('default', document.querySelector(getEle[0]));
-		for (const key in getEle)
+		for (const key in this.buttons)
 		{
-			const ele = document.querySelector(getEle[key]);
-			if (!ele)
-				throw new Error(`[ERR] component not found : ${getEle[key]}`);
-			const str = getEle[key].substring(1);
-			this.compo_register(str, ele);
+			if (!this.buttons[key])
+				throw new Error(`[ERR] button not found : ${key}`);
 		}
 
 		return true;
 	}
-
-	// --- [03] HTM-LELEMENTS
-	async init_template()
+	// --------------------------------------------- //
+	// [2/4] EVENT-RELATED
+	// --------------------------------------------- //
+	async bind_events()
 	{
-		let template = "";
-		template += ele.html_button();
 
-		// trim new lines, spaces, and tabs
-		template = template.replace(/\s+/g, ' ');
-		template = template.replace(/>\s+</g, '><');
-		template = template.replace(/\s*=\s*/g, '=');
-		template = template.trim();
+		this.buttons['language'].addEventListener(
+			'click', async (e) => {await this.langClick(e);}
+		);
+		this.buttons['account'].addEventListener(
+			'click', async (e) => {await this.accountClick(e);}
+		);
+		this.buttons['profile'].addEventListener(
+			'click', async (e) => {await this.profileClick(e);}
+		);
+		this.buttons['2fa'].addEventListener(
+			'click', async (e) => {await this.twofaClick(e);}
+		);
 
-		return template;
+		return true;
 	}
 
-	// --- [04] EVENT
 	async langClick(event)
 	{
 		console.log('[EVENT] button clicked : language');
@@ -180,8 +118,8 @@ export default class ModalSettings
 		this.container.innerHTML = '';
 		this.modal_title.innerHTML = 'Language';
 
-		const ModalSetItem = new ModalSettingsItems(this.container);
-		await ModalSetItem.render_language('replace');
+		MODAL_SETTINGS_ITEMS.container = this.container;
+		await MODAL_SETTINGS_ITEMS.render_language('replace');
 
 		return true;
 	}
@@ -194,8 +132,8 @@ export default class ModalSettings
 		this.container.innerHTML = '';
 		this.modal_title.innerHTML = 'Account';
 
-		const ModalSetItem = new ModalSettingsItems(this.container);
-		await ModalSetItem.render_account('replace');
+		MODAL_SETTINGS_ITEMS.container = this.container;
+		await MODAL_SETTINGS_ITEMS.render_account('replace');
 
 		return true;
 	}
@@ -208,8 +146,9 @@ export default class ModalSettings
 		this.container.innerHTML = '';
 		this.modal_title.innerHTML = 'Profile Picture';
 
-		const ModalSetItem = new ModalSettingsItems(this.container);
-		await ModalSetItem.render_pfp('replace');
+		MODAL_SETTINGS_ITEMS.container = this.container;
+		await MODAL_SETTINGS_ITEMS.render_pfp('replace');
+
 		return true;
 	}
 
@@ -221,42 +160,70 @@ export default class ModalSettings
 		this.container.innerHTML = '';
 		this.modal_title.innerHTML = '2FA';
 
-		const ModalSetItem = new ModalSettingsItems(this.container);
-		await ModalSetItem.render_2fa('replace');
+		MODAL_SETTINGS_ITEMS.container = this.container;
+		await MODAL_SETTINGS_ITEMS.render_2fa('replace');
 
 		return true;
 	}
-
-	async bind_events()
+	// --------------------------------------------- //
+	// [3/4] FETCH-RELATED
+	// --------------------------------------------- //
+	// --------------------------------------------- //
+	// [4/4] HTML-ELEMENT-RELATED
+	// --------------------------------------------- //
+	async init_template()
 	{
-		await btns.read_buttons();
+		let template = "";
+		template += await this.html_main_ctn();
 
-		btns.arr['language'].addEventListener(
-			'click', async (e) => {await this.langClick(e);}
-		);
-		btns.arr['account'].addEventListener(
-			'click', async (e) => {await this.accountClick(e);}
-		);
-		btns.arr['profile'].addEventListener(
-			'click', async (e) => {await this.profileClick(e);}
-		);
-		btns.arr['2fa'].addEventListener(
-			'click', async (e) => {await this.twofaClick(e);}
-		);
+		// trim new lines, spaces, and tabs
+		template = template.replace(/\s+/g, ' ');
+		template = template.replace(/>\s+</g, '><');
+		template = template.replace(/\s*=\s*/g, '=');
+		template = template.trim();
 
-		return true;
+		return template;
 	}
 
-	// --- [05] RENDER
-	async render()
+	async html_main_ctn()
 	{
-		const template = await this.init_template();
-		
-		this.container.insertAdjacentHTML('beforeend', template);
+		// [-] HELPER FUNCTION
+		// [A] TEMPLATE
+		let template = `
+		<div class="%main-c1">
+			<button id="%btn1-c">%btn1-t</button>
+			<button id="%btn2-c">%btn2-t</button>
+			<button id="%btn3-c">%btn3-t</button>
+			<button id="%btn4-c">%btn4-t</button>
+		</div>
+		`;
+		// [B] SET atts
+		const atts =
+		{
+			'%main-c1': 'modal-settings-ctn',
+			'%btn1-c': 'btn_setLang',
+			'%btn1-t': 'Language',
+			'%btn2-c': 'btn_setAcc',
+			'%btn2-t': 'Account',
+			'%btn3-c': 'btn_setPfp',
+			'%btn3-t': 'Profile Picture',
+			'%btn4-c': 'btn_set2FA',
+			'%btn4-t': '2FA',
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
 
-		await this.bind_events();
-		//await this.modals_render();
-
+		// [C] HTML RETURN
+		return template;
+	}
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals()
+	{
 		return true;
 	}
 }
+
+const item = new ModalSettings();
+export default item;
