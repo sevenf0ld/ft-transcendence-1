@@ -121,6 +121,9 @@ class BotChatBox
 		event.preventDefault();
 		console.log('[EVENT] button clicked : chatbox-profile');
 
+		if (await this.check_opened_profile(this.target))
+			return true;
+
 		const friend_profile = FETCH;
 		await friend_profile.init();
 		friend_profile.target = this.target;
@@ -145,6 +148,21 @@ class BotChatBox
 		}
 
 		return true;
+	}
+
+	async check_opened_profile(name)
+	{
+		const profilebox = document.querySelector('.ct-fn-pfp-title');
+
+		if (profilebox === null)
+			return false;
+
+		const title = profilebox.getAttribute('title');
+
+		if (title === name)
+			return true;
+
+		return false;
 	}
 
 	async closeClick(event)
@@ -206,9 +224,41 @@ class BotChatBox
 	// --------------------------------------------- //
 	async msg_generator(user, msg)
 	{
-		if (user === 'You')
-			return `<div class="ct-chatbox-msg text-muted">${user}: ${msg}</div>`;
-		return `<div class="ct-chatbox-msg">${user}: ${msg}</div>`;
+		let str = null;
+		const chatbox_ctn = document.querySelector('.ct-chatbox-ctn .ct-chatbox-bd');
+
+		if (user === 'You' || user === 'System')
+			str = `<div class="ct-chatbox-msg text-muted">${user}: ${msg}</div>`;
+		else
+			str = `<div class="ct-chatbox-msg">${user}: ${msg}</div>`;
+
+		chatbox_ctn.insertAdjacentHTML('beforeend', str);
+		await this.input_manager('receive');
+
+		return true;
+	}
+
+	async input_manager(state)
+	{
+		const input = document.getElementById('input_chatbox');
+		const ctn = document.querySelector('.ct-chatbox-bd');
+
+		if (state === 'disable')
+		{
+			input.disabled = true;
+			input.placeholder = 'Chat is unavailable.';
+			input.value = '';
+		}
+		if (state === 'enable')
+		{
+			input.disabled = false;
+			input.placeholder = 'Type your message here';
+			input.value = '';
+		}
+		if (state === 'receive')
+		{
+			ctn.scrollTop = ctn.scrollHeight;
+		}
 	}
 
 	async roomName_generator(sender, target)
@@ -263,10 +313,18 @@ class BotChatBox
     	  //================ RECEIVE ===============//
     	  //======= NOTIFICATION FROM SERVER =======//
     	  //========================================//
-		  if (data.type === 'chat_available')
-			  console.log(`[CHAT AVAILABLE] ${this.target} - in room.`);
-		  else if (data.type === 'chat_unavailable')
-			  console.log(`[CHAT UNAVAILABLE] ${this.target} - not in room.`);
+			if (data.type === 'chat_available')
+			{
+				await this.msg_generator('System', `${this.target} is in the room.`);
+				await this.input_manager('enable');
+				console.log(`[CHAT AVAILABLE] ${this.target} - in room.`);
+			}
+			else if (data.type === 'chat_unavailable')
+			{
+				await this.msg_generator('System', `${this.target} is not in the room.`);
+				await this.input_manager('disable');
+				console.log(`[CHAT UNAVAILABLE] ${this.target} - not in room.`);
+			}
 		  //========================================//
     	  //================ RECEIVE ===============//
     	  //================ CHATTING ==============//
@@ -274,10 +332,8 @@ class BotChatBox
 		  else if (data.type === 'chat_reply')
 		  {
 			let sender_name = data.sender === this.sender ? 'You' : data.sender;
-			let msg = await this.msg_generator(sender_name, data.message);
-			chatbox_ctn.insertAdjacentHTML(
-				'beforeend', msg
-			);
+			await this.msg_generator(sender_name, data.message);
+			await this.input_manager('receive');
 		  }
 		});
 
@@ -315,7 +371,7 @@ class BotChatBox
 		let template = `
 		<div class="%main-1c %main-2c">
 			<div class="%hd-1c">
-				<p class="%p1-c" title-"%p1-t" id="%hd-1d" @att-t1>%p1-t</p>
+				<p class="%p1-c" id="%hd-1d" @att-t1>%p1-t</p>
 				<div class="%inv-1c" id="%inv-1d">invite</div>
 				<div class="%close-1c" id="%close-1d">%close-1t</div>
 			</div>
