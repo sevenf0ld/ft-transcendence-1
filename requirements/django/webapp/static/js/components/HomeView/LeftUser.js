@@ -260,10 +260,7 @@ class LeftUser
 		const wins = home_profile.fetch_obj.rdata.wins;
 		const losses = home_profile.fetch_obj.rdata.losses;
 		if (fetch_result === 'home-profile-failed')
-		{
-			alert('Failed to get profile stats.');
 			return false;
-		}
 
 		// [A] TEMPLATE
 		let template = `

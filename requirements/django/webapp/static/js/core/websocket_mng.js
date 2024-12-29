@@ -34,6 +34,16 @@ class websocketManager
 		return true;
 	}
 
+	async close_all_websockets()
+	{
+		if (this.liveChat.ws && this.liveChat.ws.readyState >= 2)
+			this.close_curent_liveChat();
+		if (this.friend.ws && this.friend.ws.readyState >= 2)
+			this.close_friendSocket();
+
+		return true;
+	}
+
 	async close_curent_liveChat()
 	{
 		if (this.liveChat.ws && this.liveChat.ws.readyState >= 2)
