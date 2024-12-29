@@ -276,7 +276,7 @@ class form_input
 // -------------------------------------------------- //
 async function validate()
 {
-	const form = new form_input();
+	let form = new form_input();
 	const re_value = await form.run();
 
 	form = null;
