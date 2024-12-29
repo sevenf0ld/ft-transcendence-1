@@ -164,6 +164,39 @@ class websocketManager
 
 		return true;
 	}
+
+	async init_lobbySocket()
+	{
+		this.lobby =
+		{
+			ws: undefined,
+			url: undefined,
+		}
+
+		return true;
+	}
+
+	async connect_lobbySocket()
+	{
+		this.lobby.url = `wss://${window.location.host}/ws/lobby/`;
+		this.lobby.ws = new Websocket(this.lobby.url);
+
+		return true;
+	}
+
+	async close_lobbySocket()
+	{
+		this.lobby.ws.close();
+
+		return true;
+	}
+
+	async lobbySocket_run()
+	{
+		console.log('run');
+		await this.init_lobbySocket();
+		await this.connect_lobbySocket();
+	}
 }
 
 const data = new websocketManager();

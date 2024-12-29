@@ -92,6 +92,8 @@ class ModalRoomJoin
 			'click', async (event) => {await this.joinClick(event);}
 		);
 
+		await WEB_SOCKET.lobbySocket_run();
+
 		await this.roomListClick();
 		await this.input_number_only();
 
