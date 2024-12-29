@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # PVP
 class Match(models.Model):
@@ -108,4 +109,34 @@ class GameHistory(models.Model):
         Tournament,
         blank=True,
         related_name='tnm'
+    )
+
+class Room(models.Model):
+    MAXIMUM = 5
+
+    started = models.BooleanField(default=False)
+
+    # 6 digits max
+    room_id = models.PositiveIntegerField(
+        validators=[
+            MaxValueValidator(999999),
+        ]
+    )
+
+    members = models.PositiveIntegerField(
+        # the host
+        default=1,
+        validators=[
+            MaxValueValidator(5),
+            # everyone has left and if consumer does not destroy, this should
+            #MinValueValidator(0),
+        ],
+    )
+
+    host = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='room_host',
+        blank=True,
+        null=True
     )
