@@ -56,6 +56,17 @@ class fetch_login
 		return true;
 	}
 
+	async setup_fetch_settings(mainFetch, url)
+	{
+		await mainFetch.getCookie('csrftoken');
+		await mainFetch.setUrl(url);
+		await mainFetch.setMethod('POST');
+		await mainFetch.appendHeaders('Content-Type', 'application/json');
+		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+
+		return true;
+	}
+
 	// --- [] PHASE ONE
 	async phase_one(url)
 	{
@@ -64,11 +75,7 @@ class fetch_login
 
 		await FETCH_UTILS.init();
 		const mainFetch = FETCH_UTILS;
-		await mainFetch.getCookie('csrftoken');
-		await mainFetch.setUrl(url);
-		await mainFetch.setMethod('POST');
-		await mainFetch.appendHeaders('Content-Type', 'application/json');
-		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+		await this.setup_fetch_settings(mainFetch, url);
 		await mainFetch.appendBody('username', this.val_username);
 		await mainFetch.appendBody('password', this.val_password);
 		await mainFetch.appendBody('phase', 'one');
@@ -111,8 +118,7 @@ class fetch_login
 
 		await FETCH_UTILS.init();
 		const mainFetch = FETCH_UTILS;
-		await mainFetch.copy_object(this.fetch_utils_holder);
-		await mainFetch.setUrl(url);
+		await this.setup_fetch_settings(mainFetch, url);
 		await mainFetch.appendBody('phase', 'two');
 		await mainFetch.appendBody('username', this.val_username);
 		await mainFetch.fetchData();
@@ -140,8 +146,7 @@ class fetch_login
 
 		await FETCH_UTILS.init();
 		const mainFetch = FETCH_UTILS;
-		await mainFetch.copy_object(this.fetch_utils_holder);
-		await mainFetch.setUrl(url);
+		this.setup_fetch_settings(mainFetch, url);
 		await mainFetch.appendBody('username', this.val_username);
 		await mainFetch.appendBody('phase', 'three');
 		await mainFetch.appendBody('otp', this.otp);
@@ -184,8 +189,7 @@ class fetch_login
 
 		await FETCH_UTILS.init();
 		const mainFetch = FETCH_UTILS;
-		await mainFetch.copy_object(this.fetch_utils_holder);
-		await mainFetch.setUrl(url);
+		this.setup_fetch_settings(mainFetch, url);
 		await mainFetch.appendBody('phase', 'four');
 		await mainFetch.appendBody('username', this.val_username);
 		await mainFetch.appendBody('password', this.val_password);

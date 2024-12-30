@@ -5,6 +5,8 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
+import * as LUSER_FETCH from './LeftUser_fetch.js';
+import * as MSI_FETCH from './ModalSetItems_fetch.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -635,12 +637,15 @@ class ModalSetItems
 	// --------------------------------------------- //
 	async bind_events_2fa()
 	{
+		await this.update_2fa_status();
+
 		this.buttons['tfa-on'].addEventListener(
 			'click', async (e) => {await this.tfaEnableClick(e);}
 		);
 		this.buttons['tfa-off'].addEventListener(
 			'click', async (e) => {await this.tfaDisableClick(e);}
 		);
+
 		return true;
 	}
 
@@ -648,6 +653,8 @@ class ModalSetItems
 	{
 		event.preventDefault();
 		console.log('[EVENT] button clicked : tfa-on');
+
+		await this.fetch_toogle_tfa('on');
 
 		return true;
 	}
@@ -657,11 +664,107 @@ class ModalSetItems
 		event.preventDefault();
 		console.log('[EVENT] button clicked : tfa-off');
 
+		await this.fetch_toogle_tfa('off');
+
 		return true;
 	}
+
+	async update_2fa_status()
+	{
+		const btn_enable = this.buttons['tfa-on'];
+		const btn_disable = this.buttons['tfa-off'];
+		const icon = document.querySelector('.ct-set-2fa-icon');
+		const p = document.querySelector('.ct-set-2fa-p');
+
+		if (!await this.get_tfa_status())
+		{
+			btn_enable.classList.remove('d-none');
+			btn_enable.classList.add('d-block');
+			btn_enable.disabled = false;
+
+			btn_disable.classList.remove('d-block');
+			btn_disable.classList.add('d-none');
+			btn_disable.disabled = true;
+
+			icon.classList.remove('twofa-on');
+			icon.classList.add('twofa-off');
+			p.textContent = '2FA Status: Disabled';
+		}
+		else
+		{
+			btn_enable.classList.remove('d-block');
+			btn_enable.classList.add('d-none');
+			btn_enable.disabled = true;
+
+			btn_disable.classList.remove('d-none');
+			btn_disable.classList.add('d-block');
+			btn_disable.disabled = false;
+
+			icon.classList.remove('twofa-off');
+			icon.classList.add('twofa-on');
+			p.textContent = '2FA Status: Enabled';
+		}
+	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
+	async get_tfa_status()
+	{
+		let revalue = LUSER_FETCH.FETCH_HOME_PROFILE.tfa_is_enabled;
+		if (revalue === null)
+			throw new Error('[ERR] tfa status not fetched');
+
+		if (revalue === true)
+			return true;
+		else if (revalue === false)
+			return false;
+
+		return null;
+	}
+
+	async set_tfa_status(stat)
+	{
+		if (stat !== true && stat !== false && stat !== null)
+			throw new Error('[ERR] invalid status');
+
+		LUSER_FETCH.FETCH_HOME_PROFILE.tfa_is_enabled = stat;
+
+		return true;
+	}
+
+	async fetch_toogle_tfa(type)
+	{
+		if (type !== 'on' && type !== 'off')
+			throw new Error('[ERR] invalid type');
+
+		await MSI_FETCH.TFA.init();
+		await MSI_FETCH.TFA.fetchData(type);
+		const obj = MSI_FETCH.TFA;
+		if (obj.re_value === 'tfa-successful')
+		{
+			if (type === 'on')
+			{
+				await this.set_tfa_status(true);
+				alert(`2FA has been turned ${type}.`);
+			}
+			if (type === 'off')
+			{
+				await this.set_tfa_status(false);
+				alert(`2FA has been turned ${type}.`);
+			}
+		}
+		else if (obj.re_value === 'tfa-failed')
+		{
+			throw new Error('[ERR] 2FA status update failed : failed');
+			await this.set_tfa_status(null);
+			return false;
+		}
+		else
+			console.error('2FA status update failed : unknown error');
+
+		return true;
+	}
 	// --------------------------------------------- //
 	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
@@ -687,7 +790,7 @@ class ModalSetItems
 		<div class="%main-c1">
 			<div class="%sta-c">
 				<div class="%icon-c1"></div>
-				<p>%sta-t</p>
+				<p class="%des-c1">%sta-t</p>
 			</div>
 			<button @att1 class="%btn1-c">@att2</button>
 			<button @att3 class="%btn2-c">@att4</button>
@@ -699,6 +802,7 @@ class ModalSetItems
 			'%main-c1': 'ct-set-2fa-ctn',
 			'%sta-c': 'ct-set-2fa-status',
 			'%icon-c1': 'ct-set-2fa-icon twofa-off',
+			'%des-c1': 'ct-set-2fa-p',
 			'%sta-t': '2FA Status: Disabled',
 			'@att1': 'id="btn_2fa_on" data-bs-dismiss="modal"',
 			'@att2': 'Enable 2FA',

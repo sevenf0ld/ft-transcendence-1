@@ -34,11 +34,19 @@ def is_valid_password(user, password):
         return e.messages
 
 def enable_mfa(user):
-    profile_data = Profile.objects.get(user=user_data)
+    profile_data = Profile.objects.get(user=user)
     profile_data.mfa_email_enabled = True
     profile_data.save()
 
 def disable_mfa(user):
-    profile_data = Profile.objects.get(user=user_data)
+    profile_data = Profile.objects.get(user=user)
     profile_data.mfa_email_enabled = False
     profile_data.save()
+
+def get_mfa_status(request):
+    username = request.user.username
+    user_data = User.objects.get(username__iexact=username)
+    profile_data = Profile.objects.get(user=user_data)
+
+    return profile_data.mfa_email_enabled
+

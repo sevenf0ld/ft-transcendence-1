@@ -71,7 +71,7 @@ class TokenCs
 
 		this.token_id = setInterval(async () => {
 			await this.refresh_token();
-		}, 40);
+		}, ms);
 
 		return true;
 	}
