@@ -169,10 +169,26 @@ class MidBoard
 		return true;
 	}
 
+	async listen_lobby_socket()
+	{
+		WEB_SOCKET.lobby.ws.addEventListener('message', async (event) =>
+		{
+			let data = JSON.parse(event.data);
+
+			if (data.type === 'display')
+				console.log(data.rooms);
+		});
+
+		return true;
+	}
+
 	async remotePvpClick(event)
 	{
 		event.preventDefault();
 		console.log('[EVENT] button clicked : remote-pvp');
+
+		await WEB_SOCKET.lobbySocket_run();
+		await this.listen_lobby_socket();
 
 		// for popup modal
 		const moda = document.querySelector('#modal-join .modal-title');
@@ -192,6 +208,9 @@ class MidBoard
 	{
 		event.preventDefault();
 		console.log('[EVENT] button clicked : remote-tour');
+
+		await WEB_SOCKET.lobbySocket_run();
+		await this.listen_lobby_socket();
 
 		// for popup modal
 		const moda = document.querySelector('#modal-join .modal-title');

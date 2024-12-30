@@ -179,23 +179,29 @@ class websocketManager
 	async connect_lobbySocket()
 	{
 		this.lobby.url = `wss://${window.location.host}/ws/lobby/`;
-		this.lobby.ws = new Websocket(this.lobby.url);
+		this.lobby.ws = new WebSocket(this.lobby.url);
 
 		return true;
 	}
 
 	async close_lobbySocket()
 	{
-		this.lobby.ws.close();
+		if (this.lobby.ws !== undefined)
+		{
+			this.lobby.ws.close();
+			this.lobby.ws = undefined;
+			this.lobby.url = undefined;
+		}
 
 		return true;
 	}
 
 	async lobbySocket_run()
 	{
-		console.log('run');
 		await this.init_lobbySocket();
 		await this.connect_lobbySocket();
+
+		return true;
 	}
 }
 

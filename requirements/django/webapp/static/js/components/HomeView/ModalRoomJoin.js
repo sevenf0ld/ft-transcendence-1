@@ -92,10 +92,9 @@ class ModalRoomJoin
 			'click', async (event) => {await this.joinClick(event);}
 		);
 
-		await WEB_SOCKET.lobbySocket_run();
-
 		await this.roomListClick();
 		await this.input_number_only();
+		await this.handle_modal_close();
 
 		return true;
 	}
@@ -110,6 +109,7 @@ class ModalRoomJoin
 		{
 			await WEB_SOCKET.close_curent_liveChat();
 			await WEB_SOCKET.friendSocket_gameroom_status('join');
+			await WEB_SOCKET.close_lobbySocket();
 
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
@@ -120,6 +120,7 @@ class ModalRoomJoin
 		{
 			await WEB_SOCKET.close_curent_liveChat();
 			await WEB_SOCKET.friendSocket_gameroom_status('join');
+			await WEB_SOCKET.close_lobbySocket();
 
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
@@ -159,6 +160,17 @@ class ModalRoomJoin
 			const regex = /[0-9]/;
 			if (!regex.test(key))
 				e.preventDefault();
+		});
+
+		return true;
+	}
+
+	async handle_modal_close()
+	{
+		const modal_join_container = document.getElementById('modal-join');
+
+		modal_join_container.addEventListener('hidden.bs.modal', async (event) => {
+			await WEB_SOCKET.close_lobbySocket();
 		});
 
 		return true;
