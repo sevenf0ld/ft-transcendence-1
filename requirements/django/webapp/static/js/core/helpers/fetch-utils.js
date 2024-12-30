@@ -45,24 +45,6 @@ class fetch_utils
 		this.robject = {};
 	}
 
-	// --- [00] DEEP-COPY
-	async copy_object(obj)
-	{
-		this.csrfToken = null;
-		this.url = null;
-		this.object = 
-		{
-			'method': null,
-			'headers': null,
-			'body': JSON.stringify({}),
-		};
-		this.response = null;
-		this.rdata = null;
-		this.robject = null;
-
-		return true;
-	}
-
 	// --- [00] SETTERS
 	async setUrl(url)
 	{
