@@ -20,7 +20,7 @@ class ProfileModelSerializer(serializers.ModelSerializer):
         model = Profile
         # avatar and language to be added
         #fields = '__all__'
-        fields = ['played', 'win_rate', 'wins', 'losses', 'nickname', 'mfa_email_enabled']
+        fields = ['played', 'win_rate', 'wins', 'losses', 'nickname', 'mfa_email_enabled', 'language']
 
 class UploadAvatarSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
