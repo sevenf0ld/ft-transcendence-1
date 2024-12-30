@@ -13,13 +13,15 @@ class LobbyConsumer(WebsocketConsumer):
     # display the list of rooms
     def connect(self):
         self.user = self.scope['user']
-        if not self.user.is_authenticated:
+        self.lobby_type = self.scope['url_route']['kwargs']['lobby_type']
+        if not self.user.is_authenticated or self.lobby_type != 'PVP' and self.lobby_type != 'TNM':
             self.close(3000)
             return
 
+        self.group_name = f'lobby_{self.lobby_type}'
+
         self.accept()
 
-        self.group_name = 'lobby'
         self.rooms = self.get_rooms()
 
         async_to_sync(self.channel_layer.group_add)(
@@ -30,7 +32,7 @@ class LobbyConsumer(WebsocketConsumer):
 
     @database_sync_to_async
     def get_rooms(self):
-        rooms = Room.objects.all()
+        rooms = Room.objects.filter(room_type=self.lobby_type)
         if rooms.exists():
             return rooms
         return []

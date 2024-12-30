@@ -176,9 +176,9 @@ class websocketManager
 		return true;
 	}
 
-	async connect_lobbySocket()
+	async connect_lobbySocket(lobby_type)
 	{
-		this.lobby.url = `wss://${window.location.host}/ws/lobby/`;
+		this.lobby.url = `wss://${window.location.host}/ws/lobby/${lobby_type}/`;
 		this.lobby.ws = new WebSocket(this.lobby.url);
 
 		return true;
@@ -196,10 +196,10 @@ class websocketManager
 		return true;
 	}
 
-	async lobbySocket_run()
+	async lobbySocket_run(lobby_type)
 	{
 		await this.init_lobbySocket();
-		await this.connect_lobbySocket();
+		await this.connect_lobbySocket(lobby_type);
 
 		return true;
 	}

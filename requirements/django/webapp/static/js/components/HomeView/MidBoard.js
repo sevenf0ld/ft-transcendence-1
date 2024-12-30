@@ -187,7 +187,7 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked : remote-pvp');
 
-		await WEB_SOCKET.lobbySocket_run();
+		await WEB_SOCKET.lobbySocket_run('PVP');
 		await this.listen_lobby_socket();
 
 		// for popup modal
@@ -209,7 +209,7 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked : remote-tour');
 
-		await WEB_SOCKET.lobbySocket_run();
+		await WEB_SOCKET.lobbySocket_run('TNM');
 		await this.listen_lobby_socket();
 
 		// for popup modal
