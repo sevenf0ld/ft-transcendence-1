@@ -161,6 +161,8 @@ class ModalSettings
 		this.modal_title.innerHTML = '2FA';
 
 		MODAL_SETTINGS_ITEMS.container = this.container;
+		const result = MODAL_SETTINGS_ITEMS.get_tfa_status();
+		console.log(result);
 		await MODAL_SETTINGS_ITEMS.render_2fa('replace');
 
 		return true;

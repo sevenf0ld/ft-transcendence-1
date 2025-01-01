@@ -17,7 +17,7 @@ from datetime import timedelta
 import random
 from django.core.mail import send_mail
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.core.cache import cache
 from django.middleware.csrf import get_token
 import smtplib
@@ -30,6 +30,7 @@ from .utils import (
     is_valid_password,
     enable_mfa,
     disable_mfa,
+    get_mfa_status,
 )
 
 class CustomRegisterView(RegisterView):
@@ -144,7 +145,7 @@ def verify_otp(request):
             re_status=status.HTTP_410_GONE
         elif otp_received != otp_sent:
             content = {'detail': 'OTP verification failed.'}
-            re_status=status.HTTP_401_UNAUTHORIZED
+            re_status=status.HTTP_400_BAD_REQUEST
         retval = Response(content, status=re_status)
     csrf_token = get_token(request)
     retval.set_cookie('csrftoken', csrf_token)
@@ -157,13 +158,11 @@ def verify_otp(request):
 #    #permission_classes = [IsAuthenticated]
 #    permission_classes = [AllowAny]
 @api_view(['PATCH'])
-#@permission_classes([IsAuthenticated])
-#@authentication_classes([JWTCookieAuthentication])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTCookieAuthentication])
 @permission_classes([AllowAny])
 def update_user_account(request):
     user = request.user
-    if not user.is_authenticated:
-        return Response({'details': 'Unauthenticated user.'}, status=status.HTTP_401_UNAUTHORIZED)
 
     current_pw = request.data.get('current_pw')
     # remove after frontend form validation
@@ -194,7 +193,7 @@ def update_user_account(request):
     if new_pw != confirm_pw:
         return Response({'details': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
     if is_current_password(user, new_pw):
-        return Response({'details': 'New password same as old password.'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'details': 'New password same as old password.'}, status=status.HTTP_400_BAD_REQUEST)
     invalidity = is_valid_password(user, new_pw)
     if invalidity is None:
         #user.password = make_password(new_pw)
@@ -211,27 +210,25 @@ def update_user_account(request):
     return Response(content, status=status.HTTP_200_OK)
 
 @api_view(['PATCH'])
-#@permission_classes([IsAuthenticated])
-#@authentication_classes([JWTCookieAuthentication])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTCookieAuthentication])
 @permission_classes([AllowAny])
 def update_user_mfa(request):
     user = request.user
-    if not user.is_authenticated:
-        return Response({'details': 'Unauthenticated user.'}, status=status.HTTP_401_UNAUTHORIZED)
 
     mfa = request.data.get('mfa')
     if mfa is None:
         return Response({'details': '2FA instruction required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if mfa == 'on' and is_mfa_enabled(request):
+    if mfa == 'on' and get_mfa_status(request) == True:
         return Response({'details': '2FA is already enabled.'}, status=status.HTTP_400_BAD_REQUEST)
-    if mfa == 'off' and not is_mfa_enabled(request):
+    if mfa == 'off' and get_mfa_status(request) == False:
         return Response({'details': '2FA is already disabled.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if mfa == 'on' and not is_mfa_enabled(request):
+    if mfa == 'on' and get_mfa_status(request) == False:
         enable_mfa(user)
         content = {'detail': '2FA enabled.'}
-    elif mfa == 'off' and is_mfa_enabled(request):
+    elif mfa == 'off' and get_mfa_status(request) == True:
         disable_mfa(user)
         content = {'detail': '2FA disabled.'}
     return Response(content, status=status.HTTP_200_OK)

@@ -22,12 +22,14 @@ class fetch_logout
 	{
 		this.re_value = '';
 		this.fetch_obj = null;
+		this.tfa_is_enabled = null;
 	}
 
 	async init()
 	{
 		this.re_value = '';
 		this.fetch_obj = null;
+		this.tfa_is_enabled = null;
 
 		return true;
 	}
@@ -91,7 +93,10 @@ class fetch_home_profile
 			this.fetch_obj = mainFetch;
 
 			if (mainFetch.response.ok)
+			{
+				this.tfa_is_enabled = mainFetch.rdata.mfa_email_enabled;
 				this.re_value = 'home-profile-successful';
+			}
 			else
 				this.re_value = 'home-profile-failed';
 		}

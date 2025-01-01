@@ -34,11 +34,22 @@ class websocketManager
 		return true;
 	}
 
+	async ws_is_ready_to_close(ws)
+	{
+		if (!ws)
+			return false;
+		if (ws.readyState !== WebSocket.OPEN &&
+			ws.readyState !== WebSocket.CONNECTING)
+			return false;
+
+		return true;
+	}
+
 	async close_all_websockets()
 	{
-		if (this.liveChat.ws && this.liveChat.ws.readyState >= 2)
+		if (await this.ws_is_ready_to_close(this.liveChat.ws))
 			this.close_curent_liveChat();
-		if (this.friend.ws && this.friend.ws.readyState >= 2)
+		if (await this.ws_is_ready_to_close(this.friend.ws))
 			this.close_friendSocket();
 
 		return true;
@@ -46,7 +57,7 @@ class websocketManager
 
 	async close_curent_liveChat()
 	{
-		if (this.liveChat.ws && this.liveChat.ws.readyState >= 2)
+		if (await this.ws_is_ready_to_close(this.liveChat.ws))
 		{
 			this.liveChat.ws.send(JSON.stringify({
 			  'message': null,
@@ -75,7 +86,7 @@ class websocketManager
 
 	async close_friendSocket()
 	{
-		if (this.liveChat.ws && this.liveChat.ws.readyState >= 2)
+		if (await this.ws_is_ready_to_close(this.friend.ws))
 			this.liveChat.ws.close();
 
 		return true;
@@ -138,10 +149,10 @@ class websocketManager
 
 	async friendSocket_gameroom_status(type)
 	{
-		console.log('update_inroom_status:', type);
 		if (type === 'join')
 		{
-			if (this.friend.ws && this.friend.ws.readyState === WebSocket.OPEN)
+			if (this.friend.ws
+				&& this.friend.ws.readyState === WebSocket.OPEN)
 			{
 				this.friend.ws.send(JSON.stringify({
 				  'user': this.friend.sender,
@@ -151,7 +162,8 @@ class websocketManager
 		}
 		else if (type === 'leave')
 		{
-			if (this.friend.ws && this.friend.ws.readyState === WebSocket.OPEN)
+			if (this.friend.ws
+				&& this.friend.ws.readyState === WebSocket.OPEN)
 			{
 				this.friend.ws.send(JSON.stringify({
 				  'user': this.friend.sender,
