@@ -157,62 +157,94 @@ def verify_otp(request):
 #    #authentication_classes = [JWTCookieAuthentication]
 #    #permission_classes = [IsAuthenticated]
 #    permission_classes = [AllowAny]
+#@api_view(['PATCH'])
+#@permission_classes([IsAuthenticated])
+#@authentication_classes([JWTCookieAuthentication])
+#@permission_classes([AllowAny])
+#def update_user_account(request):
+#    user = request.user
+#
+#    current_pw = request.data.get('current_pw')
+#    # remove after frontend form validation
+#    if current_pw is None:
+#        return Response({'details': 'Password required.'}, status=status.HTTP_400_BAD_REQUEST)
+#
+#    new_email = request.data.get('new_email')
+#    new_pw = request.data.get('new_pw')
+#    confirm_pw = request.data.get('confirm_pw')
+#
+#    # remove after frontend form validation
+#    if new_email is None and new_pw is None and confirm_pw is None:
+#        return Response({'details': 'All empty fields.'}, status=status.HTTP_400_BAD_REQUEST)
+#    if new_pw and confirm_pw is None or confirm_pw and new_pw is None:
+#        return Response({'details': 'Empty password field.'}, status=status.HTTP_400_BAD_REQUEST)
+#
+#    if new_email:
+#        if is_current_email(user, new_email):
+#            return Response({'details': 'New e-mail same as current e-mail.'}, status=status.HTTP_400_BAD_REQUEST)
+#        if is_existing_email(new_email):
+#            return Response({'details': 'E-mail address is already taken.'}, status=status.HTTP_400_BAD_REQUEST)
+#        user.email = new_email
+#        user.save()
+#        enable_mfa(user)
+#        content = {'detail': 'E-mail address updated. 2FA is automatically enabled on e-mail change.'}
+#        #return Response({'details': 'E-mail address updated.'}, status=status.HTTP_200_OK)
+#
+#    if new_pw != confirm_pw:
+#        return Response({'details': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
+#    if is_current_password(user, new_pw):
+#        return Response({'details': 'New password same as old password.'}, status=status.HTTP_400_BAD_REQUEST)
+#    invalidity = is_valid_password(user, new_pw)
+#    if invalidity is None:
+#        #user.password = make_password(new_pw)
+#        user.set_password(new_pw)
+#        user.save()
+#        content = {'detail': 'Password updated.'}
+#        #return Response({'details': 'Password updated.'}, status=status.HTTP_200_OK)
+#    else:
+#        return Response({'details': invalidity}, status=status.HTTP_400_BAD_REQUEST)
+#
+#    if new_email and new_password:
+#        content = {'detail': 'E-mail address and password updated. 2FA is automatically enabled on e-mail change.'}
+#
+#    return Response(content, status=status.HTTP_200_OK)
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTCookieAuthentication])
-@permission_classes([AllowAny])
-def update_user_account(request):
+def update_user_password(request):
     user = request.user
 
     current_pw = request.data.get('current_pw')
-    # remove after frontend form validation
-    if current_pw is None:
+    if current_pw == "":
         return Response({'details': 'Password required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    new_email = request.data.get('new_email')
     new_pw = request.data.get('new_pw')
     confirm_pw = request.data.get('confirm_pw')
 
-    # remove after frontend form validation
-    if new_email is None and new_pw is None and confirm_pw is None:
-        return Response({'details': 'All empty fields.'}, status=status.HTTP_400_BAD_REQUEST)
-    if new_pw and confirm_pw is None or confirm_pw and new_pw is None:
+    if new_pw == "" and confirm_pw == "":
+        return Response({'details': 'Empty password fields.'}, status=status.HTTP_400_BAD_REQUEST)
+    if new_pw != "" and confirm_pw == "" or confirm_pw != "" and new_pw == "":
         return Response({'details': 'Empty password field.'}, status=status.HTTP_400_BAD_REQUEST)
-
-    if new_email:
-        if is_current_email(user, new_email):
-            return Response({'details': 'New e-mail same as current e-mail.'}, status=status.HTTP_400_BAD_REQUEST)
-        if is_existing_email(email):
-            return Response({'details': 'E-mail address is already taken.'}, status=status.HTTP_400_BAD_REQUEST)
-        user.email = new_email
-        user.save()
-        enable_mfa(user)
-        content = {'detail': 'E-mail address updated. 2FA is automatically enabled on e-mail change.'}
-        #return Response({'details': 'E-mail address updated.'}, status=status.HTTP_200_OK)
 
     if new_pw != confirm_pw:
         return Response({'details': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
+    if not is_current_password(user, current_pw):
+        return Response({'details': 'Bad password.'}, status=status.HTTP_400_BAD_REQUEST)
     if is_current_password(user, new_pw):
         return Response({'details': 'New password same as old password.'}, status=status.HTTP_400_BAD_REQUEST)
     invalidity = is_valid_password(user, new_pw)
     if invalidity is None:
-        #user.password = make_password(new_pw)
         user.set_password(new_pw)
         user.save()
         content = {'detail': 'Password updated.'}
-        #return Response({'details': 'Password updated.'}, status=status.HTTP_200_OK)
     else:
         return Response({'details': invalidity}, status=status.HTTP_400_BAD_REQUEST)
-
-    if new_email and new_password:
-        content = {'detail': 'E-mail address and password updated. 2FA is automatically enabled on e-mail change.'}
 
     return Response(content, status=status.HTTP_200_OK)
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTCookieAuthentication])
-@permission_classes([AllowAny])
 def update_user_mfa(request):
     user = request.user
 

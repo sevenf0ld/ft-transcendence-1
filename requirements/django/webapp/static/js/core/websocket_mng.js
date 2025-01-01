@@ -87,7 +87,7 @@ class websocketManager
 	async close_friendSocket()
 	{
 		if (await this.ws_is_ready_to_close(this.friend.ws))
-			this.liveChat.ws.close();
+			this.friend.ws.close();
 
 		return true;
 	}

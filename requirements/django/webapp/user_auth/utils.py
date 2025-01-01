@@ -2,6 +2,7 @@ from user_profiles.models import Profile
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
 def is_mfa_enabled(request):
     username = request.data.get('username')
@@ -11,7 +12,7 @@ def is_mfa_enabled(request):
     return profile_data.mfa_email_enabled
 
 def is_current_email(user, email):
-    user_data = User.objects.get(user=user)
+    user_data = User.objects.get(username__iexact=user.username)
     if user_data.email.lower() == email:
         return True
     return False
