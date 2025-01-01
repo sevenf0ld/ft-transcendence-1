@@ -396,7 +396,7 @@ class modalSetItemsClass
 			}
 		}
 
-		alert('Success! Update account request has been submitted.');
+		console.log('Account setting form validation passed.');
 
 		return true;
 	}

@@ -260,6 +260,13 @@ class ModalSetItems
 	// --------------------------------------------- //
 	async submit_acc_form()
 	{
+		const user_obj = JSON.parse(localStorage.getItem('user'));
+		const is_intra_user = user_obj.ft_acc;
+		if (is_intra_user === true)
+		{
+			alert('Intra user detected! Account settings cannot be updated.');
+			return false;
+		}
 		const form = FORM_VALI_SU.modalSetItems;
 		if (!await form.validate())
 			return false;
