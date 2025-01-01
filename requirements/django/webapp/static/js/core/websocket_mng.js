@@ -18,7 +18,13 @@ class websocketManager
 	{
 		this.init_liveChat();
 		this.init_friendSocket();
+		this.init_lobbySocket();
+		this.init_gameRoomSocket();
 	}
+
+//=================================#
+// LIVE CHAT
+//=================================#
 
 	async init_liveChat()
 	{
@@ -70,6 +76,10 @@ class websocketManager
 		
 		return true;
 	}
+
+//=================================#
+// FRIEND LIST
+//=================================#
 
 	async init_friendSocket()
 	{
@@ -177,7 +187,11 @@ class websocketManager
 		return true;
 	}
 
-	async init_lobbySocket()
+//=================================#
+// LOBBY LIST (ROOMS)
+//=================================#
+
+async init_lobbySocket()
 	{
 		this.lobby =
 		{
@@ -210,8 +224,44 @@ class websocketManager
 
 	async lobbySocket_run(lobby_type)
 	{
-		await this.init_lobbySocket();
 		await this.connect_lobbySocket(lobby_type);
+
+		return true;
+	}
+
+//=================================#
+// GAME ROOM
+//=================================#
+
+	async init_gameRoomSocket()
+	{
+		this.gr =
+		{
+			ws: undefined,
+			url: undefined,
+		}
+
+		return true;
+	}
+
+	async connect_gameRoomSocket(room_id)
+	{
+		this.gr.url = `wss://${window.location.host}/ws/game/${room_id}/`;
+		this.gr.ws = new WebSocket(this.gr.url);
+
+		return true;
+	}
+
+	async close_gameRoomSocket()
+	{
+		this.gr.ws.close();
+
+		return true;
+	}
+
+	async run_gameRoomSocket(room_id)
+	{
+		await this.connect_gameRoomSocket(room_id);
 
 		return true;
 	}

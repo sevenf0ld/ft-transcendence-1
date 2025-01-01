@@ -94,10 +94,10 @@ class GameHistoryModelSerializer(serializers.ModelSerializer):
 class RoomCreateModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
-        fields = '__all__'
         extra_kwargs = {
             'room_id': {'required': False},
         }
+        exclude = ['id']
 
 class RoomModelSerializer(serializers.ModelSerializer):
     class Meta:

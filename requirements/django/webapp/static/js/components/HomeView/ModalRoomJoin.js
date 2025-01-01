@@ -7,6 +7,7 @@
 // -------------------------------------------------- //
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 import WEB_SOCKET from '../../core/websocket_mng.js';
+import MRJ_FETCH from './ModalRoomJoin_fetch.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -111,6 +112,9 @@ class ModalRoomJoin
 			await WEB_SOCKET.friendSocket_gameroom_status('join');
 			await WEB_SOCKET.close_lobbySocket();
 
+			// leave blank to be changed to create
+			await this.get_created_game_room('PVP');
+
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
 			gameRoom.type = 'online-pvp';
@@ -121,6 +125,9 @@ class ModalRoomJoin
 			await WEB_SOCKET.close_curent_liveChat();
 			await WEB_SOCKET.friendSocket_gameroom_status('join');
 			await WEB_SOCKET.close_lobbySocket();
+
+			// leave blank to be changed to create
+			await this.get_created_game_room('TNM');
 
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
@@ -178,6 +185,23 @@ class ModalRoomJoin
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
+	async get_created_game_room(room_type)
+	{
+		await MRJ_FETCH.init();
+		await MRJ_FETCH.fetchData(room_type);
+		console.log(MRJ_FETCH);
+		if (MRJ_FETCH.re_value === 'game-room-creation-successful')
+		{
+			room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
+
+			WEB_SOCKET.init_gameRoomSocket();
+			WEB_SOCKET.run_gameRoomSocket(room_id);
+
+		}
+		else if (MRJ_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
+			alert(`Failed to create ${room_type} game room.`);
+	}
+
 	// --------------------------------------------- //
 	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
