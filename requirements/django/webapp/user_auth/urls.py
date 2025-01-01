@@ -14,7 +14,7 @@ from .views import (
     send_otp,
     verify_otp,
     #UserAccountUpdateAPIView,
-    update_user_account,
+    update_user_password,
     update_user_mfa,
 )
 
@@ -32,6 +32,6 @@ urlpatterns = [
     #/api/v1/auth/token/refresh/ dj_rest_auth.jwt_auth.RefreshViewWithCookieSupport token_refresh
     #/api/v1/auth/token/verify/ rest_framework_simplejwt.views.TokenVerifyView token_verifya
     #path('update-user-account/', UserAccountUpdateAPIView.as_view()),
-    path('update-user-account/', update_user_account),
+    path('update-user-password/', update_user_password),
     path('update-user-mfa/', update_user_mfa),
 ]

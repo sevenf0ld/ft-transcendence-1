@@ -94,7 +94,7 @@ class fetch_accountSettings
 			await FETCH_UTILS.init();
 			const mainFetch = FETCH_UTILS;
 			await mainFetch.getCookie('csrftoken');
-			await mainFetch.setUrl('/api/user_auth/update-user-account/');
+			await mainFetch.setUrl('/api/user_auth/update-user-password/');
 			await mainFetch.setMethod('PATCH');
 			await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
 			await mainFetch.appendHeaders('Content-Type', 'application/json');
