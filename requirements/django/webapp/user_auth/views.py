@@ -215,15 +215,15 @@ def update_user_password(request):
     user = request.user
 
     current_pw = request.data.get('current_pw')
-    if current_pw is "":
+    if current_pw == "":
         return Response({'details': 'Password required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     new_pw = request.data.get('new_pw')
     confirm_pw = request.data.get('confirm_pw')
 
-    if new_pw is "" and confirm_pw is "":
+    if new_pw == "" and confirm_pw == "":
         return Response({'details': 'Empty password fields.'}, status=status.HTTP_400_BAD_REQUEST)
-    if new_pw and confirm_pw is "" or confirm_pw and new_pw is "":
+    if new_pw != "" and confirm_pw == "" or confirm_pw != "" and new_pw == "":
         return Response({'details': 'Empty password field.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if new_pw != confirm_pw:
