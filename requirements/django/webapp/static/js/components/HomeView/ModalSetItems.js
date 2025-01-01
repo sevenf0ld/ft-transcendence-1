@@ -7,6 +7,7 @@
 // -------------------------------------------------- //
 import * as LUSER_FETCH from './LeftUser_fetch.js';
 import * as MSI_FETCH from './ModalSetItems_fetch.js';
+import * as FORM_VALI_SU from '../../core/helpers/formVali-su.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -239,22 +240,46 @@ class ModalSetItems
 	async bind_events_acc()
 	{
 		this.buttons['acc-submit'].addEventListener(
-			'click', async (e) => {await this.submitClick(e);}
+			'click', async (e) => {await this.accSubmitClick(e);}
 		);
 
 		return true;
 	}
 
-	async submitClick(event)
+	async accSubmitClick(event)
 	{
 		event.preventDefault();
 		console.log('[EVENT] button clicked : account-submit');
+
+		await this.submit_acc_form();
 
 		return true;
 	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
+	async submit_acc_form()
+	{
+		const form = FORM_VALI_SU.modalSetItems;
+		if (!await form.validate())
+			return false;
+
+		await MSI_FETCH.ACC.init();
+		await MSI_FETCH.ACC.fetchData(form);
+		const acc_fetch = MSI_FETCH.ACC;
+
+		if (acc_fetch.re_value === 'acc-successful')
+			alert('Account settings updated.');
+		else if (acc_fetch.re_value === 'acc-failed')
+			alert('Account settings update failed.');
+		else
+			console.error('Account settings update failed : unknown error');
+
+		// if rdata is needed
+		const obj = LUSER_FETCH.fetch_obj;
+
+		return true;
+	}
 	// --------------------------------------------- //
 	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
@@ -281,7 +306,6 @@ class ModalSetItems
 			<div class="%form-field">
 				<label @att-a1>@att-a2</label>
 				<input @att-b1 @att-b2 @att-b3 @att-b4>
-				<p @att-c1 @att-c2></p>
 			</div>
 			`;
 
@@ -302,8 +326,6 @@ class ModalSetItems
 				'@att-b2': `type="${type}" maxlength="${max_length}"`,
 				'@att-b3': `id="${id}" autocomplete="off"`,
 				'@att-b4': `placeholder="${placeholder}"`,
-				'@att-c1': `class="ct-set-acc-error"`,
-				'@att-c2': `id="err_${id}"`,
 			};
 			for (const key in atts)
 				template = template.split(key).join(atts[key]);
@@ -312,6 +334,9 @@ class ModalSetItems
 		}
 
 		// [A] TEMPLATE
+		const user = JSON.parse(localStorage.getItem('user'));
+		const username = user.username;
+		const email = user.email;
 		let template = `
 		<div class="%main-c1">
 			<form class="%fm-c1">
@@ -333,11 +358,11 @@ class ModalSetItems
 			'%fm-c1': 'ct-set-acc-form',
 			'%dp-c1': 'ct-set-acc-display',
 			'%email': 'ct-set-acc-dis-email',
-			'%dp-t1': 'Username: user123',
-			'%dp-t2': 'Email: user123@email.com',
+			'%dp-t1': `Username: ${username}`,
+			'%dp-t2': `Email: ${email}`,
 			'%btn1-f1': 'btn_acc_submit',
 			'%btn1-t1': 'Update',
-			'@btn1': 'data-bs-dismiss="modal"',
+			'@btn1': '',
 			'@att1': `class="alert d-none"`,
 			'@att2': `role="alert" id="alert_set_acc"`,
 		};

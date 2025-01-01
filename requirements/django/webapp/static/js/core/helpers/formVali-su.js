@@ -188,7 +188,7 @@ class form_input
 		// password does not contain a small letter
 		if (!/[a-z]/.test(input1.value))
 		{
-			msg.innerHTML = 'must contain a small letter';
+			msg.innerHTML = 'must contain a lowercase letter';
 			msg.style.display = 'block';
 			return false;
 		}
@@ -271,6 +271,138 @@ class form_input
 	}
 }
 
+class modalSetItemsClass
+{
+	constructor()
+	{
+		this.cur_pass = null;
+		this.new_email = null;
+		this.new_pass = null;
+		this.conf_pass = null;
+	}
+
+	async init()
+	{
+		this.cur_pass = document.getElementById(
+			'input_acc_cur_pass'
+		).value;
+		this.new_email = document.getElementById(
+			'input_acc_new_email'
+		).value;
+		this.new_pass = document.getElementById(
+			'input_acc_new_pass'
+		).value;
+		this.conf_pass = document.getElementById(
+			'input_acc_conf_pass'
+		).value;
+	}
+
+	async validate()
+	{
+		await this.init();
+		const cur_pass = this.cur_pass;
+		const new_email = this.new_email;
+		const new_pass = this.new_pass;
+		const conf_pass = this.conf_pass;
+
+		const user = JSON.parse(localStorage.getItem('user'));
+		const username = user.username;
+		const email = user.email;
+
+		if (cur_pass.length < 1)
+		{
+			alert('Error! Current password is required to change any account settings.');
+			return false;
+		}
+		else if (cur_pass.length < 8)
+		{
+			alert('Error! Current password is invalid.');
+			return false;
+		}
+		else if (cur_pass.length > 16)
+		{
+			alert('Error! Current password is invalid.');
+			return false;
+		}
+		else
+		{
+			if (new_email.length < 1 && new_pass.length < 1)
+			{
+				alert('Error! Change new email or new password?');
+				return false;
+			}
+		}
+
+		if (new_email.length > 0)
+		{
+			if (new_email === email)
+			{
+				alert('Error! New email is the same as the current email.');
+				return false;
+			}
+			else if (!new_email.includes('@'))
+			{
+				alert('Error! New email is invalid.');
+				return false;
+			}
+			else if (!new_email.includes('.'))
+			{
+				alert('Error! New email is invalid.');
+				return false;
+			}
+			else if (new_email.split('@').length > 2)
+			{
+				alert('Error! New email is invalid.');
+				return false;
+			}
+			else if (!/^[a-z0-9.@]+$/i.test(new_email))
+			{
+				alert('Error! New email is invalid.');
+				return false;
+			}
+		}
+
+		if (new_pass.length > 0)
+		{
+			if (new_pass.length < 8)
+			{
+				alert('Error! New password must be at least 8 characters.');
+				return false;
+			}
+			else if (new_pass.length > 16)
+			{
+				alert('Error! New password must be at most 16 characters.');
+				return false;
+			}
+			else if (new_pass === cur_pass)
+			{
+				alert('Error! New password is the same as the current password.');
+				return false;
+			}
+			else if (new_pass !== conf_pass)
+			{
+				alert('Error! New password and confirm password do not match.');
+				return false;
+			}
+			else if (!/\d/.test(new_pass))
+			{
+				alert('Error! New password must contain a number.');
+				return false;
+			}
+			else if (!/[a-z]/.test(new_pass))
+			{
+				alert('Error! New password must contain a lowercase letter.');
+				return false;
+			}
+		}
+
+		alert('Success! Update account request has been submitted.');
+
+		return true;
+	}
+
+}
+
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
@@ -284,7 +416,10 @@ async function validate()
 	return re_value;
 }
 
+const modalSetItems = new modalSetItemsClass();
+
 export
 { 
 	validate,
+	modalSetItems,
 };
