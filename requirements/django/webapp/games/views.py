@@ -70,7 +70,7 @@ class RoomCreateAPIView(generics.CreateAPIView):
         serializer = self.get_serializer(data=mutable_data)
         serializer.is_valid(raise_exception=True)
 
-        host = request.data.get('user')
+        host = request.user
         room_id = self.generate_unique_rid()
 
         new_room = Room.objects.create(

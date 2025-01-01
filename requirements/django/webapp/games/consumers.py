@@ -70,7 +70,7 @@ class GameRoomConsumer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope['user']
         self.room_id = self.scope['url_route']['kwargs']['room_id']
-        if not user.is_authenticated or not self.room_id.is_digit() or len(self.room_id) != 6:
+        if not self.user.is_authenticated or len(self.room_id) != 6:
             self.close(3000)
             return
 
@@ -81,13 +81,12 @@ class GameRoomConsumer(WebsocketConsumer):
         in_room_count = len(self.in_room[self.group_id])
         if in_room_count < MAX_PVP_MEMBERS:
             self.accept()
-            self.in_room[self.group_id].add(user.username)
+            self.in_room[self.group_id].add(self.user.username)
             # increment room object members
             async_to_sync(self.channel_layer.group_add)(
                 self.group_id,
                 self.channel_name
             )
-            self.display_members()
         else:
             self.close(3003)
 
@@ -101,29 +100,40 @@ class GameRoomConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             self.group_id,
             {
-                'type': 'list.members',
+                'type': 'room.details',
                 'members': members,
                 'in_room_count': in_room_count,
                 'capacity': capacity,
             }
         )
 
-    def list_members(self, event):
+    def room_details(self, event):
         members = event['members']
         in_room_count = event['in_room_count']
         capacity = event['capacity']
         room = async_to_sync(self.get_room_object)()
+        is_host = async_to_sync(self.is_host)()
 
         self.send(text_data=json.dumps({
-            'type': 'display_game_room',
+            'type': 'room_details',
             'members': members,
             'num': in_room_count,
             'capacity': capacity,
             'details': room,
+            'is_host': is_host,
         }))
 
     @database_sync_to_async
     def get_room_object(self):
         # handle if does not exist
         room = Room.objects.get(room_id=self.room_id)
-        return room
+        serializer = RoomModelSerializer(room)
+        return serializer.data
+
+    @database_sync_to_async
+    def is_host(self):
+        # handle if does not exist
+        room = Room.objects.get(room_id=self.room_id)
+        if self.user.id == room.host.id:
+            return True
+        return False

@@ -92,6 +92,11 @@ class GameHistoryModelSerializer(serializers.ModelSerializer):
         fields = ['pvp', 'tnm']
 
 class RoomCreateModelSerializer(serializers.ModelSerializer):
+    host = serializers.SerializerMethodField()
+
+    def get_host(self, obj):
+       return obj.host.username
+
     class Meta:
         model = Room
         extra_kwargs = {
@@ -100,6 +105,11 @@ class RoomCreateModelSerializer(serializers.ModelSerializer):
         exclude = ['id']
 
 class RoomModelSerializer(serializers.ModelSerializer):
+    host = serializers.SerializerMethodField()
+
+    def get_host(self, obj):
+       return obj.host.username
+
     class Meta:
         model = Room
         fields = '__all__'

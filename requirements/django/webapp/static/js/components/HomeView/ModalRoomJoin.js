@@ -113,12 +113,13 @@ class ModalRoomJoin
 			await WEB_SOCKET.close_lobbySocket();
 
 			// leave blank to be changed to create
-			await this.get_created_game_room('PVP');
+			await this.fetch_game_room('PVP');
 
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
 			gameRoom.type = 'online-pvp';
 			await gameRoom.render();
+			await WEB_SOCKET.listen_gameRoomSocket();
 		}
 		else if (this.gameType === 'online-tour')
 		{
@@ -127,12 +128,13 @@ class ModalRoomJoin
 			await WEB_SOCKET.close_lobbySocket();
 
 			// leave blank to be changed to create
-			await this.get_created_game_room('TNM');
+			await this.fetch_game_room('TNM');
 
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
 			gameRoom.type = 'online-tour';
 			await gameRoom.render();
+			await WEB_SOCKET.listen_gameRoomSocket();
 		}
 
 		return true;
@@ -185,14 +187,15 @@ class ModalRoomJoin
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
-	async get_created_game_room(room_type)
+	async fetch_game_room(room_type)
 	{
 		await MRJ_FETCH.init();
 		await MRJ_FETCH.fetchData(room_type);
 		console.log(MRJ_FETCH);
 		if (MRJ_FETCH.re_value === 'game-room-creation-successful')
 		{
-			room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
+			console.log(MRJ_FETCH.fetch_obj.rdata);
+			const room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
 
 			WEB_SOCKET.init_gameRoomSocket();
 			WEB_SOCKET.run_gameRoomSocket(room_id);

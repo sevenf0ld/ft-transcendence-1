@@ -265,6 +265,20 @@ async init_lobbySocket()
 
 		return true;
 	}
+
+	async listen_gameRoomSocket()
+	{
+		this.gr.ws.addEventListener('message', async (event) => {
+			let data = JSON.parse(event.data);
+
+			if (data.type == 'room_details')
+			{
+				console.log('GAME ROOM DETAILS: ', data);
+			}
+		});
+
+		return true;
+	}
 }
 
 const data = new websocketManager();
