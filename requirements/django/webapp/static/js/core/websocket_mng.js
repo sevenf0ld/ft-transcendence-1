@@ -18,7 +18,13 @@ class websocketManager
 	{
 		this.init_liveChat();
 		this.init_friendSocket();
+		this.init_lobbySocket();
+		this.init_gameRoomSocket();
 	}
+
+//=================================#
+// LIVE CHAT
+//=================================#
 
 	async init_liveChat()
 	{
@@ -70,6 +76,10 @@ class websocketManager
 		
 		return true;
 	}
+
+//=================================#
+// FRIEND LIST
+//=================================#
 
 	async init_friendSocket()
 	{
@@ -173,6 +183,99 @@ class websocketManager
 		}
 		else
 			throw new Error('[ERR] unknown type');
+
+		return true;
+	}
+
+//=================================#
+// LOBBY LIST (ROOMS)
+//=================================#
+
+async init_lobbySocket()
+	{
+		this.lobby =
+		{
+			ws: undefined,
+			url: undefined,
+		}
+
+		return true;
+	}
+
+	async connect_lobbySocket(lobby_type)
+	{
+		this.lobby.url = `wss://${window.location.host}/ws/lobby/${lobby_type}/`;
+		this.lobby.ws = new WebSocket(this.lobby.url);
+
+		return true;
+	}
+
+	async close_lobbySocket()
+	{
+		if (this.lobby.ws !== undefined)
+		{
+			this.lobby.ws.close();
+			this.lobby.ws = undefined;
+			this.lobby.url = undefined;
+		}
+
+		return true;
+	}
+
+	async lobbySocket_run(lobby_type)
+	{
+		await this.connect_lobbySocket(lobby_type);
+
+		return true;
+	}
+
+//=================================#
+// GAME ROOM
+//=================================#
+
+	async init_gameRoomSocket()
+	{
+		this.gr =
+		{
+			ws: undefined,
+			url: undefined,
+		}
+
+		return true;
+	}
+
+	async connect_gameRoomSocket(room_id)
+	{
+		this.gr.url = `wss://${window.location.host}/ws/game/${room_id}/`;
+		this.gr.ws = new WebSocket(this.gr.url);
+
+		return true;
+	}
+
+	async close_gameRoomSocket()
+	{
+		this.gr.ws.close();
+
+		return true;
+	}
+
+	async run_gameRoomSocket(room_id)
+	{
+		await this.connect_gameRoomSocket(room_id);
+
+		return true;
+	}
+
+	async listen_gameRoomSocket()
+	{
+		this.gr.ws.addEventListener('message', async (event) => {
+			let data = JSON.parse(event.data);
+
+			if (data.type == 'room_details')
+			{
+				console.log('GAME ROOM DETAILS: ', data);
+			}
+		});
 
 		return true;
 	}
