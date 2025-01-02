@@ -169,7 +169,7 @@ class GameRoomConsumer(WebsocketConsumer):
 
     @transaction.atomic
     def increment_room_members(self):
-        #room = Room.objects.select_for_update.get(room_id=self.room_id)
+        #room = Room.objects.select_for_update().get(room_id=self.room_id)
         #room.members += 1
         #room.save()
         Room.objects.filter(room_id=self.room_id).update(members=F('members') + 1)
@@ -184,8 +184,8 @@ class GameRoomConsumer(WebsocketConsumer):
             'message': event['message']
         }))
 
-    @database_sync_to_async
+    @transaction.atomic
     def delete_room_object(self):
-        room = Room.objects.select_for_update.get(room_id=self.room_id)
+        room = Room.objects.select_for_update().get(room_id=self.room_id)
         room.delete()
 
