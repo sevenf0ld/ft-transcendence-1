@@ -14,7 +14,7 @@ class ChatConsumer(WebsocketConsumer):
     def connect(self):
         user = self.scope['user']
         if not user.is_authenticated:
-            self.close()
+            self.close(3000)
             return
 
         self.room_name = self.scope['url_route']['kwargs']['room_name']
@@ -37,7 +37,7 @@ class ChatConsumer(WebsocketConsumer):
             self.close(3003)
 
         in_room_users = len(self.in_room[self.room_group_name])
-        if in_room_users == 2:
+        if in_room_users == MAX_PRIVATE_CHAT_USERS:
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {

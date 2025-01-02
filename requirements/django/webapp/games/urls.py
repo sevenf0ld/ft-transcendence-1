@@ -3,6 +3,7 @@
 from django.urls import path, include
 from .views import (
     GameHistoryRetrieveAPIView,
+    RoomCreateAPIView,
 )
 
 app_name = 'games'
@@ -17,4 +18,5 @@ app_name = 'games'
 
 urlpatterns = [
     path('history/<str:target>', GameHistoryRetrieveAPIView.as_view()),
+    path('create-room/', RoomCreateAPIView.as_view()),
 ]

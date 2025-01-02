@@ -1,9 +1,6 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
-from asgiref.sync import sync_to_async
-from user_profiles.models import Profile
 from friends.models import FriendList
-from django.contrib.auth.models import User
 from channels.db import database_sync_to_async
 from asgiref.sync import async_to_sync
 

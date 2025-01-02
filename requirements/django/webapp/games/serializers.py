@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Match, Tournament, GameHistory
+from .models import Match, Tournament, GameHistory, Room
 from django.utils.timezone import localtime
 
 class MatchModelSerializer(serializers.ModelSerializer):
@@ -90,3 +90,26 @@ class GameHistoryModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = GameHistory
         fields = ['pvp', 'tnm']
+
+class RoomCreateModelSerializer(serializers.ModelSerializer):
+    host = serializers.SerializerMethodField()
+
+    def get_host(self, obj):
+       return obj.host.username
+
+    class Meta:
+        model = Room
+        extra_kwargs = {
+            'room_id': {'required': False},
+        }
+        exclude = ['id']
+
+class RoomModelSerializer(serializers.ModelSerializer):
+    host = serializers.SerializerMethodField()
+
+    def get_host(self, obj):
+       return obj.host.username
+
+    class Meta:
+        model = Room
+        fields = '__all__'

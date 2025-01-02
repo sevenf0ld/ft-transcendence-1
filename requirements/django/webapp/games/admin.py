@@ -12,3 +12,7 @@ admin.site.register(Tournament)
 from .models import GameHistory
 
 admin.site.register(GameHistory)
+
+from .models import Room
+
+admin.site.register(Room)
