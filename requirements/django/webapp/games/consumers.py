@@ -4,6 +4,8 @@ from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from .models import Room
 from .serializers import RoomModelSerializer
+from django.db import transaction
+from django.db.models import F
 
 class LobbyConsumer(WebsocketConsumer):
     def connect(self):
@@ -84,6 +86,10 @@ class GameRoomConsumer(WebsocketConsumer):
                 self.group_id,
                 self.channel_name
             )
+
+            is_host = async_to_sync(self.is_host)()
+            if not is_host:
+                self.increment_room_members()
         else:
             self.close(3003)
 
@@ -128,15 +134,6 @@ class GameRoomConsumer(WebsocketConsumer):
         return False
 
     def disconnect(self, code):
-        members = list(self.in_room[self.group_id])
-        async_to_sync(self.channel_layer.group_send)(
-            self.group_id,
-            {
-                'type': 'room.leave',
-                'members': members,
-            }
-        )
-
         if self.group_id in self.in_room:
             self.in_room[self.group_id].discard(self.user.username)
             if not self.in_room[self.group_id]:
@@ -145,6 +142,16 @@ class GameRoomConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_discard)(
             self.group_id,
             self.channel_name
+        )
+        self.decrement_room_members()
+
+        members = list(self.in_room[self.group_id])
+        async_to_sync(self.channel_layer.group_send)(
+            self.group_id,
+            {
+                'type': 'room.leave',
+                'members': members,
+            }
         )
 
     def room_leave(self, event):
@@ -162,3 +169,17 @@ class GameRoomConsumer(WebsocketConsumer):
             'details': room,
             'is_host': is_host,
         }))
+
+    @transaction.atomic
+    def increment_room_members(self):
+        #room = Room.objects.select_for_update.get(room_id=self.room_id)
+        #room.members += 1
+        #room.save()
+        Room.objects.filter(room_id=self.room_id).update(members=F('members') + 1)
+
+    @transaction.atomic
+    def decrement_room_members(self):
+        #room = Room.objects.select_for_update.get(room_id=self.room_id)
+        #room.members -= 1
+        #room.save()
+        Room.objects.filter(room_id=self.room_id).update(members=F('members') - 1)

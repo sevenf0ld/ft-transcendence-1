@@ -103,7 +103,7 @@ class ModalRoomJoin
 	{
 		event.preventDefault();
 
-		console.log('[EVENT] button clicked : join');
+		console.log('[EVENT] button clicked : create');
 
 		if (this.gameType === 'online-pvp')
 		{
@@ -111,8 +111,7 @@ class ModalRoomJoin
 			await WEB_SOCKET.friendSocket_gameroom_status('join');
 			await WEB_SOCKET.close_lobbySocket();
 
-			// leave blank to be changed to create
-			await this.fetch_game_room('PVP');
+			await this.fetch_create_game_room('PVP');
 
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
@@ -126,8 +125,7 @@ class ModalRoomJoin
 			await WEB_SOCKET.friendSocket_gameroom_status('join');
 			await WEB_SOCKET.close_lobbySocket();
 
-			// leave blank to be changed to create
-			await this.fetch_game_room('TNM');
+			await this.fetch_create_game_room('TNM');
 
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
@@ -150,6 +148,15 @@ class ModalRoomJoin
 			{
 				const roomid = e.currentTarget.getAttribute('data-roomid');
 				alert(`clicked room id : ${roomid}`);
+
+				await WEB_SOCKET.run_gameRoomSocket(roomid);
+				const data_room_type = document.querySelector('.join-room-main').parentNode.dataset.roomType;
+
+				const gameRoom = GAME_ROOM_VIEW;
+				await gameRoom.init();
+				gameRoom.type = `online-${data_room_type}`;
+				await gameRoom.render();
+				await WEB_SOCKET.listen_gameRoomSocket();
 			});
 		}
 
@@ -169,7 +176,7 @@ class ModalRoomJoin
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
-	async fetch_game_room(room_type)
+	async fetch_create_game_room(room_type)
 	{
 		await MRJ_FETCH.init();
 		await MRJ_FETCH.fetchData(room_type);
@@ -177,8 +184,8 @@ class ModalRoomJoin
 		{
 			const room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
 
-			WEB_SOCKET.init_gameRoomSocket();
-			WEB_SOCKET.run_gameRoomSocket(room_id);
+			await WEB_SOCKET.init_gameRoomSocket();
+			await WEB_SOCKET.run_gameRoomSocket(room_id);
 
 		}
 		else if (MRJ_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
