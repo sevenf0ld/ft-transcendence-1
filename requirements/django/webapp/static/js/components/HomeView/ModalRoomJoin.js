@@ -94,7 +94,7 @@ class ModalRoomJoin
 		);
 
 		await this.roomListClick();
-		await this.handle_modal_close();
+		//await this.handle_modal_close();
 
 		return true;
 	}
@@ -109,7 +109,9 @@ class ModalRoomJoin
 		{
 			await WEB_SOCKET.close_curent_liveChat();
 			await WEB_SOCKET.friendSocket_gameroom_status('join');
-			await WEB_SOCKET.close_lobbySocket();
+			//await WEB_SOCKET.close_lobbySocket();
+			//await WEB_SOCKET.notify_incr_lobbySocket('PVP');
+			//await WEB_SOCKET.notify_create_lobbySocket('PVP');
 
 			await this.fetch_create_game_room('PVP');
 
@@ -123,7 +125,9 @@ class ModalRoomJoin
 		{
 			await WEB_SOCKET.close_curent_liveChat();
 			await WEB_SOCKET.friendSocket_gameroom_status('join');
-			await WEB_SOCKET.close_lobbySocket();
+			//await WEB_SOCKET.close_lobbySocket();
+			//await WEB_SOCKET.notify_incr_lobbySocket('TNM');
+			//await WEB_SOCKET.notify_create_lobbySocket('TNM');
 
 			await this.fetch_create_game_room('TNM');
 
@@ -146,11 +150,23 @@ class ModalRoomJoin
 		{
 			btn.addEventListener('click', async (e) =>
 			{
+				e.preventDefault();
+
 				const roomid = e.currentTarget.getAttribute('data-roomid');
 				alert(`clicked room id : ${roomid}`);
 
+				// no init
 				await WEB_SOCKET.run_gameRoomSocket(roomid);
 				const data_room_type = document.querySelector('.join-room-main').parentNode.dataset.roomType;
+
+				// no init
+				let room_type = '';
+				if (data_room_type === 'pvp')
+					room_type = 'PVP';
+				else if (data_room_type === 'tour')
+					room_type = 'TNM';
+				//await WEB_SOCKET.lobbySocket_run(room_type);
+				await WEB_SOCKET.notify_incr_lobbySocket(room_type);
 
 				const gameRoom = GAME_ROOM_VIEW;
 				await gameRoom.init();
@@ -163,16 +179,16 @@ class ModalRoomJoin
 		return true;
 	}
 
-	async handle_modal_close()
-	{
-		const modal_join_container = document.getElementById('modal-join');
+	//async handle_modal_close()
+	//{
+	//	const modal_join_container = document.getElementById('modal-join');
 
-		modal_join_container.addEventListener('hidden.bs.modal', async (event) => {
-			await WEB_SOCKET.close_lobbySocket();
-		});
+	//	modal_join_container.addEventListener('hidden.bs.modal', async (event) => {
+	//		await WEB_SOCKET.close_lobbySocket();
+	//	});
 
-		return true;
-	}
+	//	return true;
+	//}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
@@ -187,6 +203,8 @@ class ModalRoomJoin
 			await WEB_SOCKET.init_gameRoomSocket();
 			await WEB_SOCKET.run_gameRoomSocket(room_id);
 
+			//await WEB_SOCKET.init_lobbySocket();
+			//await WEB_SOCKET.lobbySocket_run(room_type);
 		}
 		else if (MRJ_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
 			alert(`Failed to create ${room_type} game room.`);

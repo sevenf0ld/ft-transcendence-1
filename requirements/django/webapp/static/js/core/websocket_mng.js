@@ -229,6 +229,36 @@ class websocketManager
 		return true;
 	}
 
+	async notify_incr_lobbySocket(lobby_type)
+	{
+		console.log('NOTIFY INCR OUT', this.lobby.ws.readyState);
+		if (this.lobby.ws && this.lobby.ws.readyState === WebSocket.OPEN)
+		{
+			this.lobby.ws.send(JSON.stringify({
+			  'lobby_update': 'increment_member',
+			  'room_type': lobby_type
+			}));
+			console.log('NOTIFY INCR IN');
+		}
+
+		return true;
+	}
+
+	async notify_decr_lobbySocket(lobby_type)
+	{
+		console.log('NOTIFY DECR OUT', this.lobby.ws.readyState);
+		if (this.lobby.ws && this.lobby.ws.readyState === WebSocket.OPEN)
+		{
+			this.lobby.ws.send(JSON.stringify({
+			  'lobby_update': 'decrement_member',
+			  'room_type': lobby_type
+			}));
+			console.log('NOTIFY DECR IN');
+		}
+
+		return true;
+	}
+
 //=================================#
 // GAME ROOM
 //=================================#

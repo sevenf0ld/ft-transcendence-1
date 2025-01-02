@@ -227,6 +227,8 @@ class MidBoard
 	async render_room_list(rooms_data)
 	{
 		const dis_div = document.getElementById('room_list_board');
+		if (!dis_div)
+			return false;
 		dis_div.innerHTML = "";
 
 		if (typeof rooms_data !== 'object')
@@ -296,10 +298,14 @@ class MidBoard
 
 		WEB_SOCKET.lobby.ws.addEventListener('message', async (event) =>
 		{
+			console.log('LISTENING TO LOBBY SOCKET');
 			let data = JSON.parse(event.data);
 
 			if (data.type === 'display')
+			{
+				console.log('LOBBY SOCKET DISPLAY: ', data.rooms);
 				await this.render_room_list(data.rooms);
+			}
 		});
 
 		return true;

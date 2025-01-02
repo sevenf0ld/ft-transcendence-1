@@ -60,6 +60,15 @@ class LobbyConsumer(WebsocketConsumer):
 
     def receive(self, text_data=None, bytes_data=None):
         text_json = json.loads(text_data)
+        update = text_json['lobby_update']
+        lobby_type = text_json['room_type']
+
+        if update == 'increment_member':
+            print('INCR DISPLAY')
+            self.display_lobby()
+        if update == 'decrement_member':
+            print('DECR DISPLAY')
+            self.display_lobby()
 
 MAX_PVP_MEMBERS = 2
 MAX_TNM_MEMBERS = 5
@@ -188,4 +197,3 @@ class GameRoomConsumer(WebsocketConsumer):
     def delete_room_object(self):
         room = Room.objects.select_for_update().get(room_id=self.room_id)
         room.delete()
-
