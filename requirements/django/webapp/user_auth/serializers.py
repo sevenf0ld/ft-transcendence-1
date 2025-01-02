@@ -5,6 +5,7 @@ import re
 from django.conf import settings
 from user_profiles.serializers import ProfileModelSerializer
 from user_profiles.models import Profile
+from allauth.socialaccount.models import SocialAccount
 
 try:
     from allauth.account import app_settings as allauth_account_settings
@@ -41,6 +42,7 @@ class CustomRegisterSerializer(RegisterSerializer):
 # exclude pk, first name and last name from json response
 class UserLoginDetailsModelSerializer(serializers.ModelSerializer):
     #profile = serializers.SerializerMethodField()
+    ft_acc = serializers.SerializerMethodField()
 
     @staticmethod
     def validate_username(username):
@@ -55,11 +57,16 @@ class UserLoginDetailsModelSerializer(serializers.ModelSerializer):
     #    profile_data = Profile.objects.get(user=obj)
     #    return ProfileModelSerializer(profile_data).data
 
+    def get_ft_acc(self, obj):
+        if SocialAccount.objects.filter(user=obj).exists():
+            return True
+        return False
+
     class Meta:
         model = User
         #fields = ['pk', 'username', 'email', 'profile']
         #read_only_fields = ['email', 'profile']
-        fields = ['pk', 'username', 'email']
+        fields = ['pk', 'username', 'email', 'ft_acc']
         read_only_fields = ['email']
 
 #class UserAccountUpdateModelSerializer(serializers.ModelSerializer):

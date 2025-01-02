@@ -254,6 +254,7 @@ class ModalRoomJoin
 			'%rdtt-name-c': 'rdtt-name',
 			'%rdtt-name-t': 'Host',
 			'%rdbl-c': 'room-board-list-group d-flex flex-column',
+			'%rdbl-id': 'room_list_board',
 			'%list-c': 'room-board-list',
 			'%st-c': 'rbl-status',
 			'%st-dt': 'online',
@@ -297,7 +298,7 @@ class ModalRoomJoin
 					<div class="%rdtt-slot-c">%rdtt-slot-t</div>
 					<div class="%rdtt-name-c">%rdtt-name-t</div>
 				</div>
-				<div class="%rdbl-c">
+				<div class="%rdbl-c" id="%rdbl-id">
 					<div class="%list-c" data-roomid="%romid-t">
 						<div class="%st-c" data-status="%st-dt"></div>
 						<div class="%romid-c">%romid-t</div>
