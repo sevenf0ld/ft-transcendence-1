@@ -280,6 +280,10 @@ class websocketManager
 			{
 				console.log('LEAVE ROOM DETAILS: ', data);
 			}
+			if (data.type == 'disband_room')
+			{
+				console.log('DISBAND ROOM DETAILS: ', data);
+			}
 		});
 
 		return true;

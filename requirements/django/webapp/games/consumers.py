@@ -97,12 +97,48 @@ class GameRoomConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             self.group_id,
             {
-                'type': 'room.join',
+                'type': 'room.update',
                 'members': members,
+                'update_type': 'join_room'
             }
         )
 
-    def room_join(self, event):
+    def disconnect(self, code):
+        if self.group_id in self.in_room:
+            self.in_room[self.group_id].discard(self.user.username)
+            if not self.in_room[self.group_id]:
+                del self.in_room[self.group_id]
+
+            async_to_sync(self.channel_layer.group_discard)(
+                self.group_id,
+                self.channel_name
+            )
+
+            is_host = async_to_sync(self.is_host)()
+            if not is_host:
+                self.decrement_room_members()
+
+                members = list(self.in_room.get(self.group_id, []))
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_id,
+                    {
+                        'type': 'room.update',
+                        'members': members,
+                        'update_type': 'leave_room'
+                    }
+                )
+            else:
+                self.delete_room_object()
+
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_id,
+                    {
+                        'type': 'room.disband',
+                        'message': 'Host has left the game. Room disbanded.'
+                    }
+                )
+
+    def room_update(self, event):
         members = event['members']
         in_room_count = len(members)
         capacity = 'full' if in_room_count == MAX_PVP_MEMBERS else 'not_full'
@@ -110,7 +146,7 @@ class GameRoomConsumer(WebsocketConsumer):
         is_host = async_to_sync(self.is_host)()
 
         self.send(text_data=json.dumps({
-            'type': 'join_room',
+            'type': event['update_type'],
             'members': members,
             'num': in_room_count,
             'capacity': capacity,
@@ -120,55 +156,16 @@ class GameRoomConsumer(WebsocketConsumer):
 
     @database_sync_to_async
     def get_room_object(self):
-        # handle if does not exist
         room = Room.objects.get(room_id=self.room_id)
         serializer = RoomModelSerializer(room)
         return serializer.data
 
     @database_sync_to_async
     def is_host(self):
-        # handle if does not exist
         room = Room.objects.get(room_id=self.room_id)
         if self.user.id == room.host.id:
             return True
         return False
-
-    def disconnect(self, code):
-        if self.group_id in self.in_room:
-            self.in_room[self.group_id].discard(self.user.username)
-            if not self.in_room[self.group_id]:
-                del self.in_room[self.group_id]
-
-        async_to_sync(self.channel_layer.group_discard)(
-            self.group_id,
-            self.channel_name
-        )
-        self.decrement_room_members()
-
-        members = list(self.in_room[self.group_id])
-        async_to_sync(self.channel_layer.group_send)(
-            self.group_id,
-            {
-                'type': 'room.leave',
-                'members': members,
-            }
-        )
-
-    def room_leave(self, event):
-        members = event['members']
-        in_room_count = len(members)
-        capacity = 'full' if in_room_count == MAX_PVP_MEMBERS else 'not_full'
-        room = async_to_sync(self.get_room_object)()
-        is_host = async_to_sync(self.is_host)()
-
-        self.send(text_data=json.dumps({
-            'type': 'leave_room',
-            'members': members,
-            'num': in_room_count,
-            'capacity': capacity,
-            'details': room,
-            'is_host': is_host,
-        }))
 
     @transaction.atomic
     def increment_room_members(self):
@@ -179,7 +176,16 @@ class GameRoomConsumer(WebsocketConsumer):
 
     @transaction.atomic
     def decrement_room_members(self):
-        #room = Room.objects.select_for_update.get(room_id=self.room_id)
-        #room.members -= 1
-        #room.save()
         Room.objects.filter(room_id=self.room_id).update(members=F('members') - 1)
+
+    def room_disband(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'disband_room',
+            'message': event['message']
+        }))
+
+    @database_sync_to_async
+    def delete_room_object(self):
+        room = Room.objects.select_for_update.get(room_id=self.room_id)
+        room.delete()
+
