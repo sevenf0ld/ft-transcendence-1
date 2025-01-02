@@ -169,27 +169,10 @@ class MidBoard
 		return true;
 	}
 
-	async listen_lobby_socket()
-	{
-		WEB_SOCKET.lobby.ws.addEventListener('message', async (event) =>
-		{
-			let data = JSON.parse(event.data);
-
-			if (data.type === 'display')
-				console.log(data.rooms);
-		});
-
-		return true;
-	}
-
 	async remotePvpClick(event)
 	{
 		event.preventDefault();
 		console.log('[EVENT] button clicked : remote-pvp');
-
-		await WEB_SOCKET.init_lobbySocket();
-		await WEB_SOCKET.lobbySocket_run('PVP');
-		await this.listen_lobby_socket();
 
 		// for popup modal
 		const moda = document.querySelector('#modal-join .modal-title');
@@ -202,6 +185,11 @@ class MidBoard
 		MODAL_ROOM_JOIN.gameType = 'online-pvp';
 		await MODAL_ROOM_JOIN.render('replace');
 
+		await WEB_SOCKET.init_lobbySocket();
+		await WEB_SOCKET.lobbySocket_run('PVP');
+		const fetch_result = await this.listen_lobby_socket();
+		await this.render_room_list(fetch_result);
+
 		return true;
 	}
 
@@ -209,10 +197,6 @@ class MidBoard
 	{
 		event.preventDefault();
 		console.log('[EVENT] button clicked : remote-tour');
-
-		await WEB_SOCKET.init_lobbySocket();
-		await WEB_SOCKET.lobbySocket_run('TNM');
-		await this.listen_lobby_socket();
 
 		// for popup modal
 		const moda = document.querySelector('#modal-join .modal-title');
@@ -225,6 +209,11 @@ class MidBoard
 		MODAL_ROOM_JOIN.gameType = 'online-tour';
 		await MODAL_ROOM_JOIN.render('replace');
 
+		// list room list
+		await WEB_SOCKET.init_lobbySocket();
+		await WEB_SOCKET.lobbySocket_run('TNM');
+		await this.listen_lobby_socket();
+
 		return true;
 	}
 
@@ -236,9 +225,82 @@ class MidBoard
 		return true;
 	}
 
+	async render_room_list(rooms_data)
+	{
+		const dis_div = document.getElementById('room_list_board');
+		dis_div.innerHTML = "";
+
+		console.log('ROOMS DATA: ', rooms_data);
+		if (typeof rooms_data !== 'object')
+			return false;
+		else
+		{
+			for (const room of rooms_data)
+				await this.room_list_item_generator(dis_div, room);
+		}
+
+		return true;
+	}
+
+	async room_list_item_generator(display, room)
+	{
+		const started = room.started ? 'playing' : 'online';
+		const cur_mem = `(${room.members}/`;
+		let slot = room.room_type === 'PVP' ? `2)` : `-1)`;
+		slot = room.room_type === 'TNM' ? slot = `5)` : slot;
+		slot = cur_mem + slot;
+
+		let template = `
+		<div class="%list-c" data-roomid="%romid-t">
+			<div class="%st-c" data-status="%st-dt"></div>
+			<div class="%romid-c">%romid-t</div>
+			<div class="%romslot-c">%romslot-t</div>
+			<div class="%nam-c" @att1>%nam-t</div>
+		</div>
+		`;
+
+		const atts =
+		{
+			'%list-c': 'room-board-list',
+			'%st-c': 'rbl-status',
+			'%st-dt': `${started}`,
+			'%romid-c': 'rbl-roomid',
+			'%romid-t': `${room.room_id}`,
+			'%romslot-c': 'rbl-slot',
+			'%romslot-t': `${slot}`,
+			'%nam-c': 'rbl-name truncate',
+			'@att1': `data-bs-toggle="tooltip" title="${room.host}"`,
+			'%nam-t': `${room.host}`,
+		};
+		for (const key in atts)
+			template = template.split(key).join(atts[key]);
+
+		template = template.replace(/\s+/g, ' ');
+		template = template.replace(/>\s+</g, '><');
+		template = template.replace(/\s*=\s*/g, '=');
+		template = template.trim();
+
+		display.insertAdjacentHTML('beforeend', template);
+
+		return true;
+	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
+	async listen_lobby_socket(fetch_result)
+	{
+		WEB_SOCKET.lobby.ws.addEventListener('message', async (event) =>
+		{
+			let data = JSON.parse(event.data);
+
+			if (data.type === 'display')
+				await this.render_room_list(data.rooms);
+		});
+
+		return true;
+	}
+
 	// --------------------------------------------- //
 	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //

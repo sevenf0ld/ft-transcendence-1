@@ -191,13 +191,15 @@ class websocketManager
 // LOBBY LIST (ROOMS)
 //=================================#
 
-async init_lobbySocket()
+	async init_lobbySocket()
 	{
 		this.lobby =
 		{
 			ws: undefined,
 			url: undefined,
 		}
+
+		console.log('lobby socket initialized');
 
 		return true;
 	}
@@ -206,6 +208,8 @@ async init_lobbySocket()
 	{
 		this.lobby.url = `wss://${window.location.host}/ws/lobby/${lobby_type}/`;
 		this.lobby.ws = new WebSocket(this.lobby.url);
+
+		console.log('lobby socket connected');
 
 		return true;
 	}
@@ -225,6 +229,8 @@ async init_lobbySocket()
 	async lobbySocket_run(lobby_type)
 	{
 		await this.connect_lobbySocket(lobby_type);
+
+		console.log('lobby socket ran');
 
 		return true;
 	}
