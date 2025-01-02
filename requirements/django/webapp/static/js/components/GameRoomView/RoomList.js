@@ -128,6 +128,7 @@ class RoomList
 		btn_home.addEventListener('click', async () =>
 		{
 			await WEB_SOCKETS.friendSocket_gameroom_status('leave');
+			await WEB_SOCKETS.close_gameRoomSocket();
 
 			const HOME = HOME_VIEW;
 			await HOME.render();

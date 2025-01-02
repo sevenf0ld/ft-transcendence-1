@@ -254,6 +254,7 @@ class websocketManager
 
 	async close_gameRoomSocket()
 	{
+		console.log('close game room socket when leave');
 		this.gr.ws.close();
 
 		return true;
@@ -271,9 +272,13 @@ class websocketManager
 		this.gr.ws.addEventListener('message', async (event) => {
 			let data = JSON.parse(event.data);
 
-			if (data.type == 'room_details')
+			if (data.type == 'join_room')
 			{
-				console.log('GAME ROOM DETAILS: ', data);
+				console.log('JOIN ROOM DETAILS: ', data);
+			}
+			if (data.type == 'leave_room')
+			{
+				console.log('LEAVE ROOM DETAILS: ', data);
 			}
 		});
 

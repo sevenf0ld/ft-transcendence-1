@@ -173,10 +173,8 @@ class ModalRoomJoin
 	{
 		await MRJ_FETCH.init();
 		await MRJ_FETCH.fetchData(room_type);
-		console.log(MRJ_FETCH);
 		if (MRJ_FETCH.re_value === 'game-room-creation-successful')
 		{
-			console.log(MRJ_FETCH.fetch_obj.rdata);
 			const room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
 
 			WEB_SOCKET.init_gameRoomSocket();

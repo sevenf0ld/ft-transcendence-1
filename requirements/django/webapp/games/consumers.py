@@ -45,11 +45,9 @@ class LobbyConsumer(WebsocketConsumer):
             )
 
     def list_rooms(self, event):
-        rooms = event['rooms']
-
         self.send(text_data=json.dumps({
             'type': 'display',
-            'rooms': rooms
+            'rooms': event['rooms']
         }))
 
     def disconnect(self, code):
@@ -82,7 +80,6 @@ class GameRoomConsumer(WebsocketConsumer):
         if in_room_count < MAX_PVP_MEMBERS:
             self.accept()
             self.in_room[self.group_id].add(self.user.username)
-            # increment room object members
             async_to_sync(self.channel_layer.group_add)(
                 self.group_id,
                 self.channel_name
@@ -91,31 +88,23 @@ class GameRoomConsumer(WebsocketConsumer):
             self.close(3003)
 
         members = list(self.in_room[self.group_id])
-        in_room_count = len(self.in_room[self.group_id])
-        if in_room_count == MAX_PVP_MEMBERS:
-            capacity = 'full'
-        else:
-            capacity = 'not_full'
-
         async_to_sync(self.channel_layer.group_send)(
             self.group_id,
             {
-                'type': 'room.details',
+                'type': 'room.join',
                 'members': members,
-                'in_room_count': in_room_count,
-                'capacity': capacity,
             }
         )
 
-    def room_details(self, event):
+    def room_join(self, event):
         members = event['members']
-        in_room_count = event['in_room_count']
-        capacity = event['capacity']
+        in_room_count = len(members)
+        capacity = 'full' if in_room_count == MAX_PVP_MEMBERS else 'not_full'
         room = async_to_sync(self.get_room_object)()
         is_host = async_to_sync(self.is_host)()
 
         self.send(text_data=json.dumps({
-            'type': 'room_details',
+            'type': 'join_room',
             'members': members,
             'num': in_room_count,
             'capacity': capacity,
@@ -137,3 +126,39 @@ class GameRoomConsumer(WebsocketConsumer):
         if self.user.id == room.host.id:
             return True
         return False
+
+    def disconnect(self, code):
+        members = list(self.in_room[self.group_id])
+        async_to_sync(self.channel_layer.group_send)(
+            self.group_id,
+            {
+                'type': 'room.leave',
+                'members': members,
+            }
+        )
+
+        if self.group_id in self.in_room:
+            self.in_room[self.group_id].discard(self.user.username)
+            if not self.in_room[self.group_id]:
+                del self.in_room[self.group_id]
+
+        async_to_sync(self.channel_layer.group_discard)(
+            self.group_id,
+            self.channel_name
+        )
+
+    def room_leave(self, event):
+        members = event['members']
+        in_room_count = len(members)
+        capacity = 'full' if in_room_count == MAX_PVP_MEMBERS else 'not_full'
+        room = async_to_sync(self.get_room_object)()
+        is_host = async_to_sync(self.is_host)()
+
+        self.send(text_data=json.dumps({
+            'type': 'leave_room',
+            'members': members,
+            'num': in_room_count,
+            'capacity': capacity,
+            'details': room,
+            'is_host': is_host,
+        }))
