@@ -238,7 +238,7 @@ class MidBoard
 		}
 
 		await MODAL_ROOM_JOIN.roomListClick();
-    
+
 		return true;
 	}
 
