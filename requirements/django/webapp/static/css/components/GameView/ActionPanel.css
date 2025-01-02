@@ -22,3 +22,35 @@
 	width: 11rem;
 	cursor: pointer;
 }
+
+/* modal */
+form.form-ltour-add
+{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+}
+
+.form-ltour-add h1
+{
+	color: gray;
+	font-family: monospace;
+}
+
+.form-ltour-add input
+{
+	padding: 0.5rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.form-ltour-add button#btn_ltour_add_submit
+{
+	width: 100%;
+	margin-top: 1rem;
+}
