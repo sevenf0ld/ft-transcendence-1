@@ -34,7 +34,7 @@ class ModalRoomJoin
 		this.container = null;
 		this.main_ctn = null;
 		this.buttons = {
-			'join': '',
+			'create': '',
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.gameType = null;
@@ -71,7 +71,7 @@ class ModalRoomJoin
 	async push_important_elements()
 	{
 		this.main_ctn = document.querySelector('.join-room-main');
-		this.buttons['join'] = document.getElementById('btn_join_room');
+		this.buttons['create'] = document.getElementById('btn_create_room');
 
 		if (!this.main_ctn)
 			throw new Error('[ERR] main container not found');
@@ -89,18 +89,17 @@ class ModalRoomJoin
 	async bind_events()
 	{
 
-		this.buttons['join'].addEventListener(
-			'click', async (event) => {await this.joinClick(event);}
+		this.buttons['create'].addEventListener(
+			'click', async (event) => {await this.createClick(event);}
 		);
 
 		await this.roomListClick();
-		await this.input_number_only();
 		await this.handle_modal_close();
 
 		return true;
 	}
 
-	async joinClick(event)
+	async createClick(event)
 	{
 		event.preventDefault();
 
@@ -150,26 +149,9 @@ class ModalRoomJoin
 			btn.addEventListener('click', async (e) =>
 			{
 				const roomid = e.currentTarget.getAttribute('data-roomid');
-				const input = document.querySelector('#room-join-code');
-				if (input)
-					input.value = roomid;
+				alert(`clicked room id : ${roomid}`);
 			});
 		}
-
-		return true;
-	}
-
-	async input_number_only()
-	{
-		const input = document.querySelector('#room-join-code');
-
-		input.addEventListener('keypress', (e) =>
-		{
-			const key = e.key;
-			const regex = /[0-9]/;
-			if (!regex.test(key))
-				e.preventDefault();
-		});
 
 		return true;
 	}
@@ -226,16 +208,12 @@ class ModalRoomJoin
 	{
 		// [-] HELPER FUNCTION
 		// [A] TEMPLATE
-		const str = await this.room_display_board();
+		const display_board = await this.room_display_board();
 		let template = `
 		<div class="%main-1c %main-2c">
-			${str}
-			<div class="%ip-c">
-				<input id="%dpi-id" type="%dpi-ty" @att1 @att2 @att3 @att4>
-				<p class="%em-c">%em-t</p>
-				<p class="%info-c">%info-t</p>
-			</div>
-			<button id="%btn-id" @att5>%btn-t</button>
+			${display_board}
+			<p class="%des-1c">%des-1t</p>
+			<button id="%btn-id" @att1>%btn-t</button>
 		</div>
 		`;
 		// [B] SET atts
@@ -263,23 +241,13 @@ class ModalRoomJoin
 			'%romslot-c': 'rbl-slot',
 			'%romslot-t': '(2/4)',
 			'%nam-c': 'rbl-name truncate',
-			// tooltip
 			'@att1': 'data-bs-toggle="tooltip" title="killerhunter789"',
 			'%nam-t': 'killerhunter789',
-			'%ip-c': 'input-group d-flex flex-column',
-			'%dpi-id': 'room-join-code',
-			'%dpi-ty': 'text',
-			'@att1': 'placeholder="Enter Room ID"',
-			'@att2': 'autocomplete="off"',
-			'@att3': 'maxlength="5" required',
-			'@att4': 'class="ct-home-input"',
-			'%em-c': 'join-room-err',
-			'%em-t': '',
-			'%info-c': 'join-room-info',
-			'%info-t': 'Leave blank to create new room',
-			'%btn-id': 'btn_join_room',
-			'@att5': 'data-bs-dismiss="modal"',
-			'%btn-t': 'Enter',
+			'%des-1c': 'join-room-des',
+			'%des-1t': 'Click to join room, or',
+			'%btn-id': 'btn_create_room',
+			'@att1': 'data-bs-dismiss="modal"',
+			'%btn-t': 'Create Room',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
