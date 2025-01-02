@@ -187,8 +187,7 @@ class MidBoard
 
 		await WEB_SOCKET.init_lobbySocket();
 		await WEB_SOCKET.lobbySocket_run('PVP');
-		const fetch_result = await this.listen_lobby_socket();
-		await this.render_room_list(fetch_result);
+		await this.listen_lobby_socket();
 
 		return true;
 	}
@@ -230,7 +229,6 @@ class MidBoard
 		const dis_div = document.getElementById('room_list_board');
 		dis_div.innerHTML = "";
 
-		console.log('ROOMS DATA: ', rooms_data);
 		if (typeof rooms_data !== 'object')
 			return false;
 		else
@@ -238,6 +236,8 @@ class MidBoard
 			for (const room of rooms_data)
 				await this.room_list_item_generator(dis_div, room);
 		}
+
+		await MODAL_ROOM_JOIN.roomListClick();
 
 		return true;
 	}
