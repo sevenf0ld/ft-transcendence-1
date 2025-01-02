@@ -62,7 +62,7 @@
 	/* status */
 	--stus-1: #00a700; /* online */
 	--stus-2: #515253; /* offline */
-	--stus-3: #ff4e4e; /* room-full */
+	--stus-3: #ff2626; /* room-full */
 	/* badge */
 	--bdg-1: #6c4ac3; /* badge-purple */
 	--bdg-3: #007772; /* badge-green */

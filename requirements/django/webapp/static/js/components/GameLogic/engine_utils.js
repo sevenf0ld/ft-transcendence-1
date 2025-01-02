@@ -95,6 +95,9 @@ class engineUtilsClass
 		if (!msg)
 			ctn.innerHTML = '';
 
+		// scroll to bottom
+		ctn.scrollTop = ctn.scrollHeight;
+
 		return true;
 	}
 

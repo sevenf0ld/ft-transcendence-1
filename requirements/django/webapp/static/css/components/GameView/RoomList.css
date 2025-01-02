@@ -94,3 +94,9 @@
 	padding: 20px;
 	color: var(--txt-4);
 }
+
+/* game room's playing user name */
+.fnl-item-ctn > h2.fnl-item-name.playing
+{
+	color: white;
+}

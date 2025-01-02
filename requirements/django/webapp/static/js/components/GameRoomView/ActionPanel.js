@@ -6,6 +6,9 @@
 // importing-external
 // -------------------------------------------------- //
 import PONG_ENGINE from '../GameLogic/PongEngine.js';
+import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
+import TNM_LOGIC from '../GameLogic/tnm_logic.js';
+import EG_UTILS from '../GameLogic/engine_utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -337,6 +340,15 @@ class ActionPanel
 
 	async push_important_elements_ltour()
 	{
+		this.buttons['start'] = this.base_ctn.querySelector('#btn_ltour_start');
+		this.buttons['restart'] = this.base_ctn.querySelector('#btn_ltour_restart');
+		this.buttons['add'] = this.base_ctn.querySelector('#btn_ltour_add');
+		this.buttons['ready'] = this.base_ctn.querySelector('#btn_ltour_ready');
+
+		for (const key in this.buttons)
+			if (!this.buttons[key])
+				throw new Error(`this.buttons[${key}] is null`);
+
 		return true;
 	}
 	// --------------------------------------------- //
@@ -344,6 +356,54 @@ class ActionPanel
 	// --------------------------------------------- //
 	async bind_events_ltour()
 	{
+		this.buttons['start'].addEventListener(
+			'click', async (event) => { await this.ltour_start_click(event); }
+		);
+
+		this.buttons['restart'].addEventListener(
+			'click', async (event) => { await this.ltour_restart_click(event); }
+		);
+
+		this.buttons['add'].addEventListener(
+			'click', async (event) => { await this.ltour_add_click(event); }
+		);
+
+		this.buttons['ready'].addEventListener(
+			'click', async (event) => { await this.ltour_ready_click(event); }
+		);
+
+		this.buttons['start'].disabled = true;
+
+		return true;
+	}
+
+	async ltour_start_click(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] ltour_start_click');
+		return true;
+	}
+
+	async ltour_restart_click(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] ltour_restart_click');
+		return true;
+	}
+
+	async ltour_add_click(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] ltour_add_click');
+		await this.render_modal_ltour_add();
+
+		return true;
+	}
+
+	async ltour_ready_click(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] ltour_ready_click');
 		return true;
 	}
 	// --------------------------------------------- //
@@ -374,6 +434,7 @@ class ActionPanel
 		<button @att01 @att02 @att03>@text01</button>
 		<button @att04 @att05 @att06>@text02</button>
 		<button @att07 @att08 @att09>@text03</button>
+		<button @att10 @att11 @att12>@text04</button>
 		`;
 		// [B] SET atts
 		const atts =
@@ -388,8 +449,12 @@ class ActionPanel
 			'@text02': 'Restart Game',
 			'@att07': 'id="btn_ltour_add"',
 			'@att08': 'class="btn-ltour-add ct-btn-neau"',
-			'@att09': 'type="button"',
+			'@att09': 'type="button" data-bs-toggle="modal" data-bs-target="#modal-ltour-add"',
 			'@text03': 'Add Player',
+			'@att10': 'id="btn_ltour_ready"',
+			'@att11': 'class="btn-ltour-ready ct-btn-neau d-none"',
+			'@att12': 'type="button"',
+			'@text04': 'Ready',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
@@ -402,7 +467,80 @@ class ActionPanel
 	// --------------------------------------------- //
 	async bind_modals_ltour()
 	{
+		let parent_html;
+
+		parent_html = document.querySelector('.ct-gr-actpanel-ctn');
+		if (!parent_html)
+			throw new Error('parent_html is null');
+		const modal1 = MODAL_LAYOUT;
+		modal1.container = parent_html;
+		modal1.name = 'modal-ltour-add';
+		modal1.title = 'Add Player';
+		await modal1.render('append');
+
 		return true;
+	}
+
+	async render_modal_ltour_add()
+	{
+		const body = document.querySelector('#modal-ltour-add .modal-body');
+		let template = `
+		<form id="form_ltour_add" class="form-ltour-add">
+			<h1>set player alias</h1>
+			<input id="input_ltour_add" 
+			type="text" class="ct-home-input"
+			placeholder="player alias" 
+			autocomplete="off" 
+			required maxlength="10">
+			<button 
+			id="btn_ltour_add_submit"
+			type="submit" data-bs-dismiss="modal"
+			>Submit</button>
+		</form>
+		`;
+
+		// trim new lines, spaces, and tabs
+		template = template.replace(/\s+/g, ' ');
+		template = template.replace(/>\s+</g, '><');
+		template = template.replace(/\s*=\s*/g, '=');
+		template = template.trim();
+
+		body.innerHTML = template;
+		await this.bind_buttons_ltour_events();
+
+		return true;
+	}
+
+	async bind_buttons_ltour_events()
+	{
+		//only alnum
+		const input = document.querySelector('#input_ltour_add');
+		input.addEventListener(
+			'input', (event) => {
+				const value = event.target.value;
+				event.target.value = value.replace(/[^a-zA-Z0-9-_]/g, '');
+				event.target.value = event.target.value.toLowerCase();
+			}
+		);
+		input.focus();
+		
+		const btn = document.querySelector('#btn_ltour_add_submit');
+		btn.addEventListener(
+			'click', async (event) => {
+				event.preventDefault();
+				console.log('[EVENT] modal\'s btn_ltour_add_submit');
+
+				if (!input.value)
+				{
+					alert('add failed! input is empty');
+					return false;
+				}
+				const str = input.value;
+				await TNM_LOGIC.add_player(str);
+				if (TNM_LOGIC.lobby.length >= TNM_LOGIC.min_players)
+					this.buttons['start'].disabled = false;
+			}
+		);
 	}
 
 	// ======================================================================== //

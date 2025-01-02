@@ -91,7 +91,7 @@
 	background-color: var(--stus-2);
 }
 
-.room-board .room-board-list .rbl-status[data-status="full"]
+.room-board .room-board-list .rbl-status[data-status="playing"]
 {
 	background-color: var(--stus-3);
 }
@@ -112,9 +112,19 @@
 }
 
 /* -------------------------------------------------- */
+/* join-room-desc */
+/* -------------------------------------------------- */
+.join-room-main .join-room-des
+{
+    font-family: monospace;
+    color: #8598ab;
+    text-transform: lowercase;
+}
+
+/* -------------------------------------------------- */
 /* input group */
 /* -------------------------------------------------- */
-
+/*
 .join-room-main .input-group
 {
 	gap: 0.5rem;
@@ -151,3 +161,4 @@
 	font-size: 12px;
 	text-align: center;
 }
+*/
