@@ -268,7 +268,7 @@ class ActionPanel
 		event.preventDefault();
 		
 		if (this.currentGame)
-			await this.currentGame.reset();
+			await this.currentGame.reset('lpvp');
 	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED (LOCAL-PVP)
@@ -420,6 +420,9 @@ class ActionPanel
 	{
 		event.preventDefault();
 		console.log('[EVENT] ltour_restart_click');
+
+		this.currentGame.reset('ltour');
+
 		return true;
 	}
 
@@ -573,10 +576,7 @@ class ActionPanel
 				if (TNM_LOGIC.lobby.length >= TNM_LOGIC.min_players)
 					this.buttons['start'].disabled = false;
 				if (TNM_LOGIC.lobby.length >= TNM_LOGIC.max_players)
-				{
 					this.buttons['add'].disabled = true;
-					this.buttons['add'].classList.add('d-none');
-				}
 			}
 		);
 	}

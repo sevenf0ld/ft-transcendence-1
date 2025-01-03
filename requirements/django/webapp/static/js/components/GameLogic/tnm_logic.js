@@ -38,6 +38,7 @@ class tnmLogicClass
 		this.tour_winner = null;
 		this.min_players = 3;
 		this.max_players = 5;
+		this.round = 1;
 	}
 
 	async init_html_divs()
@@ -79,6 +80,61 @@ class tnmLogicClass
 	{
 		this.init_players_data();
 		this.init_html_divs();
+		await this.read_html_divs();
+
+		const name = JSON.parse(localStorage.getItem('user')).username;
+		await this.add_player(name);
+		await this.render_list();
+
+		return true;
+	}
+
+	// core logic
+	async run_tournament()
+	{
+		await this.move_all_to_waiting();
+		await this.random_pairing();
+		await this.render_list();
+		await EG_UTILS.announce(
+			`ROUND #${this.round} : (${this.playing[0]}) vs (${this.playing[1]})!`,
+			'mms'
+		);
+		await EG_UTILS.announce(
+			`Winner of this match will play against (${this.next}!)`,
+			'mms'
+		);
+		await EG_UTILS.announce('Note - players are randomly paired');
+
+		return true;
+	}
+
+	async reset_tournament()
+	{
+		await this.reset();
+		await EG_DATA.reset();
+		await this.render_list();
+	}
+
+	// player management
+	async random_pairing()
+	{
+		for (let i = 0; i < 2; i++)
+		{
+			const  random_num = Math.floor(Math.random() * this.waiting.length);
+			this.playing.push(this.waiting[random_num]);
+			this.waiting.splice(random_num, 1);
+		}
+
+		const random_num = Math.floor(Math.random() * this.waiting.length);
+		this.next = this.waiting[random_num];
+
+		return true;
+	}
+
+	async move_all_to_waiting()
+	{
+		this.waiting = this.waiting.concat(this.lobby);
+		this.lobby = [];
 
 		return true;
 	}
@@ -146,7 +202,7 @@ class tnmLogicClass
 		{
 			const str = await this.host_or_guest(name);
 			const style = str === 'host' ? 'playing' : 'offline';
-			ROOM_LIST.playerListGenerate(
+			ROOM_LIST.playerListGenerator(
 				this.wait_ctn, name, 'Waiting', str, style
 			);
 		}
@@ -154,7 +210,7 @@ class tnmLogicClass
 		{
 			const str = await this.host_or_guest(name);
 			const style = str === 'host' ? 'playing' : 'offline';
-			ROOM_LIST.playerListGenerate(
+			ROOM_LIST.playerListGenerator(
 				this.elim_ctn, name, 'Eliminated', str, style
 			);
 		}
@@ -162,13 +218,12 @@ class tnmLogicClass
 		{
 			const str = await this.host_or_guest(name);
 			const style = str === 'host' ? 'playing' : 'offline';
-			ROOM_LIST.playerListGenerate(
+			ROOM_LIST.playerListGenerator(
 				this.play_ctn, name, 'Playing', str, style
 			);
 		}
 		return true;
 	}
-
 }
 
 const item = new tnmLogicClass();

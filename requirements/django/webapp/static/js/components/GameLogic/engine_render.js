@@ -34,7 +34,7 @@ class engineRenderClass
 				db.canvas.elem.classList.remove('breathing_bot');
 				db.canvas.elem.classList.remove('breathing_top');
 			}
-			await EG_UTILS.gameStateHandler('end');
+			await EG_UTILS.gameStateHandler('lpvp-end');
 			return false;
 		}
 

@@ -467,10 +467,6 @@ class RoomList
 		await this.updateRoomPlayerCount(1);
 		*/
 		await TNM_LOGIC.reset();
-		await TNM_LOGIC.read_html_divs();
-		const name = JSON.parse(localStorage.getItem('user')).username;
-		await TNM_LOGIC.add_player(name);
-		await TNM_LOGIC.render_list();
 
 		return true;
 	}
