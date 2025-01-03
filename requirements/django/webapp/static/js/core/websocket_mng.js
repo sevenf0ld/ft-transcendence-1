@@ -208,8 +208,11 @@ class websocketManager
 
 	async connect_ws_lobby(lobby_type)
 	{
-		this.lobby.url = `wss://${window.location.host}/ws/lobby/${lobby_type}/`;
-		this.lobby.ws = new WebSocket(this.lobby.url);
+		if (this.lobby.ws === undefined)
+		{
+			this.lobby.url = `wss://${window.location.host}/ws/lobby/${lobby_type}/`;
+			this.lobby.ws = new WebSocket(this.lobby.url);
+		}
 
 		return true;
 	}
@@ -234,7 +237,6 @@ class websocketManager
 		{
 			this.lobby.ws.send(JSON.stringify({
 			  'lobby_update': 'increment_member',
-			  'room_type': lobby_type
 			}));
 			console.log('NOTIFY INCR IN');
 		}
@@ -249,8 +251,7 @@ class websocketManager
 		{
 			this.lobby.ws.send(JSON.stringify({
 			  'lobby_update': 'decrement_member',
-			  'room_type': lobby_type,
-			  'room_details': this.lobby.room_details[0]
+			  //'room_details': this.lobby.room_details
 			}));
 			console.log('NOTIFY DECR IN');
 		}
@@ -266,7 +267,7 @@ class websocketManager
 			console.log('LOBBY ROOM LIST SOCKET LISTENING... ', data);
 			if (data.type == 'display')
 			{
-				this.lobby.room_details = data.rooms;
+				//this.lobby.room_details = data.rooms;
 				MID_BOARD.render_room_list(data.rooms);
 			}
 		});
@@ -281,7 +282,7 @@ class websocketManager
 		{
 			this.lobby.ws.send(JSON.stringify({
 			  'lobby_update': 'create_room',
-			  'room_type': lobby_type
+			  //'room_type': lobby_type
 			}));
 			console.log('NOTIFY CREATE IN');
 		}

@@ -61,14 +61,14 @@ class LobbyConsumer(WebsocketConsumer):
     def receive(self, text_data=None, bytes_data=None):
         text_json = json.loads(text_data)
         update = text_json['lobby_update']
-        lobby_type = text_json['room_type']
-        room_object = text_json['room_details']
-        host = room_object['host']
 
         if update == 'increment_member':
             print('INCR DISPLAY')
             self.display_lobby()
         if update == 'decrement_member':
+            #room_object = text_json['room_details']
+            #host = room_object['host']
+            print(text_json)
             print('DECR DISPLAY')
             self.display_lobby()
         if update == 'create_room':

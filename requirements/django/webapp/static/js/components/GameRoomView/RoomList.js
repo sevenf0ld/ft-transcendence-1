@@ -147,14 +147,7 @@ class RoomList
 		await WEB_SOCKETS.update_ws_friend('leave');
 		await WEB_SOCKETS.close_ws_game();
 
-		const data_room_type = document.querySelector('.ct-gr-rl-title').dataset.roomType;
-		// no init
-		let room_type = '';
-		if (data_room_type === 'pvp')
-			room_type = 'PVP';
-		else if (data_room_type === 'tour')
-			room_type = 'TNM';
-		await WEB_SOCKETS.notifyLobbySocket_decr(room_type);
+		await WEB_SOCKETS.notifyLobbySocket_decr();
 
 		const HOME = HOME_VIEW;
 		await HOME.render();

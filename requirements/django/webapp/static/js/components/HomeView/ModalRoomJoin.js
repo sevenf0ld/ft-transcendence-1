@@ -95,7 +95,6 @@ class ModalRoomJoin
 		);
 
 		await this.roomListClick();
-		//await this.handle_modal_close();
 
 		this.buttons['close'].addEventListener(
 			'click', async (event) => {await this.closeClick(event);}
@@ -114,9 +113,7 @@ class ModalRoomJoin
 		{
 			await WEB_SOCKET.close_ws_chat();
 			await WEB_SOCKET.update_ws_friend('join');
-			//await WEB_SOCKET.close_ws_lobby();
-			//await WEB_SOCKET.notifyLobbySocket_incr('PVP');
-			await WEB_SOCKET.notifyLobbySocket_create('PVP');
+			await WEB_SOCKET.notifyLobbySocket_create();
 
 			await this.fetch_create_game_room('PVP');
 
@@ -130,9 +127,7 @@ class ModalRoomJoin
 		{
 			await WEB_SOCKET.close_ws_chat();
 			await WEB_SOCKET.update_ws_friend('join');
-			//await WEB_SOCKET.close_ws_lobby();
-			//await WEB_SOCKET.notifyLobbySocket_incr('TNM');
-			await WEB_SOCKET.notifyLobbySocket_create('TNM');
+			await WEB_SOCKET.notifyLobbySocket_create();
 
 			await this.fetch_create_game_room('TNM');
 
@@ -149,7 +144,10 @@ class ModalRoomJoin
 	async closeClick(event)
 	{
 		event.preventDefault();
+
 		console.log('[EVENT] button clicked : go back');
+
+		await WEB_SOCKET.close_ws_lobby();
 
 		return true;
 	}
@@ -168,18 +166,8 @@ class ModalRoomJoin
 				const roomid = e.currentTarget.getAttribute('data-roomid');
 				alert(`clicked room id : ${roomid}`);
 
-				// no init
 				await WEB_SOCKET.connect_ws_game(roomid);
-				const data_room_type = document.querySelector('.join-room-main').parentNode.dataset.roomType;
-
-				// no init
-				let room_type = '';
-				if (data_room_type === 'pvp')
-					room_type = 'PVP';
-				else if (data_room_type === 'tour')
-					room_type = 'TNM';
-				//await WEB_SOCKET.lobbySocket_run(room_type);
-				await WEB_SOCKET.notifyLobbySocket_incr(room_type);
+				await WEB_SOCKET.notifyLobbySocket_incr();
 
 				const gameRoom = GAME_ROOM_VIEW;
 				await gameRoom.init();
@@ -192,20 +180,6 @@ class ModalRoomJoin
 		return true;
 	}
 
-	// need to differentiate between joining room which closes this or clicking to not view lobby list
-	// changing dismiss in MidBoard has no effect on this issue
-	// close_ws_lobby will be dependent on an X button
-	async handle_modal_close()
-	{
-		const modal_join_container = document.getElementById('modal-join');
-
-		modal_join_container.addEventListener('hidden.bs.modal', async (event) => {
-			console.log('CLOSE MODAL');
-			await WEB_SOCKET.close_ws_lobby();
-		});
-
-		return true;
-	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
@@ -219,9 +193,6 @@ class ModalRoomJoin
 
 			await WEB_SOCKET.initSocket_gameRoom();
 			await WEB_SOCKET.connect_ws_game(room_id);
-
-			//await WEB_SOCKET.initSocket_lobby();
-			//await WEB_SOCKET.lobbySocket_run(room_type);
 		}
 		else if (MRJ_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
 			alert(`Failed to create ${room_type} game room.`);
@@ -289,7 +260,7 @@ class ModalRoomJoin
 			'%btn-id': 'btn_create_room',
 			'@att1': 'data-bs-dismiss="modal"',
 			'%btn-t': 'Create Room',
-			'@att2': 'id="btn_close_join_room_modal"',
+			'@att2': 'id="btn_close_join_room_modal" class="btn-close" data-bs-dismiss="modal"',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);

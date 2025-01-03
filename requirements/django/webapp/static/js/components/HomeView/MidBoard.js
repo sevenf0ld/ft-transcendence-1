@@ -185,7 +185,8 @@ class MidBoard
 		MODAL_ROOM_JOIN.gameType = 'online-pvp';
 		await MODAL_ROOM_JOIN.render('replace');
 
-		await WEB_SOCKET.initSocket_lobby();
+		// list room list
+		//await WEB_SOCKET.initSocket_lobby();
 		await WEB_SOCKET.connect_ws_lobby('PVP');
 		await this.display_lobby_socket_list();
 
@@ -209,7 +210,7 @@ class MidBoard
 		await MODAL_ROOM_JOIN.render('replace');
 
 		// list room list
-		await WEB_SOCKET.initSocket_lobby();
+		//await WEB_SOCKET.initSocket_lobby();
 		await WEB_SOCKET.connect_ws_lobby('TNM');
 		await this.display_lobby_socket_list();
 

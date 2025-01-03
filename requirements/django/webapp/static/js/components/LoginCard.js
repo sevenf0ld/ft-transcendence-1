@@ -12,6 +12,7 @@ import ROUTER from '../core/router.js';
 import ALERT_UTILS from '../core/helpers/alert-utils.js';
 import SIGNUP_VIEW from '../views/SignupView.js';
 import HOME_VIEW from '../views/HomeView.js';
+import WEB_SOCKET from '../core/websocket_mng.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', async (e) => {
 			intraFetch.fetch_obj.rdata['user'])
 		);
 		const HOME = HOME_VIEW;
+		//await WEB_SOCKET.initSocket_lobby();
 		await HOME.render();
 	}
 });
@@ -178,6 +180,7 @@ class LoginCard
 			localStorage.setItem('user', JSON.stringify(loginFetch.fetch_obj.rdata['user']));
 			await new Promise(r => setTimeout(r, 2000));
 			const HOME = HOME_VIEW;
+			//await WEB_SOCKET.initSocket_lobby();
 			await HOME.render();
 		}
 
