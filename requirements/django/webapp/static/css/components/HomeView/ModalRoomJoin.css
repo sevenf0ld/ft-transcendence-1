@@ -151,3 +151,19 @@
 	font-size: 12px;
 	text-align: center;
 }
+
+/* -------------------------------------------------- */
+/* go back button */
+/* -------------------------------------------------- */
+#btn_close_join_room_modal
+{
+    padding: 0.5rem 1rem;
+    background-color: #ffffff00;
+    box-shadow: none;
+    width: fit-content;
+    width: 1rem;
+    min-width: fit-content;
+    color: #454e58;
+    font-family: monospace;
+    margin-top: -0.2rem;
+}

@@ -382,7 +382,7 @@ class MidBoard
 		modal1.container = parent_html;
 		modal1.name = 'modal-join';
 		modal1.title = 'Available Rooms (PVP)';
-		await modal1.render('append');
+		await modal1.render('append', 'static');
 
 		return true;
 	}

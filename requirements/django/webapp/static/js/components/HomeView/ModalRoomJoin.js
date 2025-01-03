@@ -72,6 +72,7 @@ class ModalRoomJoin
 	{
 		this.main_ctn = document.querySelector('.join-room-main');
 		this.buttons['create'] = document.getElementById('btn_create_room');
+		this.buttons['close'] = document.getElementById('btn_close_join_room_modal');
 
 		if (!this.main_ctn)
 			throw new Error('[ERR] main container not found');
@@ -95,6 +96,10 @@ class ModalRoomJoin
 
 		await this.roomListClick();
 		//await this.handle_modal_close();
+
+		this.buttons['close'].addEventListener(
+			'click', async (event) => {await this.closeClick(event);}
+		);
 
 		return true;
 	}
@@ -137,6 +142,14 @@ class ModalRoomJoin
 			await gameRoom.render();
 			await WEB_SOCKET.listen_ws_game();
 		}
+
+		return true;
+	}
+
+	async closeClick(event)
+	{
+		event.preventDefault();
+		console.log('[EVENT] button clicked : go back');
 
 		return true;
 	}
@@ -241,6 +254,7 @@ class ModalRoomJoin
 			${display_board}
 			<p class="%des-1c">%des-1t</p>
 			<button id="%btn-id" @att1>%btn-t</button>
+			<button @att2>Go Back</button>
 		</div>
 		`;
 		// [B] SET atts
@@ -275,6 +289,7 @@ class ModalRoomJoin
 			'%btn-id': 'btn_create_room',
 			'@att1': 'data-bs-dismiss="modal"',
 			'%btn-t': 'Create Room',
+			'@att2': 'id="btn_close_join_room_modal"',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
