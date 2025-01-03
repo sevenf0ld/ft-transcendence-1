@@ -6,6 +6,7 @@
 // importing-external
 // -------------------------------------------------- //
 import RIGHT_FRIEND_LIST from '../components/HomeView/RightFnList.js';
+import MID_BOARD from '../components/HomeView/MidBoard.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -198,6 +199,8 @@ class websocketManager
 		{
 			ws: undefined,
 			url: undefined,
+			room_details: undefined,
+
 		}
 
 		return true;
@@ -218,6 +221,7 @@ class websocketManager
 			this.lobby.ws.close();
 			this.lobby.ws = undefined;
 			this.lobby.url = undefined;
+			this.lobby.room_details = undefined;
 		}
 
 		return true;
@@ -245,9 +249,41 @@ class websocketManager
 		{
 			this.lobby.ws.send(JSON.stringify({
 			  'lobby_update': 'decrement_member',
-			  'room_type': lobby_type
+			  'room_type': lobby_type,
+			  'room_details': this.lobby.room_details[0]
 			}));
 			console.log('NOTIFY DECR IN');
+		}
+
+		return true;
+	}
+
+	async listen_ws_lobby()
+	{
+		this.lobby.ws.addEventListener('message', async (event) => {
+			let data = JSON.parse(event.data);
+
+			console.log('LOBBY ROOM LIST SOCKET LISTENING... ', data);
+			if (data.type == 'display')
+			{
+				this.lobby.room_details = data.rooms;
+				MID_BOARD.render_room_list(data.rooms);
+			}
+		});
+
+		return true;
+	}
+
+	async notifyLobbySocket_create(lobby_type)
+	{
+		console.log('NOTIFY CREATE OUT', this.lobby.ws.readyState);
+		if (this.lobby.ws && this.lobby.ws.readyState === WebSocket.OPEN)
+		{
+			this.lobby.ws.send(JSON.stringify({
+			  'lobby_update': 'create_room',
+			  'room_type': lobby_type
+			}));
+			console.log('NOTIFY CREATE IN');
 		}
 
 		return true;

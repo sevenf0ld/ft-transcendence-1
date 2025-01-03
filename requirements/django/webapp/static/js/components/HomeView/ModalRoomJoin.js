@@ -111,7 +111,7 @@ class ModalRoomJoin
 			await WEB_SOCKET.update_ws_friend('join');
 			//await WEB_SOCKET.close_ws_lobby();
 			//await WEB_SOCKET.notifyLobbySocket_incr('PVP');
-			//await WEB_SOCKET.notify_create_lobbySocket('PVP');
+			await WEB_SOCKET.notifyLobbySocket_create('PVP');
 
 			await this.fetch_create_game_room('PVP');
 
@@ -127,7 +127,7 @@ class ModalRoomJoin
 			await WEB_SOCKET.update_ws_friend('join');
 			//await WEB_SOCKET.close_ws_lobby();
 			//await WEB_SOCKET.notifyLobbySocket_incr('TNM');
-			//await WEB_SOCKET.notify_create_lobbySocket('TNM');
+			await WEB_SOCKET.notifyLobbySocket_create('TNM');
 
 			await this.fetch_create_game_room('TNM');
 
@@ -179,16 +179,20 @@ class ModalRoomJoin
 		return true;
 	}
 
-	//async handle_modal_close()
-	//{
-	//	const modal_join_container = document.getElementById('modal-join');
+	// need to differentiate between joining room which closes this or clicking to not view lobby list
+	// changing dismiss in MidBoard has no effect on this issue
+	// close_ws_lobby will be dependent on an X button
+	async handle_modal_close()
+	{
+		const modal_join_container = document.getElementById('modal-join');
 
-	//	modal_join_container.addEventListener('hidden.bs.modal', async (event) => {
-	//		await WEB_SOCKET.close_ws_lobby();
-	//	});
+		modal_join_container.addEventListener('hidden.bs.modal', async (event) => {
+			console.log('CLOSE MODAL');
+			await WEB_SOCKET.close_ws_lobby();
+		});
 
-	//	return true;
-	//}
+		return true;
+	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //

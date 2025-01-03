@@ -62,12 +62,17 @@ class LobbyConsumer(WebsocketConsumer):
         text_json = json.loads(text_data)
         update = text_json['lobby_update']
         lobby_type = text_json['room_type']
+        room_object = text_json['room_details']
+        host = room_object['host']
 
         if update == 'increment_member':
             print('INCR DISPLAY')
             self.display_lobby()
         if update == 'decrement_member':
             print('DECR DISPLAY')
+            self.display_lobby()
+        if update == 'create_room':
+            print('CREATE DISPLAY')
             self.display_lobby()
 
 MAX_PVP_MEMBERS = 2

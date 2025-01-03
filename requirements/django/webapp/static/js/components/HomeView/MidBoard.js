@@ -187,7 +187,7 @@ class MidBoard
 
 		await WEB_SOCKET.initSocket_lobby();
 		await WEB_SOCKET.connect_ws_lobby('PVP');
-		await this.listen_lobby_socket();
+		await this.display_lobby_socket_list();
 
 		return true;
 	}
@@ -211,7 +211,7 @@ class MidBoard
 		// list room list
 		await WEB_SOCKET.initSocket_lobby();
 		await WEB_SOCKET.connect_ws_lobby('TNM');
-		await this.listen_lobby_socket();
+		await this.display_lobby_socket_list();
 
 		return true;
 	}
@@ -220,6 +220,16 @@ class MidBoard
 	{
 		const title = document.querySelector('.ct-top-title');
 		title.innerHTML = 'Game Mode';
+
+		return true;
+	}
+
+	async display_lobby_socket_list()
+	{
+		const dis_div = document.getElementById('room_list_board');
+		dis_div.innerHTML = "";
+
+		await WEB_SOCKET.listen_ws_lobby();
 
 		return true;
 	}
@@ -268,7 +278,8 @@ class MidBoard
 			'%st-dt': `${started}`,
 			'%romid-c': 'rbl-roomid',
 			'%romid-t': `${room.room_id}`,
-			'@bs-dt1': `data-bs-dismiss="modal"`,
+			//'@bs-dt1': `data-bs-dismiss="modal"`,
+			'@bs-dt1': '',
 			'%romslot-c': 'rbl-slot',
 			'%romslot-t': `${slot}`,
 			'%nam-c': 'rbl-name truncate',
@@ -291,25 +302,6 @@ class MidBoard
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
-	async listen_lobby_socket()
-	{
-		const dis_div = document.getElementById('room_list_board');
-		dis_div.innerHTML = "";
-
-		WEB_SOCKET.lobby.ws.addEventListener('message', async (event) =>
-		{
-			console.log('LISTENING TO LOBBY SOCKET');
-			let data = JSON.parse(event.data);
-
-			if (data.type === 'display')
-			{
-				console.log('LOBBY SOCKET DISPLAY: ', data.rooms);
-				await this.render_room_list(data.rooms);
-			}
-		});
-
-		return true;
-	}
 
 	// --------------------------------------------- //
 	// [4/4] HTML-ELEMENT-RELATED
