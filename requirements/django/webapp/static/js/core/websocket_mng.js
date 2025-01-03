@@ -16,28 +16,10 @@ class websocketManager
 {
 	constructor()
 	{
-		this.init_liveChat();
-		this.init_friendSocket();
-		this.init_lobbySocket();
-		this.init_gameRoomSocket();
-	}
-
-//=================================#
-// LIVE CHAT
-//=================================#
-
-	async init_liveChat()
-	{
-		this.liveChat =
-		{
-			ws: undefined,
-			url: undefined,
-			sender: undefined,
-			target: undefined,
-			room_name: undefined,
-		};
-
-		return true;
+		this.initSocket_liveChat();
+		this.initSocket_friendList();
+		this.initSocket_lobby();
+		this.initSocket_gameRoom();
 	}
 
 	async ws_is_ready_to_close(ws)
@@ -54,14 +36,33 @@ class websocketManager
 	async close_all_websockets()
 	{
 		if (await this.ws_is_ready_to_close(this.liveChat.ws))
-			this.close_curent_liveChat();
+			this.close_ws_chat();
 		if (await this.ws_is_ready_to_close(this.friend.ws))
-			this.close_friendSocket();
+			this.close_ws_friend();
 
 		return true;
 	}
 
-	async close_curent_liveChat()
+
+//=================================#
+// LIVE CHAT
+//=================================#
+
+	async initSocket_liveChat()
+	{
+		this.liveChat =
+		{
+			ws: undefined,
+			url: undefined,
+			sender: undefined,
+			target: undefined,
+			room_name: undefined,
+		};
+
+		return true;
+	}
+
+	async close_ws_chat()
 	{
 		if (await this.ws_is_ready_to_close(this.liveChat.ws))
 		{
@@ -81,7 +82,7 @@ class websocketManager
 // FRIEND LIST
 //=================================#
 
-	async init_friendSocket()
+	async initSocket_friendList()
 	{
 		this.friend =
 		{
@@ -94,7 +95,7 @@ class websocketManager
 		return true;
 	}
 
-	async close_friendSocket()
+	async close_ws_friend()
 	{
 		if (await this.ws_is_ready_to_close(this.friend.ws))
 			this.friend.ws.close();
@@ -102,7 +103,7 @@ class websocketManager
 		return true;
 	}
 	
-	async read_friendSocket()
+	async connect_ws_friend()
 	{
 		const user_obj = JSON.parse(localStorage.getItem('user'));
 
@@ -120,7 +121,7 @@ class websocketManager
 		return true;
 	}
 
-	async friendSocket_connect_home_status()
+	async listen_ws_friend()
 	{
 		this.friend.ws.addEventListener('message', async (event) => {
 			let data = JSON.parse(event.data);
@@ -157,7 +158,7 @@ class websocketManager
 		return true;
 	}
 
-	async friendSocket_gameroom_status(type)
+	async update_ws_friend(type)
 	{
 		if (type === 'join')
 		{
@@ -191,7 +192,7 @@ class websocketManager
 // LOBBY LIST (ROOMS)
 //=================================#
 
-	async init_lobbySocket()
+	async initSocket_lobby()
 	{
 		this.lobby =
 		{
@@ -202,7 +203,7 @@ class websocketManager
 		return true;
 	}
 
-	async connect_lobbySocket(lobby_type)
+	async connect_ws_lobby(lobby_type)
 	{
 		this.lobby.url = `wss://${window.location.host}/ws/lobby/${lobby_type}/`;
 		this.lobby.ws = new WebSocket(this.lobby.url);
@@ -210,7 +211,7 @@ class websocketManager
 		return true;
 	}
 
-	async close_lobbySocket()
+	async close_ws_lobby()
 	{
 		if (this.lobby.ws !== undefined)
 		{
@@ -222,14 +223,7 @@ class websocketManager
 		return true;
 	}
 
-	async lobbySocket_run(lobby_type)
-	{
-		await this.connect_lobbySocket(lobby_type);
-
-		return true;
-	}
-
-	async notify_incr_lobbySocket(lobby_type)
+	async notifyLobbySocket_incr(lobby_type)
 	{
 		console.log('NOTIFY INCR OUT', this.lobby.ws.readyState);
 		if (this.lobby.ws && this.lobby.ws.readyState === WebSocket.OPEN)
@@ -244,7 +238,7 @@ class websocketManager
 		return true;
 	}
 
-	async notify_decr_lobbySocket(lobby_type)
+	async notifyLobbySocket_decr(lobby_type)
 	{
 		console.log('NOTIFY DECR OUT', this.lobby.ws.readyState);
 		if (this.lobby.ws && this.lobby.ws.readyState === WebSocket.OPEN)
@@ -263,7 +257,7 @@ class websocketManager
 // GAME ROOM
 //=================================#
 
-	async init_gameRoomSocket()
+	async initSocket_gameRoom()
 	{
 		this.gr =
 		{
@@ -274,7 +268,7 @@ class websocketManager
 		return true;
 	}
 
-	async connect_gameRoomSocket(room_id)
+	async connect_ws_game(room_id)
 	{
 		this.gr.url = `wss://${window.location.host}/ws/game/${room_id}/`;
 		this.gr.ws = new WebSocket(this.gr.url);
@@ -282,7 +276,7 @@ class websocketManager
 		return true;
 	}
 
-	async close_gameRoomSocket()
+	async close_ws_game()
 	{
 		console.log('close game room socket when leave');
 		this.gr.ws.close();
@@ -290,14 +284,7 @@ class websocketManager
 		return true;
 	}
 
-	async run_gameRoomSocket(room_id)
-	{
-		await this.connect_gameRoomSocket(room_id);
-
-		return true;
-	}
-
-	async listen_gameRoomSocket()
+	async listen_ws_game()
 	{
 		this.gr.ws.addEventListener('message', async (event) => {
 			let data = JSON.parse(event.data);

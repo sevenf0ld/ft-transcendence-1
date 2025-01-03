@@ -127,8 +127,8 @@ class RoomList
 		const btn_home = document.querySelector("#btn_leaveRoom");
 		//btn_home.addEventListener('click', async () =>
 		//{
-		//	await WEB_SOCKETS.friendSocket_gameroom_status('leave');
-		//	await WEB_SOCKETS.close_gameRoomSocket();
+		//	await WEB_SOCKETS.update_ws_friend('leave');
+		//	await WEB_SOCKETS.close_ws_game();
 
 		//	const HOME = HOME_VIEW;
 		//	await HOME.render();
@@ -144,8 +144,8 @@ class RoomList
 	{
 		event.preventDefault();
 
-		await WEB_SOCKETS.friendSocket_gameroom_status('leave');
-		await WEB_SOCKETS.close_gameRoomSocket();
+		await WEB_SOCKETS.update_ws_friend('leave');
+		await WEB_SOCKETS.close_ws_game();
 
 		const data_room_type = document.querySelector('.ct-gr-rl-title').dataset.roomType;
 		// no init
@@ -154,7 +154,7 @@ class RoomList
 			room_type = 'PVP';
 		else if (data_room_type === 'tour')
 			room_type = 'TNM';
-		await WEB_SOCKETS.notify_decr_lobbySocket(room_type);
+		await WEB_SOCKETS.notifyLobbySocket_decr(room_type);
 
 		const HOME = HOME_VIEW;
 		await HOME.render();

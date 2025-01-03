@@ -163,8 +163,8 @@ class LeftUser
 			if (TOKEN.token_id)
 				await TOKEN.stop_refresh_token();
 
-			await WEB_SOCKET.close_curent_liveChat();
-			await WEB_SOCKET.close_friendSocket();
+			await WEB_SOCKET.close_ws_chat();
+			await WEB_SOCKET.close_ws_friend();
 
 			localStorage.clear();
 			location.href = '/';

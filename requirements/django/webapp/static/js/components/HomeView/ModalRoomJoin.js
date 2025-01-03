@@ -107,10 +107,10 @@ class ModalRoomJoin
 
 		if (this.gameType === 'online-pvp')
 		{
-			await WEB_SOCKET.close_curent_liveChat();
-			await WEB_SOCKET.friendSocket_gameroom_status('join');
-			//await WEB_SOCKET.close_lobbySocket();
-			//await WEB_SOCKET.notify_incr_lobbySocket('PVP');
+			await WEB_SOCKET.close_ws_chat();
+			await WEB_SOCKET.update_ws_friend('join');
+			//await WEB_SOCKET.close_ws_lobby();
+			//await WEB_SOCKET.notifyLobbySocket_incr('PVP');
 			//await WEB_SOCKET.notify_create_lobbySocket('PVP');
 
 			await this.fetch_create_game_room('PVP');
@@ -119,14 +119,14 @@ class ModalRoomJoin
 			await gameRoom.init();
 			gameRoom.type = 'online-pvp';
 			await gameRoom.render();
-			await WEB_SOCKET.listen_gameRoomSocket();
+			await WEB_SOCKET.listen_ws_game();
 		}
 		else if (this.gameType === 'online-tour')
 		{
-			await WEB_SOCKET.close_curent_liveChat();
-			await WEB_SOCKET.friendSocket_gameroom_status('join');
-			//await WEB_SOCKET.close_lobbySocket();
-			//await WEB_SOCKET.notify_incr_lobbySocket('TNM');
+			await WEB_SOCKET.close_ws_chat();
+			await WEB_SOCKET.update_ws_friend('join');
+			//await WEB_SOCKET.close_ws_lobby();
+			//await WEB_SOCKET.notifyLobbySocket_incr('TNM');
 			//await WEB_SOCKET.notify_create_lobbySocket('TNM');
 
 			await this.fetch_create_game_room('TNM');
@@ -135,7 +135,7 @@ class ModalRoomJoin
 			await gameRoom.init();
 			gameRoom.type = 'online-tour';
 			await gameRoom.render();
-			await WEB_SOCKET.listen_gameRoomSocket();
+			await WEB_SOCKET.listen_ws_game();
 		}
 
 		return true;
@@ -156,7 +156,7 @@ class ModalRoomJoin
 				alert(`clicked room id : ${roomid}`);
 
 				// no init
-				await WEB_SOCKET.run_gameRoomSocket(roomid);
+				await WEB_SOCKET.connect_ws_game(roomid);
 				const data_room_type = document.querySelector('.join-room-main').parentNode.dataset.roomType;
 
 				// no init
@@ -166,13 +166,13 @@ class ModalRoomJoin
 				else if (data_room_type === 'tour')
 					room_type = 'TNM';
 				//await WEB_SOCKET.lobbySocket_run(room_type);
-				await WEB_SOCKET.notify_incr_lobbySocket(room_type);
+				await WEB_SOCKET.notifyLobbySocket_incr(room_type);
 
 				const gameRoom = GAME_ROOM_VIEW;
 				await gameRoom.init();
 				gameRoom.type = `online-${data_room_type}`;
 				await gameRoom.render();
-				await WEB_SOCKET.listen_gameRoomSocket();
+				await WEB_SOCKET.listen_ws_game();
 			});
 		}
 
@@ -184,7 +184,7 @@ class ModalRoomJoin
 	//	const modal_join_container = document.getElementById('modal-join');
 
 	//	modal_join_container.addEventListener('hidden.bs.modal', async (event) => {
-	//		await WEB_SOCKET.close_lobbySocket();
+	//		await WEB_SOCKET.close_ws_lobby();
 	//	});
 
 	//	return true;
@@ -200,10 +200,10 @@ class ModalRoomJoin
 		{
 			const room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
 
-			await WEB_SOCKET.init_gameRoomSocket();
-			await WEB_SOCKET.run_gameRoomSocket(room_id);
+			await WEB_SOCKET.initSocket_gameRoom();
+			await WEB_SOCKET.connect_ws_game(room_id);
 
-			//await WEB_SOCKET.init_lobbySocket();
+			//await WEB_SOCKET.initSocket_lobby();
 			//await WEB_SOCKET.lobbySocket_run(room_type);
 		}
 		else if (MRJ_FETCH.fetch_obj.re_value === 'game-room-creation-failed')

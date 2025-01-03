@@ -126,8 +126,8 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked: local-pve');
 
-		await WEB_SOCKET.close_curent_liveChat();
-		await WEB_SOCKET.friendSocket_gameroom_status('join');
+		await WEB_SOCKET.close_ws_chat();
+		await WEB_SOCKET.update_ws_friend('join');
 
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
@@ -142,8 +142,8 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked : local-pvp');
 
-		await WEB_SOCKET.close_curent_liveChat();
-		await WEB_SOCKET.friendSocket_gameroom_status('join');
+		await WEB_SOCKET.close_ws_chat();
+		await WEB_SOCKET.update_ws_friend('join');
 
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
@@ -158,8 +158,8 @@ class MidBoard
 		event.preventDefault();
 		console.log('[EVENT] button clicked : local-tour');
 
-		await WEB_SOCKET.close_curent_liveChat();
-		await WEB_SOCKET.friendSocket_gameroom_status('join');
+		await WEB_SOCKET.close_ws_chat();
+		await WEB_SOCKET.update_ws_friend('join');
 
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
@@ -185,8 +185,8 @@ class MidBoard
 		MODAL_ROOM_JOIN.gameType = 'online-pvp';
 		await MODAL_ROOM_JOIN.render('replace');
 
-		await WEB_SOCKET.init_lobbySocket();
-		await WEB_SOCKET.lobbySocket_run('PVP');
+		await WEB_SOCKET.initSocket_lobby();
+		await WEB_SOCKET.connect_ws_lobby('PVP');
 		await this.listen_lobby_socket();
 
 		return true;
@@ -209,8 +209,8 @@ class MidBoard
 		await MODAL_ROOM_JOIN.render('replace');
 
 		// list room list
-		await WEB_SOCKET.init_lobbySocket();
-		await WEB_SOCKET.lobbySocket_run('TNM');
+		await WEB_SOCKET.initSocket_lobby();
+		await WEB_SOCKET.connect_ws_lobby('TNM');
 		await this.listen_lobby_socket();
 
 		return true;
