@@ -130,6 +130,25 @@ class ActionPanel
 	{
 		return true;
 	}
+
+	async btn_manage(btn, type)
+	{
+		if (type === 'disable')	
+		{
+			btn.disabled = true;
+			btn.classList.add('d-none');
+		}
+		else if (type === 'enable')
+		{
+			btn.disabled = false;
+			btn.classList.remove('d-none');
+		}
+		else
+		{
+			throw new Error('invalid type');
+		}
+		return true;
+	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
@@ -212,7 +231,7 @@ class ActionPanel
 	async push_important_elements_lpvp()
 	{
 		this.buttons['start'] = this.base_ctn.querySelector('#btn_lpvp_start');
-		this.buttons['restart'] = this.base_ctn.querySelector('#btn_lpvp_restart');
+		this.buttons['reset'] = this.base_ctn.querySelector('#btn_lpvp_restart');
 
 		return true;
 	}
@@ -225,7 +244,7 @@ class ActionPanel
 			'click', async (event) => { await this.lpvp_start_click(event); }
 		);
 
-		this.buttons['restart'].addEventListener(
+		this.buttons['reset'].addEventListener(
 			'click', async (event) => { await this.lpvp_restart_click(event); }
 		);
 
@@ -341,7 +360,7 @@ class ActionPanel
 	async push_important_elements_ltour()
 	{
 		this.buttons['start'] = this.base_ctn.querySelector('#btn_ltour_start');
-		this.buttons['restart'] = this.base_ctn.querySelector('#btn_ltour_restart');
+		this.buttons['reset'] = this.base_ctn.querySelector('#btn_ltour_restart');
 		this.buttons['add'] = this.base_ctn.querySelector('#btn_ltour_add');
 		this.buttons['ready'] = this.base_ctn.querySelector('#btn_ltour_ready');
 
@@ -360,7 +379,7 @@ class ActionPanel
 			'click', async (event) => { await this.ltour_start_click(event); }
 		);
 
-		this.buttons['restart'].addEventListener(
+		this.buttons['reset'].addEventListener(
 			'click', async (event) => { await this.ltour_restart_click(event); }
 		);
 
@@ -381,6 +400,19 @@ class ActionPanel
 	{
 		event.preventDefault();
 		console.log('[EVENT] ltour_start_click');
+
+		//buttons
+		this.btn_manage(this.buttons['add'], 'disable');
+		this.btn_manage(this.buttons['start'], 'disable');
+		this.btn_manage(this.buttons['reset'], 'enable');
+		const leave_room = document.querySelector('#btn_leaveRoom');
+		leave_room.disabled = true;
+
+		const pongGame = PONG_ENGINE;
+		pongGame.gameType = this.gameType;
+		await pongGame.init();
+		this.currentGame = pongGame;
+
 		return true;
 	}
 
@@ -406,6 +438,7 @@ class ActionPanel
 		console.log('[EVENT] ltour_ready_click');
 		return true;
 	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
@@ -539,6 +572,11 @@ class ActionPanel
 				await TNM_LOGIC.add_player(str);
 				if (TNM_LOGIC.lobby.length >= TNM_LOGIC.min_players)
 					this.buttons['start'].disabled = false;
+				if (TNM_LOGIC.lobby.length >= TNM_LOGIC.max_players)
+				{
+					this.buttons['add'].disabled = true;
+					this.buttons['add'].classList.add('d-none');
+				}
 			}
 		);
 	}
