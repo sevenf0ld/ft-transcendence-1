@@ -60,10 +60,13 @@ class engineUtilsClass
 		}
 		else if (state === 'ltour-reset')
 		{
+			EG_DATA.match.end = true;
+			await EG_DATA.reset();
 			await this.reset_announcer();
 			await this.announce('Tournament has ended (manually)');
 			await TNM_LOGIC.reset_tournament();
 			await this.render_default_gameBoard();
+			alert('done');
 		}
 
 		return true;

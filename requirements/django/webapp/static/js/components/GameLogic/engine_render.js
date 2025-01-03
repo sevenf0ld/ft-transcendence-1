@@ -18,23 +18,25 @@ class engineRenderClass
 	constructor()
 	{
 		this.data = EG_DATA;
+		this.gameType = null;
 	}
 
 	async game_loop(timestamp)
 	{
 		const db = this.data;
 
-		if (db.match.end)
-			return false;
-		if (db.match.winner !== null)
+		if (db.match.end || !db.canvas.elem || !db.canvas.ctx)
 		{
-			this.game_over();
-			if (db.canvas.elem)
+			if (db.gameType === 'local-pvp')
 			{
-				db.canvas.elem.classList.remove('breathing_bot');
-				db.canvas.elem.classList.remove('breathing_top');
+				this.game_over();
+				await this.handle_canvas_over();
+				await EG_UTILS.gameStateHandler('lpvp-end');
 			}
-			await EG_UTILS.gameStateHandler('lpvp-end');
+			if (db.gameType === 'local-tour')
+			{
+				alert('tour game over');
+			}
 			return false;
 		}
 
@@ -52,6 +54,18 @@ class engineRenderClass
 		await this.game_start();
 
 		requestAnimationFrame(this.game_loop.bind(this));
+
+		return true;
+	}
+
+	async handle_canvas_over()
+	{
+		const db = this.data;
+		if (db.canvas.elem)
+		{
+			db.canvas.elem.classList.remove('breathing_bot');
+			db.canvas.elem.classList.remove('breathing_top');
+		}
 
 		return true;
 	}
@@ -75,11 +89,13 @@ class engineRenderClass
 
 		if (db.match.winner === db.player1.name)
 		{
+			alert(`${db.player1.name} has won the match!`);
 			EG_UTILS.announce(`${db.player1.name} wins!`);
 			this.render_playersName('p1');
 		}
 		if (db.match.winner === db.player2.name)
 		{
+			alert(`${db.player2.name} has won the match!`);
 			EG_UTILS.announce(`${db.player2.name} wins!`);
 			this.render_playersName('p2');
 		}
@@ -90,6 +106,9 @@ class engineRenderClass
 	async render_countdown(num)
 	{
 		const db = this.data;
+		if (!db.canvas.ctx || !db.canvas.elem)
+			return false;
+
 		const width = db.canvas.elem.width / 2;
 		const height = db.canvas.elem.height / 2;
 
@@ -288,13 +307,13 @@ class engineRenderClass
 		{
 			db.player1.wins++;
 			db.match.winner = db.player1.name;
-			alert(`${db.player1.name} wins!`);
+			db.match.end = true;
 		}
 		if (ballL <= 0)
 		{
 			db.player2.wins++;
 			db.match.winner = db.player2.name;
-			alert(`${db.player2.name} wins!`);
+			db.match.end = true;
 		}
 	}
 

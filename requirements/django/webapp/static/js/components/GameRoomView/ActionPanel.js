@@ -396,18 +396,39 @@ class ActionPanel
 		return true;
 	}
 
+	async disable_all_btns_except(exception, disableLeaveRoom)
+	{
+		for (const key in this.buttons)
+		{
+			for (const item in exception)
+			{
+				if (key === item)
+					continue;
+				this.buttons[key].disabled = true;
+				this.buttons[key].classList.add('d-none');
+			}
+		}
+
+		const leave_room = document.querySelector('#btn_leaveRoom');
+		if (disableLeaveRoom === true)
+			leave_room.disabled = true;
+		else if (disableLeaveRoom === false)
+			leave_room.disabled = false
+		else
+			throw new Error('invalid disableLeaveRoom');
+
+		return true;
+	}
+
 	async ltour_start_click(event)
 	{
 		event.preventDefault();
 		console.log('[EVENT] ltour_start_click');
 
-		//buttons
-		this.btn_manage(this.buttons['add'], 'disable');
-		this.btn_manage(this.buttons['start'], 'disable');
-		this.btn_manage(this.buttons['reset'], 'enable');
-		const leave_room = document.querySelector('#btn_leaveRoom');
-		leave_room.disabled = true;
+		// btn management
+		await this.disable_all_btns_except(['reset'], true);
 
+		// game engine
 		const pongGame = PONG_ENGINE;
 		pongGame.gameType = this.gameType;
 		await pongGame.init();
@@ -421,7 +442,11 @@ class ActionPanel
 		event.preventDefault();
 		console.log('[EVENT] ltour_restart_click');
 
-		this.currentGame.reset('ltour');
+		//btn management
+		await this.disable_all_btns_except(['start', 'add'], false);
+
+		// game engine
+		PONG_ENGINE.reset('ltour');
 
 		return true;
 	}

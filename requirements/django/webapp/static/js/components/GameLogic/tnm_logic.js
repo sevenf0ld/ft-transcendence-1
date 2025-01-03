@@ -22,6 +22,7 @@ class tnmLogicClass
 	// --------------------------------------------- //
 	constructor()
 	{
+		this.gameType = 'local-tour';
 		this.init_players_data();
 		this.init_html_divs();
 	}
@@ -99,11 +100,43 @@ class tnmLogicClass
 			`ROUND #${this.round} : (${this.playing[0]}) vs (${this.playing[1]})!`,
 			'mms'
 		);
+		alert(`ROUND ${this.round}! ${this.playing[0]} vs ${this.playing[1]}!`);
 		await EG_UTILS.announce(
 			`Winner of this match will play against (${this.next}!)`,
 			'mms'
 		);
 		await EG_UTILS.announce('Note - players are randomly paired');
+
+		const btn = document.querySelector('#btn_ltour_restart');
+		btn.disabled = true;
+
+		await (this.tour_loop());
+
+		return true;
+	}
+
+	async tour_loop()
+	{
+		const btn = document.querySelector('#btn_ltour_restart');
+
+		while (this.tour_over !== true)
+		{
+			const db = EG_DATA;
+			db.reset();
+			db.gameType = this.gameType;
+			const C = document.getElementById('game_canvas');
+			db.init_canvas(C);
+			db.gameType = this.gameType;
+			db.player1.name = this.playing[0];
+			db.player2.name = this.playing[1];
+			await EG_RENDER.start_countdown();
+			if (btn.disabled)
+				btn.disabled = false;
+			await EG_RENDER.randomBallDirection();
+			requestAnimationFrame(EG_RENDER.game_loop.bind(EG_RENDER));
+			while (db.match.winner === null)
+				await EG_UTILS.sleep(500);
+		}
 
 		return true;
 	}
