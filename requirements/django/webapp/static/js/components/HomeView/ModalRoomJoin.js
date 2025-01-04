@@ -111,9 +111,8 @@ class ModalRoomJoin
 
 		if (this.gameType === 'online-pvp')
 		{
-			await WEB_SOCKET.close_ws_chat();
-			await WEB_SOCKET.update_ws_friend('join');
-			await WEB_SOCKET.notifyLobbySocket_create();
+			await WEB_SOCKET.closeSocket_liveChat();
+			await WEB_SOCKET.updateSocket_friendList('join');
 
 			await this.fetch_create_game_room('PVP');
 
@@ -121,13 +120,12 @@ class ModalRoomJoin
 			await gameRoom.init();
 			gameRoom.type = 'online-pvp';
 			await gameRoom.render();
-			await WEB_SOCKET.listen_ws_game();
+			await WEB_SOCKET.listenSocket_game();
 		}
 		else if (this.gameType === 'online-tour')
 		{
-			await WEB_SOCKET.close_ws_chat();
-			await WEB_SOCKET.update_ws_friend('join');
-			await WEB_SOCKET.notifyLobbySocket_create();
+			await WEB_SOCKET.closeSocket_liveChat();
+			await WEB_SOCKET.updateSocket_friendList('join');
 
 			await this.fetch_create_game_room('TNM');
 
@@ -135,7 +133,7 @@ class ModalRoomJoin
 			await gameRoom.init();
 			gameRoom.type = 'online-tour';
 			await gameRoom.render();
-			await WEB_SOCKET.listen_ws_game();
+			await WEB_SOCKET.listenSocket_game();
 		}
 
 		return true;
@@ -147,7 +145,7 @@ class ModalRoomJoin
 
 		console.log('[EVENT] button clicked : go back');
 
-		await WEB_SOCKET.close_ws_lobby();
+		await WEB_SOCKET.closeSocket_lobby();
 
 		return true;
 	}
@@ -166,14 +164,14 @@ class ModalRoomJoin
 				const roomid = e.currentTarget.getAttribute('data-roomid');
 				alert(`clicked room id : ${roomid}`);
 
-				await WEB_SOCKET.connect_ws_game(roomid);
-				await WEB_SOCKET.notifyLobbySocket_incr();
+				await WEB_SOCKET.connectSocket_game(roomid);
+				await WEB_SOCKET.updateSocket_lobbyIncr();
 
 				const gameRoom = GAME_ROOM_VIEW;
 				await gameRoom.init();
 				gameRoom.type = `online-${data_room_type}`;
 				await gameRoom.render();
-				await WEB_SOCKET.listen_ws_game();
+				await WEB_SOCKET.listenSocket_game();
 			});
 		}
 
@@ -189,10 +187,12 @@ class ModalRoomJoin
 		await MRJ_FETCH.fetchData(room_type);
 		if (MRJ_FETCH.re_value === 'game-room-creation-successful')
 		{
+			await WEB_SOCKET.updateSocket_lobbyCreate();
+
 			const room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
 
 			await WEB_SOCKET.initSocket_gameRoom();
-			await WEB_SOCKET.connect_ws_game(room_id);
+			await WEB_SOCKET.connectSocket_game(room_id);
 		}
 		else if (MRJ_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
 			alert(`Failed to create ${room_type} game room.`);

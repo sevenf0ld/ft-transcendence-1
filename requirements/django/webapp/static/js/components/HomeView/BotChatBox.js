@@ -178,7 +178,7 @@ class BotChatBox
 		pfp_ctn.innerHTML = child;
 
 		//websocket close
-		await WS_MANAGER.close_ws_chat();
+		await WS_MANAGER.closeSocket_liveChat();
 		await WS_MANAGER.initSocket_liveChat();
 
 		return true;
@@ -271,7 +271,7 @@ class BotChatBox
 	{
 		this.sender = JSON.parse(localStorage.getItem('user')).username;
 
-		await WS_MANAGER.close_ws_chat();
+		await WS_MANAGER.closeSocket_liveChat();
 		await WS_MANAGER.initSocket_liveChat();
 
 		if (!document.querySelector(`.fnl-item-ctn[data-type="added"][title="${this.target}"]`))

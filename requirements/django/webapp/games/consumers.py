@@ -37,6 +37,7 @@ class LobbyConsumer(WebsocketConsumer):
 
         if rooms:
             serializer = RoomModelSerializer(rooms, many=True)
+            print('ROOMIES:', rooms)
 
             async_to_sync(self.channel_layer.group_send)(
                 self.group_name,
@@ -45,6 +46,11 @@ class LobbyConsumer(WebsocketConsumer):
                     'rooms': serializer.data
                 }
             )
+        else:
+            self.send(text_data=json.dumps({
+                'type': 'display',
+                'rooms': rooms
+            }))
 
     def list_rooms(self, event):
         self.send(text_data=json.dumps({
@@ -64,15 +70,13 @@ class LobbyConsumer(WebsocketConsumer):
 
         if update == 'increment_member':
             print('INCR DISPLAY')
-            self.display_lobby()
         if update == 'decrement_member':
-            #room_object = text_json['room_details']
-            #host = room_object['host']
-            print(text_json)
             print('DECR DISPLAY')
-            self.display_lobby()
         if update == 'create_room':
             print('CREATE DISPLAY')
+        if update == 'disband_room':
+            print('DISBAND DISPLAY')
+        if update in ['increment_member', 'decrement_member', 'create_room', 'disband_room']:
             self.display_lobby()
 
 MAX_PVP_MEMBERS = 2

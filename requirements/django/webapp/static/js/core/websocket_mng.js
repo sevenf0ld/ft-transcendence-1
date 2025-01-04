@@ -37,9 +37,9 @@ class websocketManager
 	async close_all_websockets()
 	{
 		if (await this.ws_is_ready_to_close(this.liveChat.ws))
-			this.close_ws_chat();
+			this.closeSocket_liveChat();
 		if (await this.ws_is_ready_to_close(this.friend.ws))
-			this.close_ws_friend();
+			this.closeSocket_friendList();
 
 		return true;
 	}
@@ -63,7 +63,7 @@ class websocketManager
 		return true;
 	}
 
-	async close_ws_chat()
+	async closeSocket_liveChat()
 	{
 		if (await this.ws_is_ready_to_close(this.liveChat.ws))
 		{
@@ -96,7 +96,7 @@ class websocketManager
 		return true;
 	}
 
-	async close_ws_friend()
+	async closeSocket_friendList()
 	{
 		if (await this.ws_is_ready_to_close(this.friend.ws))
 			this.friend.ws.close();
@@ -104,7 +104,7 @@ class websocketManager
 		return true;
 	}
 	
-	async connect_ws_friend()
+	async connectSocket_friendList()
 	{
 		const user_obj = JSON.parse(localStorage.getItem('user'));
 
@@ -122,7 +122,7 @@ class websocketManager
 		return true;
 	}
 
-	async listen_ws_friend()
+	async listenSocket_friendList()
 	{
 		this.friend.ws.addEventListener('message', async (event) => {
 			let data = JSON.parse(event.data);
@@ -131,35 +131,35 @@ class websocketManager
 			{
 				await RIGHT_FRIEND_LIST.update_online_status(data.friend, 'online');
 
-				if (data.type == 'return')
-					console.log('friend to me (return):', data.message);
-				if (data.type == 'notified')
-					console.log('friend to me (on):', data.message);
-				if (data.type == 'checking')
-					console.log('me to myself (on):', data.message);
+				///if (data.type == 'return')
+				//	console.log('friend to me (return):', data.message);
+				//if (data.type == 'notified')
+				//	console.log('friend to me (on):', data.message);
+				//if (data.type == 'checking')
+				//	console.log('me to myself (on):', data.message);
 			}
 			if (data.status == 'offline')
 			{
 				await RIGHT_FRIEND_LIST.update_online_status(data.friend, 'offline');
 
-				if (data.type == 'notified')
-					console.log('friend to me (off):', data.message);
+				//if (data.type == 'notified')
+				//	console.log('friend to me (off):', data.message);
 			}
 			if (data.status == 'playing')
 			{
 				await RIGHT_FRIEND_LIST.update_online_status(data.friend, 'playing');
 
-				if (data.type == 'notified')
-					console.log('friend to me (playing):', data.message);
-				if (data.type == 'checking')
-					console.log('me to myself (playing):', data.message);
+				//if (data.type == 'notified')
+				//	console.log('friend to me (playing):', data.message);
+				//if (data.type == 'checking')
+				//	console.log('me to myself (playing):', data.message);
 			}
 		});
 
 		return true;
 	}
 
-	async update_ws_friend(type)
+	async updateSocket_friendList(type)
 	{
 		if (type === 'join')
 		{
@@ -202,35 +202,42 @@ class websocketManager
 			room_details: undefined,
 
 		}
+		console.log('reset lobby socket');
 
 		return true;
 	}
 
-	async connect_ws_lobby(lobby_type)
+	async connectSocket_lobby(lobby_type)
 	{
 		if (this.lobby.ws === undefined)
 		{
 			this.lobby.url = `wss://${window.location.host}/ws/lobby/${lobby_type}/`;
 			this.lobby.ws = new WebSocket(this.lobby.url);
 		}
+		console.log('connect lobby socket when ', lobby_type);
 
 		return true;
 	}
 
-	async close_ws_lobby()
+	async closeSocket_lobby()
 	{
-		if (this.lobby.ws !== undefined)
-		{
-			this.lobby.ws.close();
-			this.lobby.ws = undefined;
-			this.lobby.url = undefined;
-			this.lobby.room_details = undefined;
-		}
+		//if (this.lobby.ws !== undefined)
+		//{
+		//	this.lobby.ws.close();
+		//	this.lobby.ws = undefined;
+		//	this.lobby.url = undefined;
+		//	this.lobby.room_details = undefined;
+		//}
+		this.lobby.ws.close();
+		this.lobby.ws = undefined;
+		this.lobby.url = undefined;
+		this.lobby.room_details = undefined;
+		console.log('close lobby socket when leave game room or stop viewing lobbylist');
 
 		return true;
 	}
 
-	async notifyLobbySocket_incr(lobby_type)
+	async updateSocket_lobbyIncr()
 	{
 		console.log('NOTIFY INCR OUT', this.lobby.ws.readyState);
 		if (this.lobby.ws && this.lobby.ws.readyState === WebSocket.OPEN)
@@ -244,7 +251,7 @@ class websocketManager
 		return true;
 	}
 
-	async notifyLobbySocket_decr(lobby_type)
+	async updateSocket_lobbyDecr()
 	{
 		console.log('NOTIFY DECR OUT', this.lobby.ws.readyState);
 		if (this.lobby.ws && this.lobby.ws.readyState === WebSocket.OPEN)
@@ -259,7 +266,7 @@ class websocketManager
 		return true;
 	}
 
-	async listen_ws_lobby()
+	async listenSocket_lobby()
 	{
 		this.lobby.ws.addEventListener('message', async (event) => {
 			let data = JSON.parse(event.data);
@@ -275,7 +282,7 @@ class websocketManager
 		return true;
 	}
 
-	async notifyLobbySocket_create(lobby_type)
+	async updateSocket_lobbyCreate()
 	{
 		console.log('NOTIFY CREATE OUT', this.lobby.ws.readyState);
 		if (this.lobby.ws && this.lobby.ws.readyState === WebSocket.OPEN)
@@ -305,7 +312,7 @@ class websocketManager
 		return true;
 	}
 
-	async connect_ws_game(room_id)
+	async connectSocket_game(room_id)
 	{
 		this.gr.url = `wss://${window.location.host}/ws/game/${room_id}/`;
 		this.gr.ws = new WebSocket(this.gr.url);
@@ -313,7 +320,7 @@ class websocketManager
 		return true;
 	}
 
-	async close_ws_game()
+	async closeSocket_game()
 	{
 		console.log('close game room socket when leave');
 		this.gr.ws.close();
@@ -321,7 +328,7 @@ class websocketManager
 		return true;
 	}
 
-	async listen_ws_game()
+	async listenSocket_game()
 	{
 		this.gr.ws.addEventListener('message', async (event) => {
 			let data = JSON.parse(event.data);

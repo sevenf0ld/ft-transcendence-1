@@ -28,7 +28,6 @@ class HomeView
 	constructor()
 	{
 		this.container = document.body;
-		//await WEB_SOCKET.initSocket_lobby();
 	}
 
 	async render()
@@ -66,11 +65,8 @@ class HomeView
 		await RIGHT_FRIEND_LIST.render('replace');
 
 		await WEB_SOCKET.initSocket_friendList();
-		await WEB_SOCKET.connect_ws_friend();
-		await WEB_SOCKET.listen_ws_friend();
-		await WEB_SOCKET.initSocket_lobby();
-		//await WEB_SOCKET.connect_ws_lobby('PVP');
-		//await WEB_SOCKET.connect_ws_lobby('TNM');
+		await WEB_SOCKET.connectSocket_friendList();
+		await WEB_SOCKET.listenSocket_friendList();
 
 		return true;
 	}

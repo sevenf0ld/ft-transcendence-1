@@ -127,8 +127,8 @@ class RoomList
 		const btn_home = document.querySelector("#btn_leaveRoom");
 		//btn_home.addEventListener('click', async () =>
 		//{
-		//	await WEB_SOCKETS.update_ws_friend('leave');
-		//	await WEB_SOCKETS.close_ws_game();
+		//	await WEB_SOCKETS.updateSocket_friendList('leave');
+		//	await WEB_SOCKETS.closeSocket_game();
 
 		//	const HOME = HOME_VIEW;
 		//	await HOME.render();
@@ -144,10 +144,11 @@ class RoomList
 	{
 		event.preventDefault();
 
-		await WEB_SOCKETS.update_ws_friend('leave');
-		await WEB_SOCKETS.close_ws_game();
+		await WEB_SOCKETS.updateSocket_friendList('leave');
+		await WEB_SOCKETS.closeSocket_game();
 
-		await WEB_SOCKETS.notifyLobbySocket_decr();
+		await WEB_SOCKETS.updateSocket_lobbyDecr();
+		await WEB_SOCKETS.closeSocket_lobby();
 
 		const HOME = HOME_VIEW;
 		await HOME.render();

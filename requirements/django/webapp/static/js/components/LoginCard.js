@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', async (e) => {
 			intraFetch.fetch_obj.rdata['user'])
 		);
 		const HOME = HOME_VIEW;
-		//await WEB_SOCKET.initSocket_lobby();
 		await HOME.render();
 	}
 });
@@ -180,7 +179,6 @@ class LoginCard
 			localStorage.setItem('user', JSON.stringify(loginFetch.fetch_obj.rdata['user']));
 			await new Promise(r => setTimeout(r, 2000));
 			const HOME = HOME_VIEW;
-			//await WEB_SOCKET.initSocket_lobby();
 			await HOME.render();
 		}
 
