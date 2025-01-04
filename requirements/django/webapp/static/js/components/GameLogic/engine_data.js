@@ -18,6 +18,7 @@ class engineData
 	// --------------------------------------------- //
 	constructor()
 	{
+		this.gameType = null;
 		this.init_display();
 		this.obj_ball();
 		this.obj_paddle();
@@ -27,6 +28,7 @@ class engineData
 
 	async reset()
 	{
+		this.gameType = null;
 		this.init_display();
 		this.obj_ball();
 		this.obj_paddle();
@@ -137,6 +139,7 @@ class engineData
 	{
 		this.match =
 		{
+			started: false,
 			end: false,
 			winner: null,
 			pause: false,

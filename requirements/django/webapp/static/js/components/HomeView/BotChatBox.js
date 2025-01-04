@@ -119,7 +119,7 @@ class BotChatBox
 	async profileClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : chatbox-profile');
+		console.log('[BTN] profileClick');
 
 		if (await this.check_opened_profile(this.target))
 			return true;
@@ -167,7 +167,7 @@ class BotChatBox
 	async closeClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : chatbox-close');
+		console.log('[BTN] closeClick');
 
 		const child = '<p class="ct-bottom-placeholder">(placeholder)</p>';
 
@@ -187,7 +187,7 @@ class BotChatBox
 	async inviteClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : chatbox-invite');
+		console.log('[BTN] inviteClick');
 
 		return true;
 	}
@@ -195,7 +195,7 @@ class BotChatBox
 	async sendMsgClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : chatbox-send');
+		console.log('[BTN] sendMsgClick');
 
 		const input = document.getElementById('input_chatbox');
 		let message = document.getElementById('input_chatbox').value;

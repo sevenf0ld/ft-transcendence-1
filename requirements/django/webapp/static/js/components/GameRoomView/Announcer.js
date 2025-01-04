@@ -375,12 +375,6 @@ class Announcer
 			${await this.msg_generator(
 				"Add at least 2 more players to begin."
 			)}
-			${await this.msg_generator(
-				"Click 'Add Player' to add a player."
-			)}
-			${await this.msg_generator(
-				"Click 'Start' to begin."
-			)}
 		`;
 		// [B] SET atts
 		const atts =

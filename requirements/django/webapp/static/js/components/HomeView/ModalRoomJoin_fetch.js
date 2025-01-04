@@ -35,7 +35,6 @@ class fetch_create_game_room
 
 	async fetchData(room_type)
 	{
-		console.log(room_type);
 		if (room_type !== 'PVP' && room_type !== 'TNM')
 			throw new Error('Unsupported game type.');
 		this.room_type = room_type;

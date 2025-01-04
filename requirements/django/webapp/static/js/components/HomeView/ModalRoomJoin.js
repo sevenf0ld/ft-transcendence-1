@@ -106,7 +106,7 @@ class ModalRoomJoin
 	async createClick(event)
 	{
 		event.preventDefault();
-
+    
 		console.log('[EVENT] button clicked : create');
 
 		if (this.gameType === 'online-pvp')

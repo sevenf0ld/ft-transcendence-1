@@ -7,6 +7,7 @@
 // -------------------------------------------------- //
 import HOME_VIEW from '../../views/HomeView.js';
 import WEB_SOCKETS from '../../core/websocket_mng.js';
+import TNM_LOGIC from '../GameLogic/tnm_logic.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -236,7 +237,7 @@ class RoomList
 		// [-] HELPER FUNCTION
 		let icon = '';
 		if (playerType === 'host')
-			icon = '/static/assets/images/host.svg';
+			icon = '/static/assets/images/crown.png';
 		else
 			icon = '/static/assets/images/guest.svg';
 
@@ -286,7 +287,7 @@ class RoomList
 		return template;
 	}
 
-	async playerListCheckEmpty(containers)
+	async empty_ctn_handler(containers)
 	{
 		for (const container of containers)
 		{
@@ -371,7 +372,7 @@ class RoomList
 		await this.playerListGenerator(this.lobby_ctn, 'You', 'Lobby', 'host');
 		await this.playerListGenerator(this.lobby_ctn, 'Player 2', 'Lobby', 'guest', 'offline');
 
-		await this.playerListCheckEmpty([this.lobby_ctn, this.playing_ctn]);
+		await this.empty_ctn_handler([this.lobby_ctn, this.playing_ctn]);
 		await this.updateRoomPlayerCount(2);
 
 		return true;
@@ -471,9 +472,10 @@ class RoomList
 	{
 		this.roomTitle.setAttribute('data-room-type', 'tour');
 
+		/*
 		await this.playerListGenerator(this.lobby_ctn, 'You', 'Lobby', 'host');
 
-		await this.playerListCheckEmpty([
+		await this.empty_ctn_handler([
 			this.lobby_ctn,
 			this.playing_ctn,
 			this.waiting_ctn,
@@ -481,6 +483,8 @@ class RoomList
 		]);
 
 		await this.updateRoomPlayerCount(1);
+		*/
+		await TNM_LOGIC.reset();
 
 		return true;
 	}
@@ -581,7 +585,7 @@ class RoomList
 
 		await this.playerListGenerator(this.lobby_ctn, 'you', 'lobby', 'host');
 		await this.playerListGenerator(this.lobby_ctn, 'PONG-AI', 'Lobby', 'guest', 'offline');
-		await this.playerListCheckEmpty([this.lobby_ctn, this.playing_ctn]);
+		await this.empty_ctn_handler([this.lobby_ctn, this.playing_ctn]);
 
 		await this.updateRoomPlayerCount(2);
 
@@ -682,7 +686,7 @@ class RoomList
 
 		await this.playerListGenerator(this.lobby_ctn, 'You', 'lobby', 'host');
 
-		await this.playerListCheckEmpty([this.lobby_ctn, this.playing_ctn]);
+		await this.empty_ctn_handler([this.lobby_ctn, this.playing_ctn]);
 
 		await this.updateRoomPlayerCount(1);
 
@@ -786,7 +790,7 @@ class RoomList
 
 		await this.playerListGenerator(this.lobby_ctn, 'You', 'Lobby', 'host');
 
-		await this.playerListCheckEmpty([
+		await this.empty_ctn_handler([
 			this.lobby_ctn,
 			this.playing_ctn,
 			this.waiting_ctn,

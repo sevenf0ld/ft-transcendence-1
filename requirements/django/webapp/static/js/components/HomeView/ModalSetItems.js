@@ -117,7 +117,9 @@ class ModalSetItems
 	async englishClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : language-english');
+		console.log('[BTN] englishClick');
+
+		await this.fetch_lang('EN');
 
 		return true;
 	}
@@ -125,7 +127,9 @@ class ModalSetItems
 	async malayClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : language-malay');
+		console.log('[BTN] malayClick');
+
+		await this.fetch_lang('MY');
 
 		return true;
 	}
@@ -133,13 +137,40 @@ class ModalSetItems
 	async chineseClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : language-chinese');
+		console.log('[BTN] chineseClick');
+
+		await this.fetch_lang('ZH');
 
 		return true;
 	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
+	async fetch_lang(lang)
+	{
+		const la = lang.toUpperCase();
+		if (la !== 'EN' && la !== 'MY' && la !== 'ZH')
+			throw new Error('[ERR] invalid lang');
+
+		await MSI_FETCH.LANG.init();
+		MSI_FETCH.LANG.language = la;
+		const re_value = await MSI_FETCH.LANG.fetchData();
+
+		if (re_value === 'lang-successful')
+		{
+			alert('Language settings updated.');
+		}
+		else if (re_value === 'lang-failed')
+		{
+			alert('Language settings update failed.');
+		}
+		else
+		{
+			console.error('Language settings update failed : unknown error');
+		}
+
+		return true;
+	}
 	// --------------------------------------------- //
 	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
@@ -249,7 +280,7 @@ class ModalSetItems
 	async accSubmitClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : account-submit');
+		console.log('[BTN] accSubmitClick');
 
 		await this.submit_acc_form();
 
@@ -477,7 +508,7 @@ class ModalSetItems
 	async imgUploadClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : pfp-upload');
+		console.log('[BTN] imgUploadClick');
 
 		const fileInput = this.buttons['pfp-input-upload'];
 		fileInput.click();
@@ -543,7 +574,7 @@ class ModalSetItems
 	async submitClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : pfp-submit');
+		console.log('[BTN] submitClick');
 
 		return true;
 	}
@@ -551,7 +582,7 @@ class ModalSetItems
 	async removeClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : pfp-remove');
+		console.log('[BTN] removeClick');
 
 		return true;
 	}
@@ -684,7 +715,7 @@ class ModalSetItems
 	async tfaEnableClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : tfa-on');
+		console.log('[BTN] tfaEnableClick');
 
 		await this.fetch_toogle_tfa('on');
 
@@ -694,7 +725,7 @@ class ModalSetItems
 	async tfaDisableClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : tfa-off');
+		console.log('[EVENT] tfaDisableClick');
 
 		await this.fetch_toogle_tfa('off');
 

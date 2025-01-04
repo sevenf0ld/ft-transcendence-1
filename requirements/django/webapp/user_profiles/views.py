@@ -87,7 +87,7 @@ def update_user_language(request):
 
     if lang not in Profile.LANGUAGE_CHOICES:
         return Response({'details': 'Selected language is not supported.'}, status=status.HTTP_400_BAD_REQUEST)
-    if is_current_lang(lang):
+    if is_current_lang(user, lang):
         return Response({'details': f'{lang} has already been selected.'}, status=status.HTTP_400_BAD_REQUEST)
 
     profile = Profile.objects.get(user=user)

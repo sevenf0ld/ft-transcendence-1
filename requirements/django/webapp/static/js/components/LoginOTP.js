@@ -117,7 +117,7 @@ class LoginOTP
 
 	async submitOtpClick(event)
 	{
-		console.log('[EVENT] button clicked : submitOtp');
+		console.log('[BTN] submitOtpClick');
 		event.preventDefault();
 
 		await LOADING.disable_all();
@@ -177,7 +177,7 @@ class LoginOTP
 	async gobackClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : goback');
+		console.log('[BTN] gobackClick');
 
 		const LOGIN = LOGIN_VIEW;
 		await LOGIN.render();
