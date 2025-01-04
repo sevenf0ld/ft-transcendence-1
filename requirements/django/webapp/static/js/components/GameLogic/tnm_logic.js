@@ -6,6 +6,7 @@ import EG_RENDER from './engine_render.js';
 import EG_DATA from './engine_data.js';
 import EG_UTILS from './engine_utils.js';
 import ROOM_LIST from '../GameRoomView/RoomList.js';
+import ACTION_PANEL from '../GameRoomView/ActionPanel.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -77,11 +78,14 @@ class tnmLogicClass
 		return true;
 	}
 
-	async reset()
+	async reset(type)
 	{
 		this.init_players_data();
 		this.init_html_divs();
 		await this.read_html_divs();
+
+		if (type === 'end')
+			return true;
 
 		const name = JSON.parse(localStorage.getItem('user')).username;
 		await this.add_player(name);
@@ -91,73 +95,202 @@ class tnmLogicClass
 	}
 
 	// core logic
+	async pre_tour_start(type)
+	{
+		let str;
+
+		str = `Players have been randomly paired!`;
+		await EG_UTILS.announce(str, 'mms');
+
+		str = `Round #${this.round} : (${this.playing[0]}) vs (${this.playing[1]})!`;
+		await EG_UTILS.announce(str, 'mms');
+		alert (str);
+
+		if (this.next)
+			str = `Winner of this match will play against (${this.next})!`;
+		else
+			str = `This is the final match!`;
+		await EG_UTILS.announce(str, 'mms');
+
+		return true;
+	}
+
 	async run_tournament()
 	{
+		//right-side list
 		await this.move_all_to_waiting();
-		await this.random_pairing();
 		await this.render_list();
-		await EG_UTILS.announce(
-			`ROUND #${this.round} : (${this.playing[0]}) vs (${this.playing[1]})!`,
-			'mms'
-		);
-		alert(`ROUND ${this.round}! ${this.playing[0]} vs ${this.playing[1]}!`);
-		await EG_UTILS.announce(
-			`Winner of this match will play against (${this.next}!)`,
-			'mms'
-		);
-		await EG_UTILS.announce('Note - players are randomly paired');
+		await this.random_pairing();
 
-		const btn = document.querySelector('#btn_ltour_restart');
-		btn.disabled = true;
+		//countdown
+		await EG_RENDER.start_countdown();
+
 
 		await (this.tour_loop());
 
 		return true;
 	}
 
+	// ============================================= //
+	// ==================================================  *******IMPORTANT******** //
+	// ============================================= //
+	// IMPORTANT CORE LOGIC (TOURNAMENT LOOP)
+	// ============================================= //
+	// ==================================================  *******IMPORTANT******** //
+	// ============================================= //
 	async tour_loop()
 	{
-		const btn = document.querySelector('#btn_ltour_restart');
-
 		while (this.tour_over !== true)
 		{
-			const db = EG_DATA;
-			db.reset();
-			db.gameType = this.gameType;
-			const C = document.getElementById('game_canvas');
-			db.init_canvas(C);
-			db.gameType = this.gameType;
-			db.player1.name = this.playing[0];
-			db.player2.name = this.playing[1];
-			await EG_RENDER.start_countdown();
-			if (btn.disabled)
-				btn.disabled = false;
-			await EG_RENDER.randomBallDirection();
-			requestAnimationFrame(EG_RENDER.game_loop.bind(EG_RENDER));
-			while (db.match.winner === null)
-				await EG_UTILS.sleep(500);
+			await this.random_pairing();
+			if (this.playing.length === 1)
+			{
+				this.tour_over = true;
+				alert('Tournament is over, winner = ' + this.playing[0]);
+				await EG_UTILS.announce('Tournament is over, winner = ' + this.playing[0]);
+				await EG_UTILS.gameStateHandler('ltour-end');
+				await this.reset_tournament('end');
+				break;
+			}
+			await this.pre_tour_start();
+
+			//tmp
+			await EG_UTILS.sleep(1000);
+
+			const loser = await this.tmp_game_logic();
+			alert('Loser = ' + loser);
+
+			await this.move_player(loser, 'play', 'elim');
+			await this.move_player(this.next, 'wait', 'play');
+			this.round++;
 		}
 
 		return true;
 	}
 
-	async reset_tournament()
+	async tmp_game_logic()
 	{
-		await this.reset();
+		const random = Math.floor(Math.random() * 2);
+		if (random === 0)
+			return this.playing[0];
+		return this.playing[1];
+	}
+	// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ //
+	// =================================== END OF IMPPORTANT CORE LOGIC ********* //
+	// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ //
+	
+	async move_player(name, from, to)
+	{
+		if (!name || !from || !to)
+			return false;
+
+		let source = {arr: null, ctn: null, type: null};
+		await this.move_player_utils(source, from);
+
+		let target = {arr: null, ctn: null, type: null};
+		await this.move_player_utils(target, to);
+
+		let name_html_div = source.ctn.querySelector(`[title="${name}"]`);
+		if (!name_html_div)
+			throw new Error('Name not found in source container');
+
+		//remove from source container and array
+		source.ctn.removeChild(name_html_div);
+		const index = source.arr.indexOf(name);
+		source.arr.splice(index, 1);
+
+		name_html_div.dataset.type = target.type;
+		target.arr.push(name);
+		target.ctn.appendChild(name_html_div);
+
+		return true;
+	}
+
+	async move_player_utils(obj, type)
+	{
+		if (type === 'play')
+		{
+			if (!this.playing || !this.play_ctn)
+				throw new Error('Important constructor variables are null');
+			obj.arr = this.playing;
+			obj.ctn = this.play_ctn;
+			obj.type = 'playing';
+		}
+		else if (type === 'wait')
+		{
+			if (!this.waiting || !this.wait_ctn)
+				throw new Error('Important constructor variables are null');
+			obj.arr = this.waiting;
+			obj.ctn = this.wait_ctn;
+			obj.type = 'waiting';
+		}
+		else if (type === 'elim')
+		{
+			if (!this.eliminated || !this.elim_ctn)
+				throw new Error('Important constructor variables are null');
+			obj.arr = this.eliminated;
+			obj.ctn = this.elim_ctn;
+			obj.type = 'eliminated';
+		}
+		else if (type === 'lobby')
+		{
+			if (!this.lobby || !this.lobby_ctn)
+				throw new Error('Important constructor variables are null');
+			obj.arr = this.lobby;
+			obj.ctn = this.lobby_ctn;
+			obj.type = 'lobby';
+		}
+		else
+		{
+			throw new Error('Invalid type');
+		}
+
+		return true;
+	}
+
+
+	async btn_manage(btn, type)
+	{
+		if (type === 'disable')	
+		{
+			btn.disabled = true;
+			btn.classList.add('d-none');
+		}
+		else if (type === 'enable')
+		{
+			btn.disabled = false;
+			btn.classList.remove('d-none');
+		}
+		else
+		{
+			throw new Error('invalid type');
+		}
+		return true;
+	}
+
+	async reset_tournament(type)
+	{
+		await this.reset(type);
 		await EG_DATA.reset();
-		await this.render_list();
 	}
 
 	// player management
-	async random_pairing()
+	async random_pairing(type)
 	{
-		for (let i = 0; i < 2; i++)
+		if (this.lobby.length === 0 && this.waiting.length === 0)
 		{
-			const  random_num = Math.floor(Math.random() * this.waiting.length);
-			this.playing.push(this.waiting[random_num]);
-			this.waiting.splice(random_num, 1);
+			this.next = null;
+			return false;
 		}
 
+		if (this.round === 1)
+		{
+			while (this.playing.length < 2 && this.waiting.length > 0)
+			{
+				const  random_num = Math.floor(Math.random() * this.waiting.length);
+				await this.move_player(this.waiting[random_num], 'wait', 'play');
+			}
+		}
 		const random_num = Math.floor(Math.random() * this.waiting.length);
 		this.next = this.waiting[random_num];
 
@@ -199,11 +332,6 @@ class tnmLogicClass
 
 		await this.render_list();
 
-		return true;
-	}
-
-	async move_player(name, from, to)
-	{
 		return true;
 	}
 

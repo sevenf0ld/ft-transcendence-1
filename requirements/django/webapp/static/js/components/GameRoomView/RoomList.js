@@ -145,9 +145,12 @@ class RoomList
 	{
 		event.preventDefault();
 
-		await WEB_SOCKETS.updateSocket_friendList('leave');
-		await WEB_SOCKETS.closeSocket_game();
-		await WEB_SOCKETS.closeSocket_lobby();
+		if (this.gameType === 'online-pvp' || this.gameType === 'online-tour')
+		{
+			await WEB_SOCKETS.updateSocket_friendList('leave');
+			await WEB_SOCKETS.closeSocket_game();
+			await WEB_SOCKETS.closeSocket_lobby();
+		}
 
 		const HOME = HOME_VIEW;
 		await HOME.render();
@@ -367,7 +370,8 @@ class RoomList
 	{
 		this.roomTitle.setAttribute('data-room-type', 'pvp');
 
-		await this.playerListGenerator(this.lobby_ctn, 'You', 'Lobby', 'host');
+		const user = JSON.parse(localStorage.getItem('user'));
+		await this.playerListGenerator(this.lobby_ctn, user.username, 'Lobby', 'host');
 		await this.playerListGenerator(this.lobby_ctn, 'Player 2', 'Lobby', 'guest', 'offline');
 
 		await this.empty_ctn_handler([this.lobby_ctn, this.playing_ctn]);
@@ -581,7 +585,8 @@ class RoomList
 	{
 		this.roomTitle.setAttribute('data-room-type', 'pvp');
 
-		await this.playerListGenerator(this.lobby_ctn, 'you', 'lobby', 'host');
+		const user = JSON.parse(localStorage.getItem('user'));
+		await this.playerListGenerator(this.lobby_ctn, user.username, 'Lobby', 'host');
 		await this.playerListGenerator(this.lobby_ctn, 'PONG-AI', 'Lobby', 'guest', 'offline');
 		await this.empty_ctn_handler([this.lobby_ctn, this.playing_ctn]);
 
@@ -682,7 +687,8 @@ class RoomList
 	{
 		this.roomTitle.setAttribute('data-room-type', 'pvp');
 
-		await this.playerListGenerator(this.lobby_ctn, 'You', 'lobby', 'host');
+
+		await this.playerListGenerator(this.lobby_ctn, '-temp-', 'lobby', 'host');
 
 		await this.empty_ctn_handler([this.lobby_ctn, this.playing_ctn]);
 
@@ -786,7 +792,7 @@ class RoomList
 	{
 		this.roomTitle.setAttribute('data-room-type', 'tour');
 
-		await this.playerListGenerator(this.lobby_ctn, 'You', 'Lobby', 'host');
+		await this.playerListGenerator(this.lobby_ctn, '-tmp-', 'Lobby', 'host');
 
 		await this.empty_ctn_handler([
 			this.lobby_ctn,
