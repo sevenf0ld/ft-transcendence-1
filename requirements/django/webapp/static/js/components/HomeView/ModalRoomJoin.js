@@ -103,7 +103,7 @@ class ModalRoomJoin
 	{
 		event.preventDefault();
 
-		console.log('[EVENT] button clicked : join');
+		console.log('[BTN] createClick');
 
 		if (this.gameType === 'online-pvp')
 		{

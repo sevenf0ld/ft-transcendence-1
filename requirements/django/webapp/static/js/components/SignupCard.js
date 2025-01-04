@@ -110,7 +110,7 @@ class SignupCard
 
 	async submitClick()
 	{
-		console.log('[EVENT] button clicked : submit');
+		console.log('[BTN] submitClick');
 		event.preventDefault();
 
 		await this.alert_div.alert_clear();
@@ -192,7 +192,7 @@ class SignupCard
 
 	async backLoginClick(event)
 	{
-		console.log('[EVENT] button clicked : back to login');
+		console.log('[BTN] backLoginClick');
 		event.preventDefault();
 
 		const login = LOGIN_VIEW;

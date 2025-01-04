@@ -124,7 +124,7 @@ class MidBoard
 	async localPveClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked: local-pve');
+		console.log('[BTN] localPveClick');
 
 		await WEB_SOCKET.close_curent_liveChat();
 		await WEB_SOCKET.friendSocket_gameroom_status('join');
@@ -140,7 +140,7 @@ class MidBoard
 	async localPvpClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : local-pvp');
+		console.log('[BTN] localPvpClick');
 
 		await WEB_SOCKET.close_curent_liveChat();
 		await WEB_SOCKET.friendSocket_gameroom_status('join');
@@ -156,7 +156,7 @@ class MidBoard
 	async localTourClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : local-tour');
+		console.log('[BTN] localTourClick');
 
 		await WEB_SOCKET.close_curent_liveChat();
 		await WEB_SOCKET.friendSocket_gameroom_status('join');
@@ -172,7 +172,7 @@ class MidBoard
 	async remotePvpClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : remote-pvp');
+		console.log('[BTN] remotePvpClick');
 
 		// for popup modal
 		const moda = document.querySelector('#modal-join .modal-title');
@@ -195,7 +195,7 @@ class MidBoard
 	async remoteTourClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : remote-tour');
+		console.log('[BTN] remoteTourClick');
 
 		// for popup modal
 		const moda = document.querySelector('#modal-join .modal-title');

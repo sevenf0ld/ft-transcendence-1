@@ -4,6 +4,7 @@
 // -------------------------------------------------- //
 import EG_RENDER from './engine_render.js';
 import EG_DATA from './engine_data.js';
+import TNM_LOGIC from './tnm_logic.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -27,7 +28,7 @@ class engineUtilsClass
 	{
 		const t = await this.getCurTime();
 
-		if (state === 'start')
+		if (state === 'lpvp-start')
 		{
 			await this.announce();
 			await this.announce(`Game has started at ${t}`);
@@ -38,23 +39,46 @@ class engineUtilsClass
 			await this.btn_manage('game-started');
 			requestAnimationFrame(EG_RENDER.game_loop.bind(EG_RENDER));
 		}
-		else if (state === 'end')
+		else if (state === 'lpvp-end')
 		{
 			await this.announce(`Game has ended at ${t}`);
 			await this.btn_manage('end');
 			await EG_DATA.reset();
 		}
-		else if (state === 'reset')
+		else if (state === 'lpvp-reset')
 		{
 			await this.announce(`Game has ended at ${t} (manually)`);
 			await this.btn_manage('end');
 			EG_DATA.match.end = true;
-			const ctn = document.querySelector('.ct-top-board');
-			ctn.innerHTML = '';
-			ctn.innerHTML = `
-			<div class="ct-gr-board-waiting">Waiting for host to start the game...</div>
-			`;
+			await this.render_default_gameBoard();
 		}
+		else if (state === 'ltour-start')
+		{
+			await this.reset_announcer();
+			await this.announce('Tournament has started!');
+			await TNM_LOGIC.run_tournament();
+		}
+		else if (state === 'ltour-reset')
+		{
+			EG_DATA.match.end = true;
+			await EG_DATA.reset();
+			await this.reset_announcer();
+			await this.announce('Tournament has ended (manually)');
+			await TNM_LOGIC.reset_tournament();
+			await this.render_default_gameBoard();
+			alert('done');
+		}
+
+		return true;
+	}
+	
+	async render_default_gameBoard()
+	{
+		const ctn = document.querySelector('.ct-top-board');
+		ctn.innerHTML = '';
+		ctn.innerHTML = `
+		<div class="ct-gr-board-waiting">Waiting for host to start the game...</div>
+		`;
 
 		return true;
 	}
@@ -76,14 +100,18 @@ class engineUtilsClass
 		return time;
 	}
 
-	async announce(msg)
+	async announce(msg, type)
 	{
 		const ctn = document.querySelector('.ct-gr-announcer-bd');
 
 		if (ctn === null)
 			return false;
 
-		const msg_str = "System: " + msg;
+		let msg_str;
+		if (type === 'mms')
+			msg_str = "Match Making System: " + msg;
+		else
+			msg_str = "System: " + msg;
 
 		const p = document.createElement('p');
 		p.classList.add('ct-gr-announcer-msg');
@@ -97,6 +125,14 @@ class engineUtilsClass
 
 		// scroll to bottom
 		ctn.scrollTop = ctn.scrollHeight;
+
+		return true;
+	}
+
+	async reset_announcer()
+	{
+		const ctn = document.querySelector('.ct-gr-announcer-bd');
+		ctn.innerHTML = '';
 
 		return true;
 	}

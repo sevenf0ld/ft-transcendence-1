@@ -60,10 +60,13 @@ class PongEngine
 		return true;
 	}
 
-	async reset()
+	async reset(type)
 	{
 		alert('Game has been reset!');
-		await EG_UTILS.gameStateHandler('reset');
+		if (type === 'lpvp')
+			await EG_UTILS.gameStateHandler('lpvp-reset');
+		else if (type === 'ltour')
+			await EG_UTILS.gameStateHandler('ltour-reset');
 
 		return true;
 	}
@@ -73,7 +76,6 @@ class PongEngine
 	// --------------------------------------------- //
 	async bind_events()
 	{
-		console.log('bind_events: ', this.gameType);
 		switch (this.gameType)
 		{
 			case 'local-pvp':
@@ -102,10 +104,9 @@ class PongEngine
 
 	async lpvp_events()
 	{
-		console.log('lpvp_events');
 		this.data.player1.name = 'Player 1';
 		this.data.player2.name = 'Player 2';
-		await EG_UTILS.gameStateHandler('start');
+		await EG_UTILS.gameStateHandler('lpvp-start');
 
 		return true;
 	}
@@ -117,6 +118,10 @@ class PongEngine
 
 	async ltour_events()
 	{
+		/*
+		await EG_UTILS.gameStateHandler('ltour-start');
+		*/
+
 		return true;
 	}
 

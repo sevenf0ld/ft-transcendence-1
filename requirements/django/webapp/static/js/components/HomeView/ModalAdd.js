@@ -106,7 +106,7 @@ class ModalAdd
 
 	async submitClick(event)
 	{
-		console.log('[EVENT] button clicked : submit-add-friend');
+		console.log('[BTN] submitClick');
 		event.preventDefault();
 
 		if (!await this.check_input())

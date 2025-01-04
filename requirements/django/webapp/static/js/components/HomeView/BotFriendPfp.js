@@ -108,7 +108,7 @@ class BotFriendPfp
 	async closeClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : fn-pfp-close');
+		console.log('[BTN] closeClick');
 
 		const template = `
 		<p class="ct-bottom-placeholder">(placeholder)</p>
@@ -123,7 +123,7 @@ class BotFriendPfp
 	async historyClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : fn-pfp-hist');
+		console.log('[BTN] historyClick');
 
 		return true;
 	}

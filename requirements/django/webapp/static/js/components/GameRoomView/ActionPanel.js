@@ -268,7 +268,7 @@ class ActionPanel
 		event.preventDefault();
 		
 		if (this.currentGame)
-			await this.currentGame.reset();
+			await this.currentGame.reset('lpvp');
 	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED (LOCAL-PVP)
@@ -396,18 +396,39 @@ class ActionPanel
 		return true;
 	}
 
+	async disable_all_btns_except(exception, disableLeaveRoom)
+	{
+		for (const key in this.buttons)
+		{
+			for (const item in exception)
+			{
+				if (key === item)
+					continue;
+				this.buttons[key].disabled = true;
+				this.buttons[key].classList.add('d-none');
+			}
+		}
+
+		const leave_room = document.querySelector('#btn_leaveRoom');
+		if (disableLeaveRoom === true)
+			leave_room.disabled = true;
+		else if (disableLeaveRoom === false)
+			leave_room.disabled = false
+		else
+			throw new Error('invalid disableLeaveRoom');
+
+		return true;
+	}
+
 	async ltour_start_click(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] ltour_start_click');
+		console.log('[BTN] ltour_start_click');
 
-		//buttons
-		this.btn_manage(this.buttons['add'], 'disable');
-		this.btn_manage(this.buttons['start'], 'disable');
-		this.btn_manage(this.buttons['reset'], 'enable');
-		const leave_room = document.querySelector('#btn_leaveRoom');
-		leave_room.disabled = true;
+		// btn management
+		await this.disable_all_btns_except(['reset'], true);
 
+		// game engine
 		const pongGame = PONG_ENGINE;
 		pongGame.gameType = this.gameType;
 		await pongGame.init();
@@ -419,14 +440,21 @@ class ActionPanel
 	async ltour_restart_click(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] ltour_restart_click');
+		console.log('[BTN] ltour_restart_click');
+
+		//btn management
+		await this.disable_all_btns_except(['start', 'add'], false);
+
+		// game engine
+		PONG_ENGINE.reset('ltour');
+
 		return true;
 	}
 
 	async ltour_add_click(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] ltour_add_click');
+		console.log('[BTN] ltour_add_click');
 		await this.render_modal_ltour_add();
 
 		return true;
@@ -435,7 +463,8 @@ class ActionPanel
 	async ltour_ready_click(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] ltour_ready_click');
+		console.log('[BTN] ltour_ready_click');
+
 		return true;
 	}
 
@@ -561,7 +590,7 @@ class ActionPanel
 		btn.addEventListener(
 			'click', async (event) => {
 				event.preventDefault();
-				console.log('[EVENT] modal\'s btn_ltour_add_submit');
+				console.log('[BTN] btn_ltour_add_submit');
 
 				if (!input.value)
 				{
@@ -573,10 +602,7 @@ class ActionPanel
 				if (TNM_LOGIC.lobby.length >= TNM_LOGIC.min_players)
 					this.buttons['start'].disabled = false;
 				if (TNM_LOGIC.lobby.length >= TNM_LOGIC.max_players)
-				{
 					this.buttons['add'].disabled = true;
-					this.buttons['add'].classList.add('d-none');
-				}
 			}
 		);
 	}
