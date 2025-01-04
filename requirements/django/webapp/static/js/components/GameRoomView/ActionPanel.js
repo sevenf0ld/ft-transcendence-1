@@ -423,7 +423,7 @@ class ActionPanel
 	async ltour_start_click(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] ltour_start_click');
+		console.log('[BTN] ltour_start_click');
 
 		// btn management
 		await this.disable_all_btns_except(['reset'], true);
@@ -440,7 +440,7 @@ class ActionPanel
 	async ltour_restart_click(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] ltour_restart_click');
+		console.log('[BTN] ltour_restart_click');
 
 		//btn management
 		await this.disable_all_btns_except(['start', 'add'], false);
@@ -454,7 +454,7 @@ class ActionPanel
 	async ltour_add_click(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] ltour_add_click');
+		console.log('[BTN] ltour_add_click');
 		await this.render_modal_ltour_add();
 
 		return true;
@@ -463,7 +463,8 @@ class ActionPanel
 	async ltour_ready_click(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] ltour_ready_click');
+		console.log('[BTN] ltour_ready_click');
+
 		return true;
 	}
 
@@ -589,7 +590,7 @@ class ActionPanel
 		btn.addEventListener(
 			'click', async (event) => {
 				event.preventDefault();
-				console.log('[EVENT] modal\'s btn_ltour_add_submit');
+				console.log('[BTN] btn_ltour_add_submit');
 
 				if (!input.value)
 				{

@@ -112,7 +112,7 @@ class ModalSettings
 
 	async langClick(event)
 	{
-		console.log('[EVENT] button clicked : language');
+		console.log('[BTN] langClick');
 		event.preventDefault();
 
 		this.container.innerHTML = '';
@@ -126,7 +126,7 @@ class ModalSettings
 
 	async accountClick(event)
 	{
-		console.log('[EVENT] button clicked : account');
+		console.log('[BTN] accountClick');
 		event.preventDefault();
 
 		this.container.innerHTML = '';
@@ -140,7 +140,7 @@ class ModalSettings
 
 	async profileClick(event)
 	{
-		console.log('[EVENT] button clicked : profile');
+		console.log('[BTN] profileClick');
 		event.preventDefault();
 
 		this.container.innerHTML = '';
@@ -154,7 +154,7 @@ class ModalSettings
 
 	async twofaClick(event)
 	{
-		console.log('[EVENT] button clicked : 2fa');
+		console.log('[BTN] twofaClick');
 		event.preventDefault();
 
 		this.container.innerHTML = '';

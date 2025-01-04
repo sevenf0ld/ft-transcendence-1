@@ -134,7 +134,7 @@ class LoginCard
 	async loginClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : login-submit');
+		console.log('[BTN] loginClick');
 
 		if (!await this.check_input())
 			return false;
@@ -189,7 +189,7 @@ class LoginCard
 	async intraClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : login-intra');
+		console.log('[BTN] intraClick');
 
 		await intraFetch.redirect(event);
 
@@ -199,7 +199,7 @@ class LoginCard
 	async signupClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : login-signup');
+		console.log('[BTN] signupClick');
 
 		const signup = SIGNUP_VIEW;
 		await signup.render();

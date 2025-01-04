@@ -76,7 +76,6 @@ class PongEngine
 	// --------------------------------------------- //
 	async bind_events()
 	{
-		console.log('bind_events: ', this.gameType);
 		switch (this.gameType)
 		{
 			case 'local-pvp':
@@ -105,7 +104,6 @@ class PongEngine
 
 	async lpvp_events()
 	{
-		console.log('lpvp_events');
 		this.data.player1.name = 'Player 1';
 		this.data.player2.name = 'Player 2';
 		await EG_UTILS.gameStateHandler('lpvp-start');
@@ -120,7 +118,6 @@ class PongEngine
 
 	async ltour_events()
 	{
-		console.log('ltour_events');
 		/*
 		await EG_UTILS.gameStateHandler('ltour-start');
 		*/

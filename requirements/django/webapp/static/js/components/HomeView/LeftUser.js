@@ -113,7 +113,7 @@ class LeftUser
 	async historyClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : history');
+		console.log('[BTN] closeClick');
 
 		// modal management - refactor to modal class later
 		let parent_div, parent_hd, parent_bd;
@@ -134,7 +134,7 @@ class LeftUser
 	async settingsClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : settings');
+		console.log('[BTN] settingsClick');
 
 		let parent_div, parent_hd, parent_bd;
 
@@ -153,7 +153,7 @@ class LeftUser
 	async logoutClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : logout');
+		console.log('[BTN] logoutClick');
 
 		const logoutFetch = FETCH.FETCH_LOGOUT;
 		await logoutFetch.init();

@@ -138,7 +138,7 @@ class ModalFnOpt
 			return false;
 
 		event.preventDefault();
-		console.log('unfriend');
+		console.log('[BTN] unfriendClick');
 
 		if (await this.confirmation(`unfriend ${this.target}`) === false)
 			return false;
@@ -173,7 +173,7 @@ class ModalFnOpt
 			return false;
 
 		event.preventDefault();
-		console.log('block');
+		console.log('[BTN] blockClick');
 
 		if (await this.confirmation(`block ${this.target}`) === false)
 			return false;
@@ -207,7 +207,7 @@ class ModalFnOpt
 		if (this.type !== 'request-out')
 			return false;
 		event.preventDefault();
-		console.log('cancel request');
+		console.log('[BTN] cancelRequestClick');
 
 		if (await this.confirmation(`cancel sent request`) === false)
 			return false;
@@ -242,7 +242,7 @@ class ModalFnOpt
 			return false;
 
 		event.preventDefault();
-		console.log('accept request');
+		console.log('[BTN] acceptRequestClick');
 
 		//curl -X DELETE -H "Content-type: application/json" -d '{"sender": "what", "recipient": "when"}' 'https://localhost:8000/api/friends/friend-request-av/accept/' --insecure
 		//
@@ -275,7 +275,7 @@ class ModalFnOpt
 			return false;
 
 		event.preventDefault();
-		console.log('decline request');
+		console.log('[BTN] declineRequestClick');
 
 		//curl -X DELETE -H "Content-type: application/json" -d '{"sender": "what", "recipient": "when"}' 'https://localhost:8000/api/friends/friend-request-av/decline/' --insecure
 		await FETCH_UTILS.init();
@@ -307,7 +307,7 @@ class ModalFnOpt
 			return false;
 
 		event.preventDefault();
-		console.log('unblock');
+		console.log('[BTN] unblockClick');
 
 		//curl -X PATCH -H "Content-type: application/json" -d '{"user": "what", "target": "how"}' 'https://localhost:8000/api/friends/friend-list-av/unblock/' --insecure
 		await FETCH_UTILS.init();

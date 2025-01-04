@@ -144,7 +144,7 @@ class RightFnList
 	async addFriendClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : add friend');
+		console.log('[BTN] addFriendClick');
 
 		//for popup modal
 		const moda = document.querySelector('#modal-addFriend .modal-title');
@@ -161,7 +161,7 @@ class RightFnList
 	async friendOptionsClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] button clicked : friend options');
+		console.log('[BTN] friendOptionsClick');
 
 		//temporary
 		// get name and type
@@ -204,7 +204,7 @@ class RightFnList
 	async friendPopupClick(event)
 	{
 		event.preventDefault();
-		console.log('[EVENT] friend-list clicked : friend popup');
+		console.log('[BTN] friendPopupClick');
 
 		//temporary
 		// get name and type
