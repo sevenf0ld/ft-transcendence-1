@@ -27,10 +27,7 @@ class LobbyConsumer(WebsocketConsumer):
 
     @database_sync_to_async
     def get_rooms(self):
-        rooms = Room.objects.filter(room_type=self.lobby_type)
-        if rooms.exists():
-            return rooms
-        return []
+        return list(Room.objects.filter(room_type=self.lobby_type))
 
     def display_lobby(self):
         rooms = async_to_sync(self.get_rooms)()
@@ -57,6 +54,9 @@ class LobbyConsumer(WebsocketConsumer):
             'type': 'display',
             'rooms': event['rooms']
         }))
+
+    def disband_room(self, event=None):
+        self.display_lobby()
 
     def disconnect(self, code):
         async_to_sync(self.channel_layer.group_discard)(
