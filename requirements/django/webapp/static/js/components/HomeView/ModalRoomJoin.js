@@ -164,8 +164,13 @@ class ModalRoomJoin
 				const roomid = e.currentTarget.getAttribute('data-roomid');
 				alert(`clicked room id : ${roomid}`);
 
+				await WEB_SOCKET.closeSocket_liveChat();
+				await WEB_SOCKET.updateSocket_friendList('join');
+
 				await WEB_SOCKET.connectSocket_game(roomid);
 				await WEB_SOCKET.updateSocket_lobbyIncr();
+
+				const data_room_type = document.querySelector('.join-room-main').parentNode.dataset.roomType;
 
 				const gameRoom = GAME_ROOM_VIEW;
 				await gameRoom.init();
