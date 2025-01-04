@@ -202,7 +202,6 @@ class websocketManager
 			room_details: undefined,
 
 		}
-		console.log('reset lobby socket');
 
 		return true;
 	}
@@ -214,7 +213,6 @@ class websocketManager
 			this.lobby.url = `wss://${window.location.host}/ws/lobby/${lobby_type}/`;
 			this.lobby.ws = new WebSocket(this.lobby.url);
 		}
-		console.log('connect lobby socket when ', lobby_type);
 
 		return true;
 	}
@@ -232,36 +230,6 @@ class websocketManager
 		this.lobby.ws = undefined;
 		this.lobby.url = undefined;
 		this.lobby.room_details = undefined;
-		console.log('close lobby socket when leave game room or stop viewing lobbylist');
-
-		return true;
-	}
-
-	async updateSocket_lobbyIncr()
-	{
-		console.log('NOTIFY INCR OUT', this.lobby.ws.readyState);
-		if (this.lobby.ws && this.lobby.ws.readyState === WebSocket.OPEN)
-		{
-			this.lobby.ws.send(JSON.stringify({
-			  'lobby_update': 'increment_member',
-			}));
-			console.log('NOTIFY INCR IN');
-		}
-
-		return true;
-	}
-
-	async updateSocket_lobbyDecr()
-	{
-		console.log('NOTIFY DECR OUT', this.lobby.ws.readyState);
-		if (this.lobby.ws && this.lobby.ws.readyState === WebSocket.OPEN)
-		{
-			this.lobby.ws.send(JSON.stringify({
-			  'lobby_update': 'decrement_member',
-			  //'room_details': this.lobby.room_details
-			}));
-			console.log('NOTIFY DECR IN');
-		}
 
 		return true;
 	}
@@ -271,11 +239,10 @@ class websocketManager
 		this.lobby.ws.addEventListener('message', async (event) => {
 			let data = JSON.parse(event.data);
 
-			console.log('LOBBY ROOM LIST SOCKET LISTENING... ', data);
 			if (data.type == 'display')
 			{
 				//this.lobby.room_details = data.rooms;
-				MID_BOARD.render_room_list(data.rooms);
+				await MID_BOARD.render_room_list(data.rooms);
 			}
 		});
 
@@ -284,14 +251,11 @@ class websocketManager
 
 	async updateSocket_lobbyCreate()
 	{
-		console.log('NOTIFY CREATE OUT', this.lobby.ws.readyState);
 		if (this.lobby.ws && this.lobby.ws.readyState === WebSocket.OPEN)
 		{
 			this.lobby.ws.send(JSON.stringify({
 			  'lobby_update': 'create_room',
-			  //'room_type': lobby_type
 			}));
-			console.log('NOTIFY CREATE IN');
 		}
 
 		return true;
@@ -322,7 +286,6 @@ class websocketManager
 
 	async closeSocket_game()
 	{
-		console.log('close game room socket when leave');
 		this.gr.ws.close();
 
 		return true;
@@ -333,19 +296,31 @@ class websocketManager
 		this.gr.ws.addEventListener('message', async (event) => {
 			let data = JSON.parse(event.data);
 
-			if (data.type == 'join_room')
+			if (data.type == 'joined_room')
 			{
 				console.log('JOIN ROOM DETAILS: ', data);
 			}
-			if (data.type == 'leave_room')
+			if (data.type == 'left_room')
 			{
 				console.log('LEAVE ROOM DETAILS: ', data);
 			}
-			if (data.type == 'disband_room')
+			if (data.type == 'disbanded_room')
 			{
 				console.log('DISBAND ROOM DETAILS: ', data);
 			}
 		});
+
+		return true;
+	}
+
+	async updateSocket_gameStart()
+	{
+		if (this.gr.ws && this.lobby.ws.readyState === WebSocket.OPEN)
+		{
+			this.gr.ws.send(JSON.stringify({
+			  'game_update': 'game_started',
+			}));
+		}
 
 		return true;
 	}

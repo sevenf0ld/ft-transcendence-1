@@ -149,7 +149,6 @@ class RoomList
 		{
 			await WEB_SOCKETS.updateSocket_friendList('leave');
 			await WEB_SOCKETS.closeSocket_game();
-			await WEB_SOCKETS.updateSocket_lobbyDecr();
 			await WEB_SOCKETS.closeSocket_lobby();
 		}
 
