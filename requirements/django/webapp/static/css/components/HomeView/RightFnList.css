@@ -120,6 +120,7 @@
 
 .category-list-ctn .fnl-item-ctn .fnl-item-name
 {
+	min-height: 1rem;
 	width: 100%;
 	max-width: 5rem;
 	text-align: left;

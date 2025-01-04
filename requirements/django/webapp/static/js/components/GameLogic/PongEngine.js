@@ -118,9 +118,7 @@ class PongEngine
 
 	async ltour_events()
 	{
-		/*
 		await EG_UTILS.gameStateHandler('ltour-start');
-		*/
 
 		return true;
 	}

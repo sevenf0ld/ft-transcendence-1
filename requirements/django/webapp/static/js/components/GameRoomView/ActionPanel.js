@@ -360,9 +360,7 @@ class ActionPanel
 	async push_important_elements_ltour()
 	{
 		this.buttons['start'] = this.base_ctn.querySelector('#btn_ltour_start');
-		this.buttons['reset'] = this.base_ctn.querySelector('#btn_ltour_restart');
 		this.buttons['add'] = this.base_ctn.querySelector('#btn_ltour_add');
-		this.buttons['ready'] = this.base_ctn.querySelector('#btn_ltour_ready');
 
 		for (const key in this.buttons)
 			if (!this.buttons[key])
@@ -379,16 +377,8 @@ class ActionPanel
 			'click', async (event) => { await this.ltour_start_click(event); }
 		);
 
-		this.buttons['reset'].addEventListener(
-			'click', async (event) => { await this.ltour_restart_click(event); }
-		);
-
 		this.buttons['add'].addEventListener(
 			'click', async (event) => { await this.ltour_add_click(event); }
-		);
-
-		this.buttons['ready'].addEventListener(
-			'click', async (event) => { await this.ltour_ready_click(event); }
 		);
 
 		this.buttons['start'].disabled = true;
@@ -396,26 +386,24 @@ class ActionPanel
 		return true;
 	}
 
-	async disable_all_btns_except(exception, disableLeaveRoom)
+	async all_btns_mng(statement)
 	{
-		for (const key in this.buttons)
+		if (statement === 'disable')
 		{
-			for (const item in exception)
-			{
-				if (key === item)
-					continue;
+			for (const key in this.buttons)
 				this.buttons[key].disabled = true;
-				this.buttons[key].classList.add('d-none');
-			}
-		}
 
-		const leave_room = document.querySelector('#btn_leaveRoom');
-		if (disableLeaveRoom === true)
+			const leave_room = document.querySelector('#btn_leaveRoom');
 			leave_room.disabled = true;
-		else if (disableLeaveRoom === false)
-			leave_room.disabled = false
-		else
-			throw new Error('invalid disableLeaveRoom');
+		}
+		else if (statement === 'enable')
+		{
+			for (const key in this.buttons)
+				this.buttons[key].disabled = false;
+
+			const leave_room = document.querySelector('#btn_leaveRoom');
+			leave_room.disabled = false;
+		}
 
 		return true;
 	}
@@ -425,8 +413,7 @@ class ActionPanel
 		event.preventDefault();
 		console.log('[BTN] ltour_start_click');
 
-		// btn management
-		await this.disable_all_btns_except(['reset'], true);
+		await this.all_btns_mng('disable');
 
 		// game engine
 		const pongGame = PONG_ENGINE;
@@ -437,33 +424,11 @@ class ActionPanel
 		return true;
 	}
 
-	async ltour_restart_click(event)
-	{
-		event.preventDefault();
-		console.log('[BTN] ltour_restart_click');
-
-		//btn management
-		await this.disable_all_btns_except(['start', 'add'], false);
-
-		// game engine
-		PONG_ENGINE.reset('ltour');
-
-		return true;
-	}
-
 	async ltour_add_click(event)
 	{
 		event.preventDefault();
 		console.log('[BTN] ltour_add_click');
 		await this.render_modal_ltour_add();
-
-		return true;
-	}
-
-	async ltour_ready_click(event)
-	{
-		event.preventDefault();
-		console.log('[BTN] ltour_ready_click');
 
 		return true;
 	}
@@ -494,9 +459,7 @@ class ActionPanel
 		// [A] TEMPLATE
 		let template = `
 		<button @att01 @att02 @att03>@text01</button>
-		<button @att04 @att05 @att06>@text02</button>
 		<button @att07 @att08 @att09>@text03</button>
-		<button @att10 @att11 @att12>@text04</button>
 		`;
 		// [B] SET atts
 		const atts =
@@ -505,18 +468,10 @@ class ActionPanel
 			'@att02': 'class="btn-ltour-start ct-btn-neau"',
 			'@att03': 'type="button"',
 			'@text01': 'Start',
-			'@att04': 'id="btn_ltour_restart"',
-			'@att05': 'class="btn-ltour-restart ct-btn-neau d-none"',
-			'@att06': 'type="button"',
-			'@text02': 'Restart Game',
 			'@att07': 'id="btn_ltour_add"',
 			'@att08': 'class="btn-ltour-add ct-btn-neau"',
 			'@att09': 'type="button" data-bs-toggle="modal" data-bs-target="#modal-ltour-add"',
 			'@text03': 'Add Player',
-			'@att10': 'id="btn_ltour_ready"',
-			'@att11': 'class="btn-ltour-ready ct-btn-neau d-none"',
-			'@att12': 'type="button"',
-			'@text04': 'Ready',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);

@@ -58,15 +58,10 @@ class engineUtilsClass
 			await this.announce('Tournament has started!');
 			await TNM_LOGIC.run_tournament();
 		}
-		else if (state === 'ltour-reset')
+		else if (state === 'ltour-end')
 		{
-			EG_DATA.match.end = true;
-			await EG_DATA.reset();
-			await this.reset_announcer();
-			await this.announce('Tournament has ended (manually)');
-			await TNM_LOGIC.reset_tournament();
-			await this.render_default_gameBoard();
-			alert('done');
+			const leave = document.getElementById('btn_leaveRoom');
+			leave.disabled = false;
 		}
 
 		return true;
@@ -109,7 +104,7 @@ class engineUtilsClass
 
 		let msg_str;
 		if (type === 'mms')
-			msg_str = "Match Making System: " + msg;
+			msg_str = "Matchmaking: " + msg;
 		else
 			msg_str = "System: " + msg;
 
