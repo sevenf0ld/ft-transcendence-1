@@ -159,6 +159,7 @@ class ModalRoomJoin
 		{
 			btn.addEventListener('click', async (e) =>
 			{
+				// when changed to event, roomid has an error
 				e.preventDefault();
 
 				const roomid = e.currentTarget.getAttribute('data-roomid');
@@ -166,9 +167,7 @@ class ModalRoomJoin
 
 				await WEB_SOCKET.closeSocket_liveChat();
 				await WEB_SOCKET.updateSocket_friendList('join');
-
 				await WEB_SOCKET.connectSocket_game(roomid);
-				await WEB_SOCKET.updateSocket_lobbyIncr();
 
 				const data_room_type = document.querySelector('.join-room-main').parentNode.dataset.roomType;
 
