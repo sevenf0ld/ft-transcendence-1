@@ -126,8 +126,8 @@ class MidBoard
 		event.preventDefault();
 		console.log('[BTN] localPveClick');
 
-		await WEB_SOCKET.close_curent_liveChat();
-		await WEB_SOCKET.friendSocket_gameroom_status('join');
+		await WEB_SOCKET.closeSocket_liveChat();
+		await WEB_SOCKET.updateSocket_friendList('join');
 
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
@@ -142,8 +142,8 @@ class MidBoard
 		event.preventDefault();
 		console.log('[BTN] localPvpClick');
 
-		await WEB_SOCKET.close_curent_liveChat();
-		await WEB_SOCKET.friendSocket_gameroom_status('join');
+		await WEB_SOCKET.closeSocket_liveChat();
+		await WEB_SOCKET.updateSocket_friendList('join');
 
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
@@ -158,8 +158,8 @@ class MidBoard
 		event.preventDefault();
 		console.log('[BTN] localTourClick');
 
-		await WEB_SOCKET.close_curent_liveChat();
-		await WEB_SOCKET.friendSocket_gameroom_status('join');
+		await WEB_SOCKET.closeSocket_liveChat();
+		await WEB_SOCKET.updateSocket_friendList('join');
 
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
@@ -185,9 +185,10 @@ class MidBoard
 		MODAL_ROOM_JOIN.gameType = 'online-pvp';
 		await MODAL_ROOM_JOIN.render('replace');
 
-		await WEB_SOCKET.init_lobbySocket();
-		await WEB_SOCKET.lobbySocket_run('PVP');
-		await this.listen_lobby_socket();
+		// list room list
+		await WEB_SOCKET.initSocket_lobby();
+		await WEB_SOCKET.connectSocket_lobby('PVP');
+		await this.display_lobby_socket_list();
 
 		return true;
 	}
@@ -209,9 +210,9 @@ class MidBoard
 		await MODAL_ROOM_JOIN.render('replace');
 
 		// list room list
-		await WEB_SOCKET.init_lobbySocket();
-		await WEB_SOCKET.lobbySocket_run('TNM');
-		await this.listen_lobby_socket();
+		await WEB_SOCKET.initSocket_lobby();
+		await WEB_SOCKET.connectSocket_lobby('TNM');
+		await this.display_lobby_socket_list();
 
 		return true;
 	}
@@ -224,9 +225,21 @@ class MidBoard
 		return true;
 	}
 
+	async display_lobby_socket_list()
+	{
+		const dis_div = document.getElementById('room_list_board');
+		dis_div.innerHTML = "";
+
+		await WEB_SOCKET.listenSocket_lobby();
+
+		return true;
+	}
+
 	async render_room_list(rooms_data)
 	{
 		const dis_div = document.getElementById('room_list_board');
+		if (!dis_div)
+			return false;
 		dis_div.innerHTML = "";
 
 		if (typeof rooms_data !== 'object')
@@ -251,7 +264,7 @@ class MidBoard
 		slot = cur_mem + slot;
 
 		let template = `
-		<div class="%list-c" data-roomid="%romid-t">
+		<div class="%list-c" data-roomid="%romid-t" @bs-dt1>
 			<div class="%st-c" data-status="%st-dt"></div>
 			<div class="%romid-c">%romid-t</div>
 			<div class="%romslot-c">%romslot-t</div>
@@ -266,6 +279,8 @@ class MidBoard
 			'%st-dt': `${started}`,
 			'%romid-c': 'rbl-roomid',
 			'%romid-t': `${room.room_id}`,
+			'@bs-dt1': `data-bs-dismiss="modal"`,
+			//'@bs-dt1': '',
 			'%romslot-c': 'rbl-slot',
 			'%romslot-t': `${slot}`,
 			'%nam-c': 'rbl-name truncate',
@@ -288,18 +303,6 @@ class MidBoard
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
-	async listen_lobby_socket(fetch_result)
-	{
-		WEB_SOCKET.lobby.ws.addEventListener('message', async (event) =>
-		{
-			let data = JSON.parse(event.data);
-
-			if (data.type === 'display')
-				await this.render_room_list(data.rooms);
-		});
-
-		return true;
-	}
 
 	// --------------------------------------------- //
 	// [4/4] HTML-ELEMENT-RELATED
@@ -380,7 +383,7 @@ class MidBoard
 		modal1.container = parent_html;
 		modal1.name = 'modal-join';
 		modal1.title = 'Available Rooms (PVP)';
-		await modal1.render('append');
+		await modal1.render('append', 'static');
 
 		return true;
 	}

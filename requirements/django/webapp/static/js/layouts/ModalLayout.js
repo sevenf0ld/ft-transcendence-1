@@ -42,12 +42,12 @@ class ModalLayout
 	// --------------------------------------------- //
 	// [1/4] MAIN-EXECUTION
 	// --------------------------------------------- //
-	async render(type)
+	async render(type, static_modal)
 	{
 		if (!type || type !== 'append' && type !== 'replace')
 			throw new Error('[ERR] invalid render type');
 
-		const template = await this.init_template();
+		const template = await this.init_template(static_modal);
 
 		if (type === 'append')
 		{
@@ -93,10 +93,10 @@ class ModalLayout
 	// --------------------------------------------- //
 	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
-	async init_template()
+	async init_template(static_modal)
 	{
 		let template = "";
-		template += await this.html_main_ctn();
+		template += await this.html_main_ctn(static_modal);
 
 		// trim new lines, spaces, and tabs
 		template = template.replace(/\s+/g, ' ');
@@ -107,7 +107,7 @@ class ModalLayout
 		return template;
 	}
 
-	async html_main_ctn()
+	async html_main_ctn(static_modal)
 	{
 		// [-] HELPER FUNCTION
 		// [A] TEMPLATE
@@ -124,10 +124,15 @@ class ModalLayout
 			</div>
 		</div>
 		`;
+
+		let static_str = '';
+		if (static_modal === 'static')
+			static_str = 'data-bs-backdrop="static" data-bs-keyboard="false"';
+
 		// [B] SET atts
 		const atts =
 		{
-			'@1att1': `class="modal"`,
+			'@1att1': `class="modal" ${static_str}`,
 			'@1att2': `id="${this.name}"`,
 			'@1att3': `tabindex="-1"`,
 			'@1att4': `aria-labelledby="${this.name}"`,
