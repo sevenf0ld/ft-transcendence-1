@@ -12,6 +12,7 @@ import ROUTER from '../core/router.js';
 import ALERT_UTILS from '../core/helpers/alert-utils.js';
 import SIGNUP_VIEW from '../views/SignupView.js';
 import HOME_VIEW from '../views/HomeView.js';
+import WEB_SOCKET from '../core/websocket_mng.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //

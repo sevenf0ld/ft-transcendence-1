@@ -72,6 +72,7 @@ class ModalRoomJoin
 	{
 		this.main_ctn = document.querySelector('.join-room-main');
 		this.buttons['create'] = document.getElementById('btn_create_room');
+		this.buttons['close'] = document.getElementById('btn_close_join_room_modal');
 
 		if (!this.main_ctn)
 			throw new Error('[ERR] main container not found');
@@ -94,7 +95,10 @@ class ModalRoomJoin
 		);
 
 		await this.roomListClick();
-		await this.handle_modal_close();
+
+		this.buttons['close'].addEventListener(
+			'click', async (event) => {await this.closeClick(event);}
+		);
 
 		return true;
 	}
@@ -102,39 +106,46 @@ class ModalRoomJoin
 	async createClick(event)
 	{
 		event.preventDefault();
-
-		console.log('[BTN] createClick');
+    
+		console.log('[EVENT] button clicked : create');
 
 		if (this.gameType === 'online-pvp')
 		{
-			await WEB_SOCKET.close_curent_liveChat();
-			await WEB_SOCKET.friendSocket_gameroom_status('join');
-			await WEB_SOCKET.close_lobbySocket();
+			await WEB_SOCKET.closeSocket_liveChat();
+			await WEB_SOCKET.updateSocket_friendList('join');
 
-			// leave blank to be changed to create
-			await this.fetch_game_room('PVP');
+			await this.fetch_create_game_room('PVP');
 
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
 			gameRoom.type = 'online-pvp';
 			await gameRoom.render();
-			await WEB_SOCKET.listen_gameRoomSocket();
+			await WEB_SOCKET.listenSocket_game();
 		}
 		else if (this.gameType === 'online-tour')
 		{
-			await WEB_SOCKET.close_curent_liveChat();
-			await WEB_SOCKET.friendSocket_gameroom_status('join');
-			await WEB_SOCKET.close_lobbySocket();
+			await WEB_SOCKET.closeSocket_liveChat();
+			await WEB_SOCKET.updateSocket_friendList('join');
 
-			// leave blank to be changed to create
-			await this.fetch_game_room('TNM');
+			await this.fetch_create_game_room('TNM');
 
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
 			gameRoom.type = 'online-tour';
 			await gameRoom.render();
-			await WEB_SOCKET.listen_gameRoomSocket();
+			await WEB_SOCKET.listenSocket_game();
 		}
+
+		return true;
+	}
+
+	async closeClick(event)
+	{
+		event.preventDefault();
+
+		console.log('[EVENT] button clicked : go back');
+
+		await WEB_SOCKET.closeSocket_lobby();
 
 		return true;
 	}
@@ -148,40 +159,45 @@ class ModalRoomJoin
 		{
 			btn.addEventListener('click', async (e) =>
 			{
+				e.preventDefault();
+
 				const roomid = e.currentTarget.getAttribute('data-roomid');
 				alert(`clicked room id : ${roomid}`);
+
+				await WEB_SOCKET.closeSocket_liveChat();
+				await WEB_SOCKET.updateSocket_friendList('join');
+
+				await WEB_SOCKET.connectSocket_game(roomid);
+				await WEB_SOCKET.updateSocket_lobbyIncr();
+
+				const data_room_type = document.querySelector('.join-room-main').parentNode.dataset.roomType;
+
+				const gameRoom = GAME_ROOM_VIEW;
+				await gameRoom.init();
+				gameRoom.type = `online-${data_room_type}`;
+				await gameRoom.render();
+				await WEB_SOCKET.listenSocket_game();
 			});
 		}
 
 		return true;
 	}
 
-	async handle_modal_close()
-	{
-		const modal_join_container = document.getElementById('modal-join');
-
-		modal_join_container.addEventListener('hidden.bs.modal', async (event) => {
-			await WEB_SOCKET.close_lobbySocket();
-		});
-
-		return true;
-	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
-	async fetch_game_room(room_type)
+	async fetch_create_game_room(room_type)
 	{
 		await MRJ_FETCH.init();
 		await MRJ_FETCH.fetchData(room_type);
-		console.log(MRJ_FETCH);
 		if (MRJ_FETCH.re_value === 'game-room-creation-successful')
 		{
-			console.log(MRJ_FETCH.fetch_obj.rdata);
+			await WEB_SOCKET.updateSocket_lobbyCreate();
+
 			const room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
 
-			WEB_SOCKET.init_gameRoomSocket();
-			WEB_SOCKET.run_gameRoomSocket(room_id);
-
+			await WEB_SOCKET.initSocket_gameRoom();
+			await WEB_SOCKET.connectSocket_game(room_id);
 		}
 		else if (MRJ_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
 			alert(`Failed to create ${room_type} game room.`);
@@ -214,6 +230,7 @@ class ModalRoomJoin
 			${display_board}
 			<p class="%des-1c">%des-1t</p>
 			<button id="%btn-id" @att1>%btn-t</button>
+			<button @att2>Go Back</button>
 		</div>
 		`;
 		// [B] SET atts
@@ -248,6 +265,7 @@ class ModalRoomJoin
 			'%btn-id': 'btn_create_room',
 			'@att1': 'data-bs-dismiss="modal"',
 			'%btn-t': 'Create Room',
+			'@att2': 'id="btn_close_join_room_modal" class="btn-close" data-bs-dismiss="modal"',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);

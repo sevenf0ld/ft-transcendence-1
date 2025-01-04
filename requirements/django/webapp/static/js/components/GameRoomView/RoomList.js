@@ -126,15 +126,33 @@ class RoomList
 	async bind_events_base()
 	{
 		const btn_home = document.querySelector("#btn_leaveRoom");
-		btn_home.addEventListener('click', async () =>
-		{
-			await WEB_SOCKETS.friendSocket_gameroom_status('leave');
+		//btn_home.addEventListener('click', async () =>
+		//{
+		//	await WEB_SOCKETS.updateSocket_friendList('leave');
+		//	await WEB_SOCKETS.closeSocket_game();
 
-			const HOME = HOME_VIEW;
-			await HOME.render();
-		});
+		//	const HOME = HOME_VIEW;
+		//	await HOME.render();
+		//});
+		btn_home.addEventListener(
+			'click', async (event) => {await this.leaveRoomClick(event);}
+		);
 
 		return true;
+	}
+
+	async leaveRoomClick(event)
+	{
+		event.preventDefault();
+
+		await WEB_SOCKETS.updateSocket_friendList('leave');
+		await WEB_SOCKETS.closeSocket_game();
+
+		await WEB_SOCKETS.updateSocket_lobbyDecr();
+		await WEB_SOCKETS.closeSocket_lobby();
+
+		const HOME = HOME_VIEW;
+		await HOME.render();
 	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED 

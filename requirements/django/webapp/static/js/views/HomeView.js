@@ -64,9 +64,9 @@ class HomeView
 		RIGHT_FRIEND_LIST.container = parent_html;
 		await RIGHT_FRIEND_LIST.render('replace');
 
-		await WEB_SOCKET.init_friendSocket();
-		await WEB_SOCKET.read_friendSocket();
-		await WEB_SOCKET.friendSocket_connect_home_status();
+		await WEB_SOCKET.initSocket_friendList();
+		await WEB_SOCKET.connectSocket_friendList();
+		await WEB_SOCKET.listenSocket_friendList();
 
 		return true;
 	}
