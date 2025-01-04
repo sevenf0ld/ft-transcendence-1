@@ -11,9 +11,6 @@ def create_game_history(sender: User, instance, created, **kwargs):
         print(f'Creating game history for user: {instance.username}')
         GameHistory.objects.create(user=instance)
 
-from django.db.models.signals import post_delete
-from django.dispatch import receiver
-
 @receiver(post_delete, sender=Room)
 def room_deleted_handler(sender: Room, instance, **kwargs):
     channel_layer = get_channel_layer()

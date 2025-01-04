@@ -7,6 +7,7 @@ from .serializers import RoomModelSerializer
 from django.db import transaction
 from django.db.models import F
 
+# xxx_room
 class LobbyConsumer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope['user']
@@ -34,8 +35,6 @@ class LobbyConsumer(WebsocketConsumer):
 
         if rooms:
             serializer = RoomModelSerializer(rooms, many=True)
-            print('ROOMIES:', rooms)
-
             async_to_sync(self.channel_layer.group_send)(
                 self.group_name,
                 {
@@ -55,7 +54,12 @@ class LobbyConsumer(WebsocketConsumer):
             'rooms': event['rooms']
         }))
 
+    # for room deletion
     def disband_room(self, event=None):
+        self.display_lobby()
+
+    # for room creation, member join or leave
+    def update_lobby(self, event=None):
         self.display_lobby()
 
     def disconnect(self, code):
@@ -68,20 +72,13 @@ class LobbyConsumer(WebsocketConsumer):
         text_json = json.loads(text_data)
         update = text_json['lobby_update']
 
-        if update == 'increment_member':
-            print('INCR DISPLAY')
-        if update == 'decrement_member':
-            print('DECR DISPLAY')
-        if update == 'create_room':
-            print('CREATE DISPLAY')
-        if update == 'disband_room':
-            print('DISBAND DISPLAY')
-        if update in ['increment_member', 'decrement_member', 'create_room', 'disband_room']:
-            self.display_lobby()
+        if update in ['increment_member', 'decrement_member', 'create_room']:
+            self.update_lobby()
 
 MAX_PVP_MEMBERS = 2
 MAX_TNM_MEMBERS = 5
 
+# room_xxx
 class GameRoomConsumer(WebsocketConsumer):
     in_room = {}
 
@@ -174,9 +171,12 @@ class GameRoomConsumer(WebsocketConsumer):
 
     @database_sync_to_async
     def get_room_object(self):
-        room = Room.objects.get(room_id=self.room_id)
-        serializer = RoomModelSerializer(room)
-        return serializer.data
+        try:
+            room = Room.objects.get(room_id=self.room_id)
+            serializer = RoomModelSerializer(room)
+            return serializer.data
+        except Room.DoesNotExist:
+            return None
 
     @database_sync_to_async
     def is_host(self):
@@ -187,14 +187,25 @@ class GameRoomConsumer(WebsocketConsumer):
 
     @transaction.atomic
     def increment_room_members(self):
-        #room = Room.objects.select_for_update().get(room_id=self.room_id)
-        #room.members += 1
-        #room.save()
+        room = Room.objects.select_for_update().get(room_id=self.room_id)
         Room.objects.filter(room_id=self.room_id).update(members=F('members') + 1)
+        async_to_sync(self.channel_layer.group_send)(
+            f'lobby_{room.room_type}',
+            {
+                'type': 'update.lobby',
+            }
+        )
 
     @transaction.atomic
     def decrement_room_members(self):
+        room = Room.objects.select_for_update().get(room_id=self.room_id)
         Room.objects.filter(room_id=self.room_id).update(members=F('members') - 1)
+        async_to_sync(self.channel_layer.group_send)(
+            f'lobby_{room.room_type}',
+            {
+                'type': 'update.lobby',
+            }
+        )
 
     def room_disband(self, event):
         self.send(text_data=json.dumps({
