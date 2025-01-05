@@ -108,7 +108,7 @@ class websocketManager
 	{
 		const user_obj = JSON.parse(localStorage.getItem('user'));
 
-		if (user_obj == null)
+		if (user_obj === null)
 		{
 			throw new Error('user not found');
 			return false;
@@ -127,7 +127,7 @@ class websocketManager
 		this.friend.ws.addEventListener('message', async (event) => {
 			let data = JSON.parse(event.data);
 
-			if (data.status == 'online')
+			if (data.status === 'online')
 			{
 				await RIGHT_FRIEND_LIST.update_online_status(data.friend, 'online');
 
@@ -138,14 +138,14 @@ class websocketManager
 				//if (data.type == 'checking')
 				//	console.log('me to myself (on):', data.message);
 			}
-			if (data.status == 'offline')
+			if (data.status === 'offline')
 			{
 				await RIGHT_FRIEND_LIST.update_online_status(data.friend, 'offline');
 
 				//if (data.type == 'notified')
 				//	console.log('friend to me (off):', data.message);
 			}
-			if (data.status == 'playing')
+			if (data.status === 'playing')
 			{
 				await RIGHT_FRIEND_LIST.update_online_status(data.friend, 'playing');
 
@@ -296,17 +296,21 @@ class websocketManager
 		this.gr.ws.addEventListener('message', async (event) => {
 			let data = JSON.parse(event.data);
 
-			if (data.type == 'joined_room')
+			if (data.type === 'joined_room')
 			{
-				console.log('JOIN ROOM DETAILS: ', data);
+				console.log('MEMBER JOINED ROOM DETAILS: ', data);
 			}
-			if (data.type == 'left_room')
+			if (data.type === 'left_room')
 			{
-				console.log('LEAVE ROOM DETAILS: ', data);
+				console.log('MEMBER LEFT ROOM DETAILS: ', data);
 			}
-			if (data.type == 'disbanded_room')
+			if (data.type === 'disbanded_room')
 			{
-				console.log('DISBAND ROOM DETAILS: ', data);
+				console.log('DISBANDED ROOM DETAILS: ', data);
+			}
+			if (data.type === 'full_room')
+			{
+				console.log('FULL ROOM DETAILS: ', data);
 			}
 		});
 
