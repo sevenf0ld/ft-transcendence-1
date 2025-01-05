@@ -4,6 +4,7 @@
 // -------------------------------------------------- //
 import EG_UTILS from './engine_utils.js';
 import EG_DATA from './engine_data.js';
+import TNM from './tnm_logic.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -21,12 +22,21 @@ class engineRenderClass
 		this.gameType = null;
 	}
 
-	async game_loop(timestamp)
+	async game_loop(resolve, timestamp)
 	{
+		console.log('YOU ARE IN A GAME_LOOP');
 		const db = this.data;
 
 		if (db.match.end || !db.canvas.elem || !db.canvas.ctx)
 		{
+			console.log('GAME ENDED BECAUSE OF : ');
+			if (db.match.end)
+				console.log('MATCH END');
+			if (!db.canvas.elem)
+				console.log('NO CANVAS ELEMENT');
+			if (!db.canvas.ctx)
+				console.log('NO CANVAS CONTEXT');
+
 			if (db.gameType === 'local-pvp')
 			{
 				this.game_over();
@@ -35,12 +45,33 @@ class engineRenderClass
 			}
 			if (db.gameType === 'local-tour')
 			{
-				alert('tour game over');
+				TNM.match_loser = db.match.loser;
+				TNM.match_winner = db.match.winner;
+				await TNM.move_player(TNM.match_loser, 'play', 'elim');
+				await TNM.move_player(TNM.next, 'wait', 'play');
+				await EG_UTILS.announce(
+					`${TNM.match_winner} has won the round!`, 'mms'
+				);
+				await EG_UTILS.sleep(100);
+				await alert(`${TNM.match_winner} has won the round!`);
+				await EG_UTILS.sleep(1000);
+				TNM.round++;
+				db.match.started = false;
+
+		console.log('BEFORE-RESET - DEBUG CHECK - DB_BALL : ', db.ball);
+		//console.log('BEFORE-RESET - DEBUG CHECK - DB_PADDLE : ', db.paddle);
+		//console.log('BEFORE-RESET - DEBUG CHECK - DB_PLAYER1 : ', db.player1);
+		//console.log('B4RESET- DEBUG CHECK - DB_PLAYER2 : ', db.player2);
+		//console.log('B4RESET - DEBUG CHECK - DB_MATCH : ', db.match);
+				await db.reset();
+				resolve();
 			}
 			return false;
 		}
 
-		db.canvas.ctx.clearRect(0, 0, db.canvas.elem.width, db.canvas.elem.height);
+		db.canvas.ctx.clearRect(
+			0, 0, db.canvas.elem.width, db.canvas.elem.height
+		);
 		await this.render_playersName();
 		await this.render_ball();
 		await this.render_paddles();
@@ -53,7 +84,7 @@ class engineRenderClass
 		
 		await this.game_start();
 
-		requestAnimationFrame(this.game_loop.bind(this));
+		requestAnimationFrame(this.game_loop.bind(this, resolve));
 
 		return true;
 	}
@@ -307,12 +338,14 @@ class engineRenderClass
 		{
 			db.player1.wins++;
 			db.match.winner = db.player1.name;
+			db.match.loser = db.player2.name;
 			db.match.end = true;
 		}
 		if (ballL <= 0)
 		{
 			db.player2.wins++;
 			db.match.winner = db.player2.name;
+			db.match.loser = db.player1.name;
 			db.match.end = true;
 		}
 	}
@@ -421,6 +454,26 @@ class engineRenderClass
 
 		return true;
 	}
+
+	async render_txt(txt)
+	{
+		const db = this.data;
+		if (!db.canvas.ctx || !db.canvas.elem)
+			return false;
+
+		const width = db.canvas.elem.width / 2;
+		const height = db.canvas.elem.height / 2;
+
+		db.canvas.ctx.clearRect(0, 0, db.canvas.elem.width, db.canvas.elem.height);
+		db.canvas.ctx.fillStyle = db.display.cor_txt;
+		db.canvas.ctx.font = 'bold 30px Monospace';
+		db.canvas.ctx.textAlign = 'center';
+		db.canvas.ctx.textBaseline = 'middle';
+		db.canvas.ctx.fillText(txt, width, height);
+
+		return true;
+	}
+
 }
 
 const ENGINE_RENDER = new engineRenderClass();

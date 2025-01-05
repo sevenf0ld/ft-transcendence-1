@@ -36,6 +36,7 @@ class tnmLogicClass
 		this.playing = [];
 		this.next = null;
 		this.match_winner = null;
+		this.match_loser = null;
 		this.tour_over = false;
 		this.tour_winner = null;
 		this.min_players = 3;
@@ -99,32 +100,41 @@ class tnmLogicClass
 	{
 		let str;
 
-		str = `Players have been randomly paired!`;
-		await EG_UTILS.announce(str, 'mms');
+		await EG_UTILS.announce('---- ---- ----', 'mms');
 
 		str = `Round #${this.round} : (${this.playing[0]}) vs (${this.playing[1]})!`;
 		await EG_UTILS.announce(str, 'mms');
-		alert (str);
+		await EG_UTILS.sleep(2000);
+
+		const str1 = str + `\nClick on 'ok' to start the round!`;
 
 		if (this.next)
-			str = `Winner of this match will play against (${this.next})!`;
+			str = `Winner of this round will play against (${this.next}) next!`;
 		else
-			str = `This is the final match!`;
+			str = `This is the final round!`;
+
 		await EG_UTILS.announce(str, 'mms');
+		await EG_UTILS.sleep(2000);
+
+		await alert(str1);
 
 		return true;
 	}
 
 	async run_tournament()
 	{
+		await EG_RENDER.render_txt('Local Tournament has started!');
+		await EG_UTILS.sleep(2000);
+
+		let str = `Players will always be paired randomly!`;
+		await EG_UTILS.announce(str, 'mms');
+
+		await EG_UTILS.sleep(4000);
+
 		//right-side list
 		await this.move_all_to_waiting();
 		await this.render_list();
 		await this.random_pairing();
-
-		//countdown
-		await EG_RENDER.start_countdown();
-
 
 		await (this.tour_loop());
 
@@ -142,38 +152,72 @@ class tnmLogicClass
 	{
 		while (this.tour_over !== true)
 		{
+			if (EG_DATA.match.started === true)
+			{
+				console.log('detected match started');
+				continue;
+			}
 			await this.random_pairing();
 			if (this.playing.length === 1)
 			{
 				this.tour_over = true;
 				alert('Tournament is over, winner = ' + this.playing[0]);
-				await EG_UTILS.announce('Tournament is over, winner = ' + this.playing[0]);
+				await EG_UTILS.announce(
+					'Tournament is over, winner = ' + this.playing[0]
+				);
 				await EG_UTILS.gameStateHandler('ltour-end');
 				await this.reset_tournament('end');
 				break;
 			}
+			console.log('called tour loop once');
 			await this.pre_tour_start();
-
-			//tmp
 			await EG_UTILS.sleep(1000);
+			await this.tour_game_logic();
 
-			const loser = await this.tmp_game_logic();
-			alert('Loser = ' + loser);
-
-			await this.move_player(loser, 'play', 'elim');
-			await this.move_player(this.next, 'wait', 'play');
-			this.round++;
 		}
 
 		return true;
 	}
 
-	async tmp_game_logic()
+	async wait()
 	{
-		const random = Math.floor(Math.random() * 2);
-		if (random === 0)
-			return this.playing[0];
-		return this.playing[1];
+		return new Promise((resolve) =>
+		{
+			requestAnimationFrame(
+				EG_RENDER.game_loop.bind(EG_RENDER, resolve)
+			);
+		});
+	}
+
+	async tour_game_logic()
+	{
+		EG_DATA.player1.name = this.playing[0];
+		EG_DATA.player2.name = this.playing[1];
+		EG_DATA.match.started = true;
+		EG_DATA.gameType = 'local-tour';
+		EG_DATA.canvas.elem = document.getElementById('game_canvas');
+		EG_DATA.canvas.ctx = EG_DATA.canvas.elem.getContext('2d');
+		await EG_RENDER.start_countdown();
+		await EG_RENDER.randomBallDirection();
+		console.log('this loop called once - game logic');
+
+		const db = EG_DATA;
+
+		console.log('GAME STARTED - DEBUG CHECK - DB_BALL : ', db.ball);
+		//console.log('GAME STARTED - DEBUG CHECK - DB_PADDLE : ', db.paddle);
+		//console.log('GAME STARTED - DEBUG CHECK - DB_PLAYER1: ', db.player1);
+		//console.log('GAME STARTED - DEBUG CHECK - DB_PLAYER2: ', db.player2);
+		//console.log('GAME STARTED - DEBUG CHECK - DB_MATCH : ', db.match);
+
+		await this.wait();
+
+		console.log('GAME ENDED - DEBUG CHECK - DB_BALL : ', db.ball);
+		//console.log('GAME ENDED - DEBUG CHECK - DB_PADDLE : ', db.paddle);
+		//console.log('GAME ENDED - DEBUG CHECK - DB_PLAYER1 : ', db.player1);
+		//console.log('GAME ENDED - DEBUG CHECK - DB_PLAYER2 : ', db.player2);
+		//console.log('GAME ENDED - DEBUG CHECK - DB_MATCH : ', db.match);
+
+		return true;
 	}
 	// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ //
 	// =================================== END OF IMPPORTANT CORE LOGIC ********* //

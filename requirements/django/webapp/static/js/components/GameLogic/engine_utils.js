@@ -37,6 +37,8 @@ class engineUtilsClass
 			await EG_RENDER.start_countdown();
 			await EG_RENDER.randomBallDirection();
 			await this.btn_manage('game-started');
+			this.data.player1.name = 'Player 1';
+			this.data.player2.name = 'Player 2';
 			requestAnimationFrame(EG_RENDER.game_loop.bind(EG_RENDER));
 		}
 		else if (state === 'lpvp-end')
