@@ -323,10 +323,70 @@ class websocketManager
 
 	async updateSocket_gameStart()
 	{
-		if (this.gr.ws && this.lobby.ws.readyState === WebSocket.OPEN)
+		if (this.gr.ws && this.gr.ws.readyState === WebSocket.OPEN)
 		{
 			this.gr.ws.send(JSON.stringify({
 			  'game_update': 'game_started',
+			}));
+		}
+
+		return true;
+	}
+
+//=================================#
+// INVITE PVP
+//=================================#
+
+	async initSocket_invite()
+	{
+		this.ipvp =
+		{
+			ws: undefined,
+			url: undefined,
+		}
+
+		return true;
+	}
+
+	async connectSocket_invite(invitee)
+	{
+		this.ipvp.url = `wss://${window.location.host}/ws/invite/${invitee}/`;
+		this.ipvp.ws = new WebSocket(this.ipvp.url);
+
+		return true;
+	}
+
+	async closeSocket_invite()
+	{
+		this.ipvp.ws.close();
+
+		return true;
+	}
+
+	async listenSocket_invite()
+	{
+		this.ipvp.ws.addEventListener('message', async (event) => {
+			let data = JSON.parse(event.data);
+
+			if (data.type === 'invitation_received')
+			{
+				console.log('RECEIVED PVP INVITITATION DETAILS: ', data);
+			}
+			if (data.type === 'invitation_sent')
+			{
+				console.log('SENT PVP INVITITATION DETAILS: ', data);
+			}
+		});
+
+		return true;
+	}
+
+	async updateSocket_invite()
+	{
+		if (this.ipvp.ws && this.ipvp.ws.readyState === WebSocket.OPEN)
+		{
+			this.ipvp.ws.send(JSON.stringify({
+			  'invite_update': 'send_invitation',
 			}));
 		}
 

@@ -6,6 +6,7 @@ from .models import Room
 from .serializers import RoomModelSerializer
 from django.db import transaction
 from django.db.models import F
+from django.models.contrib.auth import User
 
 # xxx_room
 class LobbyConsumer(WebsocketConsumer):
@@ -288,3 +289,90 @@ class GameRoomConsumer(WebsocketConsumer):
         if self.user.id == room.host.id:
             return True
         return False
+
+class InvitationConsumer(WebsocketConsumer):
+    #=================================#
+    #               CONNECT
+    #=================================#
+    def connect(self):
+        # room details to be extracted
+        self.invitee = self.scope['url_route']['kwargs']['invitee']
+        try:
+            self.invitee_data = User.objects.get)(username=self.invitee)
+        except:
+            self.accept()
+            self.send(text_data=json.dumps({
+                'type': 'invalid_invitee',
+                'message': 'Invitee does not exist.'
+            }))
+            self.close(3003)
+            return
+        self.user = self.scope['user']
+        if not self.user.is_authenticated:
+            self.close(3000)
+            return
+        self.invitor_group = f'invite_{self.user.username}'
+        self.invitee_group = f'invite_{self.invitee}'
+        self.accept()
+        async_to_sync(self.channel_layer.group_add)(
+            self.invitor_group,
+            self.channel_name
+        )
+        async_to_sync(self.channel_layer.group_add)(
+            self.invitee_group,
+            self.channel_name
+        )
+
+    #=================================#
+    #               DISCONNECT
+    #=================================#
+    def disconnect(self, code):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.invitor_group,
+            self.channel_name
+        )
+        async_to_sync(self.channel_layer.group_discard)(
+            self.invitee_group,
+            self.channel_name
+        )
+
+    #=================================#
+    #               RECEIVE
+    #=================================#
+    def receive(self, text_data=None, bytes_data=None):
+        async_to_sync(self.channel_layer.group_send)(
+            self.invitee_group,
+            {
+                'type': 'invite.send',
+            }
+        )
+        async_to_sync(self.channel_layer.group_send)(
+            self.invitor_group,
+            {
+                'type': 'invite.confirm',
+            }
+        )
+
+    #=======================================================#
+    #               ASYNC - CHANNEL LAYER COMMUNICATION
+    #=======================================================#
+
+    #=======================================================#
+    #              EVENTS BY CONSUMER
+    #=======================================================#
+    def invite_send(self, event):
+        # room details to be added
+        self.send(text_data=json.dumps({
+            'type': 'invitation_received',
+            'message': f'{self.user.username} has invited you PVP!'
+        }))
+
+    def invite_confirm(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'invitation_sent',
+            'message': f'PVP invitation has been sent to {self.invitee}!'
+        }))
+
+    #=================================#
+    #               UTIL
+    #=================================#
