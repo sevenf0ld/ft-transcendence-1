@@ -5,6 +5,7 @@ from .models import Profile
 class ProfileModelSerializer(serializers.ModelSerializer):
     played = serializers.SerializerMethodField()
     win_rate = serializers.SerializerMethodField()
+    avatar_url = serializers.SerializerMethodField()
 
     def get_played(self, obj):
         total_matches = obj.wins + obj.losses
@@ -16,11 +17,14 @@ class ProfileModelSerializer(serializers.ModelSerializer):
             return 0
         return round(obj.wins / total_matches * 100, 2)
 
+    def get_avatar_url(self, obj):
+        request = self.context.get('request')
+        avatar_url = obj.avatar.url
+        return request.build_absolute_uri(avatar_url)
+
     class Meta:
         model = Profile
-        # avatar and language to be added
-        #fields = '__all__'
-        fields = ['played', 'win_rate', 'wins', 'losses', 'nickname', 'mfa_email_enabled', 'language']
+        fields = ['played', 'win_rate', 'wins', 'losses', 'nickname', 'mfa_email_enabled', 'language', 'avatar_url']
 
 class UploadAvatarSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
@@ -35,6 +39,7 @@ class UploadAvatarSerializer(serializers.ModelSerializer):
 class FriendProfileModelSerializer(serializers.ModelSerializer):
     played = serializers.SerializerMethodField()
     win_rate = serializers.SerializerMethodField()
+    avatar_url = serializers.SerializerMethodField()
 
     def get_played(self, obj):
         total_matches = obj.wins + obj.losses
@@ -46,10 +51,12 @@ class FriendProfileModelSerializer(serializers.ModelSerializer):
             return 0
         return round(obj.wins / total_matches * 100, 2)
 
+    def get_avatar_url(self, obj):
+        return self.context.get('request').build_absolute_uri(obj.avatar.url)
+
     class Meta:
         model = Profile
-        # avatar to add
-        fields = ['played', 'win_rate', 'wins', 'losses']
+        fields = ['played', 'win_rate', 'wins', 'losses', 'avatar_url']
 
 class FriendProfileTargetSerializer(serializers.Serializer):
     target = serializers.CharField(required=True)
