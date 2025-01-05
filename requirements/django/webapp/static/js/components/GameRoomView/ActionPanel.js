@@ -9,6 +9,7 @@ import PONG_ENGINE from '../GameLogic/PongEngine.js';
 import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 import TNM_LOGIC from '../GameLogic/tnm_logic.js';
 import EG_UTILS from '../GameLogic/engine_utils.js';
+import WEBSOCKET from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -695,6 +696,7 @@ class ActionPanel
 
 	async push_important_elements_opvp()
 	{
+		this.buttons['start'] = this.base_ctn.querySelector('#btn_opvp_start');
 		return true;
 	}
 	// --------------------------------------------- //
@@ -702,6 +704,26 @@ class ActionPanel
 	// --------------------------------------------- //
 	async bind_events_opvp()
 	{
+		this.buttons['start'].addEventListener(
+			'click', async (event) => { await this.opvp_start_click(event); }
+		);
+
+		return true;
+	}
+
+	async opvp_start_click(event)
+	{
+		event.preventDefault();
+
+		console.log('ONLINE PVP START');
+
+		await WEBSOCKET.updateSocket_gameStart();
+
+		const pongGame = PONG_ENGINE;
+		pongGame.gameType = this.gameType;
+		await pongGame.init();
+		this.currentGame = pongGame;
+
 		return true;
 	}
 	// --------------------------------------------- //

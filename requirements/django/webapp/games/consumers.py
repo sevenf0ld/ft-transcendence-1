@@ -116,7 +116,13 @@ class GameRoomConsumer(WebsocketConsumer):
             if not is_host:
                 self.increment_room_members()
         else:
+            self.accept()
+            self.send(text_data=json.dumps({
+                'type': 'full_room',
+                'message': 'Room is at max capacity.'
+            }))
             self.close(3003)
+            return 
 
         members = list(self.in_room[self.group_id])
         async_to_sync(self.channel_layer.group_send)(
@@ -132,6 +138,9 @@ class GameRoomConsumer(WebsocketConsumer):
     #               DISCONNECT
     #=================================#
     def disconnect(self, code):
+        if code == 3003:
+            return
+
         if self.group_id in self.in_room:
             self.in_room[self.group_id].discard(self.user.username)
             if not self.in_room[self.group_id]:
@@ -249,9 +258,8 @@ class GameRoomConsumer(WebsocketConsumer):
     def room_disband(self, event):
         self.send(text_data=json.dumps({
             'type': 'disbanded_room',
-            'message': event['message']
+            'message': 'Host has left the game. Room disbanded.'
         }))
-
 
     def game_start(self, event):
         self.send(text_data=json.dumps({
