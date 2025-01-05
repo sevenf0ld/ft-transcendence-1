@@ -312,6 +312,10 @@ class websocketManager
 			{
 				console.log('FULL ROOM DETAILS: ', data);
 			}
+			if (data.type === 'started_game')
+			{
+				console.log('GAME HAS STARTED: ', data);
+			}
 		});
 
 		return true;
