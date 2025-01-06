@@ -24,27 +24,21 @@ class engineRenderClass
 
 	async game_loop(resolve, timestamp)
 	{
-		console.log('YOU ARE IN A GAME_LOOP');
 		const db = this.data;
 
 		if (db.match.end || !db.canvas.elem || !db.canvas.ctx)
 		{
-			console.log('GAME ENDED BECAUSE OF : ');
-			if (db.match.end)
-				console.log('MATCH END');
-			if (!db.canvas.elem)
-				console.log('NO CANVAS ELEMENT');
-			if (!db.canvas.ctx)
-				console.log('NO CANVAS CONTEXT');
-
 			if (db.gameType === 'local-pvp')
 			{
-				this.game_over();
+				await this.game_over();
 				await this.handle_canvas_over();
 				await EG_UTILS.gameStateHandler('lpvp-end');
 			}
 			if (db.gameType === 'local-tour')
 			{
+				await this.game_over();
+				await this.handle_canvas_over();
+
 				TNM.match_loser = db.match.loser;
 				TNM.match_winner = db.match.winner;
 				await TNM.move_player(TNM.match_loser, 'play', 'elim');
@@ -58,11 +52,6 @@ class engineRenderClass
 				TNM.round++;
 				db.match.started = false;
 
-		console.log('BEFORE-RESET - DEBUG CHECK - DB_BALL : ', db.ball);
-		//console.log('BEFORE-RESET - DEBUG CHECK - DB_PADDLE : ', db.paddle);
-		//console.log('BEFORE-RESET - DEBUG CHECK - DB_PLAYER1 : ', db.player1);
-		//console.log('B4RESET- DEBUG CHECK - DB_PLAYER2 : ', db.player2);
-		//console.log('B4RESET - DEBUG CHECK - DB_MATCH : ', db.match);
 				await db.reset();
 				resolve();
 			}
@@ -120,14 +109,20 @@ class engineRenderClass
 
 		if (db.match.winner === db.player1.name)
 		{
-			alert(`${db.player1.name} has won the match!`);
-			EG_UTILS.announce(`${db.player1.name} wins!`);
+			if (db.gameType === 'local-pvp')
+			{
+				alert(`${db.player1.name} has won the match!`);
+				EG_UTILS.announce(`${db.player1.name} wins!`);
+			}
 			this.render_playersName('p1');
 		}
 		if (db.match.winner === db.player2.name)
 		{
-			alert(`${db.player2.name} has won the match!`);
-			EG_UTILS.announce(`${db.player2.name} wins!`);
+			if (db.gameType === 'local-pvp')
+			{
+				alert(`${db.player2.name} has won the match!`);
+				EG_UTILS.announce(`${db.player2.name} wins!`);
+			}
 			this.render_playersName('p2');
 		}
 
@@ -383,7 +378,7 @@ class engineRenderClass
 	async triggerDifficultIncrease()
 	{
 		// increase ball speed
-		if (this.data.ball.dx < 400)
+		if (this.data.ball.dx < 400 && this.data.ball.dy < 200)
 		{
 			this.data.ball.dx *= 1.06;
 			this.data.ball.dy *= 1.03;
@@ -400,8 +395,8 @@ class engineRenderClass
 		angle = parseFloat(angle);
 		this.data.ball.dy *= angle;
 
-		if (this.data.paddle.speed <= 500)
-			this.data.paddle.speed += 50;
+		if (this.data.paddle.speed >= 125)
+			this.data.paddle.speed -= 5;
 
 		if (this.data.paddle.total_len > 35)
 			this.data.paddle.total_len -= 3;

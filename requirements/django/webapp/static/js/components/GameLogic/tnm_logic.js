@@ -103,10 +103,13 @@ class tnmLogicClass
 		await EG_UTILS.announce('---- ---- ----', 'mms');
 
 		str = `Round #${this.round} : (${this.playing[0]}) vs (${this.playing[1]})!`;
+
 		await EG_UTILS.announce(str, 'mms');
 		await EG_UTILS.sleep(2000);
 
-		const str1 = str + `\nClick on 'ok' to start the round!`;
+		str += `\n\n (${this.playing[0]}) is on the left side`;
+		str += `\n (${this.playing[1]}) is on the right side`;
+		const str1 = str + `\n\nClick on 'ok' to start the round!`;
 
 		if (this.next)
 			str = `Winner of this round will play against (${this.next}) next!`;
@@ -169,11 +172,9 @@ class tnmLogicClass
 				await this.reset_tournament('end');
 				break;
 			}
-			console.log('called tour loop once');
 			await this.pre_tour_start();
 			await EG_UTILS.sleep(1000);
 			await this.tour_game_logic();
-
 		}
 
 		return true;
@@ -199,23 +200,7 @@ class tnmLogicClass
 		EG_DATA.canvas.ctx = EG_DATA.canvas.elem.getContext('2d');
 		await EG_RENDER.start_countdown();
 		await EG_RENDER.randomBallDirection();
-		console.log('this loop called once - game logic');
-
-		const db = EG_DATA;
-
-		console.log('GAME STARTED - DEBUG CHECK - DB_BALL : ', db.ball);
-		//console.log('GAME STARTED - DEBUG CHECK - DB_PADDLE : ', db.paddle);
-		//console.log('GAME STARTED - DEBUG CHECK - DB_PLAYER1: ', db.player1);
-		//console.log('GAME STARTED - DEBUG CHECK - DB_PLAYER2: ', db.player2);
-		//console.log('GAME STARTED - DEBUG CHECK - DB_MATCH : ', db.match);
-
 		await this.wait();
-
-		console.log('GAME ENDED - DEBUG CHECK - DB_BALL : ', db.ball);
-		//console.log('GAME ENDED - DEBUG CHECK - DB_PADDLE : ', db.paddle);
-		//console.log('GAME ENDED - DEBUG CHECK - DB_PLAYER1 : ', db.player1);
-		//console.log('GAME ENDED - DEBUG CHECK - DB_PLAYER2 : ', db.player2);
-		//console.log('GAME ENDED - DEBUG CHECK - DB_MATCH : ', db.match);
 
 		return true;
 	}

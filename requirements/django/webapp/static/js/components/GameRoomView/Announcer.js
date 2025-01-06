@@ -278,6 +278,12 @@ class Announcer
 				"You are in Local PVP Room."
 			)}
 			${await this.msg_generator(
+				`Player 2 is on the right side.`
+			)}
+			${await this.msg_generator(
+				`You are on the left side.`
+			)}
+			${await this.msg_generator(
 				"Click 'Start' to begin."
 			)}
 		`;
