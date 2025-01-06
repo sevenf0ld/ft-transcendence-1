@@ -177,9 +177,7 @@ class BotChatBox
 		const pfp_ctn = document.querySelector('.ct-bottom-left');
 		pfp_ctn.innerHTML = child;
 
-		//websocket close
 		await WS_MANAGER.closeSocket_liveChat();
-		await WS_MANAGER.initSocket_liveChat();
 
 		return true;
 	}
@@ -188,6 +186,15 @@ class BotChatBox
 	{
 		event.preventDefault();
 		console.log('[BTN] inviteClick');
+
+		const chatbox_id = document.getElementById('btn_chatbox_profile');
+		const chatbox_friend = chatbox_id.getAttribute('title');
+
+		// js can only send if the person is not blue (not playing). idk if not online
+		await WS_MANAGER.initSocket_invite_send();
+		await WS_MANAGER.connectSocket_invite_send(chatbox_friend);
+		await WS_MANAGER.updateSocket_invite_send();
+		await WS_MANAGER.listenSocket_invite_send();
 
 		return true;
 	}
@@ -272,7 +279,6 @@ class BotChatBox
 		this.sender = JSON.parse(localStorage.getItem('user')).username;
 
 		await WS_MANAGER.closeSocket_liveChat();
-		await WS_MANAGER.initSocket_liveChat();
 
 		if (!document.querySelector(`.fnl-item-ctn[data-type="added"][title="${this.target}"]`))
 			return console.log(`[SOCKET ERROR] ${this.target} is not in the added section.`);
@@ -316,13 +322,11 @@ class BotChatBox
 			{
 				await this.msg_generator('System', `${this.target} is in the room.`);
 				await this.input_manager('enable');
-				console.log(`[CHAT AVAILABLE] ${this.target} - in room.`);
 			}
 			else if (data.type === 'chat_unavailable')
 			{
 				await this.msg_generator('System', `${this.target} is not in the room.`);
 				await this.input_manager('disable');
-				console.log(`[CHAT UNAVAILABLE] ${this.target} - not in room.`);
 			}
 		  //========================================//
     	  //================ RECEIVE ===============//

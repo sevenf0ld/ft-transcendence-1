@@ -68,6 +68,10 @@ class HomeView
 		await WEB_SOCKET.connectSocket_friendList();
 		await WEB_SOCKET.listenSocket_friendList();
 
+		await WEB_SOCKET.initSocket_invite_receive();
+		await WEB_SOCKET.connectSocket_invite_receive();
+		await WEB_SOCKET.listenSocket_invite_receive();
+
 		return true;
 	}
 }

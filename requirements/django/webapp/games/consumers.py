@@ -6,7 +6,7 @@ from .models import Room
 from .serializers import RoomModelSerializer
 from django.db import transaction
 from django.db.models import F
-from django.models.contrib.auth import User
+from django.contrib.auth.models import User
 
 # xxx_room
 class LobbyConsumer(WebsocketConsumer):
@@ -298,7 +298,7 @@ class InvitationConsumer(WebsocketConsumer):
         # room details to be extracted
         self.invitee = self.scope['url_route']['kwargs']['invitee']
         try:
-            self.invitee_data = User.objects.get)(username=self.invitee)
+            self.invitee_data = (User.objects.get)(username=self.invitee)
         except:
             self.accept()
             self.send(text_data=json.dumps({
@@ -327,6 +327,8 @@ class InvitationConsumer(WebsocketConsumer):
     #               DISCONNECT
     #=================================#
     def disconnect(self, code):
+        if code == 3003:
+            return
         async_to_sync(self.channel_layer.group_discard)(
             self.invitor_group,
             self.channel_name
@@ -340,6 +342,8 @@ class InvitationConsumer(WebsocketConsumer):
     #               RECEIVE
     #=================================#
     def receive(self, text_data=None, bytes_data=None):
+        text_json = json.loads(text_data)
+        print('INVITE CONSUMER RECEIVES', text_json)
         async_to_sync(self.channel_layer.group_send)(
             self.invitee_group,
             {
