@@ -8,6 +8,7 @@
 import FETCH from './BotFriendPfp_fetch.js';
 import BOT_FRIEND_PFP from './BotFriendPfp.js';
 import WS_MANAGER from '../../core/websocket_mng.js';
+import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -190,11 +191,19 @@ class BotChatBox
 		const chatbox_id = document.getElementById('btn_chatbox_profile');
 		const chatbox_friend = chatbox_id.getAttribute('title');
 
+		await this.fetch_create_game_room();
+
 		// js can only send if the person is not blue (not playing). idk if not online
 		await WS_MANAGER.initSocket_invite_send();
 		await WS_MANAGER.connectSocket_invite_send(chatbox_friend);
 		await WS_MANAGER.updateSocket_invite_send();
 		await WS_MANAGER.listenSocket_invite_send();
+
+		const gameRoom = GAME_ROOM_VIEW;
+		await gameRoom.init();
+		gameRoom.type = 'online-tour';
+		await gameRoom.render();
+		await WEB_SOCKET.listenSocket_game();
 
 		return true;
 	}
@@ -342,6 +351,24 @@ class BotChatBox
 
 		return true;
 	}
+
+	async fetch_create_game_room()
+	{
+		await MRJ_FETCH.init();
+		await MRJ_FETCH.fetchData('PVP');
+		if (MRJ_FETCH.re_value === 'game-room-creation-successful')
+		{
+			await WEB_SOCKET.updateSocket_lobbyCreate();
+
+			const room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
+
+			await WEB_SOCKET.initSocket_game();
+			await WEB_SOCKET.connectSocket_game(room_id);
+		}
+		else if (MRJ_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
+			alert('Failed to create PVP game room.');
+	}
+
 	// --------------------------------------------- //
 	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //
