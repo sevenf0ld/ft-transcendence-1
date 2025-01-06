@@ -5,6 +5,7 @@
 import EG_UTILS from './engine_utils.js';
 import EG_DATA from './engine_data.js';
 import TNM from './tnm_logic.js';
+import AI_LOGIC from './ai_logic.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -55,12 +56,23 @@ class engineRenderClass
 				await db.reset();
 				resolve();
 			}
+			if (db.gameType === 'local-pve')
+			{
+				await this.game_over();
+				await this.handle_canvas_over();
+				await EG_UTILS.gameStateHandler('lpve-end');
+				resolve();
+			}
 			return false;
 		}
 
 		db.canvas.ctx.clearRect(
 			0, 0, db.canvas.elem.width, db.canvas.elem.height
 		);
+
+		if (db.gameType === 'local-pve')
+			await AI_LOGIC.ai_algorithmic_move();
+
 		await this.render_playersName();
 		await this.render_ball();
 		await this.render_paddles();
@@ -109,7 +121,7 @@ class engineRenderClass
 
 		if (db.match.winner === db.player1.name)
 		{
-			if (db.gameType === 'local-pvp')
+			if (db.gameType === 'local-pvp' || db.gameType === 'local-pve')
 			{
 				alert(`${db.player1.name} has won the match!`);
 				EG_UTILS.announce(`${db.player1.name} wins!`);
@@ -118,7 +130,7 @@ class engineRenderClass
 		}
 		if (db.match.winner === db.player2.name)
 		{
-			if (db.gameType === 'local-pvp')
+			if (db.gameType === 'local-pvp' || db.gameType === 'local-pve')
 			{
 				alert(`${db.player2.name} has won the match!`);
 				EG_UTILS.announce(`${db.player2.name} wins!`);
@@ -252,12 +264,16 @@ class engineRenderClass
 		if ((db.key_state['s'] || db.key_state['S']) &&
 			db.player1.y + db.paddle.total_len / 2 < db.canvas.elem.height)
 			db.player1.y += db.paddle.speed * db.frame.delta_time;
-		if (db.key_state['ArrowUp'] &&
-			db.player2.y - db.paddle.total_len / 2 > 0)
-			db.player2.y -= db.paddle.speed * db.frame.delta_time;
-		if (db.key_state['ArrowDown'] &&
-			db.player2.y + db.paddle.total_len / 2 < db.canvas.elem.height)
-			db.player2.y += db.paddle.speed * db.frame.delta_time;
+
+		if (db.gameType === 'local-pvp' || db.gameType === 'local-tour')
+		{
+			if (db.key_state['ArrowUp'] &&
+				db.player2.y - db.paddle.total_len / 2 > 0)
+				db.player2.y -= db.paddle.speed * db.frame.delta_time;
+			if (db.key_state['ArrowDown'] &&
+				db.player2.y + db.paddle.total_len / 2 < db.canvas.elem.height)
+				db.player2.y += db.paddle.speed * db.frame.delta_time;
+		}
 
 		return true;
 	}

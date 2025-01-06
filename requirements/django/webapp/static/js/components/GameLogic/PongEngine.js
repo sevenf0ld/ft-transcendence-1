@@ -108,14 +108,16 @@ class PongEngine
 		return true;
 	}
 
-	async lpve_events()
-	{
-		return true;
-	}
-
 	async ltour_events()
 	{
 		await EG_UTILS.gameStateHandler('ltour-start');
+
+		return true;
+	}
+
+	async lpve_events()
+	{
+		await EG_UTILS.gameStateHandler('lpve-start');
 
 		return true;
 	}
