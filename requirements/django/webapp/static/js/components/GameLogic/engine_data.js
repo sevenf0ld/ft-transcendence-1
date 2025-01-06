@@ -142,6 +142,7 @@ class engineData
 			started: false,
 			end: false,
 			winner: null,
+			loser: null,
 			pause: false,
 		};
 
