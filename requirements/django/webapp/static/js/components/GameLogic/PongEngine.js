@@ -98,14 +98,11 @@ class PongEngine
 				break;
 		}
 
-
 		return true;
 	}
 
 	async lpvp_events()
 	{
-		this.data.player1.name = 'Player 1';
-		this.data.player2.name = 'Player 2';
 		await EG_UTILS.gameStateHandler('lpvp-start');
 
 		return true;

@@ -4,6 +4,7 @@
 // -------------------------------------------------- //
 import EG_UTILS from './engine_utils.js';
 import EG_DATA from './engine_data.js';
+import TNM from './tnm_logic.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -21,7 +22,7 @@ class engineRenderClass
 		this.gameType = null;
 	}
 
-	async game_loop(timestamp)
+	async game_loop(resolve, timestamp)
 	{
 		const db = this.data;
 
@@ -29,18 +30,37 @@ class engineRenderClass
 		{
 			if (db.gameType === 'local-pvp')
 			{
-				this.game_over();
+				await this.game_over();
 				await this.handle_canvas_over();
 				await EG_UTILS.gameStateHandler('lpvp-end');
 			}
 			if (db.gameType === 'local-tour')
 			{
-				alert('tour game over');
+				await this.game_over();
+				await this.handle_canvas_over();
+
+				TNM.match_loser = db.match.loser;
+				TNM.match_winner = db.match.winner;
+				await TNM.move_player(TNM.match_loser, 'play', 'elim');
+				await TNM.move_player(TNM.next, 'wait', 'play');
+				await EG_UTILS.announce(
+					`${TNM.match_winner} has won the round!`, 'mms'
+				);
+				await EG_UTILS.sleep(100);
+				await alert(`${TNM.match_winner} has won the round!`);
+				await EG_UTILS.sleep(1000);
+				TNM.round++;
+				db.match.started = false;
+
+				await db.reset();
+				resolve();
 			}
 			return false;
 		}
 
-		db.canvas.ctx.clearRect(0, 0, db.canvas.elem.width, db.canvas.elem.height);
+		db.canvas.ctx.clearRect(
+			0, 0, db.canvas.elem.width, db.canvas.elem.height
+		);
 		await this.render_playersName();
 		await this.render_ball();
 		await this.render_paddles();
@@ -53,7 +73,7 @@ class engineRenderClass
 		
 		await this.game_start();
 
-		requestAnimationFrame(this.game_loop.bind(this));
+		requestAnimationFrame(this.game_loop.bind(this, resolve));
 
 		return true;
 	}
@@ -89,14 +109,20 @@ class engineRenderClass
 
 		if (db.match.winner === db.player1.name)
 		{
-			alert(`${db.player1.name} has won the match!`);
-			EG_UTILS.announce(`${db.player1.name} wins!`);
+			if (db.gameType === 'local-pvp')
+			{
+				alert(`${db.player1.name} has won the match!`);
+				EG_UTILS.announce(`${db.player1.name} wins!`);
+			}
 			this.render_playersName('p1');
 		}
 		if (db.match.winner === db.player2.name)
 		{
-			alert(`${db.player2.name} has won the match!`);
-			EG_UTILS.announce(`${db.player2.name} wins!`);
+			if (db.gameType === 'local-pvp')
+			{
+				alert(`${db.player2.name} has won the match!`);
+				EG_UTILS.announce(`${db.player2.name} wins!`);
+			}
 			this.render_playersName('p2');
 		}
 
@@ -307,12 +333,14 @@ class engineRenderClass
 		{
 			db.player1.wins++;
 			db.match.winner = db.player1.name;
+			db.match.loser = db.player2.name;
 			db.match.end = true;
 		}
 		if (ballL <= 0)
 		{
 			db.player2.wins++;
 			db.match.winner = db.player2.name;
+			db.match.loser = db.player1.name;
 			db.match.end = true;
 		}
 	}
@@ -350,7 +378,7 @@ class engineRenderClass
 	async triggerDifficultIncrease()
 	{
 		// increase ball speed
-		if (this.data.ball.dx < 400)
+		if (this.data.ball.dx < 400 && this.data.ball.dy < 200)
 		{
 			this.data.ball.dx *= 1.06;
 			this.data.ball.dy *= 1.03;
@@ -367,8 +395,8 @@ class engineRenderClass
 		angle = parseFloat(angle);
 		this.data.ball.dy *= angle;
 
-		if (this.data.paddle.speed <= 500)
-			this.data.paddle.speed += 50;
+		if (this.data.paddle.speed >= 125)
+			this.data.paddle.speed -= 5;
 
 		if (this.data.paddle.total_len > 35)
 			this.data.paddle.total_len -= 3;
@@ -421,6 +449,26 @@ class engineRenderClass
 
 		return true;
 	}
+
+	async render_txt(txt)
+	{
+		const db = this.data;
+		if (!db.canvas.ctx || !db.canvas.elem)
+			return false;
+
+		const width = db.canvas.elem.width / 2;
+		const height = db.canvas.elem.height / 2;
+
+		db.canvas.ctx.clearRect(0, 0, db.canvas.elem.width, db.canvas.elem.height);
+		db.canvas.ctx.fillStyle = db.display.cor_txt;
+		db.canvas.ctx.font = 'bold 30px Monospace';
+		db.canvas.ctx.textAlign = 'center';
+		db.canvas.ctx.textBaseline = 'middle';
+		db.canvas.ctx.fillText(txt, width, height);
+
+		return true;
+	}
+
 }
 
 const ENGINE_RENDER = new engineRenderClass();
