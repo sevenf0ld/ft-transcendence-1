@@ -27,7 +27,6 @@ class Router
 		this.routes = {
 			'/home': HOME_VIEW,
 			'/login': LOGIN_VIEW,
-			'/game-room': GAMEROOM_VIEW,
 			'/signup': SIGNUP_VIEW,
 			'/404': FOF_VIEW,
 		};
