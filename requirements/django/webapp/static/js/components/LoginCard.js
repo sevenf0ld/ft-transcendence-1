@@ -8,11 +8,11 @@ import LOGIN_OTP from './LoginOTP.js';
 // -------------------------------------------------- //
 import * as FETCH from './LoginCard_fetch.js';
 import * as LOADING from '../core/helpers/loading.js';
-import ROUTER from '../core/router.js';
 import ALERT_UTILS from '../core/helpers/alert-utils.js';
 import SIGNUP_VIEW from '../views/SignupView.js';
 import HOME_VIEW from '../views/HomeView.js';
 import WEB_SOCKET from '../core/websocket_mng.js';
+import ROUTER from '../core/router.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -29,6 +29,7 @@ import WEB_SOCKET from '../core/websocket_mng.js';
 // Special-events
 // -------------------------------------------------- //
 // It's for the intra button
+/*
 const intraFetch = FETCH.FETCH_INTRA;
 await intraFetch.init();
 document.addEventListener('DOMContentLoaded', async (e) => {
@@ -38,10 +39,10 @@ document.addEventListener('DOMContentLoaded', async (e) => {
 		await localStorage.setItem('user', JSON.stringify(
 			intraFetch.fetch_obj.rdata['user'])
 		);
-		const HOME = HOME_VIEW;
-		await HOME.render();
+		await ROUTER.navigate_to('/home');
 	}
 });
+*/
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
@@ -129,7 +130,25 @@ class LoginCard
 			'click', async (event) => {await this.signupClick(event);}
 		);
 
+		await this.check_intra();
+
 		return true;
+	}
+
+	async check_intra()
+	{
+		const intraFetch = FETCH.FETCH_INTRA;
+		await intraFetch.init();
+		const result = await intraFetch.run();
+		if (result === 'exchange-successful')
+		{
+			await localStorage.setItem('user', JSON.stringify(
+				intraFetch.fetch_obj.rdata['user'])
+			);
+			await ROUTER.navigate_to('/home');
+			localStorage.setItem('login-event', 'login' + Math.random());
+			await new Promise(r => setTimeout(r, 1000));
+		}
 	}
 
 	async loginClick(event)
@@ -178,8 +197,8 @@ class LoginCard
 
 			localStorage.setItem('user', JSON.stringify(loginFetch.fetch_obj.rdata['user']));
 			await new Promise(r => setTimeout(r, 2000));
-			const HOME = HOME_VIEW;
-			await HOME.render();
+			await ROUTER.navigate_to('/home');
+			localStorage.setItem('login-event', 'login' + Math.random());
 		}
 
 		await LOADING.restore_all();
@@ -192,6 +211,9 @@ class LoginCard
 		event.preventDefault();
 		console.log('[BTN] intraClick');
 
+		const intraFetch = FETCH.FETCH_INTRA;
+		await intraFetch.init();
+		const result = await intraFetch.run();
 		await intraFetch.redirect(event);
 
 		return true;
@@ -202,8 +224,7 @@ class LoginCard
 		event.preventDefault();
 		console.log('[BTN] signupClick');
 
-		const signup = SIGNUP_VIEW;
-		await signup.render();
+		await ROUTER.navigate_to('/signup');
 
 		return true;
 	}

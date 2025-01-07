@@ -54,6 +54,8 @@ class websocketManager
 		if (await this.ws_is_ready_to_close(this.send_ipvp.ws))
 			this.closeSocket_invite_send();
 
+		console.log('[INFO] all websockets closed');
+
 		return true;
 	}
 

@@ -10,6 +10,7 @@ import * as LOADING from '../core/helpers/loading.js';
 import ALERT_UTILS from '../core/helpers/alert-utils.js';
 import FETCH from './SignupCard_fetch.js';
 import LOGIN_VIEW from '../views/LoginView.js';
+import ROUTER from '../core/router.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -153,8 +154,7 @@ class SignupCard
 			await this.alert_div.alert_render();
 			await new Promise(r => setTimeout(r, 2500));
 
-			const login = LOGIN_VIEW;
-			await login.render();
+			await ROUTER.navigate_to('/login');
 		}
 		else
 		{
@@ -195,8 +195,7 @@ class SignupCard
 		console.log('[BTN] backLoginClick');
 		event.preventDefault();
 
-		const login = LOGIN_VIEW;
-		await login.render();
+		await ROUTER.navigate_to('/login');
 
 		return true;
 	}

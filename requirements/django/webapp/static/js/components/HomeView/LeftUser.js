@@ -12,6 +12,8 @@ import MODAL_SETTINGS from './ModalSettings.js';
 import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 import LOGIN_VIEW from '../../views/LoginView.js';
 import WEB_SOCKET from '../../core/websocket_mng.js';
+import LOGOUT from '../../core/logout.js';
+import ROUTER from '../../core/router.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -170,15 +172,8 @@ class LeftUser
 			if (TOKEN.token_id)
 				await TOKEN.stop_refresh_token();
 
-			await WEB_SOCKET.closeSocket_liveChat();
-			await WEB_SOCKET.closeSocket_friendList();
-			await WEB_SOCKET.closeSocket_invite_receive();
-
-			localStorage.clear();
-			location.href = '/';
-
-			const loginView = LOGIN_VIEW;
-			await loginView.render();
+			await LOGOUT.run();
+			await ROUTER.navigate_to('/login');
 		}
 		else
 		{
@@ -249,6 +244,8 @@ class LeftUser
 	{
 		// [-] HELPER FUNCTION
 		const obj = JSON.parse(localStorage.getItem('user'));
+		if (!obj)
+			return false;
 		const name = obj.username;
 
 		// [A] TEMPLATE
