@@ -14,6 +14,7 @@ import RIGHT_FRIEND_LIST from '../components/HomeView/RightFnList.js';
 import PAGE_TITLE from '../core/helpers/PageTitle.js';
 import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 import WEB_SOCKET from '../core/websocket_mng.js';
+import ROUTER from '../core/router.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //

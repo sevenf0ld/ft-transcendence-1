@@ -6,6 +6,7 @@
 // Importing-external
 // -------------------------------------------------- //
 import WEB_SOCKET from './websocket_mng.js';
+import ROUTER from './router.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -78,6 +79,7 @@ class TokenCs
 
 	async stop_refresh_token()
 	{
+		localStorage.setItem('logout-event', 'logout' + Math.random());
 		localStorage.clear();
 		clearInterval(this.token_id);
 		this.token_id = null;
@@ -91,7 +93,7 @@ class TokenCs
 		alert('Token expired. Please login again.');
 
 		await this.stop_refresh_token();
-		location.href = '/';
+		await ROUTER.navigate_to('/login');
 
 		// // Clear all cookies
 		document.cookie.split(";").forEach(cookie => {
@@ -99,6 +101,7 @@ class TokenCs
 		});
 
 		// Clear local storage
+		localStorage.setItem('logout-event', 'logout' + Math.random());
 		localStorage.clear();
 
 		// close all websockets

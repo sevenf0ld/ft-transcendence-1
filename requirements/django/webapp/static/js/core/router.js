@@ -5,10 +5,12 @@
 // -------------------------------------------------- //
 // Importing-external
 // -------------------------------------------------- //
-import HomeView from '../views/HomeView.js';
-import LoginView from '../views/LoginView.js';
-import GameRoomView from '../views/GameRoomView.js';
-import SignupView from '../views/SignupView.js';
+import HOME_VIEW from '../views/HomeView.js';
+import LOGIN_VIEW from '../views/LoginView.js';
+import GAMEROOM_VIEW from '../views/GameRoomView.js';
+import SIGNUP_VIEW from '../views/SignupView.js';
+import LOGOUT from '../core/logout.js';
+import FOF_VIEW from '../views/404View.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -22,92 +24,154 @@ class Router
 	// --- [00] CONSTRUCTOR
 	constructor()
 	{
-		this.routes = {};
-		this.defaultRoute = null;
-		this.currentView = null;
+		this.routes = {
+			'/home': HOME_VIEW,
+			'/login': LOGIN_VIEW,
+			'/game-room': GAMEROOM_VIEW,
+			'/signup': SIGNUP_VIEW,
+			'/404': FOF_VIEW,
+		};
+		this.handled_by_hashchange = false;
 	}
 
-	async init(defaultRoute)
+	async init_url_change_listener()
 	{
-		this.defaultRoute = defaultRoute;
-		if (!this.defaultRoute)
-			throw new Error('default route not set');
-
 		window.addEventListener('hashchange', async () => {
-			await this.loadPage(window.location.hash);
+			this.handled_by_hashchange = true;
+			await this.hash_change_handler();
 		});
-
-		if (!await this.user_session_checker(this.defaultRoute))
-			return false;
-
-		this.loadPage(window.location.hash || this.defaultRoute);
-
-		return true;
 	}
 
-	async addRoute(route, page)
+	async hash_change_handler()
 	{
-		this.routes[route] = page;
+		const url_with_hash = window.location.hash;
+		const url_without_hash = url_with_hash.replace('#', '');
+		const view_class = this.routes[url_without_hash];
 
-		return true;
-	}
-
-	async update_url_bar(route)
-	{
-		window.location.hash = route;
-
-		return true;
-	}
-
-	async loadPage(route)
-	{
-		const page = route.replace(/^#/, '') || this.defaultRoute.replace(/^#/, '');
-		const viewClass = this.routes[page];
-
-		console.log('pagexx:', page);
-		if (!await this.user_session_checker(page))
-			return false;
-
-		if (viewClass)
+		if (!view_class)
 		{
-			this.currentView = viewClass;
-			await this.currentView.render();
-			await this.update_url_bar(page);
+			alert('Handled ERROR - 404 - Page not found');
+			await LOGOUT.run();
+			await this.navigate_to('/404');
 		}
 		else
 		{
-			alert('Page not found! Redicrecting to login/home page');
-			await this.update_url_bar(this.defaultRoute);
-			this.currentView = this.routes[this.defaultRoute];
-			await this.currentView.render();
-			console.error('[THIS IS A HANDLED ERROR] Page not found:', page);
+			if (await this.back_to_logout(url_without_hash))
+				return true;
+			if (await this.forward_to_login(url_without_hash))
+				return true;
+			localStorage.setItem('pong_view', url_without_hash);
+			await view_class.render();
 		}
 
 		return true;
 	}
 
-	async default_route_detector()
+	async back_to_logout(url_without_hash)
 	{
-		const existing_user = JSON.parse(localStorage.getItem('user'));
-		return existing_user ? '/home' : '/login';
-	}
-
-	async is_user_logged_in()
-	{
-		const existing_user = JSON.parse(localStorage.getItem('user'));
-		return existing_user ? true : false;
-	}
-
-	async user_session_checker(page)
-	{
-		if(!await this.is_user_logged_in() && page !== '/login' && page !== '/signup')
+		const hash = url_without_hash;
+		const user = JSON.parse(localStorage.getItem('user'));
+		if (hash === '/login' || hash === '/signup')
 		{
-			alert('You need to be logged in to access this page. Redirecting to login page');
-			await this.update_url_bar('/login');
-			this.currentView = this.routes['/login'];
-			await this.currentView.render();
+			if (user)
+			{
+				await LOGOUT.run();
+				await this.navigate_to('/login');
+				await this.hash_change_handler();
+				return true;
+			}
+		}
+	}
 
-			return false;
+	async forward_to_login(url_without_hash)
+	{
+		const hash = url_without_hash;
+		const user = JSON.parse(localStorage.getItem('user'));
+		if (!user)
+		{
+			if (hash === '/home' || hash === '/game-room')
+			{
+				alert('You need to login first');
+				await this.navigate_to('/login');
+				await this.hash_change_handler();
+				return true;
+			}
+		}
+	}
+
+	async navigate_to(view_url)
+	{
+		window.location.hash = view_url;
+		await new Promise(resolve => setTimeout(resolve, 100));
+
+		return true;
+	}
+
+	async check_first_tab_or_reload()
+	{
+		const hash = window.location.hash;
+		const state_first_visit = hash === '' ? true : false;
+
+		const user = JSON.parse(localStorage.getItem('user'));
+		const state_logged_in = user ? true : false;
+
+		const page = localStorage.getItem('pong_view');
+		const state_active_page = page ? true : false;
+
+		//first visit
+		if (state_first_visit)
+		{
+			if (state_logged_in)
+				await this.navigate_to('/home');
+			else
+				await this.navigate_to('/login');
+		}
+		//page_reload
+		else if (!state_first_visit)
+		{
+			//reload but other tab logged in
+			if (state_logged_in)
+			{
+				//does it have an active page
+				if (!state_active_page)
+					await this.navigate_to('/home');
+				else if (state_active_page)
+					await this.navigate_to(page);
+			}
+			//reload but other tab logged out
+			else if (!state_logged_in)
+			{
+				//does it have an active page
+				if (!state_active_page)
+					await this.navigate_to('/login');
+				else if (state_active_page)
+					await this.navigate_to(page);
+			}
+		}
+
+		return true;
+	}
+
+	async local_storage_listener(type)
+	{
+		const ft = this.navigate_to;
+
+		if (type === 'login')
+		{
+			window.addEventListener('storage', async function(event){
+				if (event.key == 'login-event') {
+					await ft('/home');
+				}
+			});
+		}
+		if (type === 'logout')
+		{
+			window.addEventListener('storage', async function(event){
+				if (event.key == 'logout-event') {
+					await LOGOUT.run();
+					await ft('/login');
+				}
+			});
 		}
 
 		return true;
@@ -118,8 +182,4 @@ class Router
 // export
 // -------------------------------------------------- //
 const ROUTER = new Router();
-ROUTER.addRoute('/home', HomeView);
-ROUTER.addRoute('/login', LoginView);
-ROUTER.addRoute('/game-room', GameRoomView);
-ROUTER.addRoute('/signup', SignupView);
 export default ROUTER;
