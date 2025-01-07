@@ -271,7 +271,7 @@ class ModalFnOpt
 
 	async declineRequestClick(event)
 	{
-		if (this.type !== 'request-out')
+		if (this.type !== 'request-in')
 			return false;
 
 		event.preventDefault();
@@ -285,8 +285,8 @@ class ModalFnOpt
 		await mainFetch.setMethod('DELETE');
 		await mainFetch.appendHeaders('Content-Type', 'application/json');
 		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
-		await mainFetch.appendBody('sender', this.target);
-		await mainFetch.appendBody('recipient', this.user);
+		await mainFetch.appendBody('sender', this.user);
+		await mainFetch.appendBody('recipient', this.target);
 		await mainFetch.fetchData();
 
 		//tomorrow change to bs-alert-display-div
