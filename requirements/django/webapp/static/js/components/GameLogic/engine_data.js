@@ -132,6 +132,19 @@ class engineData
 		this.player2.x = this.display.w - this.paddle.dist_wall;
 		this.player2.y = this.display.cen_y;
 
+		this.ai =
+		{
+			algor_y: this.display.cen_y,
+			start_time: null,
+			update_interval: 1000,
+			last_move_time: null,
+			move_interval: 10,
+			reached: false,
+			// 2 - 10 highest difficulty
+			difficulty: null,
+			error_margin: null,
+		};
+
 		return true;
 	}
 

@@ -598,15 +598,43 @@ class ActionPanel
 
 	async push_important_elements_lpve()
 	{
+		this.buttons['start'] = this.base_ctn.querySelector('#btn_lpve_start');
+
+		for (const key in this.buttons)
+			if (!this.buttons[key])
+				throw new Error(`this.buttons[${key}] is null`);
+
 		return true;
 	}
+
 	// --------------------------------------------- //
 	// [2/4] EVENT-RELATED
 	// --------------------------------------------- //
 	async bind_events_lpve()
 	{
+		this.buttons['start'].addEventListener(
+			'click', async (event) => { await this.lpve_start_click(event); }
+		);
+
 		return true;
 	}
+
+	async lpve_start_click(event)
+	{
+		event.preventDefault();
+		console.log('[BTN] ltour_start_click');
+
+		await this.all_btns_mng('disable');
+
+		// game engine
+		const pongGame = PONG_ENGINE;
+		pongGame.gameType = this.gameType;
+		await pongGame.init();
+		this.currentGame = pongGame;
+
+		return true;
+	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //

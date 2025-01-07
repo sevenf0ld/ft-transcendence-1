@@ -5,6 +5,7 @@
 import EG_RENDER from './engine_render.js';
 import EG_DATA from './engine_data.js';
 import TNM_LOGIC from './tnm_logic.js';
+import AI_PONG from './ai_logic.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -65,6 +66,30 @@ class engineUtilsClass
 		{
 			const leave = document.getElementById('btn_leaveRoom');
 			leave.disabled = false;
+		}
+		else if (state === 'lpve-start')
+		{
+			await this.announce();
+			await this.announce(`Game has started at ${t}`);
+			await this.announce('Game difficulty will INCREASE over time');
+			await EG_RENDER.start_countdown();
+			await EG_RENDER.randomBallDirection();
+			const obj = JSON.parse(localStorage.getItem('user'));
+			this.data.player1.name = obj.username;
+			this.data.player2.name = 'PONG AI';
+
+			await AI_PONG.run();
+		}
+		else if (state === 'lpve-end')
+		{
+			await this.announce(`Game has ended at ${t}`);
+
+			const leave_btn = document.getElementById('btn_leaveRoom');
+			const start_btn = document.getElementById('btn_lpve_start');
+			leave_btn.disabled = false;
+			start_btn.disabled = false;
+
+			await EG_DATA.reset();
 		}
 
 		return true;
