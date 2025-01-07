@@ -344,10 +344,16 @@ class InvitationConsumer(WebsocketConsumer):
     def receive(self, text_data=None, bytes_data=None):
         text_json = json.loads(text_data)
         print('INVITE CONSUMER RECEIVES', text_json)
+        invite_update = text_json['invite_update']
+
+        if invite_update == 'send_invitation':
+            room_id = text_json['room_id']
+
         async_to_sync(self.channel_layer.group_send)(
             self.invitee_group,
             {
                 'type': 'invite.send',
+                'room_id': room_id
             }
         )
         async_to_sync(self.channel_layer.group_send)(
@@ -368,7 +374,8 @@ class InvitationConsumer(WebsocketConsumer):
         # room details to be added
         self.send(text_data=json.dumps({
             'type': 'invitation_received',
-            'message': f'{self.user.username} has invited you PVP!'
+            'message': f'{self.user.username} has invited you PVP!',
+            'room_id': event['room_id']
         }))
 
     def invite_confirm(self, event):
