@@ -245,7 +245,7 @@ class OnlineConsumer(WebsocketConsumer):
     def remove_from_logged_in(self):
         if self.room_group_name in self.logged_in:
             self.logged_in[self.room_group_name].discard(self.user.username)
-            if not self.logged_in[self.room_group_name]:  # Clean up
+            if not self.logged_in[self.room_group_name]:
                 del self.logged_in[self.room_group_name]
     
     def logged_in_to_playing(self):
@@ -258,5 +258,5 @@ class OnlineConsumer(WebsocketConsumer):
     def remove_from_playing(self):
         if self.room_group_name in self.playing:
             self.playing[self.room_group_name].discard(self.user.username)
-            if not self.playing[self.room_group_name]:  # Clean up
+            if not self.playing[self.room_group_name]:
                 del self.playing[self.room_group_name]
