@@ -2,16 +2,30 @@ from rest_framework import serializers
 
 from .models import FriendList, FriendRequest
 from django.contrib.auth.models import User
+from user_profiles.models import Profile
 
 #=================================#
 #=========friend request==========#
 #=================================#
 
 class FriendRequestModelSerializer(serializers.ModelSerializer):
+    sender_avatar_url = serializers.SerializerMethodField()
+    recipient_avatar_url = serializers.SerializerMethodField()
+
+    def get_sender_avatar_url(self, instance):
+        sender_profile = Profile.objects.get(user=instance.sender)
+        return self.context.get('request').build_absolute_uri(sender_profile.avatar.url)
+
+    def get_recipient_avatar_url(self, instance):
+        recipient_profile = Profile.objects.get(user=instance.recipient)
+        return self.context.get('request').build_absolute_uri(recipient_profile.avatar.url)
+
     def to_representation(self, instance):
         return {
             'sender': instance.sender.username,
+            'sender_avatar_url': self.get_sender_avatar_url(instance),
             'recipient': instance.recipient.username,
+            'recipient_avatar_url': self.get_recipient_avatar_url(instance),
             #'pk': instance.id # for development purposes, to test retrieve
         }
 
@@ -67,12 +81,16 @@ class FriendRequestModelSerializer(serializers.ModelSerializer):
 class FriendListDisplayModelSerializer(serializers.ModelSerializer):
     user = serializers.CharField()
     friends = serializers.SerializerMethodField()
+    friends_avatars = serializers.SerializerMethodField()
     num_of_friends = serializers.SerializerMethodField()
     blocked = serializers.SerializerMethodField()
+    blocked_avatars = serializers.SerializerMethodField()
     num_of_blocked = serializers.SerializerMethodField()
     outgoing = serializers.SerializerMethodField()
+    outgoing_avatars = serializers.SerializerMethodField()
     num_of_outgoing = serializers.SerializerMethodField()
     incoming = serializers.SerializerMethodField()
+    incoming_avatars = serializers.SerializerMethodField()
     num_of_incoming = serializers.SerializerMethodField()
 
     #def to_internal_value(self, data):
@@ -104,11 +122,17 @@ class FriendListDisplayModelSerializer(serializers.ModelSerializer):
     def get_friends(self, obj):
         return [friend.username for friend in obj.friends.all()]
 
+    def get_friends_avatars(self, obj):
+        return [self.context['request'].build_absolute_uri(Profile.objects.get(user=friend).avatar.url) for friend in obj.friends.all()]
+
     def get_num_of_friends(self, obj):
         return obj.friends.count()
 
     def get_blocked(self, obj):
         return [blockee.username for blockee in obj.blocked.all()]
+
+    def get_blocked_avatars(self, obj):
+        return [self.context['request'].build_absolute_uri(Profile.objects.get(user=blockee).avatar.url) for blockee in obj.blocked.all()]
 
     def get_num_of_blocked(self, obj):
         return obj.blocked.count()
@@ -117,6 +141,10 @@ class FriendListDisplayModelSerializer(serializers.ModelSerializer):
         outgoing = FriendRequest.objects.filter(sender=obj.user, is_active=True)
         return [request.recipient.username for request in outgoing]
 
+    def get_outgoing_avatars(self, obj):
+        outgoing = FriendRequest.objects.filter(sender=obj.user, is_active=True)
+        return [self.context['request'].build_absolute_uri(Profile.objects.get(user=request.recipient).avatar.url) for request in outgoing]
+
     def get_num_of_outgoing(self, obj):
         return FriendRequest.objects.filter(sender=obj.user, is_active=True).count()
 
@@ -124,14 +152,29 @@ class FriendListDisplayModelSerializer(serializers.ModelSerializer):
         incoming = FriendRequest.objects.filter(recipient=obj.user, is_active=True)
         return [request.sender.username for request in incoming]
 
+    def get_incoming_avatars(self, obj):
+        incoming = FriendRequest.objects.filter(recipient=obj.user, is_active=True)
+        return [self.context['request'].build_absolute_uri(Profile.objects.get(user=request.sender).avatar.url) for request in incoming]
+
     def get_num_of_incoming(self, obj):
         return FriendRequest.objects.filter(recipient=obj.user, is_active=True).count()
 
     class Meta: 
         model = FriendList
-        fields = ['user', 'friends', 'num_of_friends', 'blocked', 'num_of_blocked', 'outgoing', 'num_of_outgoing', 'incoming', 'num_of_incoming']
+        fields = ['user', 'friends', 'friends_avatars', 'num_of_friends', 'blocked', 'blocked_avatars', 'num_of_blocked', 'outgoing', 'outgoing_avatars', 'num_of_outgoing', 'incoming', 'incoming_avatars', 'num_of_incoming']
 
 class FriendListUpdateModelSerializer(serializers.ModelSerializer):
+    sender_avatar_url = serializers.SerializerMethodField()
+    recipient_avatar_url = serializers.SerializerMethodField()
+
+    def get_sender_avatar_url(self, instance):
+        sender_profile = Profile.objects.get(user=instance.sender)
+        return self.context.get('request').build_absolute_uri(sender_profile.avatar.url)
+
+    def get_recipient_avatar_url(self, instance):
+        recipient_profile = Profile.objects.get(user=instance.recipient)
+        return self.context.get('request').build_absolute_uri(recipient_profile.avatar.url)
+
     def to_internal_value(self, data):
         user_username = data.get('user')
         if not user_username:

@@ -8,6 +8,7 @@
 import FETCH from './BotFriendPfp_fetch.js';
 import BOT_FRIEND_PFP from './BotFriendPfp.js';
 import WS_MANAGER from '../../core/websocket_mng.js';
+import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -177,9 +178,7 @@ class BotChatBox
 		const pfp_ctn = document.querySelector('.ct-bottom-left');
 		pfp_ctn.innerHTML = child;
 
-		//websocket close
 		await WS_MANAGER.closeSocket_liveChat();
-		await WS_MANAGER.initSocket_liveChat();
 
 		return true;
 	}
@@ -188,6 +187,23 @@ class BotChatBox
 	{
 		event.preventDefault();
 		console.log('[BTN] inviteClick');
+
+		const chatbox_id = document.getElementById('btn_chatbox_profile');
+		const chatbox_friend = chatbox_id.getAttribute('title');
+
+		await this.fetch_create_game_room();
+
+		// js can only send if the person is not blue (not playing). idk if not online
+		await WS_MANAGER.initSocket_invite_send();
+		await WS_MANAGER.connectSocket_invite_send(chatbox_friend);
+		await WS_MANAGER.updateSocket_invite_send();
+		await WS_MANAGER.listenSocket_invite_send();
+
+		const gameRoom = GAME_ROOM_VIEW;
+		await gameRoom.init();
+		gameRoom.type = 'online-tour';
+		await gameRoom.render();
+		await WEB_SOCKET.listenSocket_game();
 
 		return true;
 	}
@@ -272,7 +288,6 @@ class BotChatBox
 		this.sender = JSON.parse(localStorage.getItem('user')).username;
 
 		await WS_MANAGER.closeSocket_liveChat();
-		await WS_MANAGER.initSocket_liveChat();
 
 		if (!document.querySelector(`.fnl-item-ctn[data-type="added"][title="${this.target}"]`))
 			return console.log(`[SOCKET ERROR] ${this.target} is not in the added section.`);
@@ -316,13 +331,11 @@ class BotChatBox
 			{
 				await this.msg_generator('System', `${this.target} is in the room.`);
 				await this.input_manager('enable');
-				console.log(`[CHAT AVAILABLE] ${this.target} - in room.`);
 			}
 			else if (data.type === 'chat_unavailable')
 			{
 				await this.msg_generator('System', `${this.target} is not in the room.`);
 				await this.input_manager('disable');
-				console.log(`[CHAT UNAVAILABLE] ${this.target} - not in room.`);
 			}
 		  //========================================//
     	  //================ RECEIVE ===============//
@@ -338,6 +351,24 @@ class BotChatBox
 
 		return true;
 	}
+
+	async fetch_create_game_room()
+	{
+		await MRJ_FETCH.init();
+		await MRJ_FETCH.fetchData('PVP');
+		if (MRJ_FETCH.re_value === 'game-room-creation-successful')
+		{
+			await WEB_SOCKET.updateSocket_lobbyCreate();
+
+			const room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
+
+			await WEB_SOCKET.initSocket_game();
+			await WEB_SOCKET.connectSocket_game(room_id);
+		}
+		else if (MRJ_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
+			alert('Failed to create PVP game room.');
+	}
+
 	// --------------------------------------------- //
 	// [4/4] HTML-ELEMENT-RELATED
 	// --------------------------------------------- //

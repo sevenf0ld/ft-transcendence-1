@@ -13,6 +13,8 @@ import MID_BOARD from '../components/HomeView/MidBoard.js';
 // -------------------------------------------------- //
 // main-functions
 // -------------------------------------------------- //
+
+// protect all close, update and listen
 class websocketManager
 {
 	constructor()
@@ -20,7 +22,9 @@ class websocketManager
 		this.initSocket_liveChat();
 		this.initSocket_friendList();
 		this.initSocket_lobby();
-		this.initSocket_gameRoom();
+		this.initSocket_game();
+		this.initSocket_invite_receive();
+		this.initSocket_invite_send();
 	}
 
 	async ws_is_ready_to_close(ws)
@@ -40,10 +44,27 @@ class websocketManager
 			this.closeSocket_liveChat();
 		if (await this.ws_is_ready_to_close(this.friend.ws))
 			this.closeSocket_friendList();
+		if (await this.ws_is_ready_to_close(this.lobby.ws))
+			this.closeSocket_lobby();
+		if (await this.ws_is_ready_to_close(this.gr.ws))
+			this.closeSocket_game();
+		if (await this.ws_is_ready_to_close(this.receive_ipvp.ws))
+			this.closeSocket_invite_receive();
+		if (await this.ws_is_ready_to_close(this.send_ipvp.ws))
+			this.closeSocket_invite_send();
 
 		return true;
 	}
 
+	async ws_is_open(ws)
+	{
+		if (!ws)
+			return false;
+		if (ws.readyState === WebSocket.OPEN)
+			return true;
+
+		return false;
+	}
 
 //=================================#
 // LIVE CHAT
@@ -74,6 +95,7 @@ class websocketManager
 			  'type': 'chat_close',
 			}));
 			this.liveChat.ws.close();
+			await this.initSocket_liveChat();
 		}
 		
 		return true;
@@ -99,7 +121,10 @@ class websocketManager
 	async closeSocket_friendList()
 	{
 		if (await this.ws_is_ready_to_close(this.friend.ws))
+		{
 			this.friend.ws.close();
+			await this.initSocket_friendList();
+		}
 
 		return true;
 	}
@@ -118,6 +143,21 @@ class websocketManager
 		this.friend.sender = user_obj.username;
 		this.friend.url = `wss://${window.location.host}/ws/online/${this.friend.user_id}/`;
 		this.friend.ws = new WebSocket(this.friend.url);
+
+		await new Promise((resolve, reject) => {
+        	this.friend.ws.addEventListener('open', (event) => {
+        	    console.log('FriendList WebSocket Open:', this.friend.ws.readyState);
+        	    resolve();
+        	});
+        	this.friend.ws.addEventListener('error', (error) => {
+        	    console.error('FriendList WebSocket Error:', error);
+        	    reject(error);
+        	});
+			this.friend.ws.addEventListener('close', (event) => {
+		    	console.log('FriendList WebSocket Closed:', event);
+        	    resolve();
+			});
+    	});
 
 		return true;
 	}
@@ -214,22 +254,34 @@ class websocketManager
 			this.lobby.ws = new WebSocket(this.lobby.url);
 		}
 
+		await new Promise((resolve, reject) => {
+        	this.lobby.ws.addEventListener('open', (event) => {
+        	    console.log('Lobby WebSocket Open:', this.lobby.ws.readyState);
+        	    resolve();
+        	});
+        	this.lobby.ws.addEventListener('error', (error) => {
+        	    console.error('Lobby WebSocket Error:', error);
+        	    reject(error);
+        	});
+			this.lobby.ws.addEventListener('close', (event) => {
+		    	console.log('Lobby WebSocket Closed:', event);
+        	    resolve();
+			});
+    	});
+
 		return true;
 	}
 
 	async closeSocket_lobby()
 	{
-		//if (this.lobby.ws !== undefined)
-		//{
-		//	this.lobby.ws.close();
-		//	this.lobby.ws = undefined;
-		//	this.lobby.url = undefined;
-		//	this.lobby.room_details = undefined;
-		//}
-		this.lobby.ws.close();
-		this.lobby.ws = undefined;
-		this.lobby.url = undefined;
-		this.lobby.room_details = undefined;
+		if (await this.ws_is_ready_to_close(this.lobby.ws))
+		{
+			this.lobby.ws.close();
+			this.lobby.ws = undefined;
+			this.lobby.url = undefined;
+			this.lobby.room_details = undefined;
+			await this.initSocket_lobby();
+		}
 
 		return true;
 	}
@@ -265,7 +317,7 @@ class websocketManager
 // GAME ROOM
 //=================================#
 
-	async initSocket_gameRoom()
+	async initSocket_game()
 	{
 		this.gr =
 		{
@@ -281,12 +333,31 @@ class websocketManager
 		this.gr.url = `wss://${window.location.host}/ws/game/${room_id}/`;
 		this.gr.ws = new WebSocket(this.gr.url);
 
+		await new Promise((resolve, reject) => {
+        	this.gr.ws.addEventListener('open', (event) => {
+        	    console.log('Game Room WebSocket Open:', this.gr.ws.readyState);
+        	    resolve();
+        	});
+        	this.gr.ws.addEventListener('error', (error) => {
+        	    console.error('Game Room WebSocket Error:', error);
+        	    reject(error);
+        	});
+			this.gr.ws.addEventListener('close', (event) => {
+		    	console.log('Game Room WebSocket Closed:', event);
+        	    resolve();
+			});
+    	});
+
 		return true;
 	}
 
 	async closeSocket_game()
 	{
-		this.gr.ws.close();
+		if (await this.ws_is_ready_to_close(this.gr.ws))
+		{
+			this.gr.ws.close();
+			await this.initSocket_game();
+		}
 
 		return true;
 	}
@@ -323,10 +394,163 @@ class websocketManager
 
 	async updateSocket_gameStart()
 	{
-		if (this.gr.ws && this.lobby.ws.readyState === WebSocket.OPEN)
+		if (this.gr.ws && this.gr.ws.readyState === WebSocket.OPEN)
 		{
 			this.gr.ws.send(JSON.stringify({
 			  'game_update': 'game_started',
+			}));
+		}
+
+		return true;
+	}
+
+//=================================#
+// INVITE PVP
+//=================================#
+
+	async initSocket_invite_send()
+	{
+		this.send_ipvp =
+		{
+			ws: undefined,
+			url: undefined,
+		}
+
+		return true;
+	}
+
+	async initSocket_invite_receive()
+	{
+		this.receive_ipvp =
+		{
+			ws: undefined,
+			url: undefined,
+		}
+
+		return true;
+	}
+
+	async connectSocket_invite_send(invitee)
+	{
+		this.send_ipvp.url = `wss://${window.location.host}/ws/invite/${invitee}/`;
+		//this.send_ipvp.url = `wss://${window.location.host}/ws/invite/haha/`;
+		this.send_ipvp.ws = new WebSocket(this.send_ipvp.url);
+
+		await new Promise((resolve, reject) => {
+        	this.send_ipvp.ws.addEventListener('open', (event) => {
+        	    console.log('Send Invite WebSocket Open:', this.send_ipvp.ws.readyState);
+        	    resolve();
+        	});
+        	this.send_ipvp.ws.addEventListener('error', (error) => {
+        	    console.error('Send Invite WebSocket Error:', error);
+        	    reject(error);
+        	});
+			this.send_ipvp.ws.addEventListener('close', (event) => {
+		    	console.log('Send Invite WebSocket Closed:', event);
+				if (event.code === 3003)
+				{
+					alert('Invitee does not exist.');
+				}
+        	    resolve();
+			});
+    	});
+
+		return true;
+	}
+
+	async connectSocket_invite_receive()
+	{
+		const my_username = JSON.parse(localStorage.getItem('user')).username;
+		this.receive_ipvp.url = `wss://${window.location.host}/ws/invite/${my_username}/`;
+		this.receive_ipvp.ws = new WebSocket(this.receive_ipvp.url);
+
+		await new Promise((resolve, reject) => {
+        	this.receive_ipvp.ws.addEventListener('open', (event) => {
+        	    console.log('Receive Invite WebSocket Open:', this.receive_ipvp.ws.readyState);
+        	    resolve();
+        	});
+        	this.receive_ipvp.ws.addEventListener('error', (error) => {
+        	    console.error('Receive Invite WebSocket Error:', error);
+        	    reject(error);
+        	});
+			this.receive_ipvp.ws.addEventListener('close', (event) => {
+		    	console.log('Receive Invite WebSocket Closed:', event);
+        	    resolve();
+			});
+    	});
+
+		return true;
+	}
+
+	async closeSocket_invite_send()
+	{
+		if (await this.ws_is_ready_to_close(this.send_ipvp.ws))
+		{
+			this.send_ipvp.ws.close();
+			await this.initSocket_invite_send();
+		}
+
+		return true;
+	}
+
+	async closeSocket_invite_receive()
+	{
+		if (await this.ws_is_ready_to_close(this.receive_ipvp.ws))
+		{
+			this.receive_ipvp.ws.close();
+			await this.initSocket_invite_receive();
+		}
+
+		return true;
+	}
+
+	async listenSocket_invite_send()
+	{
+		await new Promise((resolve, reject) => {
+			this.send_ipvp.ws.addEventListener('message', async (event) => {
+				let data = JSON.parse(event.data);
+
+				if (data.type === 'invitation_sent')
+				{
+					console.log('SENT PVP INVITITATION DETAILS: ', data);
+					alert(data.message);
+					resolve();
+					await this.closeSocket_invite_send();
+				}
+				//if (data.type === 'invallid_invitee')
+				//{
+				//	console.log('INVALID PVP INVITITATION DETAILS: ', data);
+				//	alert(data.message);
+				//	resolve();
+				//	await this.closeSocket_invite_send();
+				//}
+			});
+    	});
+
+		return true;
+	}
+
+	async listenSocket_invite_receive()
+	{
+		this.receive_ipvp.ws.addEventListener('message', async (event) => {
+			let data = JSON.parse(event.data);
+
+			if (data.type === 'invitation_received')
+			{
+				console.log('RECEIVED PVP INVITITATION DETAILS: ', data);
+				alert(data.message);
+			}
+		});
+
+		return true;
+	}
+
+	async updateSocket_invite_send()
+	{
+		if (this.send_ipvp.ws && this.send_ipvp.ws.readyState === WebSocket.OPEN)
+		{
+			this.send_ipvp.ws.send(JSON.stringify({
+			  'invite_update': 'send_invitation',
 			}));
 		}
 

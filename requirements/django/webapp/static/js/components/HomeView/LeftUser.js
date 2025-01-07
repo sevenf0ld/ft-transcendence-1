@@ -165,6 +165,7 @@ class LeftUser
 
 			await WEB_SOCKET.closeSocket_liveChat();
 			await WEB_SOCKET.closeSocket_friendList();
+			await WEB_SOCKET.closeSocket_invite_receive();
 
 			localStorage.clear();
 			location.href = '/';
