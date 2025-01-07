@@ -9,6 +9,7 @@ import FETCH from './BotFriendPfp_fetch.js';
 import BOT_FRIEND_PFP from './BotFriendPfp.js';
 import WS_MANAGER from '../../core/websocket_mng.js';
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
+import CR_FETCH from './CreateRoom_fetch.js'
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -140,6 +141,12 @@ class BotChatBox
 			BOT_FRIEND_PFP.losses = 'Lost: ' + stats.losses;
 			BOT_FRIEND_PFP.total = 'Total: ' + stats.played;
 			BOT_FRIEND_PFP.win_rate = 'W.rate: ' + stats.win_rate + '%';
+			const avatar_url = stats.avatar_url;
+			const splitted_url = avatar_url.split('/avatars/');
+			const pfp_name = splitted_url[1];
+			if (pfp_name !== 'default.jpg')
+				BOT_FRIEND_PFP.friend_pfp = avatar_url;
+			console.error(BOT_FRIEND_PFP.friend_pfp);
 			await BOT_FRIEND_PFP.render('replace');
 		}
 		else
@@ -183,6 +190,7 @@ class BotChatBox
 		return true;
 	}
 
+	// js can only send if the person is in chat
 	async inviteClick(event)
 	{
 		event.preventDefault();
@@ -191,19 +199,20 @@ class BotChatBox
 		const chatbox_id = document.getElementById('btn_chatbox_profile');
 		const chatbox_friend = chatbox_id.getAttribute('title');
 
-		await this.fetch_create_game_room();
+		const room_created = await this.fetch_create_game_room();
+		if (room_created)
+		{
+			await WS_MANAGER.initSocket_invite_send();
+			await WS_MANAGER.connectSocket_invite_send(chatbox_friend);
+			await WS_MANAGER.updateSocket_invite_send(room_created);
+			await WS_MANAGER.listenSocket_invite_send();
 
-		// js can only send if the person is not blue (not playing). idk if not online
-		await WS_MANAGER.initSocket_invite_send();
-		await WS_MANAGER.connectSocket_invite_send(chatbox_friend);
-		await WS_MANAGER.updateSocket_invite_send();
-		await WS_MANAGER.listenSocket_invite_send();
-
-		const gameRoom = GAME_ROOM_VIEW;
-		await gameRoom.init();
-		gameRoom.type = 'online-tour';
-		await gameRoom.render();
-		await WEB_SOCKET.listenSocket_game();
+			const gameRoom = GAME_ROOM_VIEW;
+			await gameRoom.init();
+			gameRoom.type = 'online-tour';
+			await gameRoom.render();
+			await WS_MANAGER.listenSocket_game();
+		}
 
 		return true;
 	}
@@ -354,19 +363,27 @@ class BotChatBox
 
 	async fetch_create_game_room()
 	{
-		await MRJ_FETCH.init();
-		await MRJ_FETCH.fetchData('PVP');
-		if (MRJ_FETCH.re_value === 'game-room-creation-successful')
+		await CR_FETCH.init();
+		await CR_FETCH.fetchData('PVP');
+		if (CR_FETCH.re_value === 'game-room-creation-successful')
 		{
-			await WEB_SOCKET.updateSocket_lobbyCreate();
+			await WS_MANAGER.updateSocket_lobbyCreate();
 
-			const room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
+			const room_id = CR_FETCH.fetch_obj.rdata.room_id;
 
-			await WEB_SOCKET.initSocket_game();
-			await WEB_SOCKET.connectSocket_game(room_id);
+			await WS_MANAGER.initSocket_game();
+			await WS_MANAGER.connectSocket_game(room_id);
+
+			return room_id;
 		}
-		else if (MRJ_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
+		else if (CR_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
+		{
 			alert('Failed to create PVP game room.');
+
+			return null;
+		}
+
+		return null;
 	}
 
 	// --------------------------------------------- //

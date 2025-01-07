@@ -7,7 +7,7 @@
 // -------------------------------------------------- //
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 import WEB_SOCKET from '../../core/websocket_mng.js';
-import MRJ_FETCH from './ModalRoomJoin_fetch.js';
+import CR_FETCH from './CreateRoom_fetch.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -114,26 +114,30 @@ class ModalRoomJoin
 			await WEB_SOCKET.closeSocket_liveChat();
 			await WEB_SOCKET.updateSocket_friendList('join');
 
-			await this.fetch_create_game_room('PVP');
-
-			const gameRoom = GAME_ROOM_VIEW;
-			await gameRoom.init();
-			gameRoom.type = 'online-pvp';
-			await gameRoom.render();
-			await WEB_SOCKET.listenSocket_game();
+			const room_created = await this.fetch_create_game_room('PVP');
+			if (room_created)
+			{
+				const gameRoom = GAME_ROOM_VIEW;
+				await gameRoom.init();
+				gameRoom.type = 'online-pvp';
+				await gameRoom.render();
+				await WEB_SOCKET.listenSocket_game();
+			}
 		}
 		else if (this.gameType === 'online-tour')
 		{
 			await WEB_SOCKET.closeSocket_liveChat();
 			await WEB_SOCKET.updateSocket_friendList('join');
 
-			await this.fetch_create_game_room('TNM');
-
-			const gameRoom = GAME_ROOM_VIEW;
-			await gameRoom.init();
-			gameRoom.type = 'online-tour';
-			await gameRoom.render();
-			await WEB_SOCKET.listenSocket_game();
+			const room_created = await this.fetch_create_game_room('TNM');
+			if (room_created)
+			{
+				const gameRoom = GAME_ROOM_VIEW;
+				await gameRoom.init();
+				gameRoom.type = 'online-tour';
+				await gameRoom.render();
+				await WEB_SOCKET.listenSocket_game();
+			}
 		}
 
 		return true;
@@ -187,19 +191,27 @@ class ModalRoomJoin
 	// --------------------------------------------- //
 	async fetch_create_game_room(room_type)
 	{
-		await MRJ_FETCH.init();
-		await MRJ_FETCH.fetchData(room_type);
-		if (MRJ_FETCH.re_value === 'game-room-creation-successful')
+		await CR_FETCH.init();
+		await CR_FETCH.fetchData(room_type);
+		if (CR_FETCH.re_value === 'game-room-creation-successful')
 		{
 			await WEB_SOCKET.updateSocket_lobbyCreate();
 
-			const room_id = MRJ_FETCH.fetch_obj.rdata.room_id;
+			const room_id = CR_FETCH.fetch_obj.rdata.room_id;
 
 			await WEB_SOCKET.initSocket_game();
 			await WEB_SOCKET.connectSocket_game(room_id);
+
+			return room_id;
 		}
-		else if (MRJ_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
+		else if (CR_FETCH.fetch_obj.re_value === 'game-room-creation-failed')
+		{
 			alert(`Failed to create ${room_type} game room.`);
+
+			return null;
+		}
+
+		return null;
 	}
 
 	// --------------------------------------------- //

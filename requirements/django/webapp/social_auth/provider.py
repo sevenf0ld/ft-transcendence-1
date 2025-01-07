@@ -14,7 +14,8 @@ class FortyTwoAccount(ProviderAccount):
 
     def get_avatar_url(self):
         pfp = self.account.extra_data.get('image', {})
-        return pfp.get('link')
+        #return pfp.get('link')
+        return pfp.get('versions', {}).get('micro')
 
     def to_str(self):
         dflt = super(FortyTwoProvider, self).to_str()

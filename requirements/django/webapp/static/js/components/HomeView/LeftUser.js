@@ -45,6 +45,13 @@ class LeftUser
 			'signout': '',
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
+		// html_pfp()
+		this.home_pfp = '/static/assets/images/default-pfp.png';
+		// html_stats()
+		this.played = null;
+		this.win_rate = null;
+		this.wins = null;
+		this.losses = null;
 	}
 	// --------------------------------------------- //
 	// [1/4] MAIN-EXECUTION
@@ -198,6 +205,21 @@ class LeftUser
 	async html_main_ctn()
 	{
 		// [-] HELPER FUNCTION
+		const home_profile = FETCH.FETCH_HOME_PROFILE;
+		await home_profile.init();
+		const fetch_result = await home_profile.fetchData();
+		if (fetch_result === 'home-profile-failed')
+			return false;
+		const avatar_url = home_profile.fetch_obj.rdata.avatar_url;
+		const splitted_url = avatar_url.split('/avatars/');
+		const pfp_name = splitted_url[1];
+		if (pfp_name !== 'default.jpg')
+			this.home_pfp = avatar_url;
+		this.played = home_profile.fetch_obj.rdata.played;
+		this.win_rate = home_profile.fetch_obj.rdata.win_rate + '%';
+		this.wins = home_profile.fetch_obj.rdata.wins;
+		this.losses = home_profile.fetch_obj.rdata.losses;
+
 		// [A] TEMPLATE
 		let template = `
 		<div class="%main-c1">
@@ -235,7 +257,7 @@ class LeftUser
 		const atts =
 		{
 			'%pfp-c': 'ct-lpanel-pfp',
-			'%pfp-src': '/static/assets/images/default-pfp.png',
+			'%pfp-src': this.home_pfp,
 			'%pfp-alt': 'profile picture',
 			'%name-c': 'ct-lpanel-username h5 truncate',
 			'%name': `${name}`,
@@ -250,15 +272,6 @@ class LeftUser
 	async html_stats()
 	{
 		// [-] HELPER FUNCTION
-		const home_profile = FETCH.FETCH_HOME_PROFILE;
-		await home_profile.init();
-		const fetch_result = await home_profile.fetchData();
-		const played = home_profile.fetch_obj.rdata.played;
-		const win_rate = home_profile.fetch_obj.rdata.win_rate + '%';
-		const wins = home_profile.fetch_obj.rdata.wins;
-		const losses = home_profile.fetch_obj.rdata.losses;
-		if (fetch_result === 'home-profile-failed')
-			return false;
 
 		// [A] TEMPLATE
 		let template = `
@@ -296,23 +309,23 @@ class LeftUser
 			'%tlp1-c': 'ct-mid-title',
 			'%tlp1-t': 'Played',
 			'%tlp2-c': 'ct-mid-num',
-			'%tlp2-t': played,
+			'%tlp2-t': this.played,
 			'%tr-c': 'ct-mid-container h-100 d-flex flex-column text-center',
 			'%trp1-c': 'ct-mid-title',
 			'%trp1-v': 'Win Rate',
 			'%trp2-c': 'ct-mid-num',
-			'%trp2-v': win_rate,
+			'%trp2-v': this.win_rate,
 			'%ctnb-c': 'ct-stats-bot d-flex',
 			'%bl-c': 'ct-bot-left d-flex flex-column text-center',
 			'%blp1-c': 'ct-bot-title',
 			'%blp1-t': 'Wins',
 			'%blp2-c': 'ct-bot-num',
-			'%blp2-t': wins,
+			'%blp2-t': this.wins,
 			'%br-c': 'ct-bot-right d-flex flex-column text-center',
 			'%brp1-c': 'ct-bot-title',
 			'%brp1-v': 'Losses',
 			'%brp2-c': 'ct-bot-num',
-			'%brp2-v': losses,
+			'%brp2-v': this.losses,
 			'%his-id': 'btn_history',
 			'%his-c': 'ct-btn-neau w-100',
 			'%his-t': 'Match History',

@@ -7,6 +7,7 @@
 // -------------------------------------------------- //
 import RIGHT_FRIEND_LIST from '../components/HomeView/RightFnList.js';
 import MID_BOARD from '../components/HomeView/MidBoard.js';
+import GAME_ROOM_VIEW from '../views/GameRoomView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -541,18 +542,29 @@ class websocketManager
 			{
 				console.log('RECEIVED PVP INVITITATION DETAILS: ', data);
 				alert(data.message);
+
+				await this.connectSocket_game(data.room_id);
+				await this.updateSocket_friendList('join');
+				await this.closeSocket_liveChat();
+
+				const gameRoom = GAME_ROOM_VIEW;
+				await gameRoom.init();
+				gameRoom.type = `online-pvp`;
+				await gameRoom.render();
+				await this.listenSocket_game();
 			}
 		});
 
 		return true;
 	}
 
-	async updateSocket_invite_send()
+	async updateSocket_invite_send(room_id)
 	{
 		if (this.send_ipvp.ws && this.send_ipvp.ws.readyState === WebSocket.OPEN)
 		{
 			this.send_ipvp.ws.send(JSON.stringify({
 			  'invite_update': 'send_invitation',
+			  'room_id': room_id,
 			}));
 		}
 
