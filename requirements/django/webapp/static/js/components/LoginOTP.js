@@ -7,6 +7,7 @@ import * as FETCH from './LoginCard_fetch.js';
 import ALERT_UTILS from '../core/helpers/alert-utils.js';
 import LOGIN_VIEW from '../views/LoginView.js';
 import HOME_VIEW from '../views/HomeView.js';
+import ROUTER from '../core/router.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -156,8 +157,9 @@ class LoginOTP
 				);
 
 				await new Promise(r => setTimeout(r, 1500));
-				const HOME = HOME_VIEW;
-				await HOME.render();
+				//const HOME = HOME_VIEW;
+				//await HOME.render();
+				await ROUTER.navigate_to('/home');
 			}
 			else
 			{
@@ -179,8 +181,9 @@ class LoginOTP
 		event.preventDefault();
 		console.log('[BTN] gobackClick');
 
-		const LOGIN = LOGIN_VIEW;
-		await LOGIN.render();
+		//const LOGIN = LOGIN_VIEW;
+		//await LOGIN.render();
+		await ROUTER.navigate_to('/login');
 
 		return true;
 	}

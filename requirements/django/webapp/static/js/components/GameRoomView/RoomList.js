@@ -8,6 +8,7 @@
 import HOME_VIEW from '../../views/HomeView.js';
 import WEB_SOCKETS from '../../core/websocket_mng.js';
 import TNM_LOGIC from '../GameLogic/tnm_logic.js';
+import ROUTER from '../../core/router.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -146,6 +147,7 @@ class RoomList
 
 		const HOME = HOME_VIEW;
 		await HOME.render();
+		//await ROUTER.navigate_to('/home');
 	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED 
