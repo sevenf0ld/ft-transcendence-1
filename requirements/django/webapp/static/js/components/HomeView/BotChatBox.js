@@ -141,6 +141,12 @@ class BotChatBox
 			BOT_FRIEND_PFP.losses = 'Lost: ' + stats.losses;
 			BOT_FRIEND_PFP.total = 'Total: ' + stats.played;
 			BOT_FRIEND_PFP.win_rate = 'W.rate: ' + stats.win_rate + '%';
+			const avatar_url = stats.avatar_url;
+			const splitted_url = avatar_url.split('/avatars/');
+			const pfp_name = splitted_url[1];
+			if (pfp_name !== 'default.jpg')
+				BOT_FRIEND_PFP.friend_pfp = avatar_url;
+			console.error(BOT_FRIEND_PFP.friend_pfp);
 			await BOT_FRIEND_PFP.render('replace');
 		}
 		else

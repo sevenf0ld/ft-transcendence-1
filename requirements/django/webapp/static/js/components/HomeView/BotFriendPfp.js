@@ -42,6 +42,7 @@ class BotFriendPfp
 		this.losses = null;
 		this.total = null;
 		this.win_rate = null;
+		this.friend_pfp = '/static/assets/images/default-pfp.png';
 	}
 	// --------------------------------------------- //
 	// MAIN-EXECUTION
@@ -221,7 +222,7 @@ class BotFriendPfp
 		{
 			'%pfp-1c': 'ct-fn-pfp-pic-ctn',
 			'%pfp-2c': 'ct-fn-pfp-pic-img',
-			'%pfp-src': `/static/assets/images/default-pfp.png`,
+			'%pfp-src': this.friend_pfp,
 			'%pfp-alt': this.username,
 		};
 		for (const key in atts)

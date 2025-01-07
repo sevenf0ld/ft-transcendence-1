@@ -52,7 +52,8 @@ def update_fortytwo_pfp(sender, instance, created, **kwargs):
         print(f'Updating profile picture for {instance.provider} user: {instance}')
         try:
             profile = Profile.objects.get(user=instance.user)
-            avatar_url = instance.extra_data.get('image', {}).get('link')
+            #avatar_url = instance.extra_data.get('image', {}).get('link')
+            avatar_url = instance.extra_data.get('image', {}).get('versions', {}).get('small')
             if not avatar_url:
                 print(f'No avatar URL found for user: {instance.user}')
                 return
