@@ -19,7 +19,9 @@ import LOGIN_VIEW from './views/LoginView.js';
 // -------------------------------------------------- //
 async function main()
 {
-	await LOGIN_VIEW.render();
+	const def_route = await ROUTER.default_route_detector();
+	ROUTER.init(def_route);
+
 	return true;
 }
 

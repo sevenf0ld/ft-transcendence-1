@@ -67,11 +67,11 @@ class aiLogicClass
 		console.log(`AI Difficulty: ${db.ai.difficulty}`);
 		console.log(`AI Error Margin: ${db.ai.error_margin}`);
 		if (db.ai.difficulty <= 3)
-			EG_UTILS.announce('AI Difficulty: Easy');
+			EG_UTILS.announce(`AI Difficulty: Low (${db.ai.difficulty/5})`);
 		else if (db.ai.difficulty <= 8)
-			EG_UTILS.announce('AI Difficulty: Medium');
+			EG_UTILS.announce(`AI Difficulty: Medium (${db.ai.difficulty/5})`);
 		else
-			EG_UTILS.announce('AI Difficulty: Hard');
+			EG_UTILS.announce(`AI Difficulty: High (${db.ai.difficulty/5})`);
 
 
 		EG_DATA.ai.last_move_time = null;
