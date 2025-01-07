@@ -7,5 +7,5 @@ def index(request):
     return render(request, 'index.html')
 
 def custom_invalid_api(request, exception=None):
-    return JsonResponse({'error': 'Not Found'}, status=404)
-    #return render(request, 'index.html')
+    #return JsonResponse({'error': 'Not Found'}, status=404)
+    return render(request, 'index.html')
