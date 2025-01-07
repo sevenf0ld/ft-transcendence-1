@@ -23,7 +23,7 @@ urlpatterns = [
 
 # maiman-m: add frontend url
 from django.urls import include, re_path
-from allauth.account.views import confirm_email
+#from allauth.account.views import confirm_email
 
 urlpatterns += [
     path('', include('frontend.urls')),
@@ -31,16 +31,16 @@ urlpatterns += [
     # dj-rest-auth
     path('api/jwt_token/', include('dj_rest_auth.urls')),
     # django-allauth (registration & confirmation)
-    re_path(
-        r'registration/account-confirm-email/(?P<key>[-:\w]+)/',
-        confirm_email,
-        name='account_confirm_email',
-    ),
-    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
+    #re_path(
+    #    r'registration/account-confirm-email/(?P<key>[-:\w]+)/',
+    #    confirm_email,
+    #    name='account_confirm_email',
+    #),
+    #path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     # drf-social-oauth2
     #re_path(r'^auth/', include('drf_social_oauth2.urls', namespace='drf')),
     # django-allauth (forty two social account)
-    path('accounts/', include('allauth.urls')),
+    #path('accounts/', include('allauth.urls')),
     path('api/social_auth/', include('social_auth.urls')),
     path('api/friends/', include('friends.urls')),
     path('api/user_profiles/', include('user_profiles.urls')),
@@ -53,3 +53,10 @@ from django.conf.urls.static import static
 # if settings.DEBUG:
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+from django.conf.urls import handler404, handler500, handler403, handler400
+
+handler404 = 'frontend.views.custom_invalid_api'
+#handler500 =
+#handler403 =
+#handler400 =
