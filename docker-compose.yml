@@ -41,7 +41,7 @@ services:
         context: ./requirements/django/.
       container_name: django
       expose:
-        - "8000:8000"
+        - "8000"
       restart: on-failure
       depends_on:
         - redis

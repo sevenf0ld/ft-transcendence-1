@@ -210,7 +210,6 @@ def verify_otp(request):
 #    return Response(content, status=status.HTTP_200_OK)
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([JWTCookieAuthentication])
 def update_user_password(request):
     user = request.user
 

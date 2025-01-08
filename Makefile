@@ -7,7 +7,12 @@ COMPOSE_FILE = ./docker-compose.yml
 
 CMD = docker compose -f
 
+PDF = docker-compose up --build
+
 run: $(NAME)
+
+pdf: setup
+	$(PDF)
 
 setup:
 	#mkdir -p $(HOME)/data/vol_django
