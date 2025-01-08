@@ -64,6 +64,12 @@ class engineRenderClass
 				await EG_UTILS.gameStateHandler('lpve-end');
 				resolve();
 			}
+			if (db.gameType === 'online-pvp')
+			{
+				await this.game_over();
+				await this.handle_canvas_over();
+				await EG_UTILS.gameStateHandler('opvp-end');
+			}
 			return false;
 		}
 

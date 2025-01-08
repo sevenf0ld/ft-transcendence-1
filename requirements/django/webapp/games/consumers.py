@@ -228,6 +228,14 @@ class GameRoomConsumer(WebsocketConsumer):
                     'angle': text_json['angle'],
                 }
             )
+        if update == 'game_end':
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_id,
+                {
+                    'type': 'game.end',
+                }
+            )
+
 
 
     #=======================================================#
@@ -339,6 +347,12 @@ class GameRoomConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({
             'type': 'random_difficulty',
             'angle': event['angle'],
+        }))
+
+    def game_end(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'game_end',
+            'message': 'Game has ended.'
         }))
 
     #=================================#

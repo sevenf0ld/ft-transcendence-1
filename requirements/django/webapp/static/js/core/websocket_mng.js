@@ -436,6 +436,15 @@ class websocketManager
 			{
 				EG_DATA.ball.dy *= data.angle;
 			}
+			if (data.type === `game_end`)
+			{
+				alert(data.message);
+				await this.updateSocket_friendList('leave');
+				//await this.closeSocket_game();
+				await this.closeSocket_lobby();
+				const HOME = HOME_VIEW;
+				await HOME.render();
+			}
 		});
 
 		return true;

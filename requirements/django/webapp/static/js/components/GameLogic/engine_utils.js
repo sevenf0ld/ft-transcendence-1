@@ -112,6 +112,20 @@ class engineUtilsClass
 			this.data.player1.name = this.opvp_data.members[0];
 			this.data.player2.name = this.opvp_data.members[1];
 		}
+		else if (state === 'opvp-end')
+		{
+			await this.announce(`Game has ended at ${t}`);
+			await this.announce(`${EG_DATA.match.winner} has won the game!`);
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			{
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'game_end',
+					'winner': EG_DATA.match.winner,
+					'loser': EG_DATA.match.loser,
+				}));
+			}
+			await EG_DATA.reset();
+		}
 
 		return true;
 	}
