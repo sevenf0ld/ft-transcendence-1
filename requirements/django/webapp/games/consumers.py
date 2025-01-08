@@ -201,6 +201,7 @@ class GameRoomConsumer(WebsocketConsumer):
                         'dy': text_json['dy'],
                         'dx': text_json['dx']
                     }
+                )
 
     #=======================================================#
     #               ASYNC - CHANNEL LAYER COMMUNICATION
