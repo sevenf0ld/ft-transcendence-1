@@ -179,7 +179,7 @@ class GameRoomConsumer(WebsocketConsumer):
     #=================================#
     def receive(self, text_data=None, bytes_data=None):
         text_json = json.loads(text_data)
-        update = text_json['game_update']
+        update = text_json['game_state']
         if update == 'game_started':
             self.update_room_start()
             members = list(self.in_room.get(self.group_id, []))
@@ -190,6 +190,17 @@ class GameRoomConsumer(WebsocketConsumer):
                     'members': members,
                 }
             )
+        # frontend
+        if update == 'pre_game':
+            is_host = async_to_sync(self.is_host)()
+            if is_host:
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_id,
+                    {
+                        'type': 'pre.game',
+                        'dy': text_json['dy'],
+                        'dx': text_json['dx']
+                    }
 
     #=======================================================#
     #               ASYNC - CHANNEL LAYER COMMUNICATION
@@ -272,6 +283,14 @@ class GameRoomConsumer(WebsocketConsumer):
             #'playing': in_room_count,
             #'waiting': capacity,
             #'eliminated': room,
+        }))
+
+    # frontend
+    def pre_game(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'pre_game',
+            'dy': event['dy'],
+            'dx': event['dx']
         }))
 
     #=================================#

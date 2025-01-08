@@ -424,19 +424,20 @@ class websocketManager
 		if (this.gr.ws && this.gr.ws.readyState === WebSocket.OPEN)
 		{
 			this.gr.ws.send(JSON.stringify({
-				'game_update': 'game_started',
+				'game_state': 'game_started',
 			}));
 		}
 
 		return true;
 	}
 
+	// KIV
 	async updateSocket_game(key,msg)
 	{
 		if (this.gr.ws && this.gr.ws.readyState === WebSocket.OPEN)
 		{
 			this.gr.ws.send(JSON.stringify({
-				'game_update': msg,
+				'game_state': msg,
 			}));
 		}
 	}
