@@ -413,6 +413,7 @@ class websocketManager
 				await ROOM_LIST.opvp_live_update(data);
 				await GAME_BOARD.opvp_live_update(data);
 			}
+			// pre_game
 		});
 
 		return true;
