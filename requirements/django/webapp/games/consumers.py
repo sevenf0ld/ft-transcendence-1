@@ -131,7 +131,8 @@ class GameRoomConsumer(WebsocketConsumer):
             {
                 'type': 'members.update',
                 'members': members,
-                'update_type': 'joined_room'
+                'update_type': 'joined_room',
+                'person': self.user.username
             }
         )
 
@@ -159,7 +160,8 @@ class GameRoomConsumer(WebsocketConsumer):
                     {
                         'type': 'members.update',
                         'members': members,
-                        'update_type': 'left_room'
+                        'update_type': 'left_room',
+                        'person': self.user.username
                     }
                 )
             else:
@@ -254,6 +256,7 @@ class GameRoomConsumer(WebsocketConsumer):
             'capacity': capacity,
             'details': room,
             'is_host': is_host,
+            'person': event['person']
         }))
 
     def room_disband(self, event):

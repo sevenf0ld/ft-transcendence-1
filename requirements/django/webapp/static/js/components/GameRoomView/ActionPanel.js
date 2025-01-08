@@ -754,6 +754,17 @@ class ActionPanel
 
 		return true;
 	}
+
+	async opvp_live_update(data)
+	{
+		const btn = document.querySelector('#btn_opvp_start');
+
+		if (data.type === 'joined_room')
+		{
+			if (!data.is_host)
+				btn.disabled = true;
+		}
+	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //

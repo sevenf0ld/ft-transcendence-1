@@ -8,6 +8,10 @@
 import RIGHT_FRIEND_LIST from '../components/HomeView/RightFnList.js';
 import MID_BOARD from '../components/HomeView/MidBoard.js';
 import GAME_ROOM_VIEW from '../views/GameRoomView.js';
+import ACTION_PANEL from '../components/GameRoomView/ActionPanel.js';
+import ANNOUNCER from '../components/GameRoomView/Announcer.js';
+import GAME_BOARD from '../components/GameRoomView/GameBoard.js';
+import ROOM_LIST from '../components/GameRoomView/RoomList.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -373,14 +377,23 @@ class websocketManager
 			if (data.type === 'joined_room')
 			{
 				console.log('MEMBER JOINED ROOM DETAILS: ', data);
+				await ACTION_PANEL.opvp_live_update(data);
+				await ANNOUNCER.opvp_live_update(data);
+				await ROOM_LIST.opvp_live_update(data);
+				//await GAME_BOARD.opvp_live_update(data);
 			}
 			if (data.type === 'left_room')
 			{
 				console.log('MEMBER LEFT ROOM DETAILS: ', data);
+				await ACTION_PANEL.opvp_live_update(data);
+				await ANNOUNCER.opvp_live_update(data);
+				await ROOM_LIST.opvp_live_update(data);
+				//await GAME_BOARD.opvp_live_update(data);
 			}
 			if (data.type === 'disbanded_room')
 			{
 				console.log('DISBANDED ROOM DETAILS: ', data);
+
 			}
 			if (data.type === 'full_room')
 			{
@@ -389,6 +402,10 @@ class websocketManager
 			if (data.type === 'started_game')
 			{
 				console.log('GAME HAS STARTED: ', data);
+				await ACTION_PANEL.opvp_live_update(data);
+				await ANNOUNCER.opvp_live_update(data);
+				await ROOM_LIST.opvp_live_update(data);
+				//await GAME_BOARD.opvp_live_update(data);
 			}
 		});
 

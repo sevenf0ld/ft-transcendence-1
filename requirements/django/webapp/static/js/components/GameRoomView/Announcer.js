@@ -141,6 +141,35 @@ class Announcer
 		return str;
 	}
 
+	async announce(msg, type)
+	{
+		const ctn = document.querySelector('.ct-gr-announcer-bd');
+
+		if (ctn === null)
+			return false;
+
+		let msg_str;
+		if (type === 'mms')
+			msg_str = "Matchmaking: " + msg;
+		else
+			msg_str = "System: " + msg;
+
+		const p = document.createElement('p');
+		p.classList.add('ct-gr-announcer-msg');
+		p.textContent = msg_str;
+
+		ctn.appendChild(p);
+
+		// clear board
+		if (!msg)
+			ctn.innerHTML = '';
+
+		// scroll to bottom
+		ctn.scrollTop = ctn.scrollHeight;
+
+		return true;
+	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED 
 	// --------------------------------------------- //
@@ -539,6 +568,25 @@ class Announcer
 	{
 		return true;
 	}
+
+	async opvp_live_update(data)
+	{
+		const room_id = document.querySelector('.ct-gr-announcer-rid');
+
+		if (data.type === 'joined_room')
+		{
+			const roomId = `Room ID: ${data.details.room_id}`;
+			room_id.innerHTML = roomId;
+			const member_name = data.person;
+			await this.announce(`${member_name} has joined the room.`);
+		}
+		else if (data.type === 'left_room')
+		{
+			const member_name = data.person;
+			await this.announce(`${member_name} has left the room.`);
+		}
+	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
