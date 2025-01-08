@@ -13,6 +13,8 @@ import ANNOUNCER from '../components/GameRoomView/Announcer.js';
 import GAME_BOARD from '../components/GameRoomView/GameBoard.js';
 import ROOM_LIST from '../components/GameRoomView/RoomList.js';
 import HOME_VIEW from '../views/HomeView.js';
+import EG_RENDER from '../components/GameLogic/engine_render.js';
+import EG_DATA from '../components/GameLogic/engine_data.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -412,6 +414,23 @@ class websocketManager
 				await ANNOUNCER.opvp_live_update(data);
 				await ROOM_LIST.opvp_live_update(data);
 				await GAME_BOARD.opvp_live_update(data);
+			}
+			if (data.type === 'pre_game')
+			{
+				console.log('PRE GAME DETAILS: ', data);
+				EG_DATA.ball.dy = data.dy;
+				EG_DATA.ball.dx = data.dx;
+				requestAnimationFrame(EG_RENDER.game_loop.bind(EG_RENDER));
+			}
+			if (data.type === 'paddle_p1')
+			{
+				EG_DATA.player1.x = data.p1.x;
+				EG_DATA.player1.y = data.p1.y;
+			}
+			if (data.type === 'paddle_p2')
+			{
+				EG_DATA.player2.x = data.p2.x;
+				EG_DATA.player2.y = data.p2.y;
 			}
 			// pre_game
 		});

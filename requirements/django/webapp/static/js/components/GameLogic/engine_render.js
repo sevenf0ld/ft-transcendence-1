@@ -6,6 +6,7 @@ import EG_UTILS from './engine_utils.js';
 import EG_DATA from './engine_data.js';
 import TNM from './tnm_logic.js';
 import AI_LOGIC from './ai_logic.js';
+import WS from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -70,6 +71,9 @@ class engineRenderClass
 			0, 0, db.canvas.elem.width, db.canvas.elem.height
 		);
 
+		if (db.gameType === 'online-pvp')
+			await this.remote_pvp();
+
 		if (db.gameType === 'local-pve')
 			await AI_LOGIC.ai_algorithmic_move();
 
@@ -88,6 +92,34 @@ class engineRenderClass
 		requestAnimationFrame(this.game_loop.bind(this, resolve));
 
 		return true;
+	}
+
+	async remote_pvp()
+	{
+		const me = JSON.parse(localStorage.getItem('user')).username;
+
+		if (this.data.player1.name === me)
+		{
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			{
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'paddle_p1',
+					'p1_x': EG_DATA.player1.x,
+					'p1_y': EG_DATA.player1.y,
+				}));
+			}
+		}
+		if (this.data.player2.name === me)
+		{
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			{
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'paddle_p2',
+					'p2_x': EG_DATA.player2.x,
+					'p2_y': EG_DATA.player2.y,
+				}));
+			}
+		}
 	}
 
 	async handle_canvas_over()
@@ -256,6 +288,30 @@ class engineRenderClass
 
 		await this.paddle_generator('p1');
 		await this.paddle_generator('p2');
+
+		if (db.gameType === 'online-pvp')
+		{
+			const me = JSON.parse(localStorage.getItem('user')).username;
+			if (db.player1.name === me)
+			{
+				if ((db.key_state['w'] || db.key_state['W']) &&
+					db.player1.y - db.paddle.total_len / 2 > 0)
+					db.player1.y -= db.paddle.speed * db.frame.delta_time;
+				if ((db.key_state['s'] || db.key_state['S']) &&
+					db.player1.y + db.paddle.total_len / 2 < db.canvas.elem.height)
+					db.player1.y += db.paddle.speed * db.frame.delta_time;
+			}
+			else if (db.player2.name === me)
+			{
+				if (db.key_state['w'] || db.key_state['W'] &&
+					db.player2.y - db.paddle.total_len / 2 > 0)
+					db.player2.y -= db.paddle.speed * db.frame.delta_time;
+				if (db.key_state['s'] || db.key_state['S'] &&
+					db.player2.y + db.paddle.total_len / 2 < db.canvas.elem.height)
+					db.player2.y += db.paddle.speed * db.frame.delta_time;
+			}
+			return true;
+		}
 
 		//event 
 		if ((db.key_state['w'] || db.key_state['W']) &&
