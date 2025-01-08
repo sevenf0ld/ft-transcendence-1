@@ -202,6 +202,33 @@ class GameRoomConsumer(WebsocketConsumer):
                         'dx': text_json['dx']
                     }
                 )
+        if update == 'paddle_p1':
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_id,
+                {
+                    'type': 'paddle.p1',
+                    'p1_x': text_json['p1_x'],
+                    'p1_y': text_json['p1_y']
+                }
+            )
+        if update == 'paddle_p2':
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_id,
+                {
+                    'type': 'paddle.p2',
+                    'p2_x': text_json['p2_x'],
+                    'p2_y': text_json['p2_y']
+                }
+            )
+        if update == 'random_difficulty':
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_id,
+                {
+                    'type': 'random.difficulty',
+                    'angle': text_json['angle'],
+                }
+            )
+
 
     #=======================================================#
     #               ASYNC - CHANNEL LAYER COMMUNICATION
@@ -292,6 +319,26 @@ class GameRoomConsumer(WebsocketConsumer):
             'type': 'pre_game',
             'dy': event['dy'],
             'dx': event['dx']
+        }))
+
+    def paddle_p1(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'paddle_p1',
+            'p1_x': event['p1_x'],
+            'p1_y': event['p1_y']
+        }))
+
+    def paddle_p2(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'paddle_p2',
+            'p2_x': event['p2_x'],
+            'p2_y': event['p2_y']
+        }))
+
+    def random_difficulty(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'random_difficulty',
+            'angle': event['angle'],
         }))
 
     #=================================#

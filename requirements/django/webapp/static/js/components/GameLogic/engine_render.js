@@ -71,8 +71,8 @@ class engineRenderClass
 			0, 0, db.canvas.elem.width, db.canvas.elem.height
 		);
 
-		if (db.gameType === 'online-pvp')
-			await this.remote_pvp();
+		//if (db.gameType === 'online-pvp')
+		//	await this.remote_pvp();
 
 		if (db.gameType === 'local-pve')
 			await AI_LOGIC.ai_algorithmic_move();
@@ -92,34 +92,6 @@ class engineRenderClass
 		requestAnimationFrame(this.game_loop.bind(this, resolve));
 
 		return true;
-	}
-
-	async remote_pvp()
-	{
-		const me = JSON.parse(localStorage.getItem('user')).username;
-
-		if (this.data.player1.name === me)
-		{
-			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
-			{
-				WS.gr.ws.send(JSON.stringify({
-					'game_state': 'paddle_p1',
-					'p1_x': EG_DATA.player1.x,
-					'p1_y': EG_DATA.player1.y,
-				}));
-			}
-		}
-		if (this.data.player2.name === me)
-		{
-			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
-			{
-				WS.gr.ws.send(JSON.stringify({
-					'game_state': 'paddle_p2',
-					'p2_x': EG_DATA.player2.x,
-					'p2_y': EG_DATA.player2.y,
-				}));
-			}
-		}
 	}
 
 	async handle_canvas_over()
@@ -282,6 +254,35 @@ class engineRenderClass
 		return true;
 	}
 
+	async remote_pvp_paddle()
+	{
+		const me = JSON.parse(localStorage.getItem('user')).username;
+
+		if (this.data.player1.name === me)
+		{
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			{
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'paddle_p1',
+					'p1_x': EG_DATA.player1.x,
+					'p1_y': EG_DATA.player1.y,
+				}));
+			}
+		}
+		if (this.data.player2.name === me)
+		{
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			{
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'paddle_p2',
+					'p2_x': EG_DATA.player2.x,
+					'p2_y': EG_DATA.player2.y,
+				}));
+			}
+		}
+	}
+
+
 	async render_paddles()
 	{
 		const db = this.data;
@@ -295,7 +296,7 @@ class engineRenderClass
 			if (db.player1.name === me)
 			{
 				if ((db.key_state['w'] || db.key_state['W']) &&
-					db.player1.y - db.paddle.total_len / 2 > 0)
+					db.player1.y - (db.paddle.total_len / 2) > 0)
 					db.player1.y -= db.paddle.speed * db.frame.delta_time;
 				if ((db.key_state['s'] || db.key_state['S']) &&
 					db.player1.y + db.paddle.total_len / 2 < db.canvas.elem.height)
@@ -303,13 +304,18 @@ class engineRenderClass
 			}
 			else if (db.player2.name === me)
 			{
-				if (db.key_state['w'] || db.key_state['W'] &&
-					db.player2.y - db.paddle.total_len / 2 > 0)
+				if ((db.key_state['w'] || db.key_state['W']) &&
+					db.player2.y - (db.paddle.total_len / 2) > 0)
 					db.player2.y -= db.paddle.speed * db.frame.delta_time;
-				if (db.key_state['s'] || db.key_state['S'] &&
+				if ((db.key_state['s'] || db.key_state['S']) &&
 					db.player2.y + db.paddle.total_len / 2 < db.canvas.elem.height)
 					db.player2.y += db.paddle.speed * db.frame.delta_time;
+
+				console.log('db.player2.y :', db.player2.y);
+				console.log('db.p2.y - len/2 :', db.player2.y - db.paddle.total_len / 2);
 			}
+			await this.remote_pvp_paddle();
+
 			return true;
 		}
 
@@ -461,17 +467,30 @@ class engineRenderClass
 			this.data.ball.dy += 10;
 		}
 
-		// random number 0.8 - 1.2
-		let angle = Math.random() * (1.100 - 0.900) + 0.800;
-		angle = angle.toFixed(3);
-		angle = parseFloat(angle);
-		this.data.ball.dy *= angle;
-
 		if (this.data.paddle.speed >= 125)
 			this.data.paddle.speed -= 5;
 
 		if (this.data.paddle.total_len > 35)
 			this.data.paddle.total_len -= 3;
+
+
+		// random number 0.8 - 1.2
+		let angle = Math.random() * (1.100 - 0.900) + 0.800;
+		angle = angle.toFixed(3);
+		angle = parseFloat(angle);
+
+		if (this.data.gameType === 'online-pvp')
+		{
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			{
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'random_difficulty',
+					'angle': angle,
+				}));
+			}
+		}
+		else
+			this.data.ball.dy *= angle;
 
 		return true;
 	}

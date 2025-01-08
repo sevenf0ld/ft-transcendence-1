@@ -424,15 +424,18 @@ class websocketManager
 			}
 			if (data.type === 'paddle_p1')
 			{
-				EG_DATA.player1.x = data.p1.x;
-				EG_DATA.player1.y = data.p1.y;
+				EG_DATA.player1.x = data.p1_x;
+				EG_DATA.player1.y = data.p1_y;
 			}
 			if (data.type === 'paddle_p2')
 			{
-				EG_DATA.player2.x = data.p2.x;
-				EG_DATA.player2.y = data.p2.y;
+				EG_DATA.player2.x = data.p2_x;
+				EG_DATA.player2.y = data.p2_y;
 			}
-			// pre_game
+			if (data.type === 'random_difficulty')
+			{
+				EG_DATA.ball.dy *= data.angle;
+			}
 		});
 
 		return true;
