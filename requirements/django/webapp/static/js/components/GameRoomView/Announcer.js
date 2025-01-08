@@ -585,6 +585,10 @@ class Announcer
 			const member_name = data.person;
 			await this.announce(`${member_name} has left the room.`);
 		}
+		else if (data.type === 'started_game')
+		{
+			await this.announce('Game has started.');
+		}
 	}
 
 	// --------------------------------------------- //

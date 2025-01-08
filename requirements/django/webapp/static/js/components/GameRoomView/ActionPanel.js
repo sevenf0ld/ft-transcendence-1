@@ -757,13 +757,20 @@ class ActionPanel
 
 	async opvp_live_update(data)
 	{
-		const btn = document.querySelector('#btn_opvp_start');
+		const start_btn = document.querySelector('#btn_opvp_start');
+		const leave_btn = document.querySelector('#btn_leaveRoom');
 
 		if (data.type === 'joined_room')
 		{
 			if (!data.is_host)
-				btn.disabled = true;
+				start_btn.disabled = true;
 		}
+		if (data.type === 'started_game')
+		{
+			start_btn.disabled = true;
+			leave_btn.disabled = true;
+		}
+
 	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED

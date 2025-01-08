@@ -12,6 +12,7 @@ import ACTION_PANEL from '../components/GameRoomView/ActionPanel.js';
 import ANNOUNCER from '../components/GameRoomView/Announcer.js';
 import GAME_BOARD from '../components/GameRoomView/GameBoard.js';
 import ROOM_LIST from '../components/GameRoomView/RoomList.js';
+import HOME_VIEW from '../views/HomeView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -393,7 +394,12 @@ class websocketManager
 			if (data.type === 'disbanded_room')
 			{
 				console.log('DISBANDED ROOM DETAILS: ', data);
-
+				alert(data.message);
+				await this.updateSocket_friendList('leave');
+				//await this.closeSocket_game();
+				await this.closeSocket_lobby();
+				const HOME = HOME_VIEW;
+				await HOME.render();
 			}
 			if (data.type === 'full_room')
 			{

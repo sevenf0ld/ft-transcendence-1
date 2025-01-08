@@ -709,7 +709,7 @@ class RoomList
 				let name = `${player}`;
 				if (JSON.parse(localStorage.getItem('user')).username === player)
 					name = `*${name}`;
-				if (name !== data.details.host)
+				if (player !== data.details.host)
 					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'guest', 'playing');
 				else
 					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'host', 'playing');
