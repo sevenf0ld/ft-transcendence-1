@@ -124,6 +124,7 @@ class PongEngine
 
 	async opvp_events()
 	{
+		await EG_UTILS.gameStateHandler('opvp-start');
 		return true;
 	}
 

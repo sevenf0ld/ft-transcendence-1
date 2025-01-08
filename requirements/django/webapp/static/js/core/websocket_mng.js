@@ -381,7 +381,7 @@ class websocketManager
 				await ACTION_PANEL.opvp_live_update(data);
 				await ANNOUNCER.opvp_live_update(data);
 				await ROOM_LIST.opvp_live_update(data);
-				//await GAME_BOARD.opvp_live_update(data);
+				await GAME_BOARD.opvp_live_update(data);
 			}
 			if (data.type === 'left_room')
 			{
@@ -411,7 +411,7 @@ class websocketManager
 				await ACTION_PANEL.opvp_live_update(data);
 				await ANNOUNCER.opvp_live_update(data);
 				await ROOM_LIST.opvp_live_update(data);
-				//await GAME_BOARD.opvp_live_update(data);
+				await GAME_BOARD.opvp_live_update(data);
 			}
 		});
 
@@ -423,11 +423,21 @@ class websocketManager
 		if (this.gr.ws && this.gr.ws.readyState === WebSocket.OPEN)
 		{
 			this.gr.ws.send(JSON.stringify({
-			  'game_update': 'game_started',
+				'game_update': 'game_started',
 			}));
 		}
 
 		return true;
+	}
+
+	async updateSocket_game(key,msg)
+	{
+		if (this.gr.ws && this.gr.ws.readyState === WebSocket.OPEN)
+		{
+			this.gr.ws.send(JSON.stringify({
+				'game_update': msg,
+			}));
+		}
 	}
 
 //=================================#

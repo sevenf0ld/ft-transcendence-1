@@ -74,7 +74,7 @@ class engineData
 		this.ball =
 		{
 			color: '#f8f9fa',
-			speed: 200,
+			speed: 2,
 			x: this.display.cen_x,
 			y: this.display.cen_y,
 			r: 5,

@@ -744,13 +744,9 @@ class ActionPanel
 		event.preventDefault();
 
 		console.log('ONLINE PVP START');
-
 		await WEBSOCKET.updateSocket_gameStart();
-
-		const pongGame = PONG_ENGINE;
-		pongGame.gameType = this.gameType;
-		await pongGame.init();
-		this.currentGame = pongGame;
+		
+		// refer to gameboard.js -> opvp_live_update
 
 		return true;
 	}
@@ -764,6 +760,10 @@ class ActionPanel
 		{
 			if (!data.is_host)
 				start_btn.disabled = true;
+			if (data.num < 2)
+				start_btn.disabled = true;
+			if (data.is_host && data.num === 2)
+				start_btn.disabled = false;
 		}
 		if (data.type === 'started_game')
 		{

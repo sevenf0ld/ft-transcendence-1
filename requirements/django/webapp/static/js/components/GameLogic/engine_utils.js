@@ -6,6 +6,7 @@ import EG_RENDER from './engine_render.js';
 import EG_DATA from './engine_data.js';
 import TNM_LOGIC from './tnm_logic.js';
 import AI_PONG from './ai_logic.js';
+import WS from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -23,6 +24,7 @@ class engineUtilsClass
 	constructor()
 	{
 		this.data = EG_DATA;
+		this.opvp_data = null;
 	}
 
 	async gameStateHandler(state)
@@ -90,6 +92,25 @@ class engineUtilsClass
 			start_btn.disabled = false;
 
 			await EG_DATA.reset();
+		}
+		else if (state === 'opvp-start')
+		{
+			console.log('opvp-data :', this.opvp_data);
+			await this.announce();
+			await this.announce(`Game has started at ${t}`);
+			await this.announce('Game difficulty will INCREASE over time');
+			await EG_RENDER.start_countdown();
+			await EG_RENDER.randomBallDirection();
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			{
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'pre_game',
+					'dy': EG_DATA.ball.dy,
+					'dx': EG_DATA.ball.dx,
+				}));
+			}
+			this.data.player1.name = this.opvp_data.members[0];
+			this.data.player2.name = this.opvp_data.members[1];
 		}
 
 		return true;

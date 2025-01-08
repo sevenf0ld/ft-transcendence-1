@@ -5,6 +5,9 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
+import EG_DATA from '../GameLogic/engine_data.js';
+import EG_UTILS from '../GameLogic/engine_utils.js';
+import PONG_ENGINE from '../GameLogic/PongEngine.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -94,6 +97,28 @@ class GameBoard
 	{
 		return true;
 	}
+
+	async opvp_live_update(data)
+	{
+		const room_id = document.querySelector('.ct-gr-announcer-rid');
+
+		if (data.type === 'joined_room')
+		{
+			EG_DATA.reset();
+		}
+		if (data.type === 'disbanded_room')
+		{
+		}
+		else if (data.type === 'started_game')
+		{
+			EG_UTILS.opvp_data = null;
+			EG_UTILS.opvp_data = data;
+			const pongGame = PONG_ENGINE;
+			pongGame.gameType = 'online-pvp';
+			await pongGame.init();
+		}
+	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED 
 	// --------------------------------------------- //
