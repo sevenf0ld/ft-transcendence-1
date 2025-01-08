@@ -113,7 +113,8 @@ class fetch_utils
 		if (this.object['headers']['X-CSRFToken'] === '')
 			throw new Error('[ERR] CSRFToken is not set.');
 		if (this.object['body'] === '{}' && this.object['method'] !== 'GET')
-			throw new Error('[ERR] Body is not set.');
+			if (this.object['method'] !== 'DELETE')
+				throw new Error('[ERR] Body is not set.');
 
 		if (this.object['body'] === JSON.stringify({}))
 			delete this.object['body'];

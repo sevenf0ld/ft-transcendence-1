@@ -26,16 +26,6 @@ class ProfileModelSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['played', 'win_rate', 'wins', 'losses', 'nickname', 'mfa_email_enabled', 'language', 'avatar_url']
 
-class UploadAvatarSerializer(serializers.ModelSerializer):
-    def update(self, instance, validated_data):
-        instance.avatar = validated_data.get('avatar', instance.avatar)
-        instance.save()
-        return instance
-
-    class Meta:
-        model = Profile
-        fields = ['avatar']
-
 class FriendProfileModelSerializer(serializers.ModelSerializer):
     played = serializers.SerializerMethodField()
     win_rate = serializers.SerializerMethodField()

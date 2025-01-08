@@ -8,6 +8,7 @@
 import * as LUSER_FETCH from './LeftUser_fetch.js';
 import * as MSI_FETCH from './ModalSetItems_fetch.js';
 import * as FORM_VALI_SU from '../../core/helpers/formVali-su.js';
+import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -558,7 +559,7 @@ class ModalSetItems
 				const data = await response.json();
 				if (response.ok)
 				{
-					console.log('Profile avatar uploaded.');
+					alert('Profile avatar uploaded.');
 				}
 				else
 				{
@@ -583,6 +584,20 @@ class ModalSetItems
 	{
 		event.preventDefault();
 		console.log('[BTN] removeClick');
+
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
+		await mainFetch.getCookie('csrftoken');
+		await mainFetch.setUrl('/api/user_profiles/remove-avatar/');
+		await mainFetch.setMethod('DELETE');
+		await mainFetch.appendHeaders('Content-Type', 'application/json');
+		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+		await mainFetch.fetchData();
+
+		if (mainFetch.robject.status === 204)
+			alert('Profile picture removed. Set to default.');
+		else
+			alert(mainFetch.rdata.details);
 
 		return true;
 	}
