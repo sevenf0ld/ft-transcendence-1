@@ -149,6 +149,7 @@ class RoomList
 		await HOME.render();
 		//await ROUTER.navigate_to('/home');
 	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED 
 	// --------------------------------------------- //
@@ -689,6 +690,42 @@ class RoomList
 		await this.updateRoomPlayerCount(1);
 
 		return true;
+	}
+
+	async opvp_live_update(data)
+	{
+		const room_list_title = document.querySelector('.ct-gr-roomList-ctn .ct-gr-rl-title');
+		const lobby_ctn = document.querySelector('.category-list-ctn[data-type="lobby"]');
+		const playing_ctn = document.querySelector('.category-list-ctn[data-type="playing"]');
+
+		if (data.type === 'joined_room' || data.type === 'left_room')
+		{
+			// room title
+			room_list_title.innerHTML = `Room List (${data.num}/2)`;
+
+			lobby_ctn.innerHTML = '';
+			for (const player of data.members)
+			{
+				let name = `${player}`;
+				if (JSON.parse(localStorage.getItem('user')).username === player)
+					name = `*${name}`;
+				if (player !== data.details.host)
+					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'guest', 'playing');
+				else
+					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'host', 'playing');
+			}
+		}
+		if (data.type === 'started_game')
+		{
+			playing_ctn.innerHTML = '';
+			for (const element of lobby_ctn.children)
+			{
+				const clone = element.cloneNode(true);
+				playing_ctn.appendChild(clone);
+			}
+			// remove lobby players
+			lobby_ctn.innerHTML = '';
+		}
 	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED

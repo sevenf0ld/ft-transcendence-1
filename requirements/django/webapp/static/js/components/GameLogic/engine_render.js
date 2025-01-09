@@ -6,6 +6,7 @@ import EG_UTILS from './engine_utils.js';
 import EG_DATA from './engine_data.js';
 import TNM from './tnm_logic.js';
 import AI_LOGIC from './ai_logic.js';
+import WS from '../../core/websocket_mng.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -63,12 +64,21 @@ class engineRenderClass
 				await EG_UTILS.gameStateHandler('lpve-end');
 				resolve();
 			}
+			if (db.gameType === 'online-pvp')
+			{
+				await this.game_over();
+				await this.handle_canvas_over();
+				await EG_UTILS.gameStateHandler('opvp-end');
+			}
 			return false;
 		}
 
 		db.canvas.ctx.clearRect(
 			0, 0, db.canvas.elem.width, db.canvas.elem.height
 		);
+
+		//if (db.gameType === 'online-pvp')
+		//	await this.remote_pvp();
 
 		if (db.gameType === 'local-pve')
 			await AI_LOGIC.ai_algorithmic_move();
@@ -250,12 +260,70 @@ class engineRenderClass
 		return true;
 	}
 
+	async remote_pvp_paddle()
+	{
+		const me = JSON.parse(localStorage.getItem('user')).username;
+
+		if (this.data.player1.name === me)
+		{
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			{
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'paddle_p1',
+					'p1_x': EG_DATA.player1.x,
+					'p1_y': EG_DATA.player1.y,
+				}));
+			}
+		}
+		if (this.data.player2.name === me)
+		{
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			{
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'paddle_p2',
+					'p2_x': EG_DATA.player2.x,
+					'p2_y': EG_DATA.player2.y,
+				}));
+			}
+		}
+	}
+
+
 	async render_paddles()
 	{
 		const db = this.data;
 
 		await this.paddle_generator('p1');
 		await this.paddle_generator('p2');
+
+		if (db.gameType === 'online-pvp')
+		{
+			const me = JSON.parse(localStorage.getItem('user')).username;
+			if (db.player1.name === me)
+			{
+				if ((db.key_state['w'] || db.key_state['W']) &&
+					db.player1.y - (db.paddle.total_len / 2) > 0)
+					db.player1.y -= db.paddle.speed * db.frame.delta_time;
+				if ((db.key_state['s'] || db.key_state['S']) &&
+					db.player1.y + db.paddle.total_len / 2 < db.canvas.elem.height)
+					db.player1.y += db.paddle.speed * db.frame.delta_time;
+			}
+			else if (db.player2.name === me)
+			{
+				if ((db.key_state['w'] || db.key_state['W']) &&
+					db.player2.y - (db.paddle.total_len / 2) > 0)
+					db.player2.y -= db.paddle.speed * db.frame.delta_time;
+				if ((db.key_state['s'] || db.key_state['S']) &&
+					db.player2.y + db.paddle.total_len / 2 < db.canvas.elem.height)
+					db.player2.y += db.paddle.speed * db.frame.delta_time;
+
+				console.log('db.player2.y :', db.player2.y);
+				console.log('db.p2.y - len/2 :', db.player2.y - db.paddle.total_len / 2);
+			}
+			await this.remote_pvp_paddle();
+
+			return true;
+		}
 
 		//event 
 		if ((db.key_state['w'] || db.key_state['W']) &&
@@ -405,17 +473,30 @@ class engineRenderClass
 			this.data.ball.dy += 10;
 		}
 
-		// random number 0.8 - 1.2
-		let angle = Math.random() * (1.100 - 0.900) + 0.800;
-		angle = angle.toFixed(3);
-		angle = parseFloat(angle);
-		this.data.ball.dy *= angle;
-
 		if (this.data.paddle.speed >= 125)
 			this.data.paddle.speed -= 5;
 
 		if (this.data.paddle.total_len > 35)
 			this.data.paddle.total_len -= 3;
+
+
+		// random number 0.8 - 1.2
+		let angle = Math.random() * (1.100 - 0.900) + 0.800;
+		angle = angle.toFixed(3);
+		angle = parseFloat(angle);
+
+		if (this.data.gameType === 'online-pvp')
+		{
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			{
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'random_difficulty',
+					'angle': angle,
+				}));
+			}
+		}
+		else
+			this.data.ball.dy *= angle;
 
 		return true;
 	}

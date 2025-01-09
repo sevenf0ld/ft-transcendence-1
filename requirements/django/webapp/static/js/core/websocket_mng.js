@@ -8,6 +8,13 @@
 import RIGHT_FRIEND_LIST from '../components/HomeView/RightFnList.js';
 import MID_BOARD from '../components/HomeView/MidBoard.js';
 import GAME_ROOM_VIEW from '../views/GameRoomView.js';
+import ACTION_PANEL from '../components/GameRoomView/ActionPanel.js';
+import ANNOUNCER from '../components/GameRoomView/Announcer.js';
+import GAME_BOARD from '../components/GameRoomView/GameBoard.js';
+import ROOM_LIST from '../components/GameRoomView/RoomList.js';
+import HOME_VIEW from '../views/HomeView.js';
+import EG_RENDER from '../components/GameLogic/engine_render.js';
+import EG_DATA from '../components/GameLogic/engine_data.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -373,14 +380,28 @@ class websocketManager
 			if (data.type === 'joined_room')
 			{
 				console.log('MEMBER JOINED ROOM DETAILS: ', data);
+				await ACTION_PANEL.opvp_live_update(data);
+				await ANNOUNCER.opvp_live_update(data);
+				await ROOM_LIST.opvp_live_update(data);
+				await GAME_BOARD.opvp_live_update(data);
 			}
 			if (data.type === 'left_room')
 			{
 				console.log('MEMBER LEFT ROOM DETAILS: ', data);
+				await ACTION_PANEL.opvp_live_update(data);
+				await ANNOUNCER.opvp_live_update(data);
+				await ROOM_LIST.opvp_live_update(data);
+				//await GAME_BOARD.opvp_live_update(data);
 			}
 			if (data.type === 'disbanded_room')
 			{
 				console.log('DISBANDED ROOM DETAILS: ', data);
+				alert(data.message);
+				await this.updateSocket_friendList('leave');
+				//await this.closeSocket_game();
+				await this.closeSocket_lobby();
+				const HOME = HOME_VIEW;
+				await HOME.render();
 			}
 			if (data.type === 'full_room')
 			{
@@ -389,6 +410,40 @@ class websocketManager
 			if (data.type === 'started_game')
 			{
 				console.log('GAME HAS STARTED: ', data);
+				await ACTION_PANEL.opvp_live_update(data);
+				await ANNOUNCER.opvp_live_update(data);
+				await ROOM_LIST.opvp_live_update(data);
+				await GAME_BOARD.opvp_live_update(data);
+			}
+			if (data.type === 'pre_game')
+			{
+				console.log('PRE GAME DETAILS: ', data);
+				EG_DATA.ball.dy = data.dy;
+				EG_DATA.ball.dx = data.dx;
+				requestAnimationFrame(EG_RENDER.game_loop.bind(EG_RENDER));
+			}
+			if (data.type === 'paddle_p1')
+			{
+				EG_DATA.player1.x = data.p1_x;
+				EG_DATA.player1.y = data.p1_y;
+			}
+			if (data.type === 'paddle_p2')
+			{
+				EG_DATA.player2.x = data.p2_x;
+				EG_DATA.player2.y = data.p2_y;
+			}
+			if (data.type === 'random_difficulty')
+			{
+				EG_DATA.ball.dy *= data.angle;
+			}
+			if (data.type === `game_end`)
+			{
+				alert(data.message);
+				await this.updateSocket_friendList('leave');
+				//await this.closeSocket_game();
+				await this.closeSocket_lobby();
+				const HOME = HOME_VIEW;
+				await HOME.render();
 			}
 		});
 
@@ -400,11 +455,22 @@ class websocketManager
 		if (this.gr.ws && this.gr.ws.readyState === WebSocket.OPEN)
 		{
 			this.gr.ws.send(JSON.stringify({
-			  'game_update': 'game_started',
+				'game_state': 'game_started',
 			}));
 		}
 
 		return true;
+	}
+
+	// KIV
+	async updateSocket_game(key,msg)
+	{
+		if (this.gr.ws && this.gr.ws.readyState === WebSocket.OPEN)
+		{
+			this.gr.ws.send(JSON.stringify({
+				'game_state': msg,
+			}));
+		}
 	}
 
 //=================================#

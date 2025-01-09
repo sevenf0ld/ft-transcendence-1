@@ -131,7 +131,8 @@ class GameRoomConsumer(WebsocketConsumer):
             {
                 'type': 'members.update',
                 'members': members,
-                'update_type': 'joined_room'
+                'update_type': 'joined_room',
+                'person': self.user.username
             }
         )
 
@@ -159,7 +160,8 @@ class GameRoomConsumer(WebsocketConsumer):
                     {
                         'type': 'members.update',
                         'members': members,
-                        'update_type': 'left_room'
+                        'update_type': 'left_room',
+                        'person': self.user.username
                     }
                 )
             else:
@@ -177,7 +179,7 @@ class GameRoomConsumer(WebsocketConsumer):
     #=================================#
     def receive(self, text_data=None, bytes_data=None):
         text_json = json.loads(text_data)
-        update = text_json['game_update']
+        update = text_json['game_state']
         if update == 'game_started':
             self.update_room_start()
             members = list(self.in_room.get(self.group_id, []))
@@ -188,6 +190,53 @@ class GameRoomConsumer(WebsocketConsumer):
                     'members': members,
                 }
             )
+        # frontend
+        if update == 'pre_game':
+            is_host = async_to_sync(self.is_host)()
+            if is_host:
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_id,
+                    {
+                        'type': 'pre.game',
+                        'dy': text_json['dy'],
+                        'dx': text_json['dx']
+                    }
+                )
+        if update == 'paddle_p1':
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_id,
+                {
+                    'type': 'paddle.p1',
+                    'p1_x': text_json['p1_x'],
+                    'p1_y': text_json['p1_y']
+                }
+            )
+        if update == 'paddle_p2':
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_id,
+                {
+                    'type': 'paddle.p2',
+                    'p2_x': text_json['p2_x'],
+                    'p2_y': text_json['p2_y']
+                }
+            )
+        if update == 'random_difficulty':
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_id,
+                {
+                    'type': 'random.difficulty',
+                    'angle': text_json['angle'],
+                }
+            )
+        if update == 'game_end':
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_id,
+                {
+                    'type': 'game.end',
+                }
+            )
+
+
 
     #=======================================================#
     #               ASYNC - CHANNEL LAYER COMMUNICATION
@@ -254,6 +303,7 @@ class GameRoomConsumer(WebsocketConsumer):
             'capacity': capacity,
             'details': room,
             'is_host': is_host,
+            'person': event['person']
         }))
 
     def room_disband(self, event):
@@ -269,6 +319,40 @@ class GameRoomConsumer(WebsocketConsumer):
             #'playing': in_room_count,
             #'waiting': capacity,
             #'eliminated': room,
+        }))
+
+    # frontend
+    def pre_game(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'pre_game',
+            'dy': event['dy'],
+            'dx': event['dx']
+        }))
+
+    def paddle_p1(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'paddle_p1',
+            'p1_x': event['p1_x'],
+            'p1_y': event['p1_y']
+        }))
+
+    def paddle_p2(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'paddle_p2',
+            'p2_x': event['p2_x'],
+            'p2_y': event['p2_y']
+        }))
+
+    def random_difficulty(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'random_difficulty',
+            'angle': event['angle'],
+        }))
+
+    def game_end(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'game_end',
+            'message': 'Game has ended.'
         }))
 
     #=================================#
