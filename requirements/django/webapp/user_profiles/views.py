@@ -4,7 +4,7 @@ from django.shortcuts import render
 #from rest_framework import viewsets
 from .models import Profile
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from dj_rest_auth.jwt_auth import JWTCookieAuthentication
 from django.contrib.auth.models import User
 from rest_framework.response import Response
@@ -18,9 +18,9 @@ from .utils import is_current_lang
 #    queryset = Profile.objects.all()
 
 @api_view(['POST'])
-#@permission_classes([IsAuthenticated])
-#@authentication_classes([JWTCookieAuthentication])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTCookieAuthentication])
+#@permission_classes([AllowAny])
 def upload_avatar(request):
     user = request.user
     if not user.is_authenticated:
@@ -34,7 +34,11 @@ def upload_avatar(request):
 
     profile_data.avatar = avatar
     profile_data.save()
-    return Response({'details': 'Profile picture uploaded.'}, status=status.HTTP_200_OK)
+    content = {
+        'details': 'Profile picture uploaded.',
+        'avatar_url': request.build_absolute_uri(profile_data.avatar.url)
+    }
+    return Response(content, status=status.HTTP_200_OK)
 
 class FriendProfileRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = FriendProfileModelSerializer
@@ -73,9 +77,9 @@ class HomeProfileRetrieveAPIView(generics.RetrieveAPIView):
         return profile
 
 @api_view(['PATCH'])
-#@permission_classes([IsAuthenticated])
-#@authentication_classes([JWTCookieAuthentication])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTCookieAuthentication])
+#@permission_classes([AllowAny])
 def update_user_language(request):
     user = request.user
     if not user.is_authenticated:
@@ -94,3 +98,24 @@ def update_user_language(request):
     profile.language = lang
     profile.save()
     return Response({'details': f'{lang} has been updated.'}, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+#@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTCookieAuthentication])
+def remove_avatar(request):
+    user = request.user
+    if not user.is_authenticated:
+        return Response({'details': 'Unauthenticated user.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    profile_data = Profile.objects.get(user=user)
+
+    if profile_data.avatar.name != 'avatars/default.jpg':
+        profile_data.avatar.delete(save=False)
+        profile_data.avatar = 'avatars/default.jpg'
+        profile_data.save()
+
+        return Response({'details': 'Profile picture removed. Set to default.'}, status=status.HTTP_204_NO_CONTENT)
+        #return Response({'details': 'Profile picture removed. Set to default.'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'details': 'No profile picture to remove.'}, status=status.HTTP_400_BAD_REQUEST)

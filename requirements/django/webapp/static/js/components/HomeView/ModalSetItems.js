@@ -8,6 +8,7 @@
 import * as LUSER_FETCH from './LeftUser_fetch.js';
 import * as MSI_FETCH from './ModalSetItems_fetch.js';
 import * as FORM_VALI_SU from '../../core/helpers/formVali-su.js';
+import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 import LEFT_USER from './LeftUser.js';
 // -------------------------------------------------- //
 // developer notes
@@ -544,6 +545,7 @@ class ModalSetItems
 				return false;
 			}
 			reader.readAsDataURL(file); // readyState becomes 2 and result contains the data
+
 			this.file = file;
 			this.buttons['pfp-submit'].disabled = false;
 		});
@@ -596,6 +598,19 @@ class ModalSetItems
 		event.preventDefault();
 		console.log('[BTN] removeClick');
 
+		await FETCH_UTILS.init();
+		const mainFetch = FETCH_UTILS;
+		await mainFetch.getCookie('csrftoken');
+		await mainFetch.setUrl('/api/user_profiles/remove-avatar/');
+		await mainFetch.setMethod('DELETE');
+		await mainFetch.appendHeaders('Content-Type', 'application/json');
+		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+		await mainFetch.fetchData();
+
+		if (mainFetch.robject.status === 204)
+			alert('Profile picture removed. Set to default.');
+		else
+			alert(mainFetch.rdata.details);
 		const confirm_remove = confirm('Are you sure you want to reset to default profile picture?');
 		if (confirm_remove)
 		{

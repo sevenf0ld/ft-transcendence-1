@@ -6,6 +6,7 @@ from .views import (
     FriendProfileRetrieveAPIView,
     HomeProfileRetrieveAPIView,
     update_user_language,
+    remove_avatar
 )
 
 app_name = 'user_profiles'
@@ -22,4 +23,5 @@ urlpatterns = [
     path('view-friend-profile/', FriendProfileRetrieveAPIView.as_view()),
     path('view-home-profile/', HomeProfileRetrieveAPIView.as_view()),
     path('update-user-language/', update_user_language),
+    path('remove-avatar/', remove_avatar),
 ]
