@@ -33,6 +33,10 @@ class engineUtilsClass
 
 		if (state === 'lpvp-start')
 		{
+			const lobby_ctn = document.querySelector('.category-list-ctn[data-type="lobby"]');
+			const playing_ctn = document.querySelector('.category-list-ctn[data-type="playing"]');
+			await this.move_html_children(lobby_ctn, playing_ctn);
+
 			await this.announce();
 			await this.announce(`Game has started at ${t}`);
 			await this.announce('Game difficulty will INCREASE over time');
@@ -43,6 +47,7 @@ class engineUtilsClass
 			const obj = JSON.parse(localStorage.getItem('user'));
 			this.data.player1.name = obj.username;
 			this.data.player2.name = 'Player 2';
+
 			requestAnimationFrame(EG_RENDER.game_loop.bind(EG_RENDER));
 		}
 		else if (state === 'lpvp-end')
@@ -50,6 +55,10 @@ class engineUtilsClass
 			await this.announce(`Game has ended at ${t}`);
 			await this.btn_manage('end');
 			await EG_DATA.reset();
+
+			const lobby_ctn = document.querySelector('.category-list-ctn[data-type="lobby"]');
+			const playing_ctn = document.querySelector('.category-list-ctn[data-type="playing"]');
+			await this.move_html_children(playing_ctn, lobby_ctn);
 		}
 		else if (state === 'lpvp-reset')
 		{
@@ -68,9 +77,25 @@ class engineUtilsClass
 		{
 			const leave = document.getElementById('btn_leaveRoom');
 			leave.disabled = false;
+
+			//change the play-container title to winner
+			//.category-ctn with a child ".category-title" with textContent Playing
+			const play_ctn = document.querySelector('.category-ctn > .category-list-ctn[data-type="playing"]').parentElement;
+			const title = play_ctn.querySelector('.category-title');
+			title.textContent = 'Winner';
+
+			const lobby_ctn = document.querySelector('.category-ctn > .category-list-ctn[data-type="lobby"]').parentElement;
+			lobby_ctn.classList.add('d-none');
+			const wait_ctn = document.querySelector('.category-ctn > .category-list-ctn[data-type="waiting"]').parentElement;
+			wait_ctn.classList.add('d-none');
+
 		}
 		else if (state === 'lpve-start')
 		{
+			const lobby_ctn = document.querySelector('.category-list-ctn[data-type="lobby"]');
+			const playing_ctn = document.querySelector('.category-list-ctn[data-type="playing"]');
+			await this.move_html_children(lobby_ctn, playing_ctn);
+
 			await this.announce();
 			await this.announce(`Game has started at ${t}`);
 			await this.announce('Game difficulty will INCREASE over time');
@@ -79,7 +104,7 @@ class engineUtilsClass
 			const obj = JSON.parse(localStorage.getItem('user'));
 			this.data.player1.name = obj.username;
 			this.data.player2.name = 'PONG AI';
-
+			
 			await AI_PONG.run();
 		}
 		else if (state === 'lpve-end')
@@ -90,6 +115,10 @@ class engineUtilsClass
 			const start_btn = document.getElementById('btn_lpve_start');
 			leave_btn.disabled = false;
 			start_btn.disabled = false;
+
+			const lobby_ctn = document.querySelector('.category-list-ctn[data-type="lobby"]');
+			const playing_ctn = document.querySelector('.category-list-ctn[data-type="playing"]');
+			await this.move_html_children(playing_ctn, lobby_ctn);
 
 			await EG_DATA.reset();
 		}
@@ -249,6 +278,29 @@ class engineUtilsClass
 		});
 
 		return true;
+	}
+
+	async move_html_children(parent1, parent2)
+	{
+		const p2_children = [];
+		for (const child of parent2.children)
+		{
+			const clone = child.cloneNode(true);
+			p2_children.push(clone.outerHTML);
+		}
+
+		parent2.innerHTML = '';
+		for (const child of parent1.children)
+		{
+			const clone = child.cloneNode(true);
+			parent2.appendChild(clone);
+		}
+		
+		parent1.innerHTML = '';
+		for (const child of p2_children)
+		{
+			parent1.innerHTML += child;
+		}
 	}
 
 }

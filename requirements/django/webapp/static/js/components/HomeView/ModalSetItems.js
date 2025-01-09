@@ -8,6 +8,7 @@
 import * as LUSER_FETCH from './LeftUser_fetch.js';
 import * as MSI_FETCH from './ModalSetItems_fetch.js';
 import * as FORM_VALI_SU from '../../core/helpers/formVali-su.js';
+import LEFT_USER from './LeftUser.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -476,6 +477,7 @@ class ModalSetItems
 			'click', async (e) => {await this.imgUploadClick(e);}
 		);
 
+		this.buttons['pfp-submit'].disabled = true;
 		this.buttons['pfp-submit'].addEventListener(
 			'click', async (e) => {await this.submitClick(e);}
 		);
@@ -539,33 +541,11 @@ class ModalSetItems
 			reader.onerror = () =>
 			{
 				console.error('IMAGE READING FAILED: ', reader.error);
+				return false;
 			}
 			reader.readAsDataURL(file); // readyState becomes 2 and result contains the data
-
-			if (file)
-			{
-				const form_data = new FormData();
-				form_data.append('avatar', file);
-				const csrf_token = await this.getCookie('csrftoken');
-				const response = await fetch('/api/user_profiles/upload-avatar/', {
-					method: 'POST',
-					headers: {
-							'X-CSRFToken': csrf_token
-					},
-					body: form_data
-				});
-
-				const data = await response.json();
-				if (response.ok)
-				{
-					console.log('Profile avatar uploaded.');
-				}
-				else
-				{
-					console.error(response.details);
-				}
-			}
-
+			this.file = file;
+			this.buttons['pfp-submit'].disabled = false;
 		});
 
 		return true;
@@ -576,6 +556,38 @@ class ModalSetItems
 		event.preventDefault();
 		console.log('[BTN] submitClick');
 
+		if (this.file)
+		{
+			const form_data = new FormData();
+			form_data.append('avatar', this.file);
+			const csrf_token = await this.getCookie('csrftoken');
+			const response = await fetch('/api/user_profiles/upload-avatar/', {
+				method: 'POST',
+				headers: {
+						'X-CSRFToken': csrf_token
+				},
+				body: form_data
+			});
+
+			const data = await response.json();
+			if (response.ok)
+			{
+				alert('Profile avatar uploaded successfully');
+				let parent_html = document.querySelector('.ct-main-lpanel');
+				LEFT_USER.container = parent_html;
+				await LEFT_USER.render('replace');
+				this.file = null;
+			}
+			else
+			{
+				console.error(response.details);
+			}
+		}
+		else
+		{
+			alert('Upload Failed: No file selected');
+		}
+
 		return true;
 	}
 
@@ -583,6 +595,12 @@ class ModalSetItems
 	{
 		event.preventDefault();
 		console.log('[BTN] removeClick');
+
+		const confirm_remove = confirm('Are you sure you want to reset to default profile picture?');
+		if (confirm_remove)
+		{
+			alert('done, waiting backend to implement');
+		}
 
 		return true;
 	}

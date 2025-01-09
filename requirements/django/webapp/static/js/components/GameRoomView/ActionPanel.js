@@ -798,7 +798,6 @@ class ActionPanel
 		// [A] TEMPLATE
 		let template = `
 		<button @att1 @att2 @att3>@text1</button>
-		<button @att4 @att5 @att6>@text2</button>
 		`;
 
 		// [B] SET atts
@@ -808,10 +807,6 @@ class ActionPanel
 			'@att2': 'class="btn-opvp-start ct-btn-neau"',
 			'@att3': 'type="button"',
 			'@text1': 'Start',
-			'@att4': 'id="btn_opvp_invite"',
-			'@att5': 'class="btn-opvp-invite ct-btn-neau"',
-			'@att6': 'type="button"',
-			'@text2': 'Invite Friend',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
@@ -823,104 +818,6 @@ class ActionPanel
 	// [A] BOOSTRAP-MODAL-RELATED
 	// --------------------------------------------- //
 	async bind_modals_opvp()
-	{
-		return true;
-	}
-
-	// ======================================================================== //
-	// ONLINE-TOUR
-	// ======================================================================== //
-	// --------------------------------------------- //
-	// [1/4] MAIN-EXECUTION
-	// --------------------------------------------- //
-	async onlineTour_render(renderType)
-	{
-		const template = await this.init_template_otour();
-
-		if (renderType.toLowerCase() === 'append')
-		{
-			this.base_ctn.insertAdjacentHTML(
-				'beforeend', template
-			);
-		}
-		else if (renderType.toLowerCase() === 'replace')
-		{
-			this.base_ctn.innerHTML = '';
-			this.base_ctn.innerHTML = template;
-		}
-		else
-		{
-			throw new Error('[ERR] invalid render renderType');
-		}
-
-		await this.push_important_elements_otour();
-		await this.bind_events_otour();
-		await this.bind_modals_otour();
-
-		return true;
-	}
-
-	async push_important_elements_otour()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// [2/4] EVENT-RELATED
-	// --------------------------------------------- //
-	async bind_events_otour()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// [3/4] FETCH-RELATED
-	// --------------------------------------------- //
-	// --------------------------------------------- //
-	// [4/4] HTML-ELEMENT-RELATED
-	// --------------------------------------------- //
-	async init_template_otour()
-	{
-		let template = "";
-		template += await this.html_main_ctn_otour();
-
-		// trim new lines, spaces, and tabs
-		template = template.replace(/\s+/g, ' ');
-		template = template.replace(/>\s+</g, '><');
-		template = template.replace(/\s*=\s*/g, '=');
-		template = template.trim();
-
-		return template;
-	}
-	async html_main_ctn_otour()
-	{	
-		// [-] HELPER FUNCTION
-		// [A] TEMPLATE
-		let template = `
-			<button @att1 @att2 @att3>@text1</button>
-			<button @att4 @att5 @att6>@text2</button>
-		`;
-
-		// [B] SET atts
-		const atts =
-		{
-			'@att1': 'id="btn_otour_start"',
-			'@att2': 'class="btn-otour-start ct-btn-neau"',
-			'@att3': 'type="button"',
-			'@text1': 'Start',
-			'@att4': 'id="btn_otour_invite"',
-			'@att5': 'class="btn-otour-invite ct-btn-neau"',
-			'@att6': 'type="button"',
-			'@text2': 'Invite Friend',
-		};
-		for (const key in atts)
-			template = template.split(key).join(atts[key]);
-
-		// [C] HTML RETURN
-		return template;
-	}
-	// --------------------------------------------- //
-	// [A] BOOSTRAP-MODAL-RELATED
-	// --------------------------------------------- //
-	async bind_modals_otour()
 	{
 		return true;
 	}
