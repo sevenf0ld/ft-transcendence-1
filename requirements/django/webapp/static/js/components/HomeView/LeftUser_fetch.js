@@ -6,6 +6,8 @@
 // Importing-external
 // -------------------------------------------------- //
 import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
+import LOGOUT from '../../core/logout.js';
+import ROUTE from '../../core/router.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -56,8 +58,10 @@ class fetch_logout
 		}
 		catch (error)
 		{
-			this.re_value = '[ERR] try-catch; Logout failed : ' + error;
-			console.error(this.re_value);
+			await LOGOUT.run();
+			await ROUTE.navigate_to('/login');
+			this.re_value = '[SAFELY-HANDLED] logout-failed';
+			console.log(this.re_value);
 		}
 
 		return this.re_value;
@@ -102,8 +106,10 @@ class fetch_home_profile
 		}
 		catch (error)
 		{
-			this.re_value = '[ERR] try-catch; Home profile failed : ' + error;
-			console.error(this.re_value);
+			await LOGOUT.run();
+			await ROUTE.navigate_to('/login');
+			this.re_value = '[SAFELY-HANDLED] home-profile-failed';
+			console.log(this.re_value);
 		}
 
 		return this.re_value;

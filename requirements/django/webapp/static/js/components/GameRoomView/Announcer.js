@@ -141,6 +141,35 @@ class Announcer
 		return str;
 	}
 
+	async announce(msg, type)
+	{
+		const ctn = document.querySelector('.ct-gr-announcer-bd');
+
+		if (ctn === null)
+			return false;
+
+		let msg_str;
+		if (type === 'mms')
+			msg_str = "Matchmaking: " + msg;
+		else
+			msg_str = "System: " + msg;
+
+		const p = document.createElement('p');
+		p.classList.add('ct-gr-announcer-msg');
+		p.textContent = msg_str;
+
+		ctn.appendChild(p);
+
+		// clear board
+		if (!msg)
+			ctn.innerHTML = '';
+
+		// scroll to bottom
+		ctn.scrollTop = ctn.scrollHeight;
+
+		return true;
+	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED 
 	// --------------------------------------------- //
@@ -539,6 +568,29 @@ class Announcer
 	{
 		return true;
 	}
+
+	async opvp_live_update(data)
+	{
+		const room_id = document.querySelector('.ct-gr-announcer-rid');
+
+		if (data.type === 'joined_room')
+		{
+			const roomId = `Room ID: ${data.details.room_id}`;
+			room_id.innerHTML = roomId;
+			const member_name = data.person;
+			await this.announce(`${member_name} has joined the room.`);
+		}
+		else if (data.type === 'left_room')
+		{
+			const member_name = data.person;
+			await this.announce(`${member_name} has left the room.`);
+		}
+		else if (data.type === 'started_game')
+		{
+			await this.announce('Game has started.');
+		}
+	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
@@ -586,104 +638,6 @@ class Announcer
 	// [A] BOOSTRAP-MODAL-RELATED
 	// --------------------------------------------- //
 	async bind_modals_opvp()
-	{
-		return true;
-	}
-
-	// ======================================================================== //
-	// ONLINE-TOUR
-	// ======================================================================== //
-	// --------------------------------------------- //
-	// [1/4] MAIN-EXECUTION
-	// --------------------------------------------- //
-	async onlineTour_render(renderType)
-	{
-		const template = await this.init_template_otour();
-
-		if (renderType.toLowerCase() === 'append')
-		{
-			this.base_ctn.insertAdjacentHTML(
-				'beforeend', template
-			);
-		}
-		else if (renderType.toLowerCase() === 'replace')
-		{
-			this.base_ctn.innerHTML = '';
-			this.base_ctn.innerHTML = template;
-		}
-		else
-		{
-			throw new Error('[ERR] invalid render renderType');
-		}
-
-		await this.push_important_elements_otour();
-		await this.bind_events_otour();
-		await this.bind_modals_otour();
-
-		return true;
-	}
-
-	async push_important_elements_otour()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// [2/4] EVENT-RELATED
-	// --------------------------------------------- //
-	async bind_events_otour()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// [3/4] FETCH-RELATED
-	// --------------------------------------------- //
-	// --------------------------------------------- //
-	// [4/4] HTML-ELEMENT-RELATED
-	// --------------------------------------------- //
-	async init_template_otour()
-	{
-		let template = "";
-		template += await this.html_main_ctn_otour();
-
-		// trim new lines, spaces, and tabs
-		template = template.replace(/\s+/g, ' ');
-		template = template.replace(/>\s+</g, '><');
-		template = template.replace(/\s*=\s*/g, '=');
-		template = template.trim();
-
-		return template;
-	}
-	async html_main_ctn_otour()
-	{	
-		// [-] HELPER FUNCTION
-		// [A] TEMPLATE
-		let template = `
-			${await this.msg_generator(
-				"You are in Online Tour Room!"
-			)}
-			${await this.msg_generator(
-				"Please wait for the host to begin."
-			)}
-			${await this.msg_generator(
-				"Feel free to share the Room ID with your friends."
-			)}
-		`;
-
-		// [B] SET atts
-		const atts =
-		{
-		};
-		for (const key in atts)
-			template = template.split(key).join(atts[key]);
-
-		// [C] HTML RETURN
-		return template;
-	}
-
-	// --------------------------------------------- //
-	// [A] BOOSTRAP-MODAL-RELATED
-	// --------------------------------------------- //
-	async bind_modals_otour()
 	{
 		return true;
 	}

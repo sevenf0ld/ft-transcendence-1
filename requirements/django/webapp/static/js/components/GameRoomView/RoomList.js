@@ -9,6 +9,7 @@ import HOME_VIEW from '../../views/HomeView.js';
 import WEB_SOCKETS from '../../core/websocket_mng.js';
 import TNM_LOGIC from '../GameLogic/tnm_logic.js';
 import ROUTER from '../../core/router.js';
+import EG_UTILS from '../GameLogic/engine_utils.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -149,6 +150,7 @@ class RoomList
 		await HOME.render();
 		//await ROUTER.navigate_to('/home');
 	}
+
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED 
 	// --------------------------------------------- //
@@ -212,7 +214,7 @@ class RoomList
 		// [B] SET atts
 		const atts =
 		{
-			'%main-c1': 'category-ctn ',
+			'%main-c1': 'category-ctn',
 			'%hd-c1': 'category-title-ctn',
 			'%hdt-c1': 'category-title',
 			'%hdt-t1': groupType,
@@ -690,6 +692,35 @@ class RoomList
 
 		return true;
 	}
+
+	async opvp_live_update(data)
+	{
+		const room_list_title = document.querySelector('.ct-gr-roomList-ctn .ct-gr-rl-title');
+		const lobby_ctn = document.querySelector('.category-list-ctn[data-type="lobby"]');
+		const playing_ctn = document.querySelector('.category-list-ctn[data-type="playing"]');
+
+		if (data.type === 'joined_room' || data.type === 'left_room')
+		{
+			// room title
+			room_list_title.innerHTML = `Room List (${data.num}/2)`;
+
+			lobby_ctn.innerHTML = '';
+			for (const player of data.members)
+			{
+				let name = `${player}`;
+				if (JSON.parse(localStorage.getItem('user')).username === player)
+					name = `*${name}`;
+				if (player !== data.details.host)
+					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'guest', 'playing');
+				else
+					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'host', 'playing');
+			}
+		}
+		if (data.type === 'started_game')
+		{
+			await EG_UTILS.move_html_children(lobby_ctn, playing_ctn);
+		}
+	}
 	// --------------------------------------------- //
 	// [3/4] FETCH-RELATED
 	// --------------------------------------------- //
@@ -733,116 +764,6 @@ class RoomList
 	// [A] BOOSTRAP-MODAL-RELATED
 	// --------------------------------------------- //
 	async bind_modals_opvp()
-	{
-		return true;
-	}
-
-	// ======================================================================== //
-	// ONLINE-TOUR
-	// ======================================================================== //
-	// --------------------------------------------- //
-	// [1/4] MAIN-EXECUTION
-	// --------------------------------------------- //
-	async onlineTour_render(renderType)
-	{
-		const template = await this.init_template_otour();
-
-		if (renderType.toLowerCase() === 'append')
-		{
-			this.base_ctn.insertAdjacentHTML(
-				'beforeend', template
-			);
-		}
-		else if (renderType.toLowerCase() === 'replace')
-		{
-			this.base_ctn.innerHTML = '';
-			this.base_ctn.innerHTML = template;
-		}
-		else
-		{
-			throw new Error('[ERR] invalid render renderType');
-		}
-
-		await this.push_important_elements_otour();
-		await this.bind_events_otour();
-		await this.bind_modals_otour();
-
-		return true;
-	}
-
-	async push_important_elements_otour()
-	{
-		this.lobby_ctn = document.querySelector(".category-list-ctn[data-type='lobby']");
-		this.playing_ctn = document.querySelector(".category-list-ctn[data-type='playing']");
-		this.waiting_ctn = document.querySelector(".category-list-ctn[data-type='waiting']");
-		this.eliminated_ctn = document.querySelector(".category-list-ctn[data-type='eliminated']");
-
-		return true;
-	}
-	// --------------------------------------------- //
-	// [2/4] EVENT-RELATED
-	// --------------------------------------------- //
-	async bind_events_otour()
-	{
-		this.roomTitle.setAttribute('data-room-type', 'tour');
-
-		await this.playerListGenerator(this.lobby_ctn, '-tmp-', 'Lobby', 'host');
-
-		await this.empty_ctn_handler([
-			this.lobby_ctn,
-			this.playing_ctn,
-			this.waiting_ctn,
-			this.eliminated_ctn
-		]);
-
-		await this.updateRoomPlayerCount(1);
-
-		return true;
-	}
-	// --------------------------------------------- //
-	// [3/4] FETCH-RELATED
-	// --------------------------------------------- //
-	// --------------------------------------------- //
-	// [4/4] HTML-ELEMENT-RELATED
-	// --------------------------------------------- //
-	async init_template_otour()
-	{
-		let template = "";
-		template += await this.html_main_ctn_otour();
-
-		// trim new lines, spaces, and tabs
-		template = template.replace(/\s+/g, ' ');
-		template = template.replace(/>\s+</g, '><');
-		template = template.replace(/\s*=\s*/g, '=');
-		template = template.trim();
-
-		return template;
-	}
-	async html_main_ctn_otour()
-	{	
-		// [-] HELPER FUNCTION
-		// [A] TEMPLATE
-		let template = `
-		${await this.roomGroupGenerator('Lobby', 'ct-gr-rl-lobby')}
-		${await this.roomGroupGenerator('Playing', 'ct-gr-rl-playing')}
-		${await this.roomGroupGenerator('Waiting', 'ct-gr-rl-waiting')}
-		${await this.roomGroupGenerator('Eliminated', 'ct-gr-rl-eliminated')}
-		`;
-
-		// [B] SET atts
-		const atts =
-		{
-		};
-		for (const key in atts)
-			template = template.split(key).join(atts[key]);
-
-		// [C] HTML RETURN
-		return template;
-	}
-	// --------------------------------------------- //
-	// [A] BOOSTRAP-MODAL-RELATED
-	// --------------------------------------------- //
-	async bind_modals_otour()
 	{
 		return true;
 	}
