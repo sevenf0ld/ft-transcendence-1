@@ -257,7 +257,7 @@ class GameGuide
 		let template = `
 		${await this.inst_list_generator('Left Player', 'W (UP), S (DOWN)')}
 		${await this.inst_list_generator('Right Player', '↑ (UP), ↓ (DOWN)')}
-		${await this.inst_list_generator('Game Goal', 'First to 3 points wins')}
+		${await this.inst_list_generator('Game Goal', 'Hit the ball to the opponent\'s side (best of 1)')}
 		${await this.inst_list_generator('Game Objective', 'Player against Player locally')}
 		${await this.inst_list_generator('Game System', 'Match will not be recorded')}
 		`;
@@ -444,9 +444,10 @@ class GameGuide
 		// [A] TEMPLATE
 		let template = `
 		${await this.inst_list_generator('Left Player', 'W (UP), S (DOWN)')}
-		${await this.inst_list_generator('Game Goal', 'First to 3 points wins')}
+		${await this.inst_list_generator('Game Goal', 'Hit the ball to the opponent\'s side (best of 1)')}
 		${await this.inst_list_generator('Game Objective', 'Player against AI')}
 		${await this.inst_list_generator('Game System', 'Match will not be recorded')}
+		${await this.inst_list_generator('Difficulty', 'Random (0.0 - 3.0)')}
 		`;
 		// [B] SET atts
 		const atts =
@@ -537,7 +538,7 @@ class GameGuide
 		let template = `
 		${await this.inst_list_generator('Key', 'W (UP), S (DOWN)')}
 		${await this.inst_list_generator('Game Objective', 'Player against player online')}
-		${await this.inst_list_generator('Game Rules', 'First to 3 points wins')}
+		${await this.inst_list_generator('Game Rules', 'Hit the ball to the opponent\'s side (best of 1)')}
 		${await this.inst_list_generator('Game System', 'Match will be recorded')}
 		`;
 
@@ -555,101 +556,6 @@ class GameGuide
 	// [A] BOOSTRAP-MODAL-RELATED
 	// --------------------------------------------- //
 	async bind_modals_opvp()
-	{
-		return true;
-	}
-
-	// ======================================================================== //
-	// ONLINE-TOUR
-	// ======================================================================== //
-	// --------------------------------------------- //
-	// [1/4] MAIN-EXECUTION
-	// --------------------------------------------- //
-	async onlineTour_render(renderType)
-	{
-		const template = await this.init_template_otour();
-
-		if (renderType.toLowerCase() === 'append')
-		{
-			this.base_ctn.insertAdjacentHTML(
-				'beforeend', template
-			);
-		}
-		else if (renderType.toLowerCase() === 'replace')
-		{
-			this.base_ctn.innerHTML = '';
-			this.base_ctn.innerHTML = template;
-		}
-		else
-		{
-			throw new Error('[ERR] invalid render renderType');
-		}
-
-		await this.push_important_elements_otour();
-		await this.bind_events_otour();
-		await this.bind_modals_otour();
-
-		return true;
-	}
-
-	async push_important_elements_otour()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// [2/4] EVENT-RELATED
-	// --------------------------------------------- //
-	async bind_events_otour()
-	{
-		return true;
-	}
-	// --------------------------------------------- //
-	// [3/4] FETCH-RELATED
-	// --------------------------------------------- //
-	// --------------------------------------------- //
-	// [4/4] HTML-ELEMENT-RELATED
-	// --------------------------------------------- //
-	async init_template_otour()
-	{
-		let template = "";
-		template += await this.html_main_ctn_otour();
-
-		// trim new lines, spaces, and tabs
-		template = template.replace(/\s+/g, ' ');
-		template = template.replace(/>\s+</g, '><');
-		template = template.replace(/\s*=\s*/g, '=');
-		template = template.trim();
-
-		return template;
-	}
-
-	async html_main_ctn_otour()
-	{	
-		// [-] HELPER FUNCTION
-		// [A] TEMPLATE
-		let template = `
-		${await this.inst_list_generator('Key', 'W (UP), S (DOWN)')}
-		${await this.inst_list_generator('Game Objective', 'Player against player online')}
-		${await this.inst_list_generator('Game Rules', 'Last standing player wins')}
-		${await this.inst_list_generator('Game Rules', 'Every match is best of one')}
-		${await this.inst_list_generator('Game Rules', 'Matchmaking is random')}
-		${await this.inst_list_generator('Game System', 'Match will be recorded')}
-		`;
-
-		// [B] SET atts
-		const atts =
-		{
-		};
-		for (const key in atts)
-			template = template.split(key).join(atts[key]);
-
-		// [C] HTML RETURN
-		return template;
-	}
-	// --------------------------------------------- //
-	// [A] BOOSTRAP-MODAL-RELATED
-	// --------------------------------------------- //
-	async bind_modals_otour()
 	{
 		return true;
 	}

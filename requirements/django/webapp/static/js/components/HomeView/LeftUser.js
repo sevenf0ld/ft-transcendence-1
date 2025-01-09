@@ -208,7 +208,7 @@ class LeftUser
 		const home_profile = FETCH.FETCH_HOME_PROFILE;
 		await home_profile.init();
 		const fetch_result = await home_profile.fetchData();
-		if (fetch_result === 'home-profile-failed')
+		if (fetch_result === 'home-profile-failed' || !home_profile.fetch_obj.rdata)
 			return false;
 		const avatar_url = home_profile.fetch_obj.rdata.avatar_url;
 		const splitted_url = avatar_url.split('/avatars/');

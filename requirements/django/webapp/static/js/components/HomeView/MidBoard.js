@@ -39,7 +39,6 @@ class MidBoard
 			'local-pve': '',
 			'local-tour': '',
 			'remote-pvp': '',
-			'remote-tour': '',
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 	}
@@ -79,7 +78,6 @@ class MidBoard
 		this.buttons['local-pve'] = document.getElementById('btn_local_pve');
 		this.buttons['local-tour'] = document.getElementById('btn_local_tour');
 		this.buttons['remote-pvp'] = document.getElementById('btn_remote_pvp');
-		this.buttons['remote-tour'] = document.getElementById('btn_remote_tour');
 
 		if (!this.main_ctn)
 			throw new Error('[ERR] main container not found');
@@ -110,10 +108,6 @@ class MidBoard
 
 		this.buttons['remote-pvp'].addEventListener(
 			'click', async (event) => { await this.remotePvpClick(event); }
-		);
-
-		this.buttons['remote-tour'].addEventListener(
-			'click', async (event) => { await this.remoteTourClick(event); }
 		);
 
 		await this.set_titles();
@@ -188,30 +182,6 @@ class MidBoard
 		// list room list
 		await WEB_SOCKET.initSocket_lobby();
 		await WEB_SOCKET.connectSocket_lobby('PVP');
-		await this.display_lobby_socket_list();
-
-		return true;
-	}
-
-	async remoteTourClick(event)
-	{
-		event.preventDefault();
-		console.log('[BTN] remoteTourClick');
-
-		// for popup modal
-		const moda = document.querySelector('#modal-join .modal-title');
-		moda.innerHTML = 'Available Rooms (Tournament)';
-		const modata = document.querySelector('#modal-join .modal-body');
-		modata.setAttribute('data-room-type', 'tour');
-		modata.innerHTML = "";
-
-		MODAL_ROOM_JOIN.container = modata;
-		MODAL_ROOM_JOIN.gameType = 'online-tour';
-		await MODAL_ROOM_JOIN.render('replace');
-
-		// list room list
-		await WEB_SOCKET.initSocket_lobby();
-		await WEB_SOCKET.connectSocket_lobby('TNM');
 		await this.display_lobby_socket_list();
 
 		return true;
@@ -331,7 +301,6 @@ class MidBoard
 				<h3>Online</h3>
 				<div class="%bg-c">
 					<button id="%btn4-d" @att1 @att2>%btn4-t</button>
-					<button id="%btn5-d" @att1 @att2>%btn5-t</button>
 				</div>
 			</div>
 			<div class="%sec-1c %sec-2c">
@@ -356,14 +325,12 @@ class MidBoard
 			'%btn2-d': 'btn_local_pvp',
 			'%btn3-d': 'btn_local_tour',
 			'%btn4-d': 'btn_remote_pvp',
-			'%btn5-d': 'btn_remote_tour',
 			'@att1': 'class="ct-btn-neau"',
 			'@att2': 'data-bs-toggle="modal" data-bs-target="#modal-join"',
 			'%btn1-t': 'PVE',
 			'%btn2-t': 'PVP',
 			'%btn3-t': 'Tournament',
 			'%btn4-t': 'PVP',
-			'%btn5-t': 'Tournament',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);

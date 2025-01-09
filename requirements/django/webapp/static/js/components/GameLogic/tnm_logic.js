@@ -126,7 +126,7 @@ class tnmLogicClass
 
 	async run_tournament()
 	{
-		await EG_RENDER.render_txt('Local Tournament has started!');
+		await EG_RENDER.render_txt('Local Tournament is starting...');
 		await EG_UTILS.sleep(2000);
 
 		let str = `Players will always be paired randomly!`;
@@ -207,7 +207,6 @@ class tnmLogicClass
 	// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ //
 	// =================================== END OF IMPPORTANT CORE LOGIC ********* //
 	// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ //
-	
 	async move_player(name, from, to)
 	{
 		if (!name || !from || !to)
@@ -230,7 +229,31 @@ class tnmLogicClass
 
 		name_html_div.dataset.type = target.type;
 		target.arr.push(name);
+		if (target.ctn.children.length === 1 && target.ctn.children[0].classList.contains('empty-list'))
+			target.ctn.removeChild(target.ctn.children[0]);
 		target.ctn.appendChild(name_html_div);
+
+		await this.fill_empty_ctn();
+
+		return true;
+	}
+
+	async fill_empty_ctn()
+	{
+		const ctns = [this.play_ctn, this.wait_ctn, this.elim_ctn, this.lobby_ctn];
+		if (ctns.includes(null))
+			throw new Error('Important constructor variables are null');
+
+		for (const ctn of ctns)
+		{
+			if (ctn.children.length === 0)
+			{
+				const p = document.createElement('p');
+				p.classList.add('empty-list');
+				p.textContent = '(empty)';
+				ctn.appendChild(p);
+			}
+		}
 
 		return true;
 	}
@@ -412,6 +435,7 @@ class tnmLogicClass
 				this.play_ctn, name, 'Playing', str, style
 			);
 		}
+		await this.fill_empty_ctn();
 		return true;
 	}
 }
