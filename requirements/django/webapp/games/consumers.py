@@ -2,7 +2,7 @@ import json
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
-from .models import Room
+from .models import Room, Match
 from .serializers import RoomModelSerializer
 from django.db import transaction
 from django.db.models import F
@@ -140,7 +140,7 @@ class GameRoomConsumer(WebsocketConsumer):
     #               DISCONNECT
     #=================================#
     def disconnect(self, code):
-        if code == 3003:
+        if code == 3003 or code == 3104 or code == 3105:
             return
 
         if self.group_id in self.in_room:
@@ -233,10 +233,15 @@ class GameRoomConsumer(WebsocketConsumer):
                 self.group_id,
                 {
                     'type': 'game.end',
+                    'winner': text_json['winner'],
+                    'loser': text_json['loser']
                 }
             )
-
-
+            if async_to_sync(self.rid_get_room_object(text_json['rid'])) is not None and self.user.username == text_json['host']:
+                print('GAME END', text_json['rid'], text_json['host'])
+                print('UHHUHUHUIDBUKBDSK')
+                self.create_match_object(text_json['winner'], text_json['rid'])
+                self.rid_delete_room_object(text_json['rid'])
 
     #=======================================================#
     #               ASYNC - CHANNEL LAYER COMMUNICATION
@@ -286,6 +291,19 @@ class GameRoomConsumer(WebsocketConsumer):
                 'type': 'update.lobby',
             }
         )
+
+    @transaction.atomic
+    def rid_delete_room_object(self, rid):
+        room = Room.objects.select_for_update().get(room_id=rid)
+        room_type = room.room_type
+        room.delete()
+        async_to_sync(self.channel_layer.group_send)(
+            f'lobby_{room_type}',
+            {
+                'type': 'update.lobby',
+            }
+        )
+
 
     #=======================================================#
     #              EVENTS BY CONSUMER
@@ -350,9 +368,11 @@ class GameRoomConsumer(WebsocketConsumer):
         }))
 
     def game_end(self, event):
+        winner = event['winner']
+        loser = event['loser']
         self.send(text_data=json.dumps({
             'type': 'game_end',
-            'message': 'Game has ended.'
+            'message': f'Game has ended. {winner} has won against {loser}.'
         }))
 
     #=================================#
@@ -373,6 +393,29 @@ class GameRoomConsumer(WebsocketConsumer):
         if self.user.id == room.host.id:
             return True
         return False
+
+    def create_match_object(self, winner, rid):
+        print('CREATTING MATCH')
+        room = async_to_sync(self.rid_get_room_object)(rid)
+        host_data = User.objects.get(username=room.host)
+        members = list(self.in_room[self.group_id])
+        p2_data = User.objects.get(username=members[0])
+        winner_data = User.objects.get(username=winner)
+        match = Match.objects.create(
+            host=host_data,
+            p1=host_data,
+            p2=p2_data,
+            winner=winner_data
+        )
+        match.save()
+
+    @database_sync_to_async
+    def rid_get_room_object(self, rid):
+        try:
+            room = Room.objects.get(room_id=rid)
+            return room
+        except Room.DoesNotExist:
+            return None
 
 class InvitationConsumer(WebsocketConsumer):
     #=================================#
@@ -427,7 +470,6 @@ class InvitationConsumer(WebsocketConsumer):
     #=================================#
     def receive(self, text_data=None, bytes_data=None):
         text_json = json.loads(text_data)
-        print('INVITE CONSUMER RECEIVES', text_json)
         invite_update = text_json['invite_update']
 
         if invite_update == 'send_invitation':

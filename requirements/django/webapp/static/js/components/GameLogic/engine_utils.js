@@ -7,6 +7,7 @@ import EG_DATA from './engine_data.js';
 import TNM_LOGIC from './tnm_logic.js';
 import AI_PONG from './ai_logic.js';
 import WS from '../../core/websocket_mng.js';
+import AN from '../GameRoomView/Announcer.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -151,6 +152,8 @@ class engineUtilsClass
 					'game_state': 'game_end',
 					'winner': EG_DATA.match.winner,
 					'loser': EG_DATA.match.loser,
+					'rid': AN.rid,
+					'host': AN.host
 				}));
 			}
 			await EG_DATA.reset();
