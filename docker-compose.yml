@@ -68,6 +68,50 @@ services:
       env_file:
         - .env
 
+    elasticsearch:
+      build:
+        context: ./requirements/elasticsearch/.
+      container_name: elasticsearch
+      ports:
+        - "9200:9200"
+        - "9300:9300"
+      volumes:
+        - ./requirements/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      environment:
+        ES_JAVA_OPTS: "-Xmx1g -Xms1g"
+      networks:
+        - net_trans
+
+    logstash:
+      build:
+        context: ./requirements/logstash/.
+      container_name: logstash
+      ports:
+        - "5000:5000"
+        - "12201:12201/udp"
+      depends_on:
+        - elasticsearch
+      volumes:
+        - ./requirements/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+        - ./requirements/logstash/pipeline:/usr/share/logstash/pipeline:ro
+      environment:
+        LS_JAVA_OPTS: "-Xmx1g -Xms1g"
+      networks:
+        - net_trans
+
+    kibana:
+      build:
+        context: ./requirements/kibana/.
+      container_name: kibana
+      ports:
+        - "5601:5601"
+      depends_on:
+        - elasticsearch
+      volumes:
+        - ./requirements/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+      networks:
+        - net_trans
+
 volumes:
 
     #vol_django:
