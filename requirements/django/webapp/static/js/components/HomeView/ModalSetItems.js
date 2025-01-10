@@ -10,6 +10,7 @@ import * as MSI_FETCH from './ModalSetItems_fetch.js';
 import * as FORM_VALI_SU from '../../core/helpers/formVali-su.js';
 import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 import LEFT_USER from './LeftUser.js';
+import * as LOADING from '../../core/helpers/loading.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -48,7 +49,18 @@ class ModalSetItems
 			'tfa-off': '',
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
+		this.ctns = {};
 	}
+
+	async is_intra_user()
+	{
+		const user = JSON.parse(localStorage.getItem('user'));
+		const is_intra_user = user.ft_acc;
+		if (is_intra_user === true)
+			return true;
+		return false;
+	}
+
 	// ======================================================================== //
 	// LANGUAGE-SETTINGS
 	// ======================================================================== //
@@ -282,6 +294,27 @@ class ModalSetItems
 			'click', async (e) => {await this.accSubmitClick(e);}
 		);
 
+		if (await this.is_intra_user())
+		{
+			const ctns = document.querySelectorAll('.ct-set-acc-form-field');
+
+			for (const ctn of ctns)
+			{
+				ctn.classList.add('d-none');
+				ctn.querySelector('input').disabled = true;
+			}
+
+			const btn = document.querySelector('#btn_acc_submit');
+			btn.classList.add('d-none');
+			btn.disabled = true;
+
+			const parent_div = document.querySelector('.ct-set-acc-form');
+			const p = document.createElement('p');
+			p.classList.add('ct-set-warning');
+			p.textContent = '(Intra user can\'t update)';
+			parent_div.appendChild(p);
+		}
+
 		return true;
 	}
 
@@ -299,9 +332,7 @@ class ModalSetItems
 	// --------------------------------------------- //
 	async submit_acc_form()
 	{
-		const user_obj = JSON.parse(localStorage.getItem('user'));
-		const is_intra_user = user_obj.ft_acc;
-		if (is_intra_user === true)
+		if (await this.is_intra_user())
 		{
 			alert('Intra user detected! Account settings cannot be updated.');
 			return false;
@@ -310,6 +341,7 @@ class ModalSetItems
 		if (!await form.validate())
 			return false;
 
+		await LOADING.disable_all();
 		await MSI_FETCH.ACC.init();
 		await MSI_FETCH.ACC.fetchData(form);
 		const acc_fetch = MSI_FETCH.ACC;
@@ -317,10 +349,13 @@ class ModalSetItems
 		if (acc_fetch.re_value === 'acc-successful')
 			alert('Account settings updated.');
 		else if (acc_fetch.re_value === 'acc-failed')
-			alert('Account settings update failed.');
+		{
+			alert('Account settings update failed because : ' + acc_fetch.fetch_obj.rdata.details);
+		}
 		else
 			console.error('Account settings update failed : unknown error');
 
+		await LOADING.restore_all();
 		// if rdata is needed
 		const obj = LUSER_FETCH.fetch_obj;
 
@@ -359,9 +394,7 @@ class ModalSetItems
 			if (type === 'password')
 				max_length = 16;
 
-			let placeholder = 'Leave blank if no change';
-			if(id === 'input_acc_cur_pass')
-				placeholder = 'Required';
+			let placeholder = 'Enter ' + label;
 
 			const atts =
 			{
@@ -387,9 +420,9 @@ class ModalSetItems
 		<div class="%main-c1">
 			<form class="%fm-c1">
 				<div class="%dp-c1">%dp-t1</div>
-				<div class="%dp-c1 %email">%dp-t2</div>
+				<div class="%dp-c1">%dp-ta1</div>
+				<div class="%dp-c1 %email" @emtt>%dp-t2</div>
 				${await html_input('Current Password', 'input_acc_cur_pass', 'password')}
-				${await html_input('New Email', 'input_acc_new_email', 'email')}
 				${await html_input('New Password', 'input_acc_new_pass', 'password')}
 				${await html_input('Confirm Password', 'input_acc_conf_pass','password')}
 				<button id="%btn1-f1" type="submit" @btn1>%btn1-t1</button>
@@ -403,9 +436,11 @@ class ModalSetItems
 			'%main-c1': 'ct-set-acc-ctn',
 			'%fm-c1': 'ct-set-acc-form',
 			'%dp-c1': 'ct-set-acc-display',
-			'%email': 'ct-set-acc-dis-email',
+			'%email': 'ct-set-acc-dis-email truncate',
 			'%dp-t1': `Username: ${username}`,
 			'%dp-t2': `Email: ${email}`,
+			'@emtt': `title="${email}"`,
+			'%dp-ta1': 'Password: ********',
 			'%btn1-f1': 'btn_acc_submit',
 			'%btn1-t1': 'Update',
 			'@btn1': '',
@@ -765,6 +800,23 @@ class ModalSetItems
 			'click', async (e) => {await this.tfaDisableClick(e);}
 		);
 
+		if (await this.is_intra_user())
+		{
+			const btns = document.querySelectorAll('.ct-set-2fa-ctn button');
+
+			for (const btn of btns)
+			{
+				btn.classList.add('d-none');
+				btn.disabled = true;
+			}
+
+			const parent_div = document.querySelector('.ct-set-2fa-ctn');
+			const p = document.createElement('p');
+			p.classList.add('ct-set-warning');
+			p.textContent = '(Intra user can\'t update)';
+			parent_div.appendChild(p);
+		}
+
 		return true;
 	}
 
@@ -772,6 +824,9 @@ class ModalSetItems
 	{
 		event.preventDefault();
 		console.log('[BTN] tfaEnableClick');
+
+		if (await this.is_intra_user())
+			return false;
 
 		await this.fetch_toogle_tfa('on');
 
@@ -782,6 +837,9 @@ class ModalSetItems
 	{
 		event.preventDefault();
 		console.log('[EVENT] tfaDisableClick');
+
+		if (await this.is_intra_user())
+			return false;
 
 		await this.fetch_toogle_tfa('off');
 

@@ -276,7 +276,6 @@ class modalSetItemsClass
 	constructor()
 	{
 		this.cur_pass = null;
-		this.new_email = null;
 		this.new_pass = null;
 		this.conf_pass = null;
 	}
@@ -285,9 +284,6 @@ class modalSetItemsClass
 	{
 		this.cur_pass = document.getElementById(
 			'input_acc_cur_pass'
-		).value;
-		this.new_email = document.getElementById(
-			'input_acc_new_email'
 		).value;
 		this.new_pass = document.getElementById(
 			'input_acc_new_pass'
@@ -301,7 +297,6 @@ class modalSetItemsClass
 	{
 		await this.init();
 		const cur_pass = this.cur_pass;
-		const new_email = this.new_email;
 		const new_pass = this.new_pass;
 		const conf_pass = this.conf_pass;
 
@@ -323,43 +318,6 @@ class modalSetItemsClass
 		{
 			alert('Error! Current password is invalid.');
 			return false;
-		}
-		else
-		{
-			if (new_email.length < 1 && new_pass.length < 1)
-			{
-				alert('Error! Change new email or new password?');
-				return false;
-			}
-		}
-
-		if (new_email.length > 0)
-		{
-			if (new_email === email)
-			{
-				alert('Error! New email is the same as the current email.');
-				return false;
-			}
-			else if (!new_email.includes('@'))
-			{
-				alert('Error! New email is invalid.');
-				return false;
-			}
-			else if (!new_email.includes('.'))
-			{
-				alert('Error! New email is invalid.');
-				return false;
-			}
-			else if (new_email.split('@').length > 2)
-			{
-				alert('Error! New email is invalid.');
-				return false;
-			}
-			else if (!/^[a-z0-9.@]+$/i.test(new_email))
-			{
-				alert('Error! New email is invalid.');
-				return false;
-			}
 		}
 
 		if (new_pass.length > 0)
