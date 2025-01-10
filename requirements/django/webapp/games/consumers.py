@@ -399,7 +399,12 @@ class GameRoomConsumer(WebsocketConsumer):
         room = async_to_sync(self.rid_get_room_object)(rid)
         host_data = User.objects.get(username=room.host)
         members = list(self.in_room[self.group_id])
-        p2_data = User.objects.get(username=members[0])
+        p2 = None
+        for member in members:
+            if member != host_data.username:
+                p2 = member
+                break
+        p2_data = User.objects.get(username=p2)
         winner_data = User.objects.get(username=winner)
         match = Match.objects.create(
             host=host_data,
