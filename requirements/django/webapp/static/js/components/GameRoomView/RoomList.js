@@ -10,6 +10,7 @@ import WEB_SOCKETS from '../../core/websocket_mng.js';
 import TNM_LOGIC from '../GameLogic/tnm_logic.js';
 import ROUTER from '../../core/router.js';
 import EG_UTILS from '../GameLogic/engine_utils.js';
+import LEFT_USER from '../HomeView/LeftUser.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -35,6 +36,7 @@ class RoomList
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.gameType = null;
+		this.list_pfp = '/static/assets/images/default-pfp.png';
 	}
 
 	async init()
@@ -250,6 +252,9 @@ class RoomList
 			</div>
 		`;
 		// [B] SET atts
+		const isHost = playerType === 'host';
+		const imgSrc = isHost ? LEFT_USER.home_pfp : this.list_pfp;
+
 		const atts =
 		{
 			'%main-c1': 'fnl-item-ctn',
@@ -257,7 +262,7 @@ class RoomList
 			'%main-ty1': groupType,
 			'%pfp-c1': 'fnl-item-pfp-ctn',
 			'%img-c1': 'fnl-item-pfp',
-			'%img-src1': '/static/assets/images/default-pfp.png',
+			'%img-src1': imgSrc,
 			'%img-alt1': 'profile picture',
 			'%status-c1': 'fnl-item-status',
 			'%status-t1': pstatus,
