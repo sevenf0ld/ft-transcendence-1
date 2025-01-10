@@ -360,7 +360,7 @@ class RightFnList
 	async  html_friendList()
 	{
 		// [-] HELPER FUNCTION
-		function friend_generate(name, stat, type)
+		function friend_generate(name, stat, type, imgsrc)
 		{
 			let template = `
 			<div class="%friend-c" title="%name-t" data-type="%type">
@@ -372,6 +372,11 @@ class RightFnList
 				<img @att1 @att2 @att3 @att4 @att5></img>
 			</div>
 			`
+			if (imgsrc === undefined)
+				throw new Error('[ERR] img-src is undefined');
+			//check if a string contains default.
+			else if (imgsrc.includes('default'))
+				imgsrc = '/static/assets/images/default-pfp.png';
 
 			const attributes =
 			{
@@ -381,7 +386,7 @@ class RightFnList
 				'%pfpctn-c': 'fnl-item-pfp-ctn',
 				'%pfp-c': `fnl-item-pfp`,
 				'%status-c': `fnl-item-status ${stat}`,
-				'%pfp-src': '/static/assets/images/default-pfp.png',
+				'%pfp-src': imgsrc,
 				'%pfp-alt': 'profile picture',
 				'%name-c': `fnl-item-name ${stat} truncate`,
 				'%set-c': 'fnl-item-settings',
@@ -420,31 +425,51 @@ class RightFnList
 			{
 				const data = flistFetch.fetch_obj.rdata;
 				const friends = data['friends'];
+				const friends_avatar = data['friends_avatars'];
 				const blocked = data['blocked'];
+				const blocked_avatar = data['blocked_avatars'];
 				const outgoing = data['outgoing'];
+				const outgoing_avatar = data['outgoing_avatars'];
 				const incoming = data['incoming'];
+				const incoming_avatar = data['incoming_avatars'];
 				if (type === 'added')
 				{
 					if (friends.length === 0)
 						template += '<p class="%empty-c">%empty-t</p>';
-					for (const friend of friends)
-						template += friend_generate(friend, 'offline', 'added');
+					for (let i = 0; i < friends.length; i++)
+					{
+						template += friend_generate(
+							friends[i], 'offline', 'added', friends_avatar[i]
+						);
+					}
 				}
 				else if (type === 'pending')
 				{
 					if (outgoing.length === 0 && incoming.length === 0)
 						template += '<p class="%empty-c">%empty-t</p>';
-					for (const friend of outgoing)
-						template += friend_generate(friend, 'pending', 'request-out');
-					for (const friend of incoming)
-						template += friend_generate(friend, 'pending', 'request-in');
+					for (let i = 0; i < outgoing.length; i++)
+					{
+						template += friend_generate(
+							outgoing[i], 'pending', 'request-out', outgoing_avatar[i]
+						);
+					}
+					for (let i = 0; i < incoming.length; i++)
+					{
+						template += friend_generate(
+							incoming[i], 'pending', 'request-in', incoming_avatar[i]
+						);
+					}
 				}
 				else if (type === 'blocked')
 				{
 					if (blocked.length === 0)
 						template += '<p class="%empty-c">%empty-t</p>';
-					for (const friend of blocked)
-						template += friend_generate(friend, 'blocked', 'blocked');
+					for (let i = 0; i < blocked.length; i++)
+					{
+						template += friend_generate(
+							blocked[i], 'offline', 'blocked', blocked_avatar[i]
+						);
+					}
 				}
 				return template;
 			}
