@@ -7,6 +7,8 @@ from .serializers import RoomModelSerializer
 from django.db import transaction
 from django.db.models import F
 from django.contrib.auth.models import User
+from user_profiles.models import Profile
+from urllib.parse import urljoin
 
 # xxx_room
 class LobbyConsumer(WebsocketConsumer):
@@ -314,6 +316,11 @@ class GameRoomConsumer(WebsocketConsumer):
         capacity = 'full' if in_room_count == MAX_PVP_MEMBERS else 'not_full'
         room = async_to_sync(self.get_room_object)()
         is_host = async_to_sync(self.is_host)()
+        members_profile_data = Profile.objects.filter(user__username__in=members)
+        #avatars = {member_profile.user.username: self.scope['request'].build_absolute_uri(member_profile.avatar.url) for member_profile in members_profile_data}
+        host_header = dict(self.scope['headers']).get(b'host', b'').decode('utf-8')
+        avatars = {member_profile.user.username: urljoin(f'https://{host_header}', member_profile.avatar.url) for member_profile in members_profile_data}
+
         self.send(text_data=json.dumps({
             'type': event['update_type'],
             'members': members,
@@ -321,7 +328,8 @@ class GameRoomConsumer(WebsocketConsumer):
             'capacity': capacity,
             'details': room,
             'is_host': is_host,
-            'person': event['person']
+            'person': event['person'],
+            'avatar_urls': avatars
         }))
 
     def room_disband(self, event):
