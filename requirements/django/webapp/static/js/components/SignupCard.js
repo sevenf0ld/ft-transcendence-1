@@ -143,10 +143,10 @@ class SignupCard
 			await this.alert_div.alert_render();
 			await new Promise(r => setTimeout(r, 1000));
 
-			let string_alert = '\nAn activation link has been';
-			string_alert += ' sent to your email. Only confirmed';
-			string_alert += ' emails will be able to login.';
-			await alert(string_alert);
+			//let string_alert = '\nAn activation link has been';
+			//string_alert += ' sent to your email. Only confirmed';
+			//string_alert += ' emails will be able to login.';
+			//await alert(string_alert);
 
 			await this.alert_div.alert_clear();
 			await this.alert_div.setType('alert-warning');

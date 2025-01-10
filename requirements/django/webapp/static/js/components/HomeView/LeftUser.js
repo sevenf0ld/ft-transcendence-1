@@ -61,6 +61,7 @@ class LeftUser
 		if (!type || type !== 'append' && type !== 'replace')
 			throw new Error('[ERR] invalid render type');
 
+		this.home_pfp = '/static/assets/images/default-pfp.png';
 		const template = await this.init_template();
 
 		if (type === 'append')
