@@ -398,7 +398,6 @@ class websocketManager
 				console.log('DISBANDED ROOM DETAILS: ', data);
 				alert(data.message);
 				await this.updateSocket_friendList('leave');
-				//await this.closeSocket_game();
 				await this.closeSocket_lobby();
 				const HOME = HOME_VIEW;
 				await HOME.render();
@@ -439,7 +438,6 @@ class websocketManager
 			if (data.type === `game_end`)
 			{
 				await this.updateSocket_friendList('leave');
-				//await this.closeSocket_game();
 				await this.closeSocket_lobby();
 				const HOME = HOME_VIEW;
 				await HOME.render();

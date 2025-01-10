@@ -35,6 +35,8 @@ class Announcer
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.gameType = null;
+		this.rid = null;
+		this.host = null;
 	}
 
 	async init()
@@ -47,6 +49,8 @@ class Announcer
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.gameType = null;
+		this.rid = null;
+		this.host = null;
 		return true;
 	}
 
@@ -577,6 +581,8 @@ class Announcer
 		{
 			const roomId = `Room ID: ${data.details.room_id}`;
 			room_id.innerHTML = roomId;
+			this.host = data.details.host;
+			this.rid = data.details.room_id;
 			const member_name = data.person;
 			await this.announce(`${member_name} has joined the room.`);
 		}

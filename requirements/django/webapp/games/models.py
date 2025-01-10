@@ -14,12 +14,6 @@ class Match(models.Model):
         null=True
     )
 
-    started = models.BooleanField(
-        default=False,
-        blank=True,
-        null=True
-    )
-
     p1 = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -35,10 +29,6 @@ class Match(models.Model):
         blank=True,
         null=True
     )
-
-    s1 = models.PositiveIntegerField(default=0)
-
-    s2 = models.PositiveIntegerField(default=0)
 
     winner = models.ForeignKey(
         User,
@@ -56,6 +46,17 @@ class Match(models.Model):
 
     def __str__(self):
         return f'{self.p1.username} vs {self.p2.username}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.p1:
+            gh1, created = GameHistory.objects.get_or_create(user=self.p1)
+            gh1.matches.add(self)
+        
+        if self.p2:
+            gh2, created = GameHistory.objects.get_or_create(user=self.p2)
+            gh2.matches.add(self)
 
 # multiple rounds of PVP
 class Tournament(models.Model):
