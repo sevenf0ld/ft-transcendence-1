@@ -146,7 +146,6 @@ class BotChatBox
 			const pfp_name = splitted_url[1];
 			if (pfp_name !== 'default.jpg')
 				BOT_FRIEND_PFP.friend_pfp = avatar_url;
-			console.error(BOT_FRIEND_PFP.friend_pfp);
 			await BOT_FRIEND_PFP.render('replace');
 		}
 		else

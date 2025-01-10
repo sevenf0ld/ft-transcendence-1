@@ -257,6 +257,12 @@ class ModalSetItems
 		return true;
 	}
 
+	async render_update_pfp(url)
+	{
+		const pfp = document.getElementById('img_pfp');
+		pfp.src = url;
+	}
+
 	async push_important_elements_acc()
 	{
 		this.buttons['acc-submit'] = document.getElementById('btn_acc_submit');
@@ -487,6 +493,8 @@ class ModalSetItems
 			'click', async (e) => {await this.removeClick(e);}
 		);
 
+		await this.render_update_pfp(LEFT_USER.home_pfp);
+
 		return true;
 	}
 
@@ -574,7 +582,16 @@ class ModalSetItems
 			const data = await response.json();
 			if (response.ok)
 			{
-				alert('Profile avatar uploaded successfully');
+				console.log('response : ', data.avatar_url);
+				const avatar_url = data.avatar_url;
+				const splitted_url = avatar_url.split('/avatars/');
+				const pfp_name = splitted_url[1];
+				if (pfp_name !== 'default.jpg')
+					LEFT_USER.home_pfp = avatar_url;
+				else
+					LEFT_USER.home_pfp = '/static/assets/images/default-pfp.png';
+
+				await this.render_update_pfp(LEFT_USER.home_pfp);
 				let parent_html = document.querySelector('.ct-main-lpanel');
 				LEFT_USER.container = parent_html;
 				await LEFT_USER.render('replace');
@@ -598,23 +615,29 @@ class ModalSetItems
 		event.preventDefault();
 		console.log('[BTN] removeClick');
 
-		await FETCH_UTILS.init();
-		const mainFetch = FETCH_UTILS;
-		await mainFetch.getCookie('csrftoken');
-		await mainFetch.setUrl('/api/user_profiles/remove-avatar/');
-		await mainFetch.setMethod('DELETE');
-		await mainFetch.appendHeaders('Content-Type', 'application/json');
-		await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
-		await mainFetch.fetchData();
-
-		if (mainFetch.robject.status === 204)
-			alert('Profile picture removed. Set to default.');
-		else
-			alert(mainFetch.rdata.details);
 		const confirm_remove = confirm('Are you sure you want to reset to default profile picture?');
 		if (confirm_remove)
 		{
-			alert('done, waiting backend to implement');
+			await FETCH_UTILS.init();
+			const mainFetch = FETCH_UTILS;
+			await mainFetch.getCookie('csrftoken');
+			await mainFetch.setUrl('/api/user_profiles/remove-avatar/');
+			await mainFetch.setMethod('DELETE');
+			await mainFetch.appendHeaders('Content-Type', 'application/json');
+			await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+			await mainFetch.fetchData();
+
+			if (mainFetch.robject.status === 204)
+			{
+				LEFT_USER.home_pfp = '/static/assets/images/default-pfp.png';
+				await this.render_update_pfp(LEFT_USER.home_pfp);
+				let parent_html = document.querySelector('.ct-main-lpanel');
+				LEFT_USER.container = parent_html;
+				await LEFT_USER.render('replace');
+				this.file = null;
+			}
+			else
+				alert(mainFetch.rdata.details);
 		}
 
 		return true;
