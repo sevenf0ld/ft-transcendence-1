@@ -108,9 +108,20 @@ services:
       depends_on:
         - elasticsearch
       volumes:
+        #- ./requirements/kibana/tools/init.sh:/usr/local/bin/init.sh
         - ./requirements/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
       networks:
         - net_trans
+
+          #kibana_setup:
+          #  build:
+          #    context: ./requirements/kibana/.
+          #  depends_on:
+          #    - kibana
+          #  volumes:
+          #    - ./requirements/kibana/tools/init.sh:/usr/local/bin/init.sh
+          #  networks:
+          #   - net_trans
 
 volumes:
 
