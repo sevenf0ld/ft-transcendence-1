@@ -310,43 +310,63 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
+# https://docs.python.org/3/library/logging.html#logrecord-attributes
+# https://docs.djangoproject.com/en/5.1/topics/logging/#configuring-logging
+# https://docs.djangoproject.com/en/2.0/topics/logging/#django-request
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        'json': {
+            'format': '{"time": "%(asctime)s", "name": "%(name)s", "level": "%(levelname)s", "message": "%(message)s"}',
         },
         'simple': {
-            'format': '%(levelname)s %(message)s'
+            'format': '%(levelname)s %(message)s',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
         },
     },
     'handlers': {
         'console': {
             'level': 'INFO',
+            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
         'logstash': {
-            'level': 'WARNING',
+            'level': 'INFO',
             'class': 'logstash.TCPLogstashHandler',
             'host': 'localhost',
             'port': 5000,
             'version': 1,
-            'message_type': 'django_logstash',
+            'message_type': 'logstash',
             'fqdn': False,
             'tags': ['django.request'], 
         },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': '/tmp/trans.log',
+            'formatter': 'json',
+        },
     },
     'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': True,
-        },
         'django.request': {
-            'handlers': ['logstash'],
-            'level': 'WARNING',
+            'handlers': ['console', 'logstash', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['console', 'logstash', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'channels': {
+            'handlers': ['console', 'logstash', 'file'],
+            'level': 'INFO',
             'propagate': True,
         },
     }

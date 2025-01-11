@@ -1,3 +1,5 @@
+# https://github.com/elastic/kibana/blob/main/config/kibana.yml
+
 server.name: kibana
 server.host: "0"
 elasticsearch.url: http://elasticsearch:9200

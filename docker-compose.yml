@@ -33,6 +33,7 @@ services:
         - ./requirements/django/webapp/:/django/
         - ./requirements/django/webapp/staticfiles/:/django/staticfiles
         - ./requirements/django/webapp/media/:/django/media
+        - ./LOGGER/:/tmp/
       networks:
         - net_trans
 
@@ -94,6 +95,7 @@ services:
       volumes:
         - ./requirements/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
         - ./requirements/logstash/pipeline:/usr/share/logstash/pipeline:ro
+        - ./LOGGER/:/tmp/
       environment:
         LS_JAVA_OPTS: "-Xmx1g -Xms1g"
       networks:
