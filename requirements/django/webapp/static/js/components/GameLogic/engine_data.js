@@ -24,6 +24,7 @@ class engineData
 		this.obj_paddle();
 		this.obj_player();
 		this.init_match();
+		this.obj_ai();
 	}
 
 	async reset()
@@ -34,6 +35,7 @@ class engineData
 		this.obj_paddle();
 		this.obj_player();
 		this.init_match();
+		this.obj_ai();
 
 		return true;
 	}
@@ -88,6 +90,29 @@ class engineData
 		return true;
 	}
 
+	async obj_ai()
+	{
+		this.ai =
+		{
+			// reads relavant data every 1 second
+			read_ball_y: null,
+			read_ball_x: null,
+			read_ball_dx: null,
+			read_ball_dy: null,
+			last_read_time: null,
+			read_interval: 1000,
+			// moves like a human's keydown event
+			predicted_y: this.display.cen_y,
+			last_move_time: null,
+			move_interval: 10,
+			reached: false,
+			// have error margin like a human
+			difficulty: null,
+			error_margin: null,
+		};
+
+	}
+
 	async obj_paddle()
 	{
 		this.paddle =
@@ -131,19 +156,6 @@ class engineData
 		
 		this.player2.x = this.display.w - this.paddle.dist_wall;
 		this.player2.y = this.display.cen_y;
-
-		this.ai =
-		{
-			algor_y: this.display.cen_y,
-			start_time: null,
-			update_interval: 1000,
-			last_move_time: null,
-			move_interval: 10,
-			reached: false,
-			// 2 - 10 highest difficulty
-			difficulty: null,
-			error_margin: null,
-		};
 
 		return true;
 	}
