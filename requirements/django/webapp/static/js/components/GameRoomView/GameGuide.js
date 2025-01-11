@@ -447,7 +447,7 @@ class GameGuide
 		${await this.inst_list_generator('Game Goal', 'Hit the ball to the opponent\'s side (best of 1)')}
 		${await this.inst_list_generator('Game Objective', 'Player against AI')}
 		${await this.inst_list_generator('Game System', 'Match will not be recorded')}
-		${await this.inst_list_generator('Difficulty', 'Random (0.0 - 3.0)')}
+		${await this.inst_list_generator('Difficulty', 'Random')}
 		`;
 		// [B] SET atts
 		const atts =

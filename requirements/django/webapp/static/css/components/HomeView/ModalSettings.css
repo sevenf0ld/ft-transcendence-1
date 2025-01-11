@@ -62,6 +62,7 @@
 #modal-settings .ct-set-acc-ctn .ct-set-acc-form .ct-set-acc-display
 {
 	color: #838383;
+	min-height: 1rem;
 }
 
 #modal-settings .ct-set-acc-ctn .ct-set-acc-form .ct-set-acc-display.ct-set-acc-dis-email
