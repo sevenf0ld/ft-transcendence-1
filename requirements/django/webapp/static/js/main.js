@@ -10,6 +10,7 @@ import './core/toolkits/bootstrap.bundle.js';
 import LOGIN_VIEW from './views/LoginView.js';
 import * as FETCH from './components/LoginCard_fetch.js';
 import LOGOUT from './core/logout.js';
+import GLANG from './core/toolkits/glang.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -25,6 +26,7 @@ async function main()
 	await ROUTER.check_first_tab_or_reload();
 	await ROUTER.local_storage_listener('login');
 	await ROUTER.local_storage_listener('logout');
+	await GLANG.run();
 
 	return true;
 }

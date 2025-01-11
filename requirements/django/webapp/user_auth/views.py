@@ -243,7 +243,6 @@ def update_user_password(request):
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([JWTCookieAuthentication])
 def update_user_mfa(request):
     user = request.user
 
