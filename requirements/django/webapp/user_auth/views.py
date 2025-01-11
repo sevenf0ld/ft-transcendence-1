@@ -228,7 +228,7 @@ def update_user_password(request):
     if new_pw != confirm_pw:
         return Response({'details': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
     if not is_current_password(user, current_pw):
-        return Response({'details': 'Bad password.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'details': 'Invalid current password.'}, status=status.HTTP_400_BAD_REQUEST)
     if is_current_password(user, new_pw):
         return Response({'details': 'New password same as old password.'}, status=status.HTTP_400_BAD_REQUEST)
     invalidity = is_valid_password(user, new_pw)
