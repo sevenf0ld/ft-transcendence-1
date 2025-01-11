@@ -240,10 +240,10 @@ class GameRoomConsumer(WebsocketConsumer):
                 }
             )
             if async_to_sync(self.rid_get_room_object(text_json['rid'])) is not None and self.user.username == text_json['host']:
-                print('GAME END', text_json['rid'], text_json['host'])
-                print('UHHUHUHUIDBUKBDSK')
                 self.create_match_object(text_json['winner'], text_json['rid'])
                 self.rid_delete_room_object(text_json['rid'])
+                self.increment_profile_wins(text_json['winner'])
+                self.decrement_profile_losses(text_json['loser'])
 
     #=======================================================#
     #               ASYNC - CHANNEL LAYER COMMUNICATION
@@ -306,6 +306,15 @@ class GameRoomConsumer(WebsocketConsumer):
             }
         )
 
+    @transaction.atomic
+    def increment_profile_wins(self, winner):
+        profile = Profile.objects.select_for_update().get(user__username__iexact=winner)
+        Profile.objects.filter(user__username__iexact=winner).update(wins=F('wins') + 1)
+
+    @transaction.atomic
+    def decrement_profile_losses(self, loser):
+        profile = Profile.objects.select_for_update().get(user__username__iexact=loser)
+        Profile.objects.filter(user__username__iexact=loser).update(losses=F('losses') + 1)
 
     #=======================================================#
     #              EVENTS BY CONSUMER
@@ -403,7 +412,6 @@ class GameRoomConsumer(WebsocketConsumer):
         return False
 
     def create_match_object(self, winner, rid):
-        print('CREATTING MATCH')
         room = async_to_sync(self.rid_get_room_object)(rid)
         host_data = User.objects.get(username=room.host)
         members = list(self.in_room[self.group_id])

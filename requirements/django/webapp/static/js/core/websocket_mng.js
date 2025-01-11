@@ -379,7 +379,6 @@ class websocketManager
 
 			if (data.type === 'joined_room')
 			{
-				console.log('MEMBER JOINED ROOM DETAILS: ', data);
 				await ACTION_PANEL.opvp_live_update(data);
 				await ANNOUNCER.opvp_live_update(data);
 				await ROOM_LIST.opvp_live_update(data);
@@ -387,7 +386,6 @@ class websocketManager
 			}
 			if (data.type === 'left_room')
 			{
-				console.log('MEMBER LEFT ROOM DETAILS: ', data);
 				await ACTION_PANEL.opvp_live_update(data);
 				await ANNOUNCER.opvp_live_update(data);
 				await ROOM_LIST.opvp_live_update(data);
@@ -395,7 +393,6 @@ class websocketManager
 			}
 			if (data.type === 'disbanded_room')
 			{
-				console.log('DISBANDED ROOM DETAILS: ', data);
 				alert(data.message);
 				await this.updateSocket_friendList('leave');
 				await this.closeSocket_lobby();
@@ -408,7 +405,6 @@ class websocketManager
 			}
 			if (data.type === 'started_game')
 			{
-				console.log('GAME HAS STARTED: ', data);
 				await ACTION_PANEL.opvp_live_update(data);
 				await ANNOUNCER.opvp_live_update(data);
 				await ROOM_LIST.opvp_live_update(data);
@@ -416,7 +412,6 @@ class websocketManager
 			}
 			if (data.type === 'pre_game')
 			{
-				console.log('PRE GAME DETAILS: ', data);
 				EG_DATA.ball.dy = data.dy;
 				EG_DATA.ball.dx = data.dx;
 				requestAnimationFrame(EG_RENDER.game_loop.bind(EG_RENDER));
