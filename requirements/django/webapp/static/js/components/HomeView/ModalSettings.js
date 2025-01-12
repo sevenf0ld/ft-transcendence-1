@@ -6,6 +6,7 @@
 // importing-external
 // -------------------------------------------------- //
 import MODAL_SETTINGS_ITEMS from './ModalSetItems.js';
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -120,6 +121,7 @@ class ModalSettings
 
 		MODAL_SETTINGS_ITEMS.container = this.container;
 		await MODAL_SETTINGS_ITEMS.render_language('replace');
+		await LANGUAGE.updateContent('modal-settings-lang');
 
 		return true;
 	}
@@ -134,6 +136,7 @@ class ModalSettings
 
 		MODAL_SETTINGS_ITEMS.container = this.container;
 		await MODAL_SETTINGS_ITEMS.render_account('replace');
+		await LANGUAGE.updateContent('modal-settings-acc');
 
 		return true;
 	}
@@ -148,6 +151,7 @@ class ModalSettings
 
 		MODAL_SETTINGS_ITEMS.container = this.container;
 		await MODAL_SETTINGS_ITEMS.render_pfp('replace');
+		await LANGUAGE.updateContent('modal-settings-pfp');
 
 		return true;
 	}
@@ -163,6 +167,7 @@ class ModalSettings
 		MODAL_SETTINGS_ITEMS.container = this.container;
 		const result = MODAL_SETTINGS_ITEMS.get_tfa_status();
 		await MODAL_SETTINGS_ITEMS.render_2fa('replace');
+		await LANGUAGE.updateContent('modal-settings-tfa');
 
 		return true;
 	}

@@ -11,6 +11,7 @@ import TNM_LOGIC from '../GameLogic/tnm_logic.js';
 import ROUTER from '../../core/router.js';
 import EG_UTILS from '../GameLogic/engine_utils.js';
 import LEFT_USER from '../HomeView/LeftUser.js';
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -310,9 +311,9 @@ class RoomList
 		const count_ctn = this.roomTitle;
 
 		if (count_ctn && count_ctn.dataset.roomType === 'pvp')
-			count_ctn.innerHTML = `Room List (${count}/2)`;
+			count_ctn.innerHTML = `Room List`;
 		else if (count_ctn && count_ctn.dataset.roomType === 'tour')
-			count_ctn.innerHTML = `Room List (${count}/5)`;
+			count_ctn.innerHTML = `Room List`;
 
 		return true;
 	}
@@ -708,6 +709,7 @@ class RoomList
 		{
 			// room title
 			room_list_title.innerHTML = `Room List (${data.num}/2)`;
+			await LANGUAGE.updateContent('opvp');
 
 			lobby_ctn.innerHTML = '';
 			for (const player of data.members)

@@ -296,8 +296,8 @@ class ActionPanel
 		// [-] HELPER FUNCTION
 		// [A] TEMPLATE
 		let template = `
-			<button @att1 @att2 @att3>@text1</button>
-			<button @att4 @att5 @att6>@text2</button>
+			<button @att1 @att2 @att3 @lang1>@text1</button>
+			<button @att4 @att5 @att6 @lang2>@text2</button>
 		`;
 		// [B] SET atts
 		const atts =
@@ -310,6 +310,8 @@ class ActionPanel
 			'@att5': 'class="btn-lpvp-restart ct-btn-neau d-none"',
 			'@att6': 'type="button"',
 			'@text2': 'Restart Game',
+			'@lang1': 'data-i18n="btn_start"',
+			'@lang2': 'data-i18n="btn_restart"',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
@@ -459,8 +461,8 @@ class ActionPanel
 		// [-] HELPER FUNCTION
 		// [A] TEMPLATE
 		let template = `
-		<button @att01 @att02 @att03>@text01</button>
-		<button @att07 @att08 @att09>@text03</button>
+		<button @att01 @att02 @att03 @lang1>@text01</button>
+		<button @att07 @att08 @att09 @lang2>@text03</button>
 		`;
 		// [B] SET atts
 		const atts =
@@ -473,6 +475,8 @@ class ActionPanel
 			'@att08': 'class="btn-ltour-add ct-btn-neau"',
 			'@att09': 'type="button" data-bs-toggle="modal" data-bs-target="#modal-ltour-add"',
 			'@text03': 'Add Player',
+			'@lang1': 'data-i18n="btn_start"',
+			'@lang2': 'data-i18n="btn_add"',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
@@ -660,8 +664,8 @@ class ActionPanel
 		// [-] HELPER FUNCTION
 		// [A] TEMPLATE
 		let template = `
-		<button @att1 @att2 @att3>@text1</button>
-		<button @att4 @att5 @att6>@text2</button>
+		<button @att1 @att2 @att3 @lang1>@text1</button>
+		<button @att4 @att5 @att6 @lang2>@text2</button>
 		`;
 		// [B] SET atts
 		const atts =
@@ -674,6 +678,8 @@ class ActionPanel
 			'@att5': 'class="btn-lpve-restart ct-btn-neau d-none"',
 			'@att6': 'type="button"',
 			'@text2': 'Restart Game',
+			'@lang1': 'data-i18n="btn_start"',
+			'@lang2': 'data-i18n="btn_restart"',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
@@ -797,7 +803,7 @@ class ActionPanel
 		// [-] HELPER FUNCTION
 		// [A] TEMPLATE
 		let template = `
-		<button @att1 @att2 @att3>@text1</button>
+		<button @att1 @att2 @att3 @lang1>@text1</button>
 		`;
 
 		// [B] SET atts
@@ -807,6 +813,7 @@ class ActionPanel
 			'@att2': 'class="btn-opvp-start ct-btn-neau"',
 			'@att3': 'type="button"',
 			'@text1': 'Start',
+			'@lang1': 'data-i18n="btn_start"',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);

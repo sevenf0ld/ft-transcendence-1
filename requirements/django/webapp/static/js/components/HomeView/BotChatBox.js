@@ -9,7 +9,8 @@ import FETCH from './BotFriendPfp_fetch.js';
 import BOT_FRIEND_PFP from './BotFriendPfp.js';
 import WS_MANAGER from '../../core/websocket_mng.js';
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
-import CR_FETCH from './CreateRoom_fetch.js'
+import CR_FETCH from './CreateRoom_fetch.js';
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -147,6 +148,7 @@ class BotChatBox
 			if (pfp_name !== 'default.jpg')
 				BOT_FRIEND_PFP.friend_pfp = avatar_url;
 			await BOT_FRIEND_PFP.render('replace');
+			await LANGUAGE.updateContent('fn-pfp');
 		}
 		else
 		{
@@ -282,6 +284,10 @@ class BotChatBox
 		{
 			ctn.scrollTop = ctn.scrollHeight;
 		}
+
+		await LANGUAGE.updateContent('chatbox-ctn');
+
+		return true;
 	}
 
 	async roomName_generator(sender, target)

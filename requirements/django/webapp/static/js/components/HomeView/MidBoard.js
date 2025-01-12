@@ -9,6 +9,7 @@ import MODAL_ROOM_JOIN from './ModalRoomJoin.js';
 import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 import WEB_SOCKET from '../../core/websocket_mng.js';
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -127,6 +128,7 @@ class MidBoard
 		await gameRoom.init();
 		gameRoom.type = 'local-pve';
 		await gameRoom.render();
+		await LANGUAGE.updateContent("game-room");
 
 		return true;
 	}
@@ -142,7 +144,8 @@ class MidBoard
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-pvp';
-		gameRoom.render();
+		await gameRoom.render();
+		await LANGUAGE.updateContent("game-room");
 
 		return true;
 	}
@@ -158,7 +161,8 @@ class MidBoard
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-tour';
-		gameRoom.render();
+		await gameRoom.render();
+		await LANGUAGE.updateContent("game-room");
 
 		return true;
 	}
@@ -178,6 +182,7 @@ class MidBoard
 		MODAL_ROOM_JOIN.container = modata;
 		MODAL_ROOM_JOIN.gameType = 'online-pvp';
 		await MODAL_ROOM_JOIN.render('replace');
+		await LANGUAGE.updateContent("modal-roomjoin");
 
 		// list room list
 		await WEB_SOCKET.initSocket_lobby();
@@ -298,13 +303,13 @@ class MidBoard
 		let template = `
 		<div class="%main-1c %main-2c">
 			<div class="%sec-1c %sec-2c">
-				<h3>Online</h3>
+				<h3 @lang1>Online</h3>
 				<div class="%bg-c">
 					<button id="%btn4-d" @att1 @att2>%btn4-t</button>
 				</div>
 			</div>
 			<div class="%sec-1c %sec-2c">
-				<h3>Local</h3>
+				<h3 @lang2>Local</h3>
 				<div class="%bg-c">
 					<button id="%btn1-d" @att1>%btn1-t</button>
 					<button id="%btn2-d" @att1>%btn2-t</button>
@@ -331,6 +336,8 @@ class MidBoard
 			'%btn2-t': 'PVP',
 			'%btn3-t': 'Tournament',
 			'%btn4-t': 'PVP',
+			'@lang1': 'data-i18n="online"',
+			'@lang2': 'data-i18n="local"',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);

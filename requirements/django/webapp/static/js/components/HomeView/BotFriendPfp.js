@@ -5,6 +5,8 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
+import MODAL_HISTORY from './ModalHistory.js';
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -126,13 +128,19 @@ class BotFriendPfp
 		event.preventDefault();
 		console.log('[BTN] historyClick');
 
-		return true;
-	}
-	// --------------------------------------------- //
-	// BOOSTRAP-MODAL-RELATED
-	// --------------------------------------------- //
-	async bind_modals()
-	{
+		let parent_div, parent_hd, parent_bd;
+		parent_div = document.querySelector('#modal-history');
+		parent_hd = parent_div.querySelector('.modal-title');
+		parent_bd = parent_div.querySelector('.modal-body');
+
+		parent_bd.innerHTML = '';
+		const user = this.username;
+		parent_hd.innerHTML = `${user}'s Match History`;
+
+		MODAL_HISTORY.container = parent_bd;
+		await MODAL_HISTORY.render('replace');
+		await LANGUAGE.updateContent('modal-history');
+
 		return true;
 	}
 	// --------------------------------------------- //
@@ -238,10 +246,10 @@ class BotFriendPfp
 		// [A] TEMPLATE
 		let template = `
 		<div class="%main-c">
-			<div class="%lst-c">%win-t</div>
-			<div class="%lst-c">%lose-t</div>
-			<div class="%lst-c">%total-t</div>
-			<div class="%lst-c">%winrate-t</div>
+			<div class="%lst-c" @lang1>%win-t</div>
+			<div class="%lst-c" @lang2>%lose-t</div>
+			<div class="%lst-c" @lang3>%total-t</div>
+			<div class="%lst-c" @lang4>%winrate-t</div>
 		</div>
 		`
 		// [B] SET atts
@@ -253,6 +261,10 @@ class BotFriendPfp
 			'%lose-t': this.losses,
 			'%total-t': this.total,
 			'%winrate-t': this.win_rate,
+			'@lang1': `data-i18n="fn-pfp-win"`,
+			'@lang2': `data-i18n="fn-pfp-loss"`,
+			'@lang3': `data-i18n="fn-pfp-total"`,
+			'@lang4': `data-i18n="fn-pfp-winrate"`,
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
@@ -287,6 +299,14 @@ class BotFriendPfp
 
 		// [C] HTML RETURN
 		return template;
+	}
+
+	// --------------------------------------------- //
+	// [A] BOOSTRAP-MODAL-RELATED
+	// --------------------------------------------- //
+	async bind_modals()
+	{
+		return true;
 	}
 }
 

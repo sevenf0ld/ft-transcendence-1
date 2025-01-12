@@ -15,6 +15,7 @@ import PAGE_TITLE from '../core/helpers/PageTitle.js';
 import MEDIA_LAYOUT from '../layouts/MediaLayout.js';
 import WEB_SOCKET from '../core/websocket_mng.js';
 import ROUTER from '../core/router.js';
+import LANGUAGE from '../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -72,6 +73,8 @@ class HomeView
 		await WEB_SOCKET.initSocket_invite_receive();
 		await WEB_SOCKET.connectSocket_invite_receive();
 		await WEB_SOCKET.listenSocket_invite_receive();
+
+		await LANGUAGE.updateContent('home');
 
 		return true;
 	}

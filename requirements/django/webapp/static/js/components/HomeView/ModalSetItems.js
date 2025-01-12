@@ -11,9 +11,8 @@ import * as FORM_VALI_SU from '../../core/helpers/formVali-su.js';
 import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 import LEFT_USER from './LeftUser.js';
 import * as LOADING from '../../core/helpers/loading.js';
-import GOOGLE_TRANSLATE from '../../core/toolkits/glang.js';
+import LANGUAGE from '../../core/language/language.js';
 import HOME_VIEW from '../../views/HomeView.js';
-
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -137,7 +136,8 @@ class ModalSetItems
 		console.log('[BTN] englishClick');
 
 		await this.fetch_lang('EN');
-		await GOOGLE_TRANSLATE.change('english');
+		await LANGUAGE.changeLanguage('en');
+		await LANGUAGE.updateContent('home');
 
 		return true;
 	}
@@ -148,7 +148,8 @@ class ModalSetItems
 		console.log('[BTN] malayClick');
 
 		await this.fetch_lang('MY');
-		await GOOGLE_TRANSLATE.change('malay');
+		await LANGUAGE.changeLanguage('my');
+		await LANGUAGE.updateContent('home');
 
 		return true;
 	}
@@ -159,7 +160,8 @@ class ModalSetItems
 		console.log('[BTN] chineseClick');
 
 		await this.fetch_lang('ZH');
-		await GOOGLE_TRANSLATE.change('chinese');
+		await LANGUAGE.changeLanguage('zh');
+		await LANGUAGE.updateContent('home');
 
 		return true;
 	}
@@ -226,9 +228,9 @@ class ModalSetItems
 			'@att1': 'id="btn_lang_en" data-bs-dismiss="modal"',
 			'@att2': 'English',
 			'@att3': 'id="btn_lang_my" data-bs-dismiss="modal"',
-			'@att4': 'Malay',
+			'@att4': 'Bahasa',
 			'@att5': 'id="btn_lang_cn" data-bs-dismiss="modal"',
-			'@att6': 'Chinese',
+			'@att6': '中文',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
@@ -425,9 +427,9 @@ class ModalSetItems
 		let template = `
 		<div class="%main-c1">
 			<form class="%fm-c1">
-				<div class="%dp-c1">%dp-t1</div>
-				<div class="%dp-c1">%dp-ta1</div>
-				<div class="%dp-c1 %email" @emtt>%dp-t2</div>
+				<div class="%dp-c1" @lang1>%dp-t1</div>
+				<div class="%dp-c1" @lang2>%dp-ta1</div>
+				<div class="%dp-c1 %email" @lang3 @emtt>%dp-t2</div>
 				${await html_input('Current Password', 'input_acc_cur_pass', 'password')}
 				${await html_input('New Password', 'input_acc_new_pass', 'password')}
 				${await html_input('Confirm Password', 'input_acc_conf_pass','password')}
@@ -452,6 +454,9 @@ class ModalSetItems
 			'@btn1': '',
 			'@att1': `class="alert d-none"`,
 			'@att2': `role="alert" id="alert_set_acc"`,
+			'@lang1': 'data-i18n="acc-username"',
+			'@lang2': 'data-i18n="acc-password"',
+			'@lang3': 'data-i18n="acc-email"',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);

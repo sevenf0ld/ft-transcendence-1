@@ -8,6 +8,7 @@
 import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 import LOGOUT from '../../core/logout.js';
 import ROUTE from '../../core/router.js';
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -25,6 +26,7 @@ class fetch_logout
 		this.re_value = '';
 		this.fetch_obj = null;
 		this.tfa_is_enabled = null;
+		this.language = null;
 	}
 
 	async init()
@@ -32,6 +34,7 @@ class fetch_logout
 		this.re_value = '';
 		this.fetch_obj = null;
 		this.tfa_is_enabled = null;
+		this.language = null;
 
 		return true;
 	}
@@ -99,6 +102,9 @@ class fetch_home_profile
 			if (mainFetch.response.ok)
 			{
 				this.tfa_is_enabled = mainFetch.rdata.mfa_email_enabled;
+				this.language = mainFetch.rdata.language.toLowerCase();
+				LANGUAGE.cur_lang = this.language;
+
 				this.re_value = 'home-profile-successful';
 			}
 			else
