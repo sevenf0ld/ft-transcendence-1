@@ -87,16 +87,16 @@ postgres:
 	docker exec -it postgres /bin/bash
 
 nginx:
-	docker exec it nginx /bin/bash
+	docker exec -it nginx /bin/bash
 
 elasticsearch:
-	docker exec it elasticsearch /bin/bash
+	docker exec -it elasticsearch /bin/bash
 
 logstash:
-	docker exec it logstash /bin/bash
+	docker exec -it logstash /bin/bash
 
 kibana:
-	docker exec it kibana /bin/bash
+	docker exec -it kibana /bin/bash
 
 #======================================#
 #======================================#

@@ -141,6 +141,7 @@ MIDDLEWARE = [
     #'allauth.account.middleware.AccountMiddleware',
     # refresh token in body instead of header
     #'pong.middleware.MoveJWTRefreshCookieIntoTheBody',
+    'pong.middleware.RequestLoggingMiddleware',
 ]
 
 # maiman-m: enable drf authentication
@@ -335,16 +336,16 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
-        'logstash': {
-            'level': 'INFO',
-            'class': 'logstash.TCPLogstashHandler',
-            'host': 'localhost',
-            'port': 5000,
-            'version': 1,
-            'message_type': 'logstash',
-            'fqdn': False,
-            'tags': ['django.request'], 
-        },
+        #'logstash': {
+        #    'level': 'INFO',
+        #    'class': 'logstash.TCPLogstashHandler',
+        #    'host': 'localhost',
+        #    'port': 5000,
+        #    'version': 1,
+        #    'message_type': 'logstash',
+        #    'fqdn': False,
+        #    'tags': ['django.request'], 
+        #},
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
@@ -354,19 +355,16 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['console', 'logstash', 'file'],
+            #'handlers': ['console', 'logstash', 'file'],
+            'handlers': ['console', 'file'],
             'level': 'INFO',
             'propagate': False,
         },
         'django.server': {
-            'handlers': ['console', 'logstash', 'file'],
+            #'handlers': ['console', 'logstash', 'file'],
+            'handlers': ['console', 'file'],
             'level': 'INFO',
             'propagate': False,
-        },
-        'channels': {
-            'handlers': ['console', 'logstash', 'file'],
-            'level': 'INFO',
-            'propagate': True,
         },
     }
 }

@@ -58,3 +58,16 @@ class TokenAuthMiddleware(BaseMiddleware):
                 break
 
         return await super().__call__(scope, receive, send)
+
+import logging
+
+class RequestLoggingMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if response.status_code < 400:
+            logger = logging.getLogger('django.request')
+            logger.info(f'{response.status_code}: {request.method} {request.path}')
+        return response

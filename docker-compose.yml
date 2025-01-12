@@ -69,51 +69,46 @@ services:
       env_file:
         - .env
 
-    elasticsearch:
-      build:
-        context: ./requirements/elasticsearch/.
-      container_name: elasticsearch
-      ports:
-        - "9200:9200"
-        - "9300:9300"
-      volumes:
-        - ./requirements/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-      environment:
-        ES_JAVA_OPTS: "-Xmx1g -Xms1g"
-      networks:
-        - net_trans
+    #elasticsearch:
+    #  image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    #  container_name: elasticsearch
+    #  ports:
+    #    - "9200:9200"
+    #    - "9300:9300"
+    #  volumes:
+    #    - ./requirements/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    #  environment:
+    #    ES_JAVA_OPTS: "-Xms512m -Xms512m"
+    #  networks:
+    #    - net_trans
 
     logstash:
-      build:
-        context: ./requirements/logstash/.
+      image: docker.elastic.co/logstash/logstash:7.14.0
       container_name: logstash
       ports:
         - "5000:5000"
-        - "12201:12201/udp"
       depends_on:
-        - elasticsearch
+        #- elasticsearch
+        - django
       volumes:
         - ./requirements/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
         - ./requirements/logstash/pipeline:/usr/share/logstash/pipeline:ro
         - ./LOGGER/:/tmp/
-      environment:
-        LS_JAVA_OPTS: "-Xmx1g -Xms1g"
       networks:
         - net_trans
 
-    kibana:
-      build:
-        context: ./requirements/kibana/.
-      container_name: kibana
-      ports:
-        - "5601:5601"
-      depends_on:
-        - elasticsearch
-      volumes:
-        #- ./requirements/kibana/tools/init.sh:/usr/local/bin/init.sh
-        - ./requirements/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
-      networks:
-        - net_trans
+    #kibana:
+    #  image: docker.elastic.co/kibana/kibana:7.14.0
+    #  container_name: kibana
+    #  ports:
+    #    - "5601:5601"
+    #  depends_on:
+    #    - elasticsearch
+    #  volumes:
+    #    #- ./requirements/kibana/tools/init.sh:/usr/local/bin/init.sh
+    #    - ./requirements/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    #  networks:
+    #    - net_trans
 
           #kibana_setup:
           #  build:
@@ -124,6 +119,15 @@ services:
           #    - ./requirements/kibana/tools/init.sh:/usr/local/bin/init.sh
           #  networks:
           #   - net_trans
+    #kibana_setup:
+    #  image: curlimages/curl:latest
+    #  command: >
+    #    sh -c "curl -X POST 'http://localhost:5601/api/saved_objects/index-pattern' \
+    #    -H 'Content-Type: application/json' \
+    #    -H 'kbn-version: 6.1.0' \
+    #    -d '{\"attributes\": {\"title\": \"trans-logstash-*\", \"timeFieldName\": \"@timestamp\"}}'"
+    #  depends_on:
+    #    - kibana
 
 volumes:
 
