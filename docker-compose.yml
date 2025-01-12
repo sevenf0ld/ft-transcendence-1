@@ -77,9 +77,9 @@ services:
         - "9300:9300"
       volumes:
         - ./requirements/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-        - ./requirements/elasticsearch/:/usr/share/elasticsearch/data
+        - vol_es:/usr/share/elasticsearch/data
       environment:
-        ES_JAVA_OPTS: "-Xms512m -Xms512m"
+        ES_JAVA_OPTS: "-Xmx1g -Xmx1g"
         discovery.type: single-node
         bootstrap.memory_lock: true
       ulimits:
@@ -149,6 +149,7 @@ volumes:
         type: none
         o: bind
         device: ~/data/vol_pg
+    vol_es:
 
 networks:
   net_trans:
