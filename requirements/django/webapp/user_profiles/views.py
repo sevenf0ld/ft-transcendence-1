@@ -20,7 +20,6 @@ from .utils import is_current_lang
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTCookieAuthentication])
-#@permission_classes([AllowAny])
 def upload_avatar(request):
     user = request.user
     if not user.is_authenticated:
@@ -42,6 +41,8 @@ def upload_avatar(request):
 
 class FriendProfileRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = FriendProfileModelSerializer
+    authentication_classes = [JWTCookieAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_context(self) -> Dict[str, Any]:
         context: Dict[str, Any] = super().get_serializer_context()
@@ -68,6 +69,8 @@ class FriendProfileRetrieveAPIView(generics.RetrieveAPIView):
 class HomeProfileRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileModelSerializer
+    authentication_classes = [JWTCookieAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         profile = Profile.objects.get(user=self.request.user)
@@ -78,8 +81,6 @@ class HomeProfileRetrieveAPIView(generics.RetrieveAPIView):
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([JWTCookieAuthentication])
-#@permission_classes([AllowAny])
 def update_user_language(request):
     user = request.user
     if not user.is_authenticated:
