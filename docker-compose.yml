@@ -70,33 +70,44 @@ services:
         - .env
 
     elasticsearch:
-      image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+      build:
+        context: ./requirements/elasticsearch/.
       container_name: elasticsearch
       ports:
-        - "9200:9200"
-        - "9300:9300"
+        - 9200:9200
+        - 9300:9300
       volumes:
-        - ./requirements/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
         - ./requirements/elasticsearch/:/usr/share/elasticsearch/data
       environment:
-        ES_JAVA_OPTS: "-Xms512m -Xms512m"
+        #ES_JAVA_OPTS: "-Xms512m -Xms512m"
+        node.name: elasticsearch
+        discovery.type: single-node
+        bootstrap.memory_lock: true
+      ulimits:
+        memlock:
+          soft: -1
+          hard: -1
       networks:
         - net_trans
+      restart: unless-stopped
 
     logstash:
-      image: docker.elastic.co/logstash/logstash:7.14.0
+      build:
+        context: ./requirements/elasticsearch/.
       container_name: logstash
       ports:
-        - "5000:5000"
+        - 50000:50000/tcp
+        - 50000:50000/udp
+        - 9600:9600
       depends_on:
-        #- elasticsearch
-        - django
+       - elasticsearch
       volumes:
-        - ./requirements/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-        - ./requirements/logstash/pipeline:/usr/share/logstash/pipeline:ro
         - ./LOGGER/:/tmp/
+      environment:
+        node.name: logstash
       networks:
         - net_trans
+      restart: unless-stopped
 
     #kibana:
     #  image: docker.elastic.co/kibana/kibana:7.14.0
@@ -110,6 +121,7 @@ services:
     #    - ./requirements/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     #  networks:
     #    - net_trans
+    #  restart: unless-stopped
 
           #kibana_setup:
           #  build:
