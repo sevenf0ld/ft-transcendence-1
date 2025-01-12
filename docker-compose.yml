@@ -69,18 +69,19 @@ services:
       env_file:
         - .env
 
-    #elasticsearch:
-    #  image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
-    #  container_name: elasticsearch
-    #  ports:
-    #    - "9200:9200"
-    #    - "9300:9300"
-    #  volumes:
-    #    - ./requirements/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-    #  environment:
-    #    ES_JAVA_OPTS: "-Xms512m -Xms512m"
-    #  networks:
-    #    - net_trans
+    elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+      container_name: elasticsearch
+      ports:
+        - "9200:9200"
+        - "9300:9300"
+      volumes:
+        - ./requirements/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+        - ./requirements/elasticsearch/:/usr/share/elasticsearch/data
+      environment:
+        ES_JAVA_OPTS: "-Xms512m -Xms512m"
+      networks:
+        - net_trans
 
     logstash:
       image: docker.elastic.co/logstash/logstash:7.14.0
