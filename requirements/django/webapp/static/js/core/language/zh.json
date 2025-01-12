@@ -13,11 +13,53 @@
 		},
 		"gb": {
 			"title": "游戏模式",
-			"online": "在线",
+			"online": "线上",
 			"local": "线下",
 			"pvp": "一对一",
 			"pve": "AI对战",
-			"tour": "多人对战"
+			"tour": "多人赛"
+		},
+		"fn": {
+			"title": "好友",
+			"added": "已添加",
+			"pending": "待确认",
+			"blocked": "已拉黑",
+			"add": "添加",
+			"empty": "(空)",
+			"botph": "(占位符)"
+		},
+		"mdset": {
+			"title": "设置",
+			"lang": "语言",
+			"acc": "账户",
+			"pfp": "头像",
+			"tfa": "双重认证",
+			"acc-usern": "用户名",
+			"acc-pass": "密码",
+			"acc-email": "邮箱",
+			"warn": "(内网登录用户不能更新)",
+			"pfp-submit": "确认",
+			"pfp-remove": "移除",
+			"tfa-status": "状态",
+			"tfa-en": "活跃",
+			"tfa-dis": "关闭"
+		},
+		"mdhis": {
+			"title": "对战记录",
+			"won": "胜",
+			"lost": "败",
+			"played": "对手",
+			"pvp": "一对一"
+		},
+		"chat": {
+			"inv": "邀请",
+			"dis": "目前无法聊天",
+			"ph": "在此处输入您的信息",
+			"sys": "系统",
+			"you": "你",
+			"notin": "不在此聊天室内",
+			"isin": "在聊天室内",
+			"xx": "xx"
 		}
 	}
 }

@@ -18,6 +18,48 @@
 			"pvp": "PVP",
 			"pve": "PVE",
 			"tour": "Tournament"
+		},
+		"fn": {
+			"title": "Friends",
+			"added": "Added",
+			"pending": "Pending",
+			"blocked": "Blocked",
+			"add": "Add",
+			"empty": "(Empty)",
+			"botph": "(placeholder)"
+		},
+		"mdset": {
+			"title": "Settings",
+			"lang": "Language",
+			"acc": "Account",
+			"pfp": "Profile Picture",
+			"tfa": "2FA",
+			"acc-usern": "Username",
+			"acc-pass": "Password",
+			"acc-email": "Email",
+			"warn": "(Intra user can't update)",
+			"pfp-submit": "Confirm",
+			"pfp-remove": "Remove",
+			"tfa-status": "Status",
+			"tfa-en": "Enabled",
+			"tfa-dis": "Disabled"
+		},
+		"mdhis": {
+			"title": "Match History",
+			"won": "Won",
+			"lost": "Lost",
+			"played": "Played with",
+			"pvp": "PVP"
+		},
+		"chat": {
+			"inv": "Invite",
+			"dis": "Chat is unavailable",
+			"ph": "Type your message here",
+			"sys": "System",
+			"you": "You",
+			"notin": "is not in the room",
+			"isin": "is in the room",
+			"xx": "xx"
 		}
 	}
 }

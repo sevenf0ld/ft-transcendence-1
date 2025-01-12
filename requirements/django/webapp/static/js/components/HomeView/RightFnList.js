@@ -10,6 +10,7 @@ import BOT_CHATBOX from './BotChatBox.js';
 import MODAL_ADD_FRIEND from './ModalAdd.js';
 import MODAL_FRIEND_OPT from './ModalFnOpt.js';
 import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -222,6 +223,7 @@ class RightFnList
 			BOT_CHATBOX.container = parent_div;
 			BOT_CHATBOX.target = name;
 			await BOT_CHATBOX.render('replace');
+			await LANGUAGE.updateContent('chatbox-ctn');
 		}
 
 		return true;
@@ -485,7 +487,7 @@ class RightFnList
 		<div class="%friend-list-c">
 			<div class="%flist-c">
 				<div class="%flist-title-ctn" data-title="added">
-					<h3 class="%flist-title-c">Added</h3>
+					<h3 class="%flist-title-c" @lang1>Added</h3>
 					<div class="%flist-title-sym-c">-</div>
 				</div>
 				<div class="%flAdd-c">
@@ -494,7 +496,7 @@ class RightFnList
 			</div>
 			<div class="%flist-c">
 				<div class="%flist-title-ctn" data-title="pending">
-					<h3 class="%flist-title-c">Pending</h3>
+					<h3 class="%flist-title-c" @lang2>Pending</h3>
 					<div class="%flist-title-sym-c">-</div>
 				</div>
 				<div class="%flPending-c">
@@ -503,7 +505,7 @@ class RightFnList
 			</div>
 			<div class="%flist-c">
 				<div class="%flist-title-ctn" data-title="blocked">
-					<h3 class="%flist-title-c">Blocked</h3>
+					<h3 class="%flist-title-c" @lang3>Blocked</h3>
 					<div class="%flist-title-sym-c">-</div>
 				</div>
 				<div class="%flBlocked-c">
@@ -526,6 +528,9 @@ class RightFnList
 			'%flBlocked-c': 'category-list-ctn',
 			'%empty-c': 'empty-list',
 			'%empty-t': '(Empty)',
+			'@lang1': 'data-i18n="fn-added"',
+			'@lang2': 'data-i18n="fn-pending"',
+			'@lang3': 'data-i18n="fn-blocked"',
 		};
 
 		for (const key in attributes)

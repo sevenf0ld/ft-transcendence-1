@@ -13,7 +13,6 @@ import LEFT_USER from './LeftUser.js';
 import * as LOADING from '../../core/helpers/loading.js';
 import LANGUAGE from '../../core/language/language.js';
 import HOME_VIEW from '../../views/HomeView.js';
-
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -229,9 +228,9 @@ class ModalSetItems
 			'@att1': 'id="btn_lang_en" data-bs-dismiss="modal"',
 			'@att2': 'English',
 			'@att3': 'id="btn_lang_my" data-bs-dismiss="modal"',
-			'@att4': 'Malay',
+			'@att4': 'Bahasa',
 			'@att5': 'id="btn_lang_cn" data-bs-dismiss="modal"',
-			'@att6': 'Chinese',
+			'@att6': '中文',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);
@@ -428,9 +427,9 @@ class ModalSetItems
 		let template = `
 		<div class="%main-c1">
 			<form class="%fm-c1">
-				<div class="%dp-c1">%dp-t1</div>
-				<div class="%dp-c1">%dp-ta1</div>
-				<div class="%dp-c1 %email" @emtt>%dp-t2</div>
+				<div class="%dp-c1" @lang1>%dp-t1</div>
+				<div class="%dp-c1" @lang2>%dp-ta1</div>
+				<div class="%dp-c1 %email" @lang3 @emtt>%dp-t2</div>
 				${await html_input('Current Password', 'input_acc_cur_pass', 'password')}
 				${await html_input('New Password', 'input_acc_new_pass', 'password')}
 				${await html_input('Confirm Password', 'input_acc_conf_pass','password')}
@@ -455,6 +454,9 @@ class ModalSetItems
 			'@btn1': '',
 			'@att1': `class="alert d-none"`,
 			'@att2': `role="alert" id="alert_set_acc"`,
+			'@lang1': 'data-i18n="acc-username"',
+			'@lang2': 'data-i18n="acc-password"',
+			'@lang3': 'data-i18n="acc-email"',
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);

@@ -67,7 +67,7 @@ class languageClass
 
 	async updateContent(view)
 	{
-		if (!i18next)
+		if (this.resources[this.cur_lang] === undefined)
 		{
 			if (this.time_out === 0)
 				this.time_out = performance.now();
@@ -80,64 +80,293 @@ class languageClass
 		}
 		this.time_out = 0;
 
-		let str;
+		let selector_str;
 		if (view === 'home')
 		{
-			str = '[data-i18n="played"]';
-			document.querySelector(str)
+			selector_str = '[data-i18n="played"]';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.sb.play');
 
-			str = '[data-i18n="wr"]';
-			document.querySelector(str)
+			selector_str = '[data-i18n="wr"]';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.sb.wr');
 
-			str = '[data-i18n="wins"]';
-			document.querySelector(str)
+			selector_str = '[data-i18n="wins"]';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.sb.wins');
 
-			str = '[data-i18n="losses"]';
-			document.querySelector(str)
+			selector_str = '[data-i18n="losses"]';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.sb.losses');
 
-			str = '#btn_history';
-			document.querySelector(str)
+			selector_str = '#btn_history';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.btn.history');
 
-			str = '#btn_settings';
-			document.querySelector(str)
+			selector_str = '#btn_settings';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.btn.settings');
 
-			str = '#btn_logout';
-			document.querySelector(str)
+			selector_str = '#btn_logout';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.btn.logout');
 
-			str = '.ct-top-title';
-			document.querySelector(str)
+			selector_str = '.ct-top-title';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.title');
 
-			str = '[data-i18n="online"]';
-			document.querySelector(str)
+			selector_str = '[data-i18n="online"]';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.online');
 
-			str = '[data-i18n="local"]';
-			document.querySelector(str)
+			selector_str = '[data-i18n="local"]';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.local');
 
-			str = '#btn_remote_pvp';
-			document.querySelector(str)
+			selector_str = '#btn_remote_pvp';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.pvp');
 
-			str = '#btn_local_pve';
-			document.querySelector(str)
+			selector_str = '#btn_local_pve';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.pve');
 
-			str = '#btn_local_tour';
-			document.querySelector(str)
+			selector_str = '#btn_local_tour';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.tour');
 
-			str = '#btn_local_pvp';
-			document.querySelector(str)
+			selector_str = '#btn_local_pvp';
+			document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.pvp');
+
+			selector_str = '.friend-top-title';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.fn.title');
+
+			selector_str = '[data-i18n="fn-added"]';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.fn.added');
+
+			selector_str = '[data-i18n="fn-pending"]';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.fn.pending');
+
+			selector_str = '[data-i18n="fn-blocked"]';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.fn.blocked');
+
+			selector_str = '#btn_add_friend';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.fn.add');
+
+			selector_str = '.empty-list';
+			document.querySelectorAll(selector_str).forEach((el) =>
+			{
+				el.innerHTML = i18next.t('home.fn.empty');
+			});
+
+			selector_str = `.ct-bottom-placeholder`;
+			document.querySelectorAll(selector_str).forEach((el) =>
+			{
+				el.innerHTML = i18next.t('home.fn.botph');
+			});
+
+			if (document.querySelector('.ct-chatbox-ctn'))
+			{
+				await this.updateContent('chatbox-ctn');
+				await this.updateContent('chatbox-msg');
+			}
+		}
+		else if (view === "modal-settings")
+		{
+			selector_str = '#modal-settings .modal-title';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.title');
+
+			selector_str = '#modal-settings #btn_setLang';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.lang');
+
+			selector_str = '#modal-settings #btn_setAcc';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.acc');
+
+			selector_str = '#modal-settings #btn_setPfp';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.pfp');
+
+			selector_str = '#modal-settings #btn_set2FA';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.tfa');
+		}
+		else if (view === "modal-settings-lang")
+		{
+			selector_str = '#modal-settings .modal-title';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.lang');
+		}
+		else if (view === "modal-settings-acc")
+		{
+			selector_str = '#modal-settings .modal-title';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.acc');
+
+			selector_str = '[data-i18n="acc-username"]';
+			await this.word_processor(
+				selector_str, "username", 'home.mdset.acc-usern'
+			);
+
+			selector_str = '[data-i18n="acc-password"]';
+			await this.word_processor(
+				selector_str, "password", 'home.mdset.acc-pass'
+			);
+
+			selector_str = '[data-i18n="acc-email"]';
+			await this.word_processor(
+				selector_str, "email", 'home.mdset.acc-email'
+			);
+
+			selector_str = '.ct-set-warning';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.warn');
+		}
+		else if (view === "modal-settings-pfp")
+		{
+			selector_str = '#modal-settings .modal-title';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.pfp');
+
+			selector_str = '#btn_pfp_submit';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.pfp-submit');
+
+			selector_str = '#btn_pfp_remove';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.pfp-remove');
+		}
+		else if (view === "modal-settings-tfa")
+		{
+			selector_str = '#modal-settings .modal-title';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.tfa');
+
+			selector_str = '.ct-set-2fa-p';
+			await this.word_processor(
+				selector_str, "2fa", 'home.mdset.tfa'
+			);
+			await this.word_processor(
+				selector_str, "status", 'home.mdset.tfa-status'
+			);
+			await this.word_processor(
+				selector_str, "enabled", 'home.mdset.tfa-en'
+			);
+			await this.word_processor(
+				selector_str, "disabled", 'home.mdset.tfa-dis'
+			);
+
+			selector_str = '.ct-set-warning';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.warn');
+		}
+		else if (view === "modal-history")
+		{
+			selector_str = '#modal-history .modal-title';
+			await this.word_processor(
+				selector_str, "match history", 'home.mdhis.title'
+			);
+
+			selector_str = '.history-result.won';
+			await this.word_processor_all(
+				selector_str, "won", 'home.mdhis.won'
+			);
+
+			selector_str = '.history-result.lost';
+			await this.word_processor_all(
+				selector_str, "lost", 'home.mdhis.lost'
+			);
+
+			selector_str = '.history-des';
+			await this.word_processor_all(
+				selector_str, "played with", 'home.mdhis.played'
+			);
+
+			selector_str = '.history-type.pvp';
+			await this.word_processor_all(
+				selector_str, "pvp", 'home.mdhis.pvp'
+			);
+		}
+		else if (view === "chatbox-ctn")
+		{
+			selector_str = '#btn_chatbox_invite';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.chat.inv');
+
+			selector_str = '#input_chatbox:disabled';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+					.placeholder = i18next.t('home.chat.dis');
+
+			selector_str = '#input_chatbox:not(:disabled)';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+					.placeholder = i18next.t('home.chat.ph');
+		}
+		else if (view === 'chatbox-msg')
+		{
+			selector_str = '.ct-chatbox-msg';
+			await this.word_processor_all(
+				selector_str, "System", 'home.chat.sys'
+			);
+			await this.word_processor_all(
+				selector_str, "You", 'home.chat.you'
+			);
+			await this.word_processor_all(
+				selector_str, "is not in the room", 'home.chat.notin'
+			);
+			await this.word_processor_all(
+				selector_str, "is in the room", 'home.chat.isin'
+			);
+		}
+	}
+
+	async word_processor(selector, words, source)
+	{
+		const ctn = document.querySelector(selector);
+		if (!ctn)
+			return false;
+		const line = ctn.innerHTML.toLowerCase();
+		const target_words = words.toLowerCase();
+		if (!line.includes(target_words))
+			return false;
+		const replace_words = i18next.t(source);
+		const translated = line.replace(target_words, replace_words);
+
+		ctn.innerHTML = translated;
+
+		return true;
+	}
+
+	async word_processor_all(selector, words, source)
+	{
+		const all_ctn = document.querySelectorAll(selector);
+		if (!all_ctn)
+			return false;
+		//const ctn = document.querySelector(selector);
+		//const line = ctn.innerHTML.toLowerCase();
+		const target_words = words.toLowerCase();
+		//if (!line.includes(target_words))
+		//	return false;
+		const replace_words = i18next.t(source);
+		//const translated = line.replace(target_words, replace_words);
+
+		for (const el of all_ctn)
+		{
+			const line = el.innerHTML.toLowerCase();
+			if (!line.includes(target_words))
+				continue;
+			const translated = line.replace(target_words, replace_words);
+			el.innerHTML = translated;
+			console.log(el.innerHTML);
 		}
 	}
 }
