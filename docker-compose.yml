@@ -33,7 +33,6 @@ services:
         - ./requirements/django/webapp/:/django/
         - ./requirements/django/webapp/staticfiles/:/django/staticfiles
         - ./requirements/django/webapp/media/:/django/media
-        - ./LOGGER/:/tmp/
       networks:
         - net_trans
 
@@ -51,6 +50,7 @@ services:
         - ./requirements/django/webapp/:/django/
         - ./requirements/django/webapp/staticfiles/:/django/staticfiles
         - ./requirements/django/webapp/media/:/django/media
+        - ./LOGGER/:/tmp/
       networks:
         - net_trans
       env_file:

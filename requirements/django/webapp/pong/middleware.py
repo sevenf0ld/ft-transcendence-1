@@ -69,5 +69,5 @@ class RequestLoggingMiddleware:
         response = self.get_response(request)
         if response.status_code < 400:
             logger = logging.getLogger('django.request')
-            logger.info(f'{response.status_code}: {request.method} {request.path}')
+            logger.info(f'{response.status_code} {request.method} {request.path}')
         return response
