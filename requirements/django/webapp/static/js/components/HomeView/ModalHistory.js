@@ -2,6 +2,7 @@
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
+import FETCH from './ModalHistory_fetch.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -89,6 +90,20 @@ class ModalFnOpt
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
+
+		//temporary
+		const user = JSON.parse(localStorage.getItem('user'));
+		await FETCH.init();
+		FETCH.target = user.username;
+		await FETCH.fetchData();
+		if (FETCH.re_value === 'match-history-successful')
+		{
+			console.log('success history, fetch_obj:', FETCH.fetch_obj);
+		}
+		else
+		{
+			console.error('failed history, fetch_obj:', FETCH.fetch_obj);
+		}
 
 		return true;
 	}

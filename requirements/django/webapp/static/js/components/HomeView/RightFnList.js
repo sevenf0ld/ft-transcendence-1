@@ -11,6 +11,7 @@ import MODAL_ADD_FRIEND from './ModalAdd.js';
 import MODAL_FRIEND_OPT from './ModalFnOpt.js';
 import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 import LANGUAGE from '../../core/language/language.js';
+import HOME from '../../views/HomeView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -254,10 +255,7 @@ class RightFnList
 
 
 		if (friend_item === null || friend_item1 === null)
-		{
-			throw new Error(`[ERR] friend not found : ${username}`);
 			return false;
-		}
 
 		friend_item.classList.remove('online');
 		friend_item.classList.remove('offline');

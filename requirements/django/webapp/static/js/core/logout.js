@@ -9,6 +9,7 @@
 import TOKEN from '../core/token.js';
 import WEB_SOCKET from '../core/websocket_mng.js';
 import * as FETCH from '../components/HomeView/LeftUser_fetch.js';
+import ROUTER from './router.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -40,6 +41,7 @@ class logoutClass
 
 				localStorage.setItem('logout-event', 'logout' + Math.random());
 				localStorage.clear();
+				await ROUTER.navigate_to('/login');
 			}
 			else
 			{

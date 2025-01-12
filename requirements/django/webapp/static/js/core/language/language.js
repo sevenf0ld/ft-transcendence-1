@@ -141,8 +141,11 @@ class languageClass
 				.innerHTML = i18next.t('home.gb.pvp');
 
 			selector_str = '.friend-top-title';
-			document.querySelector(selector_str)
-				.innerHTML = i18next.t('home.fn.title');
+			if (document.querySelector(selector_str))
+			{
+				document.querySelector(selector_str)
+					.innerHTML = i18next.t('home.fn.title');
+			}
 
 			selector_str = '[data-i18n="fn-added"]';
 			document.querySelector(selector_str)
@@ -233,8 +236,11 @@ class languageClass
 			);
 
 			selector_str = '.ct-set-warning';
-			document.querySelector(selector_str)
-				.innerHTML = i18next.t('home.mdset.warn');
+			if (document.querySelector(selector_str))
+			{
+				document.querySelector(selector_str)
+					.innerHTML = i18next.t('home.mdset.warn');
+			}
 		}
 		else if (view === "modal-settings-pfp")
 		{

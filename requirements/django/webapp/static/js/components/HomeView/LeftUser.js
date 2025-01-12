@@ -170,21 +170,7 @@ class LeftUser
 		event.preventDefault();
 		console.log('[BTN] logoutClick');
 
-		const logoutFetch = FETCH.FETCH_LOGOUT;
-		await logoutFetch.init();
-		const fetch_result = await logoutFetch.fetchData();
-		if (fetch_result === 'logout-successful')
-		{
-			if (TOKEN.token_id)
-				await TOKEN.stop_refresh_token();
-
-			await LOGOUT.run();
-			await ROUTER.navigate_to('/login');
-		}
-		else
-		{
-			console.log(fetch_result);
-		}
+		await LOGOUT.run();
 
 		return true;
 	}

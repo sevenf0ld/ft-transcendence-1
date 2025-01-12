@@ -146,7 +146,8 @@ class engineUtilsClass
 		{
 			await this.announce(`Game has ended at ${t}`);
 			await this.announce(`${EG_DATA.match.winner} has won the game!`);
-			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			const i_am_host = AN.host === JSON.parse(localStorage.getItem('user')).username;
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN && i_am_host)
 			{
 				WS.gr.ws.send(JSON.stringify({
 					'game_state': 'game_end',

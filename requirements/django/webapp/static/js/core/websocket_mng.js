@@ -379,6 +379,7 @@ class websocketManager
 
 			if (data.type === 'joined_room')
 			{
+				this.is_end = false;
 				await ACTION_PANEL.opvp_live_update(data);
 				await ANNOUNCER.opvp_live_update(data);
 				await ROOM_LIST.opvp_live_update(data);
@@ -432,11 +433,20 @@ class websocketManager
 			}
 			if (data.type === `game_end`)
 			{
-				await this.updateSocket_friendList('leave');
-				await this.closeSocket_lobby();
-				const HOME = HOME_VIEW;
-				await HOME.render();
-				alert(data.message);
+				if (this.lobby.ws !== undefined)
+				{
+					alert(data.message);
+					// wait 3 seconds and render home
+					await new Promise((resolve, reject) => {
+						setTimeout(() => {
+							resolve();
+						}, 500);
+					});
+					await this.updateSocket_friendList('leave');
+					await this.closeSocket_lobby();
+					const HOME = HOME_VIEW;
+					await HOME.render();
+				}
 			}
 		});
 
@@ -453,17 +463,6 @@ class websocketManager
 		}
 
 		return true;
-	}
-
-	// KIV
-	async updateSocket_game(key,msg)
-	{
-		if (this.gr.ws && this.gr.ws.readyState === WebSocket.OPEN)
-		{
-			this.gr.ws.send(JSON.stringify({
-				'game_state': msg,
-			}));
-		}
 	}
 
 //=================================#
