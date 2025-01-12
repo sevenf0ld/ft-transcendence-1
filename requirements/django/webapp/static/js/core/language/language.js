@@ -17,7 +17,7 @@ class languageClass
 	constructor()
 	{
 		this.resources = {};
-		this.cur_lang = 'en';
+		this.cur_lang = null;
 		this.time_out = 0;
 	}
 
@@ -79,6 +79,7 @@ class languageClass
 			await this.updateContent(view);
 		}
 		this.time_out = 0;
+		await this.changeLanguage(this.cur_lang);
 
 		let selector_str;
 		if (view === 'home')
@@ -175,6 +176,11 @@ class languageClass
 			{
 				await this.updateContent('chatbox-ctn');
 				await this.updateContent('chatbox-msg');
+			}
+			if (document.querySelector('.ct-fn-pfp-ctn'))
+			{
+				document.getElementById('btn_fn_pfp_close').click();
+				document.getElementById('btn_chatbox_profile').click();
 			}
 		}
 		else if (view === "modal-settings")
@@ -311,21 +317,169 @@ class languageClass
 				document.querySelector(selector_str)
 					.placeholder = i18next.t('home.chat.ph');
 		}
-		else if (view === 'chatbox-msg')
+		else if (view === "fn-pfp")
 		{
-			selector_str = '.ct-chatbox-msg';
+			selector_str = '[data-i18n="fn-pfp-win"]';
+			await this.word_processor(
+				selector_str, "won", 'home.fnpfp.win'
+			);
+	
+			selector_str = '[data-i18n="fn-pfp-loss"]';
+			await this.word_processor(
+				selector_str, "lost", 'home.fnpfp.lose'
+			);
+
+			selector_str = '[data-i18n="fn-pfp-total"]';
+			await this.word_processor(
+				selector_str, "total", 'home.fnpfp.total'
+			);
+
+			selector_str = '[data-i18n="fn-pfp-winrate"]';
+			await this.word_processor(
+				selector_str, "w.rate", 'home.fnpfp.wr'
+			);
+
+			selector_str = '#btn_fn_pfp_hist';
+			await this.word_processor(
+				selector_str, "match history", 'home.fnpfp.hist'
+			);
+		}
+		else if (view === "modal-add-fn")
+		{
+			selector_str = '#modal-addFriend .modal-title';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdadd.addfn');
+
+			selector_str = '.add-friend-input';
+			document.querySelector(selector_str)
+				.setAttribute('placeholder', i18next.t('home.mdadd.ph'));
+
+			selector_str = '#btn_add_friend_submit';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdadd.addfn');
+		}
+		else if (view === "game-room")
+		{
+			selector_str = '.ct-top-title';
+			await this.word_processor(
+				selector_str, "game room", 'home.gr.gr'
+			);
+			await this.word_processor(
+				selector_str, "local-pve", 'home.gr.pve'
+			);
+			await this.word_processor(
+				selector_str, "local-pvp", 'home.gr.pvp'
+			);
+			await this.word_processor(
+				selector_str, "local-tour", 'home.gr.tour'
+			);
+			await this.word_processor(
+				selector_str, "online-pvp", 'home.gr.opvp'
+			);
+
+			selector_str = '.ct-gr-guide-header';
+			await this.word_processor(
+				selector_str, "game mechanics", 'home.gr.gm'
+			);
+
+			selector_str = '.ct-gr-guide-instruction .instruction-header';
+			await this.word_gr_guide_header(selector_str);
+
+			selector_str = '.ct-gr-guide-instruction .instruction-body';
+			await this.word_gr_guide_des(selector_str);
+
+			selector_str = '.ct-gr-rl-title';
+			await this.word_processor(
+				selector_str, "room list", 'home.gr.rl'
+			);
+
+			selector_str = '[data-i18n="btn_start"]';
+			await this.word_processor(
+				selector_str, "start", 'home.gr.start'
+			);
+
+			selector_str = '[data-i18n="btn_restart"]';
+			await this.word_processor(
+				selector_str, "restart game", 'home.gr.restart'
+			);
+
+			selector_str = '[data-i18n="btn_add"]';
+			await this.word_processor(
+				selector_str, "add player", 'home.gr.add'
+			);
+
+			selector_str = '.ct-gr-announcer-hd-title';
+			await this.word_processor(
+				selector_str, "announcement", 'home.gr.ann'
+			);
+
+			selector_str = '.ct-gr-announcer-rid';
+			await this.word_processor(
+				selector_str, "room id", 'home.gr.rid'
+			);
+			await this.word_processor(
+				selector_str, "local-pve", 'home.gr.pve'
+			);
+			await this.word_processor(
+				selector_str, "local-pvp", 'home.gr.pvp'
+			);
+			await this.word_processor(
+				selector_str, "local-tour", 'home.gr.tour'
+			);
+
+			selector_str = '.category-title';
 			await this.word_processor_all(
-				selector_str, "System", 'home.chat.sys'
+				selector_str, "lobby", 'home.gr.lobby'
 			);
 			await this.word_processor_all(
-				selector_str, "You", 'home.chat.you'
+				selector_str, "playing", 'home.gr.playing'
 			);
 			await this.word_processor_all(
-				selector_str, "is not in the room", 'home.chat.notin'
+				selector_str, "waiting", 'home.gr.waiting'
 			);
 			await this.word_processor_all(
-				selector_str, "is in the room", 'home.chat.isin'
+				selector_str, "Eliminated", 'home.gr.elim'
 			);
+
+			selector_str = '.empty-list';
+			await this.word_processor_all(
+				selector_str, "(empty)", 'home.gr.empty'
+			);
+
+			selector_str = '#btn_leaveRoom';
+			await this.word_processor(
+				selector_str, "leave room", 'home.gr.leave'
+			);
+		}
+		else if (view === "opvp")
+		{
+			selector_str = '.ct-gr-announcer-rid';
+			await this.word_processor(
+				selector_str, "room id", 'home.gr.rid'
+			);
+
+			selector_str = '.ct-gr-rl-title';
+			await this.word_processor(
+				selector_str, "room list", 'home.gr.rl'
+			);
+		}
+		else if (view === "modal-roomjoin")
+		{
+			selector_str = '#modal-join .modal-title';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdrj.title');
+
+			selector_str = '.join-room-des';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdrj.des');
+
+			selector_str = '#btn_create_room';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdrj.create');
+
+			selector_str = '#btn_close_join_room_modal';
+			document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdrj.back');
 		}
 	}
 
@@ -368,6 +522,78 @@ class languageClass
 			el.innerHTML = translated;
 			console.log(el.innerHTML);
 		}
+	}
+
+	async word_gr_guide_header(selector)
+	{
+		const ctns = document.querySelectorAll(selector);
+		if (!ctns)
+			return false;
+		const target_words = {
+			'left player' : 'home.gr.gm-left',
+			'right player' : 'home.gr.gm-right',
+			'game goal' : 'home.gr.gm-goal',
+			'game objective' : 'home.gr.gm-obj',
+			'game system' : 'home.gr.gm-sys',
+			'difficulty' : 'home.gr.gm-diff',
+			'game rules' : 'home.gr.gm-rules',
+		};
+
+		for (const ctn of ctns)
+		{
+			const line = ctn.innerHTML.toLowerCase();
+			for (const key in target_words)
+			{
+				if (!line.includes(key.toLowerCase()))
+					continue;
+				const replace_words = i18next.t(target_words[key]);
+				const translated = line.replace(key, replace_words);
+				ctn.innerHTML = translated;
+			}
+		}
+
+		return true;
+	}
+
+	async word_gr_guide_des(selector)
+	{
+		const ctns = document.querySelectorAll(selector);
+		if (!ctns)
+			return false;
+		const target_words = {
+			'(up)' : 'home.gr.gm-up',
+			'(down)' : 'home.gr.gm-down',
+			'best of 1' : 'home.gr.gm-bo1',
+			'best of one' : 'home.gr.gm-bo1',
+			'player' : 'home.gr.gm-player',
+			'against' : 'home.gr.gm-against',
+			'locally' : 'home.gr.gm-local',
+			'match' : 'home.gr.gm-match',
+			'will be' : 'home.gr.gm-will',
+			'will not be' : 'home.gr.gm-willnot',
+			'recorded' : 'home.gr.gm-recorded',
+			'random' : 'home.gr.gm-random',
+			'hit the ball to the opponent\'s side' : 'home.gr.gm-hit',
+			'last standing' : 'home.gr.gm-last',
+			'wins' : 'home.gr.gm-wins',
+			'every' : 'home.gr.gm-every',
+		};
+
+		for (const ctn of ctns)
+		{
+			const line = ctn.innerHTML.toLowerCase();
+			let translated = line;
+			for (const key in target_words)
+			{
+				if (!translated.includes(key.toLowerCase()))
+					continue;
+				const replace_words = i18next.t(target_words[key]);
+				translated = translated.replace(key, replace_words);
+			}
+			ctn.innerHTML = translated;
+		}
+
+		return true;
 	}
 }
 

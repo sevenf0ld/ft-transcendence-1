@@ -5,6 +5,7 @@
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -584,6 +585,7 @@ class Announcer
 			this.host = data.details.host;
 			this.rid = data.details.room_id;
 			const member_name = data.person;
+			await LANGUAGE.updateContent('opvp');
 			await this.announce(`${member_name} has joined the room.`);
 		}
 		else if (data.type === 'left_room')

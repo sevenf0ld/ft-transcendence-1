@@ -54,12 +54,66 @@
 		"chat": {
 			"inv": "Invite",
 			"dis": "Chat is unavailable",
-			"ph": "Type your message here",
-			"sys": "System",
-			"you": "You",
-			"notin": "is not in the room",
-			"isin": "is in the room",
-			"xx": "xx"
+			"ph": "Type your message here"
+		},
+		"fnpfp": {
+			"win": "Won",
+			"lose": "Lost",
+			"total": "Total",
+			"wr": "W.Rate",
+			"hist": "Match History"
+		},
+		"mdadd": {
+			"addfn": "Add Friend",
+			"ph": "Enter username"
+		},
+		"gr": {
+			"gr": "Game Room",
+			"pve": "local-pve",
+			"pvp": "local-pvp",
+			"tour": "local-tour",
+			"gm": "Game Mechanics",
+			"gm-left": "Left Player",
+			"gm-right": "Right Player",
+			"gm-goal": "Game Goal",
+			"gm-obj": "Game Objective",
+			"gm-sys": "Game System",
+			"gm-diff": "Difficulty",
+			"gm-rules": "Game Rules",
+			"gm-up": "(UP)",
+			"gm-down": "(DOWN)",
+			"gm-bo1": "Best of 1",
+			"gm-player": "Player",
+			"gm-against": "against",
+			"gm-local": "Locally",
+			"gm-match": "match",
+			"gm-will": "will be",
+			"gm-willnot": "will not be",
+			"gm-recorded": "recorded",
+			"gm-random": "Random",
+			"gm-hit": "Hit the ball to the opponent's side",
+			"gm-last": "Last standing",
+			"gm-wins": "wins",
+			"gm-every": "every",
+			"rl": "Room List",
+			"start": "Start",
+			"restart": "Restart Game",
+			"add": "Add Player",
+			"ann": "Announcement",
+			"rid": "Room ID",
+			"lobby": "Lobby",
+			"playing": "Playing",
+			"waiting": "Waiting",
+			"elim": "Eliminated",
+			"empty": "(Empty)",
+			"leave": "Leave Room",
+			"opvp": "online-pvp"
+		},
+		"mdrj": {
+			"title": "Available Rooms (PVP)",
+			"des": "click to join room, or",
+			"create": "Create Room",
+			"back": "Go Back"
 		}
 	}
 }

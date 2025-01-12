@@ -54,12 +54,66 @@
 		"chat": {
 			"inv": "邀请",
 			"dis": "目前无法聊天",
-			"ph": "在此处输入您的信息",
-			"sys": "系统",
-			"you": "你",
-			"notin": "不在此聊天室内",
-			"isin": "在聊天室内",
-			"xx": "xx"
+			"ph": "在此处输入您的信息"
+		},
+		"fnpfp": {
+			"win": "胜",
+			"lose": "败",
+			"total": "总",
+			"wr": "胜率",
+			"hist": "对战记录"
+		},
+		"mdadd": {
+			"addfn": "添加好友",
+			"ph": "输入用户名"
+		},
+		"gr": {
+			"gr": "游戏房间",
+			"pve": "线下AI对战",
+			"pvp": "线下一对一",
+			"tour": "线下多人赛",
+			"gm": "游戏机制",
+			"gm-left": "左玩家",
+			"gm-right": "右玩家",
+			"gm-goal": "游戏目标",
+			"gm-obj": "游戏目的",
+			"gm-sys": "游戏系统",
+			"gm-diff": "难度",
+			"gm-rules": "游戏规则",
+			"gm-up": "(上)",
+			"gm-down": "(下)",
+			"gm-bo1": "一局制",
+			"gm-player": "玩家",
+			"gm-against": "对战",
+			"gm-local": "线下",
+			"gm-match": "局",
+			"gm-will": "将会",
+			"gm-willnot": "将不会",
+			"gm-recorded": "被记录",
+			"gm-random": "随机",
+			"gm-hit": "将球击向对手的一侧",
+			"gm-last": "最后生存下来的",
+			"gm-wins": "获胜",
+			"gm-every": "每",
+			"rl": "房间列表",
+			"start": "开始",
+			"restart": "重新",
+			"add": "添加玩家",
+			"ann": "公告",
+			"rid": "房间号",
+			"lobby": "大厅",
+			"playing": "游戏中",
+			"waiting": "等待中",
+			"elim": "淘汰",
+			"empty": "(空)",
+			"leave": "离开房间",
+			"opvp": "线上一对一"
+		},
+		"mdrj": {
+			"title": "加入房间",
+			"des": "输入房间号, 或",
+			"create": "创建房间",
+			"back": "返回"
 		}
 	}
 }

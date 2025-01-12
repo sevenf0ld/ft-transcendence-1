@@ -9,6 +9,7 @@ import MODAL_ROOM_JOIN from './ModalRoomJoin.js';
 import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 import WEB_SOCKET from '../../core/websocket_mng.js';
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -127,6 +128,7 @@ class MidBoard
 		await gameRoom.init();
 		gameRoom.type = 'local-pve';
 		await gameRoom.render();
+		await LANGUAGE.updateContent("game-room");
 
 		return true;
 	}
@@ -142,7 +144,8 @@ class MidBoard
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-pvp';
-		gameRoom.render();
+		await gameRoom.render();
+		await LANGUAGE.updateContent("game-room");
 
 		return true;
 	}
@@ -158,7 +161,8 @@ class MidBoard
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-tour';
-		gameRoom.render();
+		await gameRoom.render();
+		await LANGUAGE.updateContent("game-room");
 
 		return true;
 	}
@@ -178,6 +182,7 @@ class MidBoard
 		MODAL_ROOM_JOIN.container = modata;
 		MODAL_ROOM_JOIN.gameType = 'online-pvp';
 		await MODAL_ROOM_JOIN.render('replace');
+		await LANGUAGE.updateContent("modal-roomjoin");
 
 		// list room list
 		await WEB_SOCKET.initSocket_lobby();

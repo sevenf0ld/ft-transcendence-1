@@ -155,6 +155,7 @@ class RightFnList
 
 		MODAL_ADD_FRIEND.container = modata;
 		await MODAL_ADD_FRIEND.render('replace');
+		await LANGUAGE.updateContent('modal-add-fn');
 
 		return true;
 	}

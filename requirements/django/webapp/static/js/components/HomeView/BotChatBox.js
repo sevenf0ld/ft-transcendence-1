@@ -148,6 +148,7 @@ class BotChatBox
 			if (pfp_name !== 'default.jpg')
 				BOT_FRIEND_PFP.friend_pfp = avatar_url;
 			await BOT_FRIEND_PFP.render('replace');
+			await LANGUAGE.updateContent('fn-pfp');
 		}
 		else
 		{
@@ -258,7 +259,6 @@ class BotChatBox
 
 		chatbox_ctn.insertAdjacentHTML('beforeend', str);
 		await this.input_manager('receive');
-		await LANGUAGE.updateContent('chatbox-msg');
 
 		return true;
 	}

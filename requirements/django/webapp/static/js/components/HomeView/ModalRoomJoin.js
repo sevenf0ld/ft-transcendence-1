@@ -8,6 +8,7 @@
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 import WEB_SOCKET from '../../core/websocket_mng.js';
 import CR_FETCH from './CreateRoom_fetch.js';
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -122,6 +123,7 @@ class ModalRoomJoin
 				gameRoom.type = 'online-pvp';
 				await gameRoom.render();
 				await WEB_SOCKET.listenSocket_game();
+				await LANGUAGE.updateContent("game-room");
 			}
 		}
 		else if (this.gameType === 'online-tour')
@@ -137,6 +139,7 @@ class ModalRoomJoin
 				gameRoom.type = 'online-tour';
 				await gameRoom.render();
 				await WEB_SOCKET.listenSocket_game();
+				await LANGUAGE.updateContent("game-room");
 			}
 		}
 
@@ -179,6 +182,7 @@ class ModalRoomJoin
 				await gameRoom.init();
 				gameRoom.type = `online-${data_room_type}`;
 				await gameRoom.render();
+				await LANGUAGE.updateContent("game-room");
 				await WEB_SOCKET.listenSocket_game();
 			});
 		}
