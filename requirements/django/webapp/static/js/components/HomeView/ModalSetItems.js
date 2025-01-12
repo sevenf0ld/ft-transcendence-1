@@ -11,7 +11,7 @@ import * as FORM_VALI_SU from '../../core/helpers/formVali-su.js';
 import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 import LEFT_USER from './LeftUser.js';
 import * as LOADING from '../../core/helpers/loading.js';
-import GOOGLE_TRANSLATE from '../../core/toolkits/glang.js';
+import LANGUAGE from '../../core/language/language.js';
 import HOME_VIEW from '../../views/HomeView.js';
 
 // -------------------------------------------------- //
@@ -137,7 +137,8 @@ class ModalSetItems
 		console.log('[BTN] englishClick');
 
 		await this.fetch_lang('EN');
-		await GOOGLE_TRANSLATE.change('english');
+		await LANGUAGE.changeLanguage('en');
+		await LANGUAGE.updateContent('home');
 
 		return true;
 	}
@@ -148,7 +149,8 @@ class ModalSetItems
 		console.log('[BTN] malayClick');
 
 		await this.fetch_lang('MY');
-		await GOOGLE_TRANSLATE.change('malay');
+		await LANGUAGE.changeLanguage('my');
+		await LANGUAGE.updateContent('home');
 
 		return true;
 	}
@@ -159,7 +161,8 @@ class ModalSetItems
 		console.log('[BTN] chineseClick');
 
 		await this.fetch_lang('ZH');
-		await GOOGLE_TRANSLATE.change('chinese');
+		await LANGUAGE.changeLanguage('zh');
+		await LANGUAGE.updateContent('home');
 
 		return true;
 	}

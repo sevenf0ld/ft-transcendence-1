@@ -279,21 +279,21 @@ class LeftUser
 		<div class="%main-c">
 			<div class="%ctnt-1c %ctnt-2c">
 				<div class="%tl-c">
-					<p class="%tlp1-c">%tlp1-t</p>
-					<p class="%tlp2-c">%tlp2-t</p>
+					<p class="%tlp1-c" @lang1>%tlp1-t</p>
+					<p class="%tlp2-c" >%tlp2-t</p>
 				</div>
 				<div class="%tr-c">
-					<p class="%trp1-c">%trp1-v</p>
+					<p class="%trp1-c" @lang2>%trp1-v</p>
 					<p class="%trp2-c">%trp2-v</p>
 				</div>
 			</div>
 			<div class="%ctnb-c">
 				<div class="%bl-c">
-					<p class="%blp1-c">%blp1-t</p>
+					<p class="%blp1-c" @lang3>%blp1-t</p>
 					<p class="%blp2-c">%blp2-t</p>
 				</div>
 				<div class="%br-c">
-					<p class="%brp1-c">%brp1-v</p>
+					<p class="%brp1-c" @lang4>%brp1-v</p>
 					<p class="%brp2-c">%brp2-v</p>
 				</div>
 			</div>
@@ -333,6 +333,10 @@ class LeftUser
 			'@att1': `data-bs-toggle="modal"`,
 			'@att2': `data-bs-target="#modal-history"`,
 			'@att3': `data-toggle="modal"`,
+			'@lang1': `data-i18n="played"`,
+			'@lang2': `data-i18n="wr"`,
+			'@lang3': `data-i18n="wins"`,
+			'@lang4': `data-i18n="losses"`,
 		};
 		for (const key in atts)
 			template = template.split(key).join(atts[key]);

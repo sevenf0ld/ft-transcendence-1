@@ -1,0 +1,23 @@
+{
+	"home": {
+		"sb": {
+			"play": "已玩",
+			"wr": "胜率",
+			"wins": "胜场",
+			"losses": "败场"
+		},
+		"btn": {
+			"history": "对战记录",
+			"settings": "设置",
+			"logout": "登出"
+		},
+		"gb": {
+			"title": "游戏模式",
+			"online": "在线",
+			"local": "线下",
+			"pvp": "一对一",
+			"pve": "AI对战",
+			"tour": "多人对战"
+		}
+	}
+}

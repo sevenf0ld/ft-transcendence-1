@@ -1,0 +1,23 @@
+{
+	"home": {
+		"sb": {
+			"play": "Played",
+			"wr": "Win Rate",
+			"wins": "Wins",
+			"losses": "Losses"
+		},
+		"btn": {
+			"history": "Match History",
+			"settings": "Settings",
+			"logout": "Logout"
+		},
+		"gb": {
+			"title": "Game Mode",
+			"online": "Online",
+			"local": "Local",
+			"pvp": "PVP",
+			"pve": "PVE",
+			"tour": "Tournament"
+		}
+	}
+}
