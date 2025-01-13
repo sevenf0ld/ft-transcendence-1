@@ -169,6 +169,7 @@ class engineData
 			winner: null,
 			loser: null,
 			pause: false,
+			unexpected_end: null,
 		};
 
 		this.key_state = {};

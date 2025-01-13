@@ -69,6 +69,18 @@ class engineRenderClass
 				await this.game_over();
 				await this.handle_canvas_over();
 				await EG_UTILS.gameStateHandler('opvp-end');
+				db.match.started = false;
+			}
+			return false;
+		}
+		if (db.match.unexpected_end === true)
+		{	
+			if (db.gameType === 'online-pvp')
+			{
+				await this.game_over();
+				await this.handle_canvas_over();
+				await EG_UTILS.gameStateHandler('opvp-unexpected-end');
+				db.match.started = false;
 			}
 			return false;
 		}

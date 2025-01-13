@@ -397,8 +397,9 @@ class websocketManager
 			{
 				await GAME_BOARD.opvp_live_update(data);
 
-				if (!EG_DATA.match.started === false)
+				if (EG_DATA.match.started === false)
 				{
+					alert('it seems the host has left the room');
 					alert(data.message);
 					await this.updateSocket_friendList('leave');
 					await this.closeSocket_lobby();
@@ -440,6 +441,23 @@ class websocketManager
 				EG_DATA.ball.dy *= data.angle;
 			}
 			if (data.type === `game_end`)
+			{
+				if (this.lobby.ws !== undefined)
+				{
+					alert(data.message);
+					// wait 3 seconds and render home
+					await new Promise((resolve, reject) => {
+						setTimeout(() => {
+							resolve();
+						}, 500);
+					});
+					await this.updateSocket_friendList('leave');
+					await this.closeSocket_lobby();
+					const HOME = HOME_VIEW;
+					await HOME.render();
+				}
+			}
+			if (data.type === `unexpected_end`)
 			{
 				if (this.lobby.ws !== undefined)
 				{

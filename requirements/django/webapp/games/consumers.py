@@ -144,7 +144,41 @@ class GameRoomConsumer(WebsocketConsumer):
     def disconnect(self, code):
         if code == 3003 or code == 3104 or code == 3105:
             return
-
+        print("------------------------------------ CODE", code, " by", self.user)
+        if code == 1001:
+            if self.group_id in self.in_room:
+                self.in_room[self.group_id].discard(self.user.username)
+                if not self.in_room[self.group_id]:
+                    del self.in_room[self.group_id]
+                async_to_sync(self.channel_layer.group_discard)(
+                    self.group_id,
+                    self.channel_name
+                )
+            conn_by_host = async_to_sync(self.connection_is_host)()
+            print("------------------------------------ CODE", code, " by", self.user, "is_host", conn_by_host)
+            if conn_by_host:
+                self.delete_room_object()
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_id,
+                    {
+                        'type': 'room.disband',
+                        'message': 'Host has left the game. Room disbanded.'
+                    }
+                )
+            else:
+                self.decrement_room_members()
+                members = list(self.in_room.get(self.group_id, []))
+                async_to_sync(self.channel_layer.group_send)(
+                    self.group_id,
+                    {
+                        'type': 'members.update',
+                        'members': members,
+                        'update_type': 'left_room',
+                        'person': self.user.username
+                    }
+                )
+            self.close(1001)
+            return
         if self.group_id in self.in_room:
             self.in_room[self.group_id].discard(self.user.username)
             if not self.in_room[self.group_id]:
@@ -241,6 +275,20 @@ class GameRoomConsumer(WebsocketConsumer):
             )
             if async_to_sync(self.rid_get_room_object(text_json['rid'])) is not None and self.user.username == text_json['host']:
                 self.create_match_object(text_json['winner'], text_json['rid'])
+                self.rid_delete_room_object(text_json['rid'])
+                self.increment_profile_wins(text_json['winner'])
+                self.decrement_profile_losses(text_json['loser'])
+        if update == 'unexpected_end':
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_id,
+                {
+                    'type': 'unexpected.end',
+                    'winner': text_json['winner'],
+                    'loser': text_json['loser']
+                }
+            )
+            if async_to_sync(self.rid_get_room_object(text_json['rid'])) is not None and self.user.username == text_json['host']:
+                self.create_unexpected_match(text_json['winner'], text_json['rid'], text_json['loser'])
                 self.rid_delete_room_object(text_json['rid'])
                 self.increment_profile_wins(text_json['winner'])
                 self.decrement_profile_losses(text_json['loser'])
@@ -392,6 +440,14 @@ class GameRoomConsumer(WebsocketConsumer):
             'message': f'Game has ended. {winner} has won against {loser}.'
         }))
 
+    def unexpected_end(self, event):
+        winner = event['winner']
+        loser = event['loser']
+        self.send(text_data=json.dumps({
+            'type': 'unexpected_end',
+            'message': f'{loser} has unexpectedly disconnect. You have won FUCK YOU.'
+        }))
+
     #=================================#
     #               UTIL
     #=================================#
@@ -437,6 +493,27 @@ class GameRoomConsumer(WebsocketConsumer):
             return room
         except Room.DoesNotExist:
             return None
+
+    @database_sync_to_async
+    def connection_is_host(self):
+        try:
+            room = Room.objects.get(host=self.user)
+            return True
+        except Room.DoesNotExist:
+            return False
+
+    def create_unexpected_match(self, winner, rid, loser):
+        room = async_to_sync(self.rid_get_room_object)(rid)
+        host_data = User.objects.get(username=room.host)
+        p2_data = User.objects.get(username=loser)
+        winner_data = User.objects.get(username=winner)
+        match = Match.objects.create(
+            host=host_data,
+            p1=host_data,
+            p2=p2_data,
+            winner=winner_data
+        )
+        match.save()
 
 class InvitationConsumer(WebsocketConsumer):
     #=================================#
