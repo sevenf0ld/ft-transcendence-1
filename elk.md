@@ -56,3 +56,12 @@
     - [export saved object and populate in elasticsearch](https://discuss.elastic.co/t/running-kibana-in-docker-default-index-patterns/206300)
 - [curl & depends_on in docker compose](https://thriveread.com/install-curl-in-docker-container/)
 - logstash monitoring at `http://localhost:5601/app/monitoring`
+- visualization
+    - [NDJSON file](https://stackoverflow.com/a/69061674)
+        - [example](https://forum.opensearch.org/t/can-we-use-kibana-rest-apis-to-create-the-dashboards-programmatically-in-opensearchdashboard/7397/3)
+    - [reddit suggestions](https://www.reddit.com/r/elasticsearch/comments/13jg2kg/create_visualizations_and_add_them_in_dashboard/)
+    - [2014 github issue](https://github.com/elastic/kibana/issues/1190)
+    - [request data directly from elasticsearch](https://discuss.elastic.co/t/get-data-from-visualize-dashboard-using-the-api/83684/8)
+    - [elastic stack](https://discuss.elastic.co/t/building-kibana-dashboard-dynamically/33713)
+    - [search, visualization, dashboard](https://discuss.elastic.co/t/how-to-create-visualization-on-the-fly-using-a-script/31255/4)
+    - [modifiable sizer to visualizer](https://github.com/mohclips/elastic_index_sizer/blob/main/src/get_size.py)

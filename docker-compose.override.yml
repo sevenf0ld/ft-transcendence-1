@@ -1,0 +1,5 @@
+services:
+  kibana_setup:
+    volumes:
+      - ./requirements/kibana/tools/:/usr/local/bin/
+    command: ["./tools/init.sh"]
