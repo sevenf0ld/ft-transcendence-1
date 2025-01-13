@@ -387,18 +387,24 @@ class websocketManager
 			}
 			if (data.type === 'left_room')
 			{
+				console.log('LEFT ROOM DETAILS: ', data);
 				await ACTION_PANEL.opvp_live_update(data);
 				await ANNOUNCER.opvp_live_update(data);
 				await ROOM_LIST.opvp_live_update(data);
-				//await GAME_BOARD.opvp_live_update(data);
+				await GAME_BOARD.opvp_live_update(data);
 			}
 			if (data.type === 'disbanded_room')
 			{
-				alert(data.message);
-				await this.updateSocket_friendList('leave');
-				await this.closeSocket_lobby();
-				const HOME = HOME_VIEW;
-				await HOME.render();
+				await GAME_BOARD.opvp_live_update(data);
+
+				if (!EG_DATA.match.started === false)
+				{
+					alert(data.message);
+					await this.updateSocket_friendList('leave');
+					await this.closeSocket_lobby();
+					const HOME = HOME_VIEW;
+					await HOME.render();
+				}
 			}
 			if (data.type === 'full_room')
 			{
@@ -406,6 +412,7 @@ class websocketManager
 			}
 			if (data.type === 'started_game')
 			{
+				console.log('STARTED GAME DETAILS: ', data);
 				await ACTION_PANEL.opvp_live_update(data);
 				await ANNOUNCER.opvp_live_update(data);
 				await ROOM_LIST.opvp_live_update(data);
@@ -415,6 +422,7 @@ class websocketManager
 			{
 				EG_DATA.ball.dy = data.dy;
 				EG_DATA.ball.dx = data.dx;
+				EG_DATA.match.started = true;
 				requestAnimationFrame(EG_RENDER.game_loop.bind(EG_RENDER));
 			}
 			if (data.type === 'paddle_p1')

@@ -526,7 +526,6 @@ class languageClass
 				continue;
 			const translated = line.replace(target_words, replace_words);
 			el.innerHTML = translated;
-			console.log(el.innerHTML);
 		}
 	}
 

@@ -37,7 +37,7 @@ class RoomList
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
 		this.gameType = null;
-		this.list_pfp = '/static/assets/images/default-pfp.png';
+		this.def_pfp = '/static/assets/images/default-pfp.png';
 	}
 
 	async init()
@@ -232,7 +232,7 @@ class RoomList
 		return template;
 	}
 
-	async playerListGenerator(container, username, groupType, playerType, pstatus = 'playing')
+	async playerListGenerator(container, username, groupType, playerType, pstatus = 'playing', img_url)
 	{
 		// [-] HELPER FUNCTION
 		let icon = '';
@@ -253,12 +253,13 @@ class RoomList
 			</div>
 		`;
 		// [B] SET atts
-		const isHost = playerType === 'host';
-		const imgSrc = isHost ? LEFT_USER.home_pfp : this.list_pfp;
+		let imgSrc = img_url;
+		if (img_url === undefined || img_url.includes('default.'))
+			imgSrc = this.def_pfp;
 
 		const atts =
 		{
-			'%main-c1': 'fnl-item-ctn',
+			'%main-c1': 'fnl-item-ctn d-none',
 			'%main-t1': username,
 			'%main-ty1': groupType,
 			'%pfp-c1': 'fnl-item-pfp-ctn',
@@ -715,13 +716,18 @@ class RoomList
 			for (const player of data.members)
 			{
 				let name = `${player}`;
+				let img_url = data.avatar_urls[name];
 				if (JSON.parse(localStorage.getItem('user')).username === player)
 					name = `*${name}`;
+
 				if (player !== data.details.host)
-					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'guest', 'playing');
+					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'guest', 'playing', img_url);
 				else
-					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'host', 'playing');
+					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'host', 'playing', img_url);
 			}
+			const items = lobby_ctn.querySelectorAll('.fnl-item-ctn');
+			for (const item of items)
+				item.classList.remove('d-none');
 		}
 		if (data.type === 'started_game')
 		{

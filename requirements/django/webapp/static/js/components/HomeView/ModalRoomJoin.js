@@ -170,7 +170,28 @@ class ModalRoomJoin
 				e.preventDefault();
 
 				const roomid = e.currentTarget.getAttribute('data-roomid');
-				alert(`clicked room id : ${roomid}`);
+				const host = e.currentTarget.querySelector('.rbl-name').textContent;
+				let slot = e.currentTarget.querySelector('.rbl-slot').textContent;
+				//remove (2/2) to [2,2]
+				slot = slot.replace('(', '');
+				slot = slot.replace(')', '');
+				let slot_arr = slot.split('/');
+				slot_arr = slot_arr.map(Number);
+				if (slot_arr[0] === slot_arr[1])
+				{
+					alert('Room is full! Cannot join.');
+					return;
+				}
+
+				const rj_confirm = confirm(`Join room created by ${host}? (ID : ${roomid})`);
+				if (!rj_confirm)
+					return;
+
+				//close modal
+				const modal = document.getElementById('modal-join');
+				const modal_bs = bootstrap.Modal.getInstance(modal);
+				if (modal_bs)
+					modal_bs.hide();
 
 				await WEB_SOCKET.closeSocket_liveChat();
 				await WEB_SOCKET.updateSocket_friendList('join');

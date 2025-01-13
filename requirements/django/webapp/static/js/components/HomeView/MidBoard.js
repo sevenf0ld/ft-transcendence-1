@@ -239,7 +239,7 @@ class MidBoard
 		slot = cur_mem + slot;
 
 		let template = `
-		<div class="%list-c" data-roomid="%romid-t" @bs-dt1>
+		<div class="%list-c" data-roomid="%romid-t">
 			<div class="%st-c" data-status="%st-dt"></div>
 			<div class="%romid-c">%romid-t</div>
 			<div class="%romslot-c">%romslot-t</div>
@@ -254,7 +254,6 @@ class MidBoard
 			'%st-dt': `${started}`,
 			'%romid-c': 'rbl-roomid',
 			'%romid-t': `${room.room_id}`,
-			'@bs-dt1': `data-bs-dismiss="modal"`,
 			//'@bs-dt1': '',
 			'%romslot-c': 'rbl-slot',
 			'%romslot-t': `${slot}`,

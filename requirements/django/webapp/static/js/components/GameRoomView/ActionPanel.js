@@ -771,6 +771,11 @@ class ActionPanel
 			if (data.is_host && data.num === 2)
 				start_btn.disabled = false;
 		}
+		if (data.type === 'left_room')
+		{
+			if (data.is_host && data.num < 2)
+				start_btn.disabled = true;
+		}
 		if (data.type === 'started_game')
 		{
 			start_btn.disabled = true;

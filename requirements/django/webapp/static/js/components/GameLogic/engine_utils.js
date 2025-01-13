@@ -125,7 +125,6 @@ class engineUtilsClass
 		}
 		else if (state === 'opvp-start')
 		{
-			console.log('opvp-data :', this.opvp_data);
 			await this.announce();
 			await this.announce(`Game has started at ${t}`);
 			await this.announce('Game difficulty will INCREASE over time');
@@ -149,6 +148,10 @@ class engineUtilsClass
 			const i_am_host = AN.host === JSON.parse(localStorage.getItem('user')).username;
 			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN && i_am_host)
 			{
+				console.log('Winner = ', EG_DATA.match.winner);
+				console.log('Loser = ', EG_DATA.match.loser);
+				alert(`trigger send game_end`);
+				await this.sleep(15000);
 				WS.gr.ws.send(JSON.stringify({
 					'game_state': 'game_end',
 					'winner': EG_DATA.match.winner,
