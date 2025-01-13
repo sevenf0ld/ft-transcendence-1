@@ -379,6 +379,7 @@ class websocketManager
 
 			if (data.type === 'joined_room')
 			{
+				console.log('JOINED ROOM DETAILS: ', data);
 				this.is_end = false;
 				await ACTION_PANEL.opvp_live_update(data);
 				await ANNOUNCER.opvp_live_update(data);

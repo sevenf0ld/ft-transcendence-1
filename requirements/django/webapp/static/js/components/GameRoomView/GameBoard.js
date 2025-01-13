@@ -120,7 +120,7 @@ class GameBoard
 				else
 					EG_DATA.ball.x = EG_DATA.display.w + 2000;
 				await new Promise((resolve) => setTimeout(resolve, 1000));
-				alert('Host lost connection. You win!');
+				alert('Host lost connection. You win! (but not recorded)');
 				WS.gr.ws.send(JSON.stringify({
 					'game_state': 'game_end',
 					'winner': nonHost,
@@ -137,15 +137,9 @@ class GameBoard
 				const host = AN.host;
 				const nonHost = JSON.parse(localStorage.getItem('user')).username;
 
-				/*
-				if (host === EG_DATA.player1.name)
-					EG_DATA.ball.x = EG_DATA.display.w + 2000;
-				else
-					EG_DATA.ball.x = -2000;
-				*/
 				EG_DATA.match.unexpected_end = true;
 				await new Promise((resolve) => setTimeout(resolve, 1000));
-				alert('Opponent lost connection. You win!');
+				alert('Opponent lost connection. You win! (but not recorded)');
 			}
 		}
 		else if (data.type === 'started_game')

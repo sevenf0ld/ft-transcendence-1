@@ -174,10 +174,7 @@ class engineUtilsClass
 				await this.sleep(1000);
 				WS.gr.ws.send(JSON.stringify({
 					'game_state': 'unexpected_end',
-					'winner': AN.host,
 					'loser': loser,
-					'rid': AN.rid,
-					'host': AN.host
 				}));
 			}
 			await EG_DATA.reset();

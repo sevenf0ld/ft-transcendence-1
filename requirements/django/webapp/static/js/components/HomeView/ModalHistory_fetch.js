@@ -38,8 +38,8 @@ class fetch_history
 			await FETCH_UTILS.init();
 			const mainFetch = FETCH_UTILS;
 			await mainFetch.getCookie('csrftoken');
-			console.log(`url = api/games/history/?target=${this.target}`);
-			await mainFetch.setUrl(`api/games/history/?target=${this.target}`);
+			console.log(`url = /api/games/history/${this.target}`);
+			await mainFetch.setUrl(`/api/games/history/${this.target}`);
 			await mainFetch.setMethod('GET');
 			await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
 			await mainFetch.appendHeaders('Content-Type', 'application/json');

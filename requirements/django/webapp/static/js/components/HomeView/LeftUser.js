@@ -138,8 +138,10 @@ class LeftUser
 		parent_hd.innerHTML = `${user}'s Match History`;
 
 		MODAL_HISTORY.container = parent_bd;
+		MODAL_HISTORY.history_target = user;
 		await MODAL_HISTORY.render('replace');
 		await LANGUAGE.updateContent('modal-history');
+		MODAL_HISTORY.history_target = null;
 
 		return true;
 	}

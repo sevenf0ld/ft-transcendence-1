@@ -233,6 +233,9 @@ class RightFnList
 
 	async check_opened_chat(name)
 	{
+		if (document.querySelector('.ct-chatbox-ctn') !== null)
+			return true;
+
 		const chatbox = document.querySelector('.ct-chatbox-title');
 
 		if (chatbox === null)

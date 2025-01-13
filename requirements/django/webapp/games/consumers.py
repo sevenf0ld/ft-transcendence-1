@@ -278,20 +278,28 @@ class GameRoomConsumer(WebsocketConsumer):
                 self.rid_delete_room_object(text_json['rid'])
                 self.increment_profile_wins(text_json['winner'])
                 self.decrement_profile_losses(text_json['loser'])
+        #if update == 'unexpected_end':
+        #    async_to_sync(self.channel_layer.group_send)(
+        #        self.group_id,
+        #        {
+        #            'type': 'unexpected.end',
+        #            'winner': text_json['winner'],
+        #            'loser': text_json['loser']
+        #        }
+        #    )
+        #    if async_to_sync(self.rid_get_room_object(text_json['rid'])) is not None and self.user.username == text_json['host']:
+        #        self.create_unexpected_match(text_json['winner'], text_json['rid'], text_json['loser'])
+        #        self.rid_delete_room_object(text_json['rid'])
+        #        self.increment_profile_wins(text_json['winner'])
+        #        self.decrement_profile_losses(text_json['loser'])
         if update == 'unexpected_end':
             async_to_sync(self.channel_layer.group_send)(
                 self.group_id,
                 {
                     'type': 'unexpected.end',
-                    'winner': text_json['winner'],
                     'loser': text_json['loser']
                 }
             )
-            if async_to_sync(self.rid_get_room_object(text_json['rid'])) is not None and self.user.username == text_json['host']:
-                self.create_unexpected_match(text_json['winner'], text_json['rid'], text_json['loser'])
-                self.rid_delete_room_object(text_json['rid'])
-                self.increment_profile_wins(text_json['winner'])
-                self.decrement_profile_losses(text_json['loser'])
 
     #=======================================================#
     #               ASYNC - CHANNEL LAYER COMMUNICATION
@@ -441,11 +449,10 @@ class GameRoomConsumer(WebsocketConsumer):
         }))
 
     def unexpected_end(self, event):
-        winner = event['winner']
         loser = event['loser']
         self.send(text_data=json.dumps({
             'type': 'unexpected_end',
-            'message': f'{loser} has unexpectedly disconnect. You have won FUCK YOU.'
+            'message': f'{loser} has unexpectedly disconnected.'
         }))
 
     #=================================#

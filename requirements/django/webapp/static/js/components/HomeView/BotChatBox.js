@@ -147,6 +147,8 @@ class BotChatBox
 			const pfp_name = splitted_url[1];
 			if (pfp_name !== 'default.jpg')
 				BOT_FRIEND_PFP.friend_pfp = avatar_url;
+			else
+				BOT_FRIEND_PFP.friend_pfp = 'use-default';
 			await BOT_FRIEND_PFP.render('replace');
 			await LANGUAGE.updateContent('fn-pfp');
 		}
@@ -198,7 +200,7 @@ class BotChatBox
 		console.log('[BTN] inviteClick');
 
 		// if button is disabled then return
-		if (event.target.disabled)
+		if (event.target.disabled || event.target.classList.contains('invite-disabled'))
 		{
 			alert('Invitation is disabled until the user joins the chat.');
 			return false;

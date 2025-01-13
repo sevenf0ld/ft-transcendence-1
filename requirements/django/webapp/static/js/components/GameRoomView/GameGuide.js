@@ -536,7 +536,7 @@ class GameGuide
 		${await this.inst_list_generator('Key', 'W (UP), S (DOWN)')}
 		${await this.inst_list_generator('Game Objective', 'Player against player online')}
 		${await this.inst_list_generator('Game Rules', 'Hit the ball to the opponent\'s side (best of 1)')}
-		${await this.inst_list_generator('Game System', 'Match will be recorded')}
+		${await this.inst_list_generator('Game System', 'Match will be recorded except when unexpected disconnection occurs')}
 		`;
 
 		// [B] SET atts

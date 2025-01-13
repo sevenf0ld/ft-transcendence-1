@@ -34,6 +34,7 @@ class ModalFnOpt
 		this.buttons = {
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
+		this.history_target = null;
 	}
 	// --------------------------------------------- //
 	// [1/4] MAIN-EXECUTION
@@ -91,14 +92,25 @@ class ModalFnOpt
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
 
-		//temporary
-		const user = JSON.parse(localStorage.getItem('user'));
 		await FETCH.init();
-		FETCH.target = user.username;
+		if (!this.history_target)
+			throw new Error('[ERR] history target not found');
+		FETCH.target = this.history_target;
 		await FETCH.fetchData();
 		if (FETCH.re_value === 'match-history-successful')
 		{
-			console.log('success history, fetch_obj:', FETCH.fetch_obj);
+			const board = document.querySelector('.hst-list-group');
+			board.innerHTML = '';
+			const histories = FETCH.fetch_obj.rdata.pvp;
+			for (const ele of histories)
+			{
+				let time = ele.match_date + ' (' + ele.match_time + ')';
+				let result = ele.result;
+				let type = ele.game_type;
+				let target = ele.opponent;
+
+				await this.gen_list(time, result, type, target);
+			}
 		}
 		else
 		{
@@ -106,6 +118,24 @@ class ModalFnOpt
 		}
 
 		return true;
+	}
+
+	async getCookie(name) {
+		let cookieValue = null;
+		if (document.cookie && document.cookie !== '')
+		{
+			const cookies = document.cookie.split(';');
+			for (let i = 0; i < cookies.length; i++)
+			{
+				const cookie = cookies[i].trim();
+				if (cookie.substring(0, name.length + 1) === (name + '='))
+				{
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
 	}
 
 	// --------------------------------------------- //

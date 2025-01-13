@@ -44,7 +44,8 @@ class BotFriendPfp
 		this.losses = null;
 		this.total = null;
 		this.win_rate = null;
-		this.friend_pfp = '/static/assets/images/default-pfp.png';
+		this.friend_pfp = null;
+		this.default_pfp = '/static/assets/images/default-pfp.png';
 	}
 	// --------------------------------------------- //
 	// MAIN-EXECUTION
@@ -138,8 +139,10 @@ class BotFriendPfp
 		parent_hd.innerHTML = `${user}'s Match History`;
 
 		MODAL_HISTORY.container = parent_bd;
+		MODAL_HISTORY.history_target = user;
 		await MODAL_HISTORY.render('replace');
 		await LANGUAGE.updateContent('modal-history');
+		MODAL_HISTORY.history_target = null;
 
 		return true;
 	}
@@ -226,11 +229,15 @@ class BotFriendPfp
 		</div>
 		`
 		// [B] SET atts
+		let img_src = this.default_pfp;
+		if (this.friend_pfp !== 'use-default')
+			img_src = this.friend_pfp;
+
 		const atts =
 		{
 			'%pfp-1c': 'ct-fn-pfp-pic-ctn',
 			'%pfp-2c': 'ct-fn-pfp-pic-img',
-			'%pfp-src': this.friend_pfp,
+			'%pfp-src': img_src,
 			'%pfp-alt': this.username,
 		};
 		for (const key in atts)
