@@ -197,22 +197,32 @@ class BotChatBox
 		event.preventDefault();
 		console.log('[BTN] inviteClick');
 
+		// if button is disabled then return
+		if (event.target.disabled)
+		{
+			alert('Invitation is disabled until the user joins the chat.');
+			return false;
+		}
+
 		const chatbox_id = document.getElementById('btn_chatbox_profile');
 		const chatbox_friend = chatbox_id.getAttribute('title');
 
 		const room_created = await this.fetch_create_game_room();
 		if (room_created)
-		{
+		{	
+			await WS_MANAGER.closeSocket_liveChat();
+			await WS_MANAGER.updateSocket_friendList('join');
+
+			const gameRoom = GAME_ROOM_VIEW;
+			await gameRoom.init();
+			gameRoom.type = 'online-pvp';
+			await gameRoom.render();
+			await WS_MANAGER.listenSocket_game();
+
 			await WS_MANAGER.initSocket_invite_send();
 			await WS_MANAGER.connectSocket_invite_send(chatbox_friend);
 			await WS_MANAGER.updateSocket_invite_send(room_created);
 			await WS_MANAGER.listenSocket_invite_send();
-
-			const gameRoom = GAME_ROOM_VIEW;
-			await gameRoom.init();
-			gameRoom.type = 'online-tour';
-			await gameRoom.render();
-			await WS_MANAGER.listenSocket_game();
 		}
 
 		return true;
@@ -258,14 +268,15 @@ class BotChatBox
 			str = `<div class="ct-chatbox-msg">${user}: ${msg}</div>`;
 
 		chatbox_ctn.insertAdjacentHTML('beforeend', str);
-		await this.input_manager('receive');
+		await this.input_invite_manager('receive');
 
 		return true;
 	}
 
-	async input_manager(state)
+	async input_invite_manager(state)
 	{
 		const input = document.getElementById('input_chatbox');
+		const btn = document.getElementById('btn_chatbox_invite');
 		const ctn = document.querySelector('.ct-chatbox-bd');
 
 		if (state === 'disable')
@@ -273,12 +284,18 @@ class BotChatBox
 			input.disabled = true;
 			input.placeholder = 'Chat is unavailable.';
 			input.value = '';
+
+			btn.disabled = true;
+			btn.classList.add('invite-disabled');
 		}
 		if (state === 'enable')
 		{
 			input.disabled = false;
 			input.placeholder = 'Type your message here';
 			input.value = '';
+
+			btn.disabled = false;
+			btn.classList.remove('invite-disabled');
 		}
 		if (state === 'receive')
 		{
@@ -344,12 +361,12 @@ class BotChatBox
 			if (data.type === 'chat_available')
 			{
 				await this.msg_generator('System', `${this.target} is in the room.`);
-				await this.input_manager('enable');
+				await this.input_invite_manager('enable');
 			}
 			else if (data.type === 'chat_unavailable')
 			{
 				await this.msg_generator('System', `${this.target} is not in the room.`);
-				await this.input_manager('disable');
+				await this.input_invite_manager('disable');
 			}
 		  //========================================//
     	  //================ RECEIVE ===============//
@@ -359,7 +376,7 @@ class BotChatBox
 		  {
 			let sender_name = data.sender === this.sender ? 'You' : data.sender;
 			await this.msg_generator(sender_name, data.message);
-			await this.input_manager('receive');
+			await this.input_invite_manager('receive');
 		  }
 		});
 
@@ -424,7 +441,7 @@ class BotChatBox
 		<div class="%main-1c %main-2c">
 			<div class="%hd-1c">
 				<p class="%p1-c" id="%hd-1d" @att-t1>%p1-t</p>
-				<div class="%inv-1c" id="%inv-1d">invite</div>
+				<div class="%inv-1c" id="%inv-1d" disabled>invite</div>
 				<div class="%close-1c" id="%close-1d">%close-1t</div>
 			</div>
 			<div class="%bd-1c">
@@ -449,7 +466,7 @@ class BotChatBox
 			'%p1-c': 'ct-chatbox-title truncate',
 			'@att-t1': `title="${this.target}"`,
 			'%p1-t': `${this.target}`,
-			'%inv-1c': 'ct-chatbox-inv',
+			'%inv-1c': 'ct-chatbox-inv invite-disabled',
 			'%inv-1d': 'btn_chatbox_invite',
 			'%close-1c': 'ct-chatbox-close',
 			'%close-1d': 'btn_chatbox_close',

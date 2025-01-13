@@ -76,9 +76,6 @@ class ActionPanel
 			case 'online-pvp':
 				await this.onlinePvp_render('replace');
 				break;
-			case 'online-tour':
-				await this.onlineTour_render('replace');
-				break;
 			default:
 				break;
 		}

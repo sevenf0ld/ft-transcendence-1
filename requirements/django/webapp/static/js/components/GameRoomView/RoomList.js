@@ -75,9 +75,6 @@ class RoomList
 			case 'online-pvp':
 				await this.onlinePvp_render('replace');
 				break;
-			case 'online-tour':
-				await this.onlineTour_render('replace');
-				break;
 			default:
 				break;
 		}
@@ -232,7 +229,7 @@ class RoomList
 		return template;
 	}
 
-	async playerListGenerator(container, username, groupType, playerType, pstatus = 'playing', img_url)
+	async playerListGenerator(container, username, groupType, playerType, pstatus = 'playing', img_url, hide)
 	{
 		// [-] HELPER FUNCTION
 		let icon = '';
@@ -257,9 +254,13 @@ class RoomList
 		if (img_url === undefined || img_url.includes('default.'))
 			imgSrc = this.def_pfp;
 
+		let hideClass = '';
+		if (hide === 'hide')
+			hideClass = 'd-none';
+
 		const atts =
 		{
-			'%main-c1': 'fnl-item-ctn d-none',
+			'%main-c1': `fnl-item-ctn ${hideClass}`,
 			'%main-t1': username,
 			'%main-ty1': groupType,
 			'%pfp-c1': 'fnl-item-pfp-ctn',
@@ -721,9 +722,9 @@ class RoomList
 					name = `*${name}`;
 
 				if (player !== data.details.host)
-					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'guest', 'playing', img_url);
+					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'guest', 'playing', img_url, 'hide');
 				else
-					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'host', 'playing', img_url);
+					await this.playerListGenerator(lobby_ctn, name, 'Lobby', 'host', 'playing', img_url, 'hide')
 			}
 			const items = lobby_ctn.querySelectorAll('.fnl-item-ctn');
 			for (const item of items)

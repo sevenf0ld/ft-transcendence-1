@@ -43,6 +43,12 @@
 	border-radius: 0.3rem;
 }
 
+.ct-chatbox-ctn .ct-chatbox-inv.invite-disabled
+{
+	cursor: not-allowed;
+	background-color: var(--bdg-4);
+}
+
 .ct-chatbox-ctn .ct-chatbox-close
 {
 	margin-right: 1rem;
