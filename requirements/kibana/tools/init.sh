@@ -41,8 +41,10 @@ else
     echo "Index pattern '${INDEX_PATTERN_TITLE}' created and set as default."
 fi
 
-# https://www.elastic.co/guide/en/kibana/7.17/saved-objects-api-create.html
-
+# https://www.elastic.co/guide/en/kibana/7.17/saved-objects-api-export.html
+# https://www.elastic.co/guide/en/kibana/7.17/saved-objects-api-import.html
 # visualization
-
 # dashboard
+curl -X POST "http://kibana:5601/api/saved_objects/_import?createNewCopies=true" \
+	-H "kbn-xsrf: true" \
+	--form file=@"/usr/share/kibana/saved_objects/dashboard.ndjson"

@@ -112,6 +112,7 @@ services:
         - elasticsearch
       volumes:
         - ./requirements/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+        - ./requirements/kibana/saved_objects/dashboard.ndjson:/usr/share/kibana/saved_objects/dashboard.ndjson
       networks:
         - net_trans
 
