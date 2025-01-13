@@ -10,6 +10,9 @@
 
 ## ELASTICSEARCH
 - [official docker compose guide](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-compose-file)
+- [official ILM](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-lifecycle-management.html)
+- [official rollover 1](https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started-index-lifecycle-management.html)
+- [official rollover 2](https://www.elastic.co/guide/en/elasticsearch/reference/7.14/getting-started-index-lifecycle-management.html)
 - [built in users](https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html)
 - [logstash to different elasticsearch indices](https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html#_writing_to_different_indices_best_practices)
 - get the logstash created elasticsearch indices `curl -X GET "http://localhost:9200/logs-*/_search?pretty=true&q=*:*"
@@ -21,6 +24,16 @@
 - [scaling nodes](https://github.com/deviantony/docker-elk/wiki/Elasticsearch-cluster)
 - [yellow health](https://stackoverflow.com/a/60819899)
 - information on cluster health `curl http://localhost:9200/_cluster/health`
+- ILM
+    - [configure ILM via logstash](https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html)
+    - [very introductory guide](https://medium.com/@mastindergmail1/understanding-elasticsearchs-index-lifecycle-management-ilm-policy-c7ab338c66fe)
+    - [rollover and through kibana](https://stackoverflow.com/a/54000908)
+    - [API example](https://stackoverflow.com/a/71737758)
+    - verify policy `curl -X GET "http://localhost:9200/_ilm/explain/logs-000001?pretty"`
+    - `curl -X GET "http://localhost:9200/_index_template/logs_template?pretty"`
+    - `curl -X GET "http://localhost:9200/_ilm/policy?pretty"`
+    - `curl -X GET "http://localhost:9200/_cat/aliases/logs?v"`
+    - `curl -X GET "http://localhost:9200/_alias/logs?pretty"`
 
 ## LOGSTASH
 - [official docker guide](https://www.elastic.co/guide/en/logstash/current/docker-config.html)
@@ -47,6 +60,8 @@
 ## KIBANA
 - [official docker compose guide](https://www.elastic.co/guide/en/kibana/current/docker.html), single and multi elasticsearch nodes included
 - [official kibana API](https://www.elastic.co/guide/en/kibana/7.17/api.html)
+- [official get (POST - export) dashboards](https://www.elastic.co/guide/en/kibana/7.17/saved-objects-api-export.html)
+- [official send (GET - import) dashboards](https://www.elastic.co/guide/en/kibana/7.17/saved-objects-api-import.html)
 - access the script in container shell `docker run -it --entrypoint /bin/sh <kibana-image>`
 - index patterns
     - [create index pattern programatically](https://stackoverflow.com/questions/71615665/how-to-create-index-pattern-in-elastic-seach-programmatically)
