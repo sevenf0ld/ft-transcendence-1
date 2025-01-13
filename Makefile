@@ -16,7 +16,6 @@ pdf: setup
 
 setup:
 	#mkdir -p $(HOME)/data/vol_django
-	mkdir -p $(HOME)/data/vol_pg
 	mkdir -p ./LOGGER
 
 $(NAME): setup
