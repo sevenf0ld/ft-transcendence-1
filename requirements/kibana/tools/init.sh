@@ -68,6 +68,12 @@ curl -X PUT "http://elasticsearch:9200/_ilm/policy/logs_policy?pretty" \
 	          "delete": {}
 	        }
 	      }
+	      "cold": {
+	        "min_age": "10d",
+	        "actions": {
+	          "freeze": {}
+	        }
+	      }
 	    }
 	  }
 	}
@@ -123,5 +129,18 @@ curl -X PUT "http://elasticsearch:9200/logs-000001?pretty" \
 	      "is_write_index": true
 	    }
 	  }
+	}
+	'
+
+curl -X POST "http://elasticsearch:9200/logs-000001/_alias/logs?pretty"
+
+curl -X POST "http://elasticsearch:9200/logs/_rollover?pretty" \
+	-H "Content-Type: application/json" \
+	-d'
+	{
+	    "conditions": {
+	        "max_age": "10d",
+	        "max_size": "500MB"
+	    }
 	}
 	'
