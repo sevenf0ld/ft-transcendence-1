@@ -93,6 +93,23 @@ body
 	font-family: 'Noto Sans JP' ,sans-serif;
 }
 
+#load_page
+{
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	position: fixed;
+	top: 0;
+	left: 0;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--cor-1);
+	color: var(--txt-1);
+	z-index: 9999;
+  	animation: glow 1.5s infinite;
+}
+
+
 /* -------------------------------------------------- */
 /* media-related */
 /* -------------------------------------------------- */

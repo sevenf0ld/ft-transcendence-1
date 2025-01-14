@@ -11,6 +11,7 @@ import WS_MANAGER from '../../core/websocket_mng.js';
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 import CR_FETCH from './CreateRoom_fetch.js';
 import LANGUAGE from '../../core/language/language.js';
+import * as LOADING from '../../core/helpers/loading.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -199,6 +200,9 @@ class BotChatBox
 		event.preventDefault();
 		console.log('[BTN] inviteClick');
 
+		const chatbox_id = document.getElementById('btn_chatbox_profile');
+		const chatbox_friend = chatbox_id.getAttribute('title');
+
 		// if button is disabled then return
 		if (event.target.disabled || event.target.classList.contains('invite-disabled'))
 		{
@@ -206,8 +210,46 @@ class BotChatBox
 			return false;
 		}
 
-		const chatbox_id = document.getElementById('btn_chatbox_profile');
-		const chatbox_friend = chatbox_id.getAttribute('title');
+		let msg = `I have invited you to join my game room.`
+		await this.send_msg(msg);
+
+		msg = `Click below button to check it out.`
+		await this.send_msg(msg);
+
+		await this.send_msg(`<button class="chat-msg-btn">check me out</button>`);
+
+		const pvp_btn = document.getElementById('btn_remote_pvp');
+		await pvp_btn.click();
+		let cr_room_btn = document.getElementById('btn_create_room');
+		await LOADING.loading_page('show');
+		let timeout = 0;
+		while (cr_room_btn === null)
+		{
+			timeout++;
+			if (timeout > 10)
+				return alert('Failed to create room.');
+			await new Promise((resolve) => setTimeout(resolve, 100));
+			cr_room_btn = document.getElementById('btn_create_room');
+		}
+		await cr_room_btn.click();
+		await new Promise((resolve) => setTimeout(resolve, 500));
+		await LOADING.loading_page('hide');
+
+		let room_id = null;
+		timeout = 0;
+		while (room_id === null)
+		{
+			timeout++;
+			if (timeout > 10)
+				return alert('Failed to create room.');
+			await new Promise((resolve) => setTimeout(resolve, 100));
+			room_id = CR_FETCH.fetch_obj.rdata.room_id;
+		}
+		await new Promise((resolve) => setTimeout(resolve, 300));
+		const me = JSON.parse(localStorage.getItem('user')).username;
+		await GAME_ROOM_VIEW.announce(`${me} has invited ${chatbox_friend} to this game room.`);
+		
+		/*
 
 		const room_created = await this.fetch_create_game_room();
 		if (room_created)
@@ -221,7 +263,7 @@ class BotChatBox
 			await gameRoom.announce(`${me} has invited ${chatbox_friend} to this game room.`);
 			await WS_MANAGER.listenSocket_game();
 			
-			await new Promise((resolve) => setTimeout(resolve, 500));
+			wait new Promise((resolve) => setTimeout(resolve, 500));
 			let msg = `I have invited you to join the game room.`
 			await this.send_msg(msg);
 
@@ -241,6 +283,7 @@ class BotChatBox
 			//await WS_MANAGER.updateSocket_invite_send(room_created);
 			//await WS_MANAGER.listenSocket_invite_send();
 		}
+		*/
 
 		return true;
 	}
