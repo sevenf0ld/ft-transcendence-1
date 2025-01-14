@@ -221,10 +221,10 @@ class BotChatBox
 			await gameRoom.render();
 			await WS_MANAGER.listenSocket_game();
 
-			await WS_MANAGER.initSocket_invite_send();
-			await WS_MANAGER.connectSocket_invite_send(chatbox_friend);
-			await WS_MANAGER.updateSocket_invite_send(room_created);
-			await WS_MANAGER.listenSocket_invite_send();
+			//await WS_MANAGER.initSocket_invite_send();
+			//await WS_MANAGER.connectSocket_invite_send(chatbox_friend);
+			//await WS_MANAGER.updateSocket_invite_send(room_created);
+			//await WS_MANAGER.listenSocket_invite_send();
 		}
 
 		return true;

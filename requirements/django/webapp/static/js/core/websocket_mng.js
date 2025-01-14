@@ -31,8 +31,8 @@ class websocketManager
 		this.initSocket_friendList();
 		this.initSocket_lobby();
 		this.initSocket_game();
-		this.initSocket_invite_receive();
-		this.initSocket_invite_send();
+		//this.initSocket_invite_receive();
+		//this.initSocket_invite_send();
 	}
 
 	async ws_is_ready_to_close(ws)
@@ -56,10 +56,10 @@ class websocketManager
 			this.closeSocket_lobby();
 		if (await this.ws_is_ready_to_close(this.gr.ws))
 			this.closeSocket_game();
-		if (await this.ws_is_ready_to_close(this.receive_ipvp.ws))
-			this.closeSocket_invite_receive();
-		if (await this.ws_is_ready_to_close(this.send_ipvp.ws))
-			this.closeSocket_invite_send();
+		//if (await this.ws_is_ready_to_close(this.receive_ipvp.ws))
+		//	this.closeSocket_invite_receive();
+		//if (await this.ws_is_ready_to_close(this.send_ipvp.ws))
+		//	this.closeSocket_invite_send();
 
 		console.log('[INFO] all websockets closed');
 
