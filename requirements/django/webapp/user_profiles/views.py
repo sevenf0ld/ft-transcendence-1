@@ -5,13 +5,13 @@ from django.shortcuts import render
 from .models import Profile
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from dj_rest_auth.jwt_auth import JWTCookieAuthentication
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework import status, generics
 from .serializers import FriendProfileModelSerializer, FriendProfileTargetSerializer, ProfileModelSerializer
 from typing import Dict, Any
 from .utils import is_current_lang
+from dj_rest_auth.jwt_auth import JWTCookieAuthentication
 
 #class ProfileViewSet(viewsets.ModelViewSet):
 #    serializer_class = ProfileModelSerializer
@@ -41,8 +41,8 @@ def upload_avatar(request):
 
 class FriendProfileRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = FriendProfileModelSerializer
-    authentication_classes = [JWTCookieAuthentication]
     permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTCookieAuthentication]
 
     def get_serializer_context(self) -> Dict[str, Any]:
         context: Dict[str, Any] = super().get_serializer_context()
@@ -69,8 +69,8 @@ class FriendProfileRetrieveAPIView(generics.RetrieveAPIView):
 class HomeProfileRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileModelSerializer
-    authentication_classes = [JWTCookieAuthentication]
     permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTCookieAuthentication]
 
     def get_object(self):
         profile = Profile.objects.get(user=self.request.user)
@@ -81,6 +81,7 @@ class HomeProfileRetrieveAPIView(generics.RetrieveAPIView):
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([JWTCookieAuthentication])
 def update_user_language(request):
     user = request.user
     if not user.is_authenticated:

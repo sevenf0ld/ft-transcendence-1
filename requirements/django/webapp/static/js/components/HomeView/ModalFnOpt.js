@@ -9,6 +9,7 @@ import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 import RIGHT_FRIENDS_LIST from './RightFnList.js';
 import HOME_VIEW from '../../views/HomeView.js';
 import * as LOADING from '../../core/helpers/loading.js';
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -129,6 +130,7 @@ class ModalFnOpt
 			'click', async (event) => { await this.unblockClick(event); }
 		);
 
+		await LANGUAGE.updateContent('modal-fn-opt');
 		await this.disable_buttons();
 
 		return true;

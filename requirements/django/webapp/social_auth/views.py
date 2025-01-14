@@ -75,20 +75,14 @@ oauth2_callback = OAuth2CallbackView.adapter_view(FortyTwoOAuth2Adapter)
 
 class CustomSocialLoginView(SocialLoginView):
     serializer_class = CustomSocialLoginSerializer
-    #authentication_classes = [JWTCookieAuthentication]
-    #permission_classes = [IsAuthenticated]
 
 #class FortyTwoLogin(CustomSocialLoginView):
 class FortyTwoLogin(SocialLoginView):
     adapter_class = FortyTwoOAuth2Adapter
     callback_url = 'https://ftpong.com:443'
     client_class = OAuth2Client
-    #authentication_classes = [JWTCookieAuthentication]
-    #permission_classes = [IsAuthenticated]
 
 class FortyTwoConnect(SocialConnectView):
     adapter_class = FortyTwoOAuth2Adapter
     callback_url = 'https://ftpong.com:443'
     client_class = OAuth2Client
-    #authentication_classes = [JWTCookieAuthentication]
-    #permission_classes = [IsAuthenticated]

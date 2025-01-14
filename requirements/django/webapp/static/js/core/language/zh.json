@@ -42,7 +42,16 @@
 			"pfp-remove": "移除",
 			"tfa-status": "状态",
 			"tfa-en": "活跃",
-			"tfa-dis": "关闭"
+			"tfa-dis": "关闭",
+			"acc-curr-pass": "当前密码",
+			"acc-new-pass": "新密码",
+			"acc-conf-pass": "确认密码",
+			"submit": "更新",
+			"acc-curr-pass-ph": "输入当前密码",
+			"acc-new-pass-ph": "输入新密码",
+			"acc-conf-pass-ph": "确认新密码",
+			"tfa-on": "启用2FA",
+			"tfa-off": "关闭2FA"
 		},
 		"mdhis": {
 			"title": "对战记录",
@@ -86,6 +95,7 @@
 			"gm-player": "玩家",
 			"gm-against": "对战",
 			"gm-local": "线下",
+			"gm-online": "线上",
 			"gm-match": "局",
 			"gm-will": "将会",
 			"gm-willnot": "将不会",
@@ -95,6 +105,7 @@
 			"gm-last": "最后生存下来的",
 			"gm-wins": "获胜",
 			"gm-every": "每",
+			"gm-except": "除非发生意外断开连接",
 			"rl": "房间列表",
 			"start": "开始",
 			"restart": "重新",
@@ -114,6 +125,14 @@
 			"des": "输入房间号, 或",
 			"create": "创建房间",
 			"back": "返回"
+		},
+		"mdfo": {
+			"unfriend": "解除好友",
+			"block": "拉黑",
+			"unblock": "解除拉黑",
+			"cancel": "取消申请",
+			"accept": "接受申请",
+			"decline": "拒绝申请"
 		}
 	}
 }

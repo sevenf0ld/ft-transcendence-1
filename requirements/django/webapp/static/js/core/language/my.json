@@ -42,7 +42,16 @@
 			"pfp-remove": "Hapus",
 			"tfa-status": "Status",
 			"tfa-en": "Aktif",
-			"tfa-dis": "Nyahaktif"
+			"tfa-dis": "Nyahaktif",
+			"acc-curr-pass": "Kata Laluan Semasa",
+			"acc-new-pass": "Kata Laluan Baru",
+			"acc-conf-pass": "Sahkan Kata Laluan",
+			"submit": "Kemaskini",
+			"acc-curr-pass-ph": "Masukkan kata laluan semasa",
+			"acc-new-pass-ph": "Masukkan kata laluan baru",
+			"acc-conf-pass-ph": "Sahkan kata laluan baru",
+			"tfa-on": "Aktifkan 2FA",
+			"tfa-off": "Nyahaktifkan 2FA"
 		},
 		"mdhis": {
 			"title": "Sejarah Perlawanan",
@@ -86,6 +95,7 @@
 			"gm-player": "Pemain",
 			"gm-against": "Lawan",
 			"gm-local": "Lokal",
+			"gm-online": "dalam talian",
 			"gm-match": "Perlawanan",
 			"gm-will": "Akan",
 			"gm-willnot": "Tidak Akan",
@@ -95,6 +105,7 @@
 			"gm-last": "Yang terakhir",
 			"gm-wins": "menang",
 			"gm-every": "setiap",
+			"gm-except": "kecuali jika berlaku gangguan sambungan yang tidak dijangka",
 			"rl": "Senarai Bilik",
 			"start": "Mula",
 			"restart": "Semula",
@@ -114,6 +125,14 @@
 			"des": "tekan untuk masuk bilik, atau",
 			"create": "Cipta Bilik",
 			"back": "Pulang"
+		},
+		"mdfo": {
+			"unfriend": "Hapus Rakan",
+			"block": "Blok",
+			"unblock": "Buka Blok",
+			"cancel": "Batal Permintaan",
+			"accept": "Terima Permintaan",
+			"decline": "Tolak Permintaan"
 		}
 	}
 }

@@ -266,6 +266,40 @@ class languageClass
 				document.querySelector(selector_str)
 					.innerHTML = i18next.t('home.mdset.warn');
 			}
+
+			selector_str = '#btn_acc_submit';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.submit');
+
+			selector_str = '.ct-set-acc-form-field label';
+			if (document.querySelector(selector_str))
+			{
+				document.querySelectorAll(selector_str).forEach((el) =>
+				{
+					if (el.innerHTML === 'Current Password')
+						el.innerHTML = i18next.t('home.mdset.acc-curr-pass');
+					else if (el.innerHTML === 'New Password')
+						el.innerHTML = i18next.t('home.mdset.acc-new-pass');
+					else if (el.innerHTML === 'Confirm Password')
+						el.innerHTML = i18next.t('home.mdset.acc-conf-pass');
+				});
+			}
+
+			selector_str = '#input_acc_cur_pass';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+					.placeholder = i18next.t('home.mdset.acc-curr-pass-ph');
+
+			selector_str = '#input_acc_new_pass';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+					.placeholder = i18next.t('home.mdset.acc-new-pass-ph');
+
+			selector_str = '#input_acc_conf_pass';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+					.placeholder = i18next.t('home.mdset.acc-conf-pass-ph');
 		}
 		else if (view === "modal-settings-pfp")
 		{
@@ -309,6 +343,16 @@ class languageClass
 			if (document.querySelector(selector_str))
 				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.warn');
+
+			selector_str = '#btn_2fa_on';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.tfa-on');
+
+			selector_str = '#btn_2fa_off';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.tfa-off');
 		}
 		else if (view === "modal-history")
 		{
@@ -525,6 +569,38 @@ class languageClass
 				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdrj.back');
 		}
+		else if (view === "modal-fn-opt")
+		{
+			selector_str = '#btn_unfriend';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.unfriend');
+
+			selector_str = '#btn_block';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.block');
+
+			selector_str = '#btn_cancel_request';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.cancel');
+
+			selector_str = '#btn_accept_request';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.accept');
+
+			selector_str = '#btn_decline_request';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.decline');
+
+			selector_str = '#btn_unblock';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.unblock');
+		}
 	}
 
 	async word_processor(selector, words, source)
@@ -610,6 +686,7 @@ class languageClass
 			'best of one' : 'home.gr.gm-bo1',
 			'player' : 'home.gr.gm-player',
 			'against' : 'home.gr.gm-against',
+			'online' : 'home.gr.gm-online',
 			'locally' : 'home.gr.gm-local',
 			'match' : 'home.gr.gm-match',
 			'will be' : 'home.gr.gm-will',
@@ -620,6 +697,7 @@ class languageClass
 			'last standing' : 'home.gr.gm-last',
 			'wins' : 'home.gr.gm-wins',
 			'every' : 'home.gr.gm-every',
+			'except when unexpected disconnection occurs' : 'home.gr.gm-except',
 		};
 
 		for (const ctn of ctns)
@@ -630,8 +708,11 @@ class languageClass
 			{
 				if (!translated.includes(key.toLowerCase()))
 					continue;
-				const replace_words = i18next.t(target_words[key]);
-				translated = translated.replace(key, replace_words);
+				while (translated.includes(key))
+				{
+					const replace_words = i18next.t(target_words[key]);
+					translated = translated.replace(key, replace_words);
+				}
 			}
 			ctn.innerHTML = translated;
 		}

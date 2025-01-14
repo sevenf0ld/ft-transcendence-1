@@ -42,7 +42,16 @@
 			"pfp-remove": "Remove",
 			"tfa-status": "Status",
 			"tfa-en": "Enabled",
-			"tfa-dis": "Disabled"
+			"tfa-dis": "Disabled",
+			"acc-curr-pass": "Current Password",
+			"acc-new-pass": "New Password",
+			"acc-conf-pass": "Confirm Password",
+			"submit": "Update",
+			"acc-curr-pass-ph": "Enter current password",
+			"acc-new-pass-ph": "Enter new password",
+			"acc-conf-pass-ph": "Confirm new password",
+			"tfa-on": "Enable 2FA",
+			"tfa-off": "Disable 2FA"
 		},
 		"mdhis": {
 			"title": "Match History",
@@ -86,6 +95,7 @@
 			"gm-player": "Player",
 			"gm-against": "against",
 			"gm-local": "Locally",
+			"gm-online": "Online",
 			"gm-match": "match",
 			"gm-will": "will be",
 			"gm-willnot": "will not be",
@@ -95,6 +105,7 @@
 			"gm-last": "Last standing",
 			"gm-wins": "wins",
 			"gm-every": "every",
+			"gm-except": "except when unexpected disconnection occurs",
 			"rl": "Room List",
 			"start": "Start",
 			"restart": "Restart Game",
@@ -114,6 +125,14 @@
 			"des": "click to join room, or",
 			"create": "Create Room",
 			"back": "Go Back"
+		},
+		"mdfo": {
+			"unfriend": "Unfriend",
+			"block": "Block",
+			"unblock": "Unblock",
+			"cancel": "Cancel Request",
+			"accept": "Accept Request",
+			"decline": "Decline"
 		}
 	}
 }
