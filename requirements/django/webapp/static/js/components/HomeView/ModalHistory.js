@@ -79,6 +79,7 @@ class ModalFnOpt
 	// --------------------------------------------- //
 	async bind_events()
 	{
+		/*
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'DemonKiller123');
 		await this.gen_list('JAN-01 (01AM)', 'lost', 'pvp', 'DemonKiller123');
 		await this.gen_list('JAN-01 (01AM)', 'won', 'tour', 'AlienInvasion');
@@ -91,6 +92,7 @@ class ModalFnOpt
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
+		*/
 
 		await FETCH.init();
 		if (!this.history_target)
@@ -114,7 +116,7 @@ class ModalFnOpt
 		}
 		else
 		{
-			console.error('failed history, fetch_obj:', FETCH.fetch_obj);
+			console.log(FETCH.re_value);
 		}
 
 		return true;

@@ -312,6 +312,7 @@ class ModalRoomJoin
 
 	async room_display_board()
 	{
+		/*
 		const template = `
 			<div class="%rdb-c">
 				<div class="%rdttl-c">
@@ -328,6 +329,18 @@ class ModalRoomJoin
 						<div class="%nam-c" @att1>%nam-t</div>
 					</div>
 				</div>
+			</div>
+		`;
+		*/
+		const template = `
+			<div class="%rdb-c">
+				<div class="%rdttl-c">
+					<div class="%rdtt-status-c">%rdtt-status-t</div>
+					<div class="%rdtt-roomid-c">%rdtt-roomid-t</div>
+					<div class="%rdtt-slot-c">%rdtt-slot-t</div>
+					<div class="%rdtt-name-c">%rdtt-name-t</div>
+				</div>
+				<div class="%rdbl-c" id="%rdbl-id"></div>
 			</div>
 		`;
 		return template;

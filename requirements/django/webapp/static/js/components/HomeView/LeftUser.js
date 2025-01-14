@@ -92,7 +92,19 @@ class LeftUser
 		this.buttons['signout'] = document.getElementById('btn_logout');
 
 		if (!this.main_ctn)
+		{
+			/*
+			const user = JSON.parse(localStorage.getItem('user'));
+			if (!user)
+			{
+				// this condition is here because this main_ctn is 
+				// the first selector of homeview
+				// if user token has expired, errors comes to here
+				await window.location.reload();
+			}
+			*/
 			throw new Error('[ERR] main container not found');
+		}
 		for (const key in this.buttons)
 		{
 			if (!this.buttons[key])

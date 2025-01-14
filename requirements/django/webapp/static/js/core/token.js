@@ -67,7 +67,7 @@ class TokenCs
 
 	async start_refresh_token()
 	{
-		const minute = 20;
+		const minute = 15;
 		const ms = minute * 60 * 1000;
 
 		this.token_id = setInterval(async () => {
@@ -106,6 +106,7 @@ class TokenCs
 
 		// close all websockets
 		await WEB_SOCKET.close_all_websockets();
+		await window.location.reload();
 
 		return true;
 	}

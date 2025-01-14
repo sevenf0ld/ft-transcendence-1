@@ -123,29 +123,42 @@ class fetch_utils
 	}
 
 	// --- [--] FINAL-FETCH
+	// SAFE_API_FETCH UPDATE (2025/JAN)
+	// liaw : new version of fetchData() - 2025/JAN
+	// This function wraps the fetch API to make it safer and handle token-related errors. 
+	// If a request fails with a 401 (Unauthorized), it tries to refresh the access token using the refresh token. 
+	// If refreshing succeeds, it retries the original request. 
+	// If refreshing fails (e.g., the refresh token is expired), it logs the user out gracefully. 
+	// This ensures a smoother user experience and avoids unhandled errors.
 	async fetchData()
 	{
 		await this.read_check();
-		const response = await fetch(this.url, this.object);
-		this.robject = response;
-		if (response.status === 401)
-		{
-			await TOKEN.token_expired_handler();
-			return false;
-		}
-		if (response.status !== 204)
-		{
-			this.response = response;
-			const data = await response.json();
+		try {
+			const response = await fetch(this.url, this.object);
+			this.robject = response;
+			if (response.status === 401)
+			{
+				await TOKEN.token_expired_handler();
+				return false;
+			}
+			if (response.status !== 204)
+			{
+				this.response = response;
+				const data = await response.json();
 
-			this.rdata = data;
+				this.rdata = data;
+			}
+			else
+			{
+				this.response = null;
+				this.rdata = null;
+			}
 		}
-		else
+		catch (error)
 		{
-			this.response = null;
-			this.rdata = null;
+			console.error('[ERR] fetch-utils.js - ', error);
+			throw error;
 		}
-
 		return true;
 	}
 }

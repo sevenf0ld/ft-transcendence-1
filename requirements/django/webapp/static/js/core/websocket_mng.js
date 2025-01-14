@@ -15,6 +15,7 @@ import ROOM_LIST from '../components/GameRoomView/RoomList.js';
 import HOME_VIEW from '../views/HomeView.js';
 import EG_RENDER from '../components/GameLogic/engine_render.js';
 import EG_DATA from '../components/GameLogic/engine_data.js';
+import TOKEN from './token.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -152,7 +153,7 @@ class websocketManager
 		this.friend.user_id = user_obj.pk;
 		this.friend.sender = user_obj.username;
 		this.friend.url = `wss://${window.location.host}/ws/online/${this.friend.user_id}/`;
-		this.friend.ws = new WebSocket(this.friend.url);
+		this.friend.ws = await this.new_websocket(this.friend.url);
 
 		await new Promise((resolve, reject) => {
         	this.friend.ws.addEventListener('open', (event) => {
@@ -256,12 +257,26 @@ class websocketManager
 		return true;
 	}
 
+	async new_websocket(url)
+	{
+		if (!await TOKEN.refresh_token())
+		{
+			console.log('[err] token expired, new websocket is not allowed');
+			return false;
+		}
+
+		let re_value = new WebSocket(url);
+
+		return re_value;
+	}
+
 	async connectSocket_lobby(lobby_type)
 	{
 		if (this.lobby.ws === undefined)
 		{
 			this.lobby.url = `wss://${window.location.host}/ws/lobby/${lobby_type}/`;
-			this.lobby.ws = new WebSocket(this.lobby.url);
+			//check if token is expired first
+			this.lobby.ws = await this.new_websocket(this.lobby.url);
 		}
 
 		await new Promise((resolve, reject) => {
@@ -341,7 +356,7 @@ class websocketManager
 	async connectSocket_game(room_id)
 	{
 		this.gr.url = `wss://${window.location.host}/ws/game/${room_id}/`;
-		this.gr.ws = new WebSocket(this.gr.url);
+		this.gr.ws = await this.new_websocket(this.gr.url);
 
 		await new Promise((resolve, reject) => {
         	this.gr.ws.addEventListener('open', (event) => {
@@ -522,7 +537,7 @@ class websocketManager
 	{
 		this.send_ipvp.url = `wss://${window.location.host}/ws/invite/${invitee}/`;
 		//this.send_ipvp.url = `wss://${window.location.host}/ws/invite/haha/`;
-		this.send_ipvp.ws = new WebSocket(this.send_ipvp.url);
+		this.send_ipvp.ws = await this.new_websocket(this.send_ipvp.url);
 
 		await new Promise((resolve, reject) => {
         	this.send_ipvp.ws.addEventListener('open', (event) => {
@@ -550,7 +565,7 @@ class websocketManager
 	{
 		const my_username = JSON.parse(localStorage.getItem('user')).username;
 		this.receive_ipvp.url = `wss://${window.location.host}/ws/invite/${my_username}/`;
-		this.receive_ipvp.ws = new WebSocket(this.receive_ipvp.url);
+		this.receive_ipvp.ws = await this.new_websocket(this.receive_ipvp.url);
 
 		await new Promise((resolve, reject) => {
         	this.receive_ipvp.ws.addEventListener('open', (event) => {

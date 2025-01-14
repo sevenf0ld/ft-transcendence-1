@@ -400,7 +400,9 @@ class ModalFnOpt
 		const modal = bootstrap.Modal.getInstance(
 			document.getElementById('modal-fnOpt')
 		);
-		await modal.hide();
+
+		if (modal)
+			await modal.hide();
 
 		return true;
 	}
