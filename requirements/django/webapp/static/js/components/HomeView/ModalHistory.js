@@ -113,6 +113,9 @@ class ModalFnOpt
 
 				await this.gen_list(time, result, type, target);
 			}
+			// if no history
+			if (histories.length === 0)
+				await this.gen_list_empty();
 		}
 		else
 		{
@@ -218,6 +221,33 @@ class ModalFnOpt
 			'%hstt-target-c': 'history-target truncate',
 			'%hstt-target-t': `${target}`,
 			'@att1': `data-bs-tooltip="tooltip" title="${target}"`,
+		};
+
+		for (const key in attributes)
+			template = template.split(key).join(attributes[key]);
+
+		container.insertAdjacentHTML('beforeend', template);
+
+		return true;
+	}
+
+	async gen_list_empty()
+	{
+		const container = this.main_ctn.querySelector('.hst-list-group');
+		if (!container)
+			throw new Error('[ERR] container not found');
+
+		let template = `
+			<div class="%hstt-group">
+				<p class="%hstt-date-c">%hstt-date-t</p>
+			</div>
+		`
+
+		const attributes =
+		{
+			'%hstt-group': 'hst-list-group-item',
+			'%hstt-date-c': 'history-date',
+			'%hstt-date-t': 'No history found. Play some games!',
 		};
 
 		for (const key in attributes)

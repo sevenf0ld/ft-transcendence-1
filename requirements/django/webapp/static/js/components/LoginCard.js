@@ -130,9 +130,21 @@ class LoginCard
 			'click', async (event) => {await this.signupClick(event);}
 		);
 
+		await this.intra_loading_check();
 		await this.check_intra();
 
 		return true;
+	}
+
+	async intra_loading_check()
+	{
+		//if local storage has intra_state, render the loading screen
+		const intra_state = localStorage.getItem('intra_state');
+		if (intra_state !== null)
+		{
+			await LOADING.disable_all();
+			await LOADING.loading_page('show');
+		}
 	}
 
 	async check_intra()

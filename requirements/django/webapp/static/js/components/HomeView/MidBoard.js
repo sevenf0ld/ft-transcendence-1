@@ -10,6 +10,7 @@ import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 import WEB_SOCKET from '../../core/websocket_mng.js';
 import LANGUAGE from '../../core/language/language.js';
+import * as LOADING from '../../core/helpers/loading.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -124,11 +125,14 @@ class MidBoard
 		await WEB_SOCKET.closeSocket_liveChat();
 		await WEB_SOCKET.updateSocket_friendList('join');
 
+		await LOADING.loading_page('show');
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-pve';
 		await gameRoom.render();
 		await LANGUAGE.updateContent("game-room");
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await LOADING.loading_page('hide');
 
 		return true;
 	}
@@ -141,11 +145,14 @@ class MidBoard
 		await WEB_SOCKET.closeSocket_liveChat();
 		await WEB_SOCKET.updateSocket_friendList('join');
 
+		await LOADING.loading_page('show');
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-pvp';
 		await gameRoom.render();
 		await LANGUAGE.updateContent("game-room");
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await LOADING.loading_page('hide');
 
 		return true;
 	}
@@ -158,11 +165,14 @@ class MidBoard
 		await WEB_SOCKET.closeSocket_liveChat();
 		await WEB_SOCKET.updateSocket_friendList('join');
 
+		await LOADING.loading_page('show');
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-tour';
 		await gameRoom.render();
 		await LANGUAGE.updateContent("game-room");
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await LOADING.loading_page('hide');
 
 		return true;
 	}

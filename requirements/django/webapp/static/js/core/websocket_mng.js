@@ -221,7 +221,10 @@ class websocketManager
 				  'user': this.friend.sender,
 				  'action': 'change_game_view',
 				}));
+				console.log('[INFO] friend ws is open');
 			}
+			else
+				console.log('[ERR] friend ws is not open');
 		}
 		else if (type === 'leave')
 		{

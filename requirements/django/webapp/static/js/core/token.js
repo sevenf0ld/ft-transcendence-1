@@ -67,8 +67,8 @@ class TokenCs
 
 	async start_refresh_token()
 	{
-		const minute = 15;
-		const ms = minute * 60 * 1000;
+		const second = 3;
+		const ms = second * 1000;
 
 		this.token_id = setInterval(async () => {
 			await this.refresh_token();

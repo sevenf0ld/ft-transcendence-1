@@ -9,6 +9,7 @@ import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 import WEB_SOCKET from '../../core/websocket_mng.js';
 import CR_FETCH from './CreateRoom_fetch.js';
 import LANGUAGE from '../../core/language/language.js';
+import * as LOADING from '../../core/helpers/loading.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -118,12 +119,15 @@ class ModalRoomJoin
 			const room_created = await this.fetch_create_game_room('PVP');
 			if (room_created)
 			{
+				await LOADING.loading_page('show');
 				const gameRoom = GAME_ROOM_VIEW;
 				await gameRoom.init();
 				gameRoom.type = 'online-pvp';
 				await gameRoom.render();
 				await WEB_SOCKET.listenSocket_game();
 				await LANGUAGE.updateContent("game-room");
+				await new Promise((resolve) => setTimeout(resolve, 1000));
+				await LOADING.loading_page('hide');
 			}
 		}
 		else if (this.gameType === 'online-tour')
