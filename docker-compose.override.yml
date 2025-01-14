@@ -2,4 +2,5 @@ services:
   kibana_setup:
     volumes:
       - ./requirements/kibana/tools/:/usr/local/bin/
+      - ./requirements/kibana/saved_objects/dashboard.ndjson:/usr/share/kibana/saved_objects/dashboard.ndjson
     command: ["./tools/init.sh"]

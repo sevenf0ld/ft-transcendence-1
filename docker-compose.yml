@@ -112,7 +112,6 @@ services:
         - elasticsearch
       volumes:
         - ./requirements/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
-        - ./requirements/kibana/saved_objects/dashboard.ndjson:/usr/share/kibana/saved_objects/dashboard.ndjson
       networks:
         - net_trans
 
@@ -121,6 +120,9 @@ services:
         context: ./requirements/kibana/.
       depends_on:
         - kibana
+      volumes:
+        - ./requirements/kibana/tools/:/usr/local/bin/
+        - ./requirements/kibana/saved_objects/dashboard.ndjson:/usr/share/kibana/saved_objects/dashboard.ndjson
       networks:
        - net_trans
 
@@ -134,6 +136,7 @@ volumes:
     #    device: ~/data/vol_django
     vol_pg:
     vol_es:
+    vol_backup:
 
 networks:
   net_trans:
