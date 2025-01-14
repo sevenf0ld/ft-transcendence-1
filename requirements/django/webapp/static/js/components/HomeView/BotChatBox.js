@@ -211,15 +211,30 @@ class BotChatBox
 
 		const room_created = await this.fetch_create_game_room();
 		if (room_created)
-		{	
-			await WS_MANAGER.closeSocket_liveChat();
+		{
 			await WS_MANAGER.updateSocket_friendList('join');
-
 			const gameRoom = GAME_ROOM_VIEW;
 			await gameRoom.init();
 			gameRoom.type = 'online-pvp';
 			await gameRoom.render();
+			const me = JSON.parse(localStorage.getItem('user')).username;
+			await gameRoom.announce(`${me} has invited ${chatbox_friend} to this game room.`);
 			await WS_MANAGER.listenSocket_game();
+			
+			await new Promise((resolve) => setTimeout(resolve, 500));
+			let msg = `I have invited you to join the game room.`
+			await this.send_msg(msg);
+
+			const rid = CR_FETCH.fetch_obj.rdata.room_id;
+			msg = `Room ID: ${rid}`;
+			await this.send_msg(msg);
+
+			msg = `Click below button to check it out.`
+			await this.send_msg(msg);
+
+			await this.send_msg(`<button class="chat-msg-btn">check me out</button>`);
+
+			await WS_MANAGER.closeSocket_liveChat();
 
 			//await WS_MANAGER.initSocket_invite_send();
 			//await WS_MANAGER.connectSocket_invite_send(chatbox_friend);
@@ -230,14 +245,8 @@ class BotChatBox
 		return true;
 	}
 
-	async sendMsgClick(event)
+	async send_msg(message, input)
 	{
-		event.preventDefault();
-		console.log('[BTN] sendMsgClick');
-
-		const input = document.getElementById('input_chatbox');
-		let message = document.getElementById('input_chatbox').value;
-
 		if (WS_MANAGER.liveChat.ws.readyState === WebSocket.OPEN)
 		{
 			WS_MANAGER.liveChat.ws.send(JSON.stringify({
@@ -246,12 +255,23 @@ class BotChatBox
 			  'room_name': WS_MANAGER.liveChat.room_name,
 			  'type': 'chat_reply',
 			}));
-			input.value = '';
+			if (input)
+				input.value = '';
 		}
 		else if (WS_MANAGER.liveChat.ws.readyState === WebSocket.CONNECTING)
 			console.log("message is not sent. chat socket is waiting for an open connection.");
 		else if (WS_MANAGER.liveChat.ws.readState >= 2)
 			console.error("message will not be sent. chat socket connection closed or closing.");
+	}
+
+	async sendMsgClick(event)
+	{
+		event.preventDefault();
+		console.log('[BTN] sendMsgClick');
+
+		const input = document.getElementById('input_chatbox');
+		let message = document.getElementById('input_chatbox').value;
+		await this.send_msg(message, input);
 
 		return true;
 	}
@@ -264,10 +284,35 @@ class BotChatBox
 		let str = null;
 		const chatbox_ctn = document.querySelector('.ct-chatbox-ctn .ct-chatbox-bd');
 
-		if (user === 'You' || user === 'System')
-			str = `<div class="ct-chatbox-msg text-muted">${user}: ${msg}</div>`;
+		let pure_msg = msg;
+		// prevent < and > from being interpreted as HTML tags and entities
+		// except only <button class="btn btn-link">check me out</button>
+		if (msg.includes('<button class="chat-msg-btn">check me out</button>'))
+		{
+			let pure_before;
+			let pure_after;
+			const before = msg.split('<button class="chat-msg-btn">check me out</button>')[0];
+			const after = msg.split('<button class="chat-msg-btn">check me out</button>')[1];
+
+			if (before !== undefined)
+				pure_before = before.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+			else
+				pure_before = '';
+
+			if (after !== undefined)
+				pure_after = after.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+			else
+				pure_after = '';
+
+			pure_msg = pure_before + '<button class="chat-msg-btn">check me out</button>' + pure_after;
+		}
 		else
-			str = `<div class="ct-chatbox-msg">${user}: ${msg}</div>`;
+			pure_msg = msg.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+		if (user === 'You' || user === 'System')
+			str = `<div class="ct-chatbox-msg text-muted">${user}: ${pure_msg}</div>`;
+		else
+			str = `<div class="ct-chatbox-msg">${user}: ${pure_msg}</div>`;
 
 		chatbox_ctn.insertAdjacentHTML('beforeend', str);
 		await this.input_invite_manager('receive');
@@ -378,6 +423,21 @@ class BotChatBox
 		  {
 			let sender_name = data.sender === this.sender ? 'You' : data.sender;
 			await this.msg_generator(sender_name, data.message);
+			const allbtns = document.querySelectorAll('.ct-chatbox-bd .chat-msg-btn');
+			
+			// if message contain a button, then bind the event
+			const checkout_btn = `<button class="chat-msg-btn">check me out</button>`;
+			const pvp_btn = document.querySelector('#btn_remote_pvp');
+			if (data.message.includes(checkout_btn))
+			{
+				const btn = document.querySelectorAll('.ct-chatbox-bd .chat-msg-btn');
+				for (const b of btn)
+				{
+					b.addEventListener('click', async (e) => {
+						await pvp_btn.click();
+					});
+				}
+			}
 			await this.input_invite_manager('receive');
 		  }
 		});
