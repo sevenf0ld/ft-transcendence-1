@@ -2,6 +2,7 @@
 // -------------------------------------------------- //
 // importing-internal
 // -------------------------------------------------- //
+import FETCH from './ModalHistory_fetch.js';
 // -------------------------------------------------- //
 // importing-external
 // -------------------------------------------------- //
@@ -33,6 +34,7 @@ class ModalFnOpt
 		this.buttons = {
 		};
 		// ELEMENT-SPECIFIC-ATTRIBUTES
+		this.history_target = null;
 	}
 	// --------------------------------------------- //
 	// [1/4] MAIN-EXECUTION
@@ -77,6 +79,7 @@ class ModalFnOpt
 	// --------------------------------------------- //
 	async bind_events()
 	{
+		/*
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'DemonKiller123');
 		await this.gen_list('JAN-01 (01AM)', 'lost', 'pvp', 'DemonKiller123');
 		await this.gen_list('JAN-01 (01AM)', 'won', 'tour', 'AlienInvasion');
@@ -89,8 +92,55 @@ class ModalFnOpt
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
 		await this.gen_list('JAN-01 (01AM)', 'won', 'pvp', 'BirdsAreNotReal');
+		*/
+
+		await FETCH.init();
+		if (!this.history_target)
+			throw new Error('[ERR] history target not found');
+		FETCH.target = this.history_target;
+		await FETCH.fetchData();
+		if (FETCH.re_value === 'match-history-successful')
+		{
+			const board = document.querySelector('.hst-list-group');
+			board.innerHTML = '';
+			const histories = FETCH.fetch_obj.rdata.pvp;
+			for (const ele of histories)
+			{
+				let time = ele.match_date + ' (' + ele.match_time + ')';
+				let result = ele.result;
+				let type = ele.game_type;
+				let target = ele.opponent;
+
+				await this.gen_list(time, result, type, target);
+			}
+			// if no history
+			if (histories.length === 0)
+				await this.gen_list_empty();
+		}
+		else
+		{
+			console.log(FETCH.re_value);
+		}
 
 		return true;
+	}
+
+	async getCookie(name) {
+		let cookieValue = null;
+		if (document.cookie && document.cookie !== '')
+		{
+			const cookies = document.cookie.split(';');
+			for (let i = 0; i < cookies.length; i++)
+			{
+				const cookie = cookies[i].trim();
+				if (cookie.substring(0, name.length + 1) === (name + '='))
+				{
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
 	}
 
 	// --------------------------------------------- //
@@ -171,6 +221,33 @@ class ModalFnOpt
 			'%hstt-target-c': 'history-target truncate',
 			'%hstt-target-t': `${target}`,
 			'@att1': `data-bs-tooltip="tooltip" title="${target}"`,
+		};
+
+		for (const key in attributes)
+			template = template.split(key).join(attributes[key]);
+
+		container.insertAdjacentHTML('beforeend', template);
+
+		return true;
+	}
+
+	async gen_list_empty()
+	{
+		const container = this.main_ctn.querySelector('.hst-list-group');
+		if (!container)
+			throw new Error('[ERR] container not found');
+
+		let template = `
+			<div class="%hstt-group">
+				<p class="%hstt-date-c">%hstt-date-t</p>
+			</div>
+		`
+
+		const attributes =
+		{
+			'%hstt-group': 'hst-list-group-item',
+			'%hstt-date-c': 'history-date',
+			'%hstt-date-t': 'No history found. Play some games!',
 		};
 
 		for (const key in attributes)

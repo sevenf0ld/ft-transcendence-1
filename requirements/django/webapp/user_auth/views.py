@@ -154,12 +154,10 @@ def verify_otp(request):
 #class UserAccountUpdateAPIView(generics.UpdateAPIView):
 #    queryset = User.objects.all()
 #    serializer_class = UserAccountUpdateModelSerializer
-#    #authentication_classes = [JWTCookieAuthentication]
 #    #permission_classes = [IsAuthenticated]
 #    permission_classes = [AllowAny]
 #@api_view(['PATCH'])
 #@permission_classes([IsAuthenticated])
-#@authentication_classes([JWTCookieAuthentication])
 #@permission_classes([AllowAny])
 #def update_user_account(request):
 #    user = request.user
@@ -210,6 +208,7 @@ def verify_otp(request):
 #    return Response(content, status=status.HTTP_200_OK)
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([JWTCookieAuthentication])
 def update_user_password(request):
     user = request.user
 
@@ -243,6 +242,7 @@ def update_user_password(request):
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([JWTCookieAuthentication])
 def update_user_mfa(request):
     user = request.user
 

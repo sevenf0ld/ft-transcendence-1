@@ -7,6 +7,9 @@
 // -------------------------------------------------- //
 import FETCH_UTILS from '../../core/helpers/fetch-utils.js';
 import RIGHT_FRIENDS_LIST from './RightFnList.js';
+import HOME_VIEW from '../../views/HomeView.js';
+import * as LOADING from '../../core/helpers/loading.js';
+import LANGUAGE from '../../core/language/language.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -127,6 +130,7 @@ class ModalFnOpt
 			'click', async (event) => { await this.unblockClick(event); }
 		);
 
+		await LANGUAGE.updateContent('modal-fn-opt');
 		await this.disable_buttons();
 
 		return true;
@@ -376,10 +380,10 @@ class ModalFnOpt
 
 	async refresh()
 	{
-		const parentHtml = document.querySelector('.ct-main-rpanel');
-		const rightPanel = RIGHT_FRIENDS_LIST;
-		rightPanel.container = parentHtml;
-		await rightPanel.render('replace');
+		await LOADING.disable_all();
+		await new Promise((resolve) => setTimeout(resolve, 100));
+		await HOME_VIEW.render();
+		await LOADING.restore_all();
 
 		return true;
 	}
@@ -398,7 +402,9 @@ class ModalFnOpt
 		const modal = bootstrap.Modal.getInstance(
 			document.getElementById('modal-fnOpt')
 		);
-		await modal.hide();
+
+		if (modal)
+			await modal.hide();
 
 		return true;
 	}

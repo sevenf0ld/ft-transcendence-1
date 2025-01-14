@@ -76,9 +76,6 @@ class ActionPanel
 			case 'online-pvp':
 				await this.onlinePvp_render('replace');
 				break;
-			case 'online-tour':
-				await this.onlineTour_render('replace');
-				break;
 			default:
 				break;
 		}
@@ -770,6 +767,11 @@ class ActionPanel
 				start_btn.disabled = true;
 			if (data.is_host && data.num === 2)
 				start_btn.disabled = false;
+		}
+		if (data.type === 'left_room')
+		{
+			if (data.is_host && data.num < 2)
+				start_btn.disabled = true;
 		}
 		if (data.type === 'started_game')
 		{

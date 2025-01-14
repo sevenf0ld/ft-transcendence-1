@@ -309,6 +309,11 @@ class modalSetItemsClass
 			alert('Error! Current password is required to change any account settings.');
 			return false;
 		}
+		else if (new_pass.length < 1 || conf_pass.length < 1)
+		{
+			alert('Error! New password and confirm password are required to change any account settings.');
+			return false;
+		}
 		else if (cur_pass.length < 8)
 		{
 			alert('Error! Current password is invalid.');

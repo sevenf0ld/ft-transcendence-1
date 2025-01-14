@@ -74,9 +74,6 @@ class Announcer
 			case 'online-pvp':
 				await this.onlinePvp_render('append');
 				break;
-			case 'online-tour':
-				await this.onlineTour_render('append');
-				break;
 			default:
 				break;
 		}

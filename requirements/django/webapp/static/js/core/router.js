@@ -100,6 +100,13 @@ class Router
 
 	async navigate_to(view_url)
 	{
+		//if after home is admin, do not append hash
+		if (window.location.href.includes('admin'))
+		{
+			window.location.href = window.location.origin + '/admin/';
+			return true;
+		}
+
 		window.location.hash = view_url;
 		await new Promise(resolve => setTimeout(resolve, 100));
 

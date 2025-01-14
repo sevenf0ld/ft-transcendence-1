@@ -125,7 +125,7 @@ class engineUtilsClass
 		}
 		else if (state === 'opvp-start')
 		{
-			console.log('opvp-data :', this.opvp_data);
+			EG_DATA.match.started = true;
 			await this.announce();
 			await this.announce(`Game has started at ${t}`);
 			await this.announce('Game difficulty will INCREASE over time');
@@ -146,14 +146,35 @@ class engineUtilsClass
 		{
 			await this.announce(`Game has ended at ${t}`);
 			await this.announce(`${EG_DATA.match.winner} has won the game!`);
-			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN)
+			const i_am_host = AN.host === JSON.parse(localStorage.getItem('user')).username;
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN && i_am_host)
 			{
+				await this.sleep(1000);
 				WS.gr.ws.send(JSON.stringify({
 					'game_state': 'game_end',
 					'winner': EG_DATA.match.winner,
 					'loser': EG_DATA.match.loser,
 					'rid': AN.rid,
 					'host': AN.host
+				}));
+			}
+			await EG_DATA.reset();
+		}
+		else if (state === 'opvp-unexpected-end')
+		{
+			const i_am_host = AN.host === JSON.parse(localStorage.getItem('user')).username;
+			if (WS.gr.ws && WS.gr.ws.readyState === WebSocket.OPEN && i_am_host)
+			{
+				let loser;
+				if (EG_DATA.player1.name === AN.host)
+					loser = EG_DATA.player2.name;
+				else
+					loser = EG_DATA.player1.name;
+
+				await this.sleep(1000);
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'unexpected_end',
+					'loser': loser,
 				}));
 			}
 			await EG_DATA.reset();

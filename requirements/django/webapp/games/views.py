@@ -11,7 +11,7 @@ from .serializers import (
     RoomCreateModelSerializer
 )
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from dj_rest_auth.jwt_auth import JWTCookieAuthentication
 from django.contrib.auth.models import User
 from rest_framework.response import Response
@@ -34,8 +34,8 @@ import random
 class GameHistoryRetrieveAPIView(generics.RetrieveAPIView):
     queryset = GameHistory.objects.prefetch_related('matches', 'tournaments')
     serializer_class = GameHistoryModelSerializer
-    #authentication_classes = [JWTCookieAuthentication]
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTCookieAuthentication]
     lookup_field = 'user__username'
     lookup_url_kwarg = 'target'
 
@@ -50,8 +50,8 @@ class GameHistoryRetrieveAPIView(generics.RetrieveAPIView):
 class RoomCreateAPIView(generics.CreateAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomCreateModelSerializer
-    #authentication_classes = [JWTCookieAuthentication]
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTCookieAuthentication]
 
     def generate_unique_rid(self):
         while True:

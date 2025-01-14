@@ -56,6 +56,12 @@ class GameRoomView
 		return true;
 	}
 
+	async announce(msg)
+	{
+		const announcer = ANNOUNCER;
+		await announcer.announce(msg);
+	}
+
 	async render()
 	{
 		await this.clear();

@@ -92,7 +92,19 @@ class LeftUser
 		this.buttons['signout'] = document.getElementById('btn_logout');
 
 		if (!this.main_ctn)
+		{
+			/*
+			const user = JSON.parse(localStorage.getItem('user'));
+			if (!user)
+			{
+				// this condition is here because this main_ctn is 
+				// the first selector of homeview
+				// if user token has expired, errors comes to here
+				await window.location.reload();
+			}
+			*/
 			throw new Error('[ERR] main container not found');
+		}
 		for (const key in this.buttons)
 		{
 			if (!this.buttons[key])
@@ -138,8 +150,10 @@ class LeftUser
 		parent_hd.innerHTML = `${user}'s Match History`;
 
 		MODAL_HISTORY.container = parent_bd;
+		MODAL_HISTORY.history_target = user;
 		await MODAL_HISTORY.render('replace');
 		await LANGUAGE.updateContent('modal-history');
+		MODAL_HISTORY.history_target = null;
 
 		return true;
 	}
@@ -170,21 +184,7 @@ class LeftUser
 		event.preventDefault();
 		console.log('[BTN] logoutClick');
 
-		const logoutFetch = FETCH.FETCH_LOGOUT;
-		await logoutFetch.init();
-		const fetch_result = await logoutFetch.fetchData();
-		if (fetch_result === 'logout-successful')
-		{
-			if (TOKEN.token_id)
-				await TOKEN.stop_refresh_token();
-
-			await LOGOUT.run();
-			await ROUTER.navigate_to('/login');
-		}
-		else
-		{
-			console.log(fetch_result);
-		}
+		await LOGOUT.run();
 
 		return true;
 	}

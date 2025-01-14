@@ -69,6 +69,18 @@ class engineRenderClass
 				await this.game_over();
 				await this.handle_canvas_over();
 				await EG_UTILS.gameStateHandler('opvp-end');
+				db.match.started = false;
+			}
+			return false;
+		}
+		if (db.match.unexpected_end === true)
+		{	
+			if (db.gameType === 'online-pvp')
+			{
+				await this.game_over();
+				await this.handle_canvas_over();
+				await EG_UTILS.gameStateHandler('opvp-unexpected-end');
+				db.match.started = false;
 			}
 			return false;
 		}
@@ -316,9 +328,6 @@ class engineRenderClass
 				if ((db.key_state['s'] || db.key_state['S']) &&
 					db.player2.y + db.paddle.total_len / 2 < db.canvas.elem.height)
 					db.player2.y += db.paddle.speed * db.frame.delta_time;
-
-				console.log('db.player2.y :', db.player2.y);
-				console.log('db.p2.y - len/2 :', db.player2.y - db.paddle.total_len / 2);
 			}
 			await this.remote_pvp_paddle();
 

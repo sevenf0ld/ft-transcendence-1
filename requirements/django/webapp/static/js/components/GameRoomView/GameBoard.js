@@ -8,6 +8,8 @@
 import EG_DATA from '../GameLogic/engine_data.js';
 import EG_UTILS from '../GameLogic/engine_utils.js';
 import PONG_ENGINE from '../GameLogic/PongEngine.js';
+import WS from '../../core/websocket_mng.js';
+import AN from '../GameRoomView/Announcer.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -108,6 +110,37 @@ class GameBoard
 		}
 		if (data.type === 'disbanded_room')
 		{
+			if (EG_DATA.match.started)
+			{
+				const host = AN.host;
+				const nonHost = JSON.parse(localStorage.getItem('user')).username;
+
+				if (host === EG_DATA.player1.name)
+					EG_DATA.ball.x = -2000;
+				else
+					EG_DATA.ball.x = EG_DATA.display.w + 2000;
+				await new Promise((resolve) => setTimeout(resolve, 1000));
+				alert('Host lost connection. You win! (but not recorded)');
+				WS.gr.ws.send(JSON.stringify({
+					'game_state': 'game_end',
+					'winner': nonHost,
+					'loser': host,
+					'rid': AN.rid,
+					'host': AN.host
+				}));
+			}
+		}
+		if (data.type === 'left_room')
+		{
+			if (EG_DATA.match.started)
+			{
+				const host = AN.host;
+				const nonHost = JSON.parse(localStorage.getItem('user')).username;
+
+				EG_DATA.match.unexpected_end = true;
+				await new Promise((resolve) => setTimeout(resolve, 1000));
+				alert('Opponent lost connection. You win! (but not recorded)');
+			}
 		}
 		else if (data.type === 'started_game')
 		{

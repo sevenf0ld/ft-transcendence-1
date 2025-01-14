@@ -616,16 +616,17 @@ class ModalSetItems
 		{
 			const form_data = new FormData();
 			form_data.append('avatar', this.file);
-			const csrf_token = await this.getCookie('csrftoken');
-			const response = await fetch('/api/user_profiles/upload-avatar/', {
-				method: 'POST',
-				headers: {
-						'X-CSRFToken': csrf_token
-				},
-				body: form_data
-			});
 
-			const data = await response.json();
+			await FETCH_UTILS.init();
+			const mainFetch = FETCH_UTILS;
+			await mainFetch.getCookie('csrftoken');
+			await mainFetch.setUrl('/api/user_profiles/upload-avatar/');
+			await mainFetch.setMethod('POST');
+			await mainFetch.appendHeaders('X-CSRFToken', mainFetch.csrfToken);
+			mainFetch.object['body'] = form_data;
+			await mainFetch.fetchData();
+			const response = mainFetch.robject;
+			const data = mainFetch.rdata;
 			if (response.ok)
 			{
 				console.log('response : ', data.avatar_url);

@@ -85,79 +85,100 @@ class languageClass
 		if (view === 'home')
 		{
 			selector_str = '[data-i18n="played"]';
-			document.querySelector(selector_str)
-				.innerHTML = i18next.t('home.sb.play');
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+					.innerHTML = i18next.t('home.sb.play');
 
 			selector_str = '[data-i18n="wr"]';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.sb.wr');
 
 			selector_str = '[data-i18n="wins"]';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.sb.wins');
 
 			selector_str = '[data-i18n="losses"]';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.sb.losses');
 
 			selector_str = '#btn_history';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.btn.history');
 
 			selector_str = '#btn_settings';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.btn.settings');
 
 			selector_str = '#btn_logout';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.btn.logout');
 
 			selector_str = '.ct-top-title';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.title');
 
 			selector_str = '[data-i18n="online"]';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.online');
 
 			selector_str = '[data-i18n="local"]';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.local');
 
 			selector_str = '#btn_remote_pvp';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.pvp');
 
 			selector_str = '#btn_local_pve';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.pve');
 
 			selector_str = '#btn_local_tour';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.tour');
 
 			selector_str = '#btn_local_pvp';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.gb.pvp');
 
 			selector_str = '.friend-top-title';
-			document.querySelector(selector_str)
-				.innerHTML = i18next.t('home.fn.title');
+			if (document.querySelector(selector_str))
+			{
+				document.querySelector(selector_str)
+					.innerHTML = i18next.t('home.fn.title');
+			}
 
 			selector_str = '[data-i18n="fn-added"]';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.fn.added');
 
 			selector_str = '[data-i18n="fn-pending"]';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.fn.pending');
 
 			selector_str = '[data-i18n="fn-blocked"]';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.fn.blocked');
 
 			selector_str = '#btn_add_friend';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.fn.add');
 
 			selector_str = '.empty-list';
@@ -186,35 +207,42 @@ class languageClass
 		else if (view === "modal-settings")
 		{
 			selector_str = '#modal-settings .modal-title';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.title');
 
 			selector_str = '#modal-settings #btn_setLang';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.lang');
 
 			selector_str = '#modal-settings #btn_setAcc';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.acc');
 
 			selector_str = '#modal-settings #btn_setPfp';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.pfp');
 
 			selector_str = '#modal-settings #btn_set2FA';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.tfa');
 		}
 		else if (view === "modal-settings-lang")
 		{
 			selector_str = '#modal-settings .modal-title';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.lang');
 		}
 		else if (view === "modal-settings-acc")
 		{
 			selector_str = '#modal-settings .modal-title';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.acc');
 
 			selector_str = '[data-i18n="acc-username"]';
@@ -233,27 +261,68 @@ class languageClass
 			);
 
 			selector_str = '.ct-set-warning';
-			document.querySelector(selector_str)
-				.innerHTML = i18next.t('home.mdset.warn');
+			if (document.querySelector(selector_str))
+			{
+				document.querySelector(selector_str)
+					.innerHTML = i18next.t('home.mdset.warn');
+			}
+
+			selector_str = '#btn_acc_submit';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.submit');
+
+			selector_str = '.ct-set-acc-form-field label';
+			if (document.querySelector(selector_str))
+			{
+				document.querySelectorAll(selector_str).forEach((el) =>
+				{
+					if (el.innerHTML === 'Current Password')
+						el.innerHTML = i18next.t('home.mdset.acc-curr-pass');
+					else if (el.innerHTML === 'New Password')
+						el.innerHTML = i18next.t('home.mdset.acc-new-pass');
+					else if (el.innerHTML === 'Confirm Password')
+						el.innerHTML = i18next.t('home.mdset.acc-conf-pass');
+				});
+			}
+
+			selector_str = '#input_acc_cur_pass';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+					.placeholder = i18next.t('home.mdset.acc-curr-pass-ph');
+
+			selector_str = '#input_acc_new_pass';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+					.placeholder = i18next.t('home.mdset.acc-new-pass-ph');
+
+			selector_str = '#input_acc_conf_pass';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+					.placeholder = i18next.t('home.mdset.acc-conf-pass-ph');
 		}
 		else if (view === "modal-settings-pfp")
 		{
 			selector_str = '#modal-settings .modal-title';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.pfp');
 
 			selector_str = '#btn_pfp_submit';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.pfp-submit');
 
 			selector_str = '#btn_pfp_remove';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.pfp-remove');
 		}
 		else if (view === "modal-settings-tfa")
 		{
 			selector_str = '#modal-settings .modal-title';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.tfa');
 
 			selector_str = '.ct-set-2fa-p';
@@ -271,8 +340,19 @@ class languageClass
 			);
 
 			selector_str = '.ct-set-warning';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdset.warn');
+
+			selector_str = '#btn_2fa_on';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.tfa-on');
+
+			selector_str = '#btn_2fa_off';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdset.tfa-off');
 		}
 		else if (view === "modal-history")
 		{
@@ -304,7 +384,8 @@ class languageClass
 		else if (view === "chatbox-ctn")
 		{
 			selector_str = '#btn_chatbox_invite';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.chat.inv');
 
 			selector_str = '#input_chatbox:disabled';
@@ -347,15 +428,18 @@ class languageClass
 		else if (view === "modal-add-fn")
 		{
 			selector_str = '#modal-addFriend .modal-title';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdadd.addfn');
 
 			selector_str = '.add-friend-input';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.setAttribute('placeholder', i18next.t('home.mdadd.ph'));
 
 			selector_str = '#btn_add_friend_submit';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdadd.addfn');
 		}
 		else if (view === "game-room")
@@ -466,20 +550,56 @@ class languageClass
 		else if (view === "modal-roomjoin")
 		{
 			selector_str = '#modal-join .modal-title';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdrj.title');
 
 			selector_str = '.join-room-des';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdrj.des');
 
 			selector_str = '#btn_create_room';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdrj.create');
 
 			selector_str = '#btn_close_join_room_modal';
-			document.querySelector(selector_str)
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
 				.innerHTML = i18next.t('home.mdrj.back');
+		}
+		else if (view === "modal-fn-opt")
+		{
+			selector_str = '#btn_unfriend';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.unfriend');
+
+			selector_str = '#btn_block';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.block');
+
+			selector_str = '#btn_cancel_request';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.cancel');
+
+			selector_str = '#btn_accept_request';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.accept');
+
+			selector_str = '#btn_decline_request';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.decline');
+
+			selector_str = '#btn_unblock';
+			if (document.querySelector(selector_str))
+				document.querySelector(selector_str)
+				.innerHTML = i18next.t('home.mdfo.unblock');
 		}
 	}
 
@@ -520,7 +640,6 @@ class languageClass
 				continue;
 			const translated = line.replace(target_words, replace_words);
 			el.innerHTML = translated;
-			console.log(el.innerHTML);
 		}
 	}
 
@@ -567,6 +686,7 @@ class languageClass
 			'best of one' : 'home.gr.gm-bo1',
 			'player' : 'home.gr.gm-player',
 			'against' : 'home.gr.gm-against',
+			'online' : 'home.gr.gm-online',
 			'locally' : 'home.gr.gm-local',
 			'match' : 'home.gr.gm-match',
 			'will be' : 'home.gr.gm-will',
@@ -577,6 +697,7 @@ class languageClass
 			'last standing' : 'home.gr.gm-last',
 			'wins' : 'home.gr.gm-wins',
 			'every' : 'home.gr.gm-every',
+			'except when unexpected disconnection occurs' : 'home.gr.gm-except',
 		};
 
 		for (const ctn of ctns)
@@ -587,8 +708,11 @@ class languageClass
 			{
 				if (!translated.includes(key.toLowerCase()))
 					continue;
-				const replace_words = i18next.t(target_words[key]);
-				translated = translated.replace(key, replace_words);
+				while (translated.includes(key))
+				{
+					const replace_words = i18next.t(target_words[key]);
+					translated = translated.replace(key, replace_words);
+				}
 			}
 			ctn.innerHTML = translated;
 		}

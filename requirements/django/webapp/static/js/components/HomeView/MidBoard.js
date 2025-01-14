@@ -10,6 +10,7 @@ import MODAL_LAYOUT from '../../layouts/ModalLayout.js';
 import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 import WEB_SOCKET from '../../core/websocket_mng.js';
 import LANGUAGE from '../../core/language/language.js';
+import * as LOADING from '../../core/helpers/loading.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -124,11 +125,14 @@ class MidBoard
 		await WEB_SOCKET.closeSocket_liveChat();
 		await WEB_SOCKET.updateSocket_friendList('join');
 
+		await LOADING.loading_page('show');
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-pve';
 		await gameRoom.render();
 		await LANGUAGE.updateContent("game-room");
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await LOADING.loading_page('hide');
 
 		return true;
 	}
@@ -141,11 +145,14 @@ class MidBoard
 		await WEB_SOCKET.closeSocket_liveChat();
 		await WEB_SOCKET.updateSocket_friendList('join');
 
+		await LOADING.loading_page('show');
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-pvp';
 		await gameRoom.render();
 		await LANGUAGE.updateContent("game-room");
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await LOADING.loading_page('hide');
 
 		return true;
 	}
@@ -158,11 +165,14 @@ class MidBoard
 		await WEB_SOCKET.closeSocket_liveChat();
 		await WEB_SOCKET.updateSocket_friendList('join');
 
+		await LOADING.loading_page('show');
 		const gameRoom = GAME_ROOM_VIEW;
 		await gameRoom.init();
 		gameRoom.type = 'local-tour';
 		await gameRoom.render();
 		await LANGUAGE.updateContent("game-room");
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await LOADING.loading_page('hide');
 
 		return true;
 	}
@@ -239,7 +249,7 @@ class MidBoard
 		slot = cur_mem + slot;
 
 		let template = `
-		<div class="%list-c" data-roomid="%romid-t" @bs-dt1>
+		<div class="%list-c" data-roomid="%romid-t">
 			<div class="%st-c" data-status="%st-dt"></div>
 			<div class="%romid-c">%romid-t</div>
 			<div class="%romslot-c">%romslot-t</div>
@@ -254,7 +264,6 @@ class MidBoard
 			'%st-dt': `${started}`,
 			'%romid-c': 'rbl-roomid',
 			'%romid-t': `${room.room_id}`,
-			'@bs-dt1': `data-bs-dismiss="modal"`,
 			//'@bs-dt1': '',
 			'%romslot-c': 'rbl-slot',
 			'%romslot-t': `${slot}`,

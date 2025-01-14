@@ -9,6 +9,7 @@ import * as LOADING from '../../core/helpers/loading.js';
 import ALERT_UTILS from '../../core/helpers/alert-utils.js';
 import RIGHT_FRIEND_LIST from './RightFnList.js';
 import FETCH from './ModalAdd_fetch.js';
+import HOME_VIEW from '../../views/HomeView.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -140,10 +141,8 @@ class ModalAdd
 			));
 			await modal.hide();
 
-			const parent_div = document.querySelector('.ct-main-rpanel');
-
-			RIGHT_FRIEND_LIST.container = parent_div;
-			await RIGHT_FRIEND_LIST.render('replace');
+			await new Promise((resolve) => setTimeout(resolve, 100));
+			await HOME_VIEW.render();
 
 			await LOADING.restore_all();
 		}

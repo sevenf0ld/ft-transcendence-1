@@ -112,7 +112,7 @@ class ModalLayout
 		// [-] HELPER FUNCTION
 		// [A] TEMPLATE
 		let template = `
-		<div @1att1 @1att2 @1att3 @1att4 @1att5>
+		<div @1att1 @1att2 @1att3>
 			<div class="%dlog-1c %dlog-2c">
 				<div class="%cnt-c">
 					<div class="%hdr-c">
@@ -135,8 +135,6 @@ class ModalLayout
 			'@1att1': `class="modal" ${static_str}`,
 			'@1att2': `id="${this.name}"`,
 			'@1att3': `tabindex="-1"`,
-			'@1att4': `aria-labelledby="${this.name}"`,
-			'@1att5': `aria-hidden="true"`,
 			'%dlog-1c': `modal-dialog modal-sm modal-dialog-centered`,
 			'%dlog-2c': `modal-dialog-scrollable`,
 			'%cnt-c': `modal-content`,

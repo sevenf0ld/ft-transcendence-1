@@ -78,10 +78,28 @@ async function restore_all()
 	});
 }
 
+async function loading_page(type)
+{
+	if (type === 'show')
+	{
+		const body = document.querySelector('body');
+		const page = `
+		<div id="load_page"><p>Loading...</p></div>
+		`;
+		body.insertAdjacentHTML('beforeend', page);
+	}
+	if (type === 'hide')
+	{
+		const page = document.getElementById('load_page');
+		page.remove();
+	}
+}
+
 // -------------------------------------------------- //
 // export
 // -------------------------------------------------- //
 export {
 	disable_all,
 	restore_all,
+	loading_page
 };

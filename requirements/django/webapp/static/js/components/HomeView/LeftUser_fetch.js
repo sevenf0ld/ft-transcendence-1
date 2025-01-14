@@ -61,8 +61,6 @@ class fetch_logout
 		}
 		catch (error)
 		{
-			await LOGOUT.run();
-			await ROUTE.navigate_to('/login');
 			this.re_value = '[SAFELY-HANDLED] logout-failed';
 			console.log(this.re_value);
 		}

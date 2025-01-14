@@ -8,7 +8,7 @@ class MatchModelSerializer(serializers.ModelSerializer):
     #match_time = serializers.TimeField()
     match_date = serializers.SerializerMethodField()
     match_time = serializers.SerializerMethodField()
-    status = serializers.SerializerMethodField()
+    result = serializers.SerializerMethodField()
     game_type = serializers.SerializerMethodField()
     opponent = serializers.SerializerMethodField()
 
@@ -18,7 +18,7 @@ class MatchModelSerializer(serializers.ModelSerializer):
     def get_match_time(self, obj):
         return localtime(obj.match_time).strftime('%I:%M %p')
 
-    def get_status(self, obj):
+    def get_result(self, obj):
         target = self.context.get('target')
         winner = obj.winner
         if target == winner:
@@ -36,7 +36,7 @@ class MatchModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Match
-        fields = ['match_date', 'match_time', 'status', 'game_type', 'opponent']
+        fields = ['match_date', 'match_time', 'result', 'game_type', 'opponent']
 
 class TournamentModelSerializer(serializers.ModelSerializer):
     tnm_date = serializers.SerializerMethodField()

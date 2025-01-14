@@ -9,6 +9,7 @@ import GAME_ROOM_VIEW from '../../views/GameRoomView.js';
 import WEB_SOCKET from '../../core/websocket_mng.js';
 import CR_FETCH from './CreateRoom_fetch.js';
 import LANGUAGE from '../../core/language/language.js';
+import * as LOADING from '../../core/helpers/loading.js';
 // -------------------------------------------------- //
 // developer notes
 // -------------------------------------------------- //
@@ -118,12 +119,15 @@ class ModalRoomJoin
 			const room_created = await this.fetch_create_game_room('PVP');
 			if (room_created)
 			{
+				await LOADING.loading_page('show');
 				const gameRoom = GAME_ROOM_VIEW;
 				await gameRoom.init();
 				gameRoom.type = 'online-pvp';
 				await gameRoom.render();
 				await WEB_SOCKET.listenSocket_game();
 				await LANGUAGE.updateContent("game-room");
+				await new Promise((resolve) => setTimeout(resolve, 1000));
+				await LOADING.loading_page('hide');
 			}
 		}
 		else if (this.gameType === 'online-tour')
@@ -170,7 +174,28 @@ class ModalRoomJoin
 				e.preventDefault();
 
 				const roomid = e.currentTarget.getAttribute('data-roomid');
-				alert(`clicked room id : ${roomid}`);
+				const host = e.currentTarget.querySelector('.rbl-name').textContent;
+				let slot = e.currentTarget.querySelector('.rbl-slot').textContent;
+				//remove (2/2) to [2,2]
+				slot = slot.replace('(', '');
+				slot = slot.replace(')', '');
+				let slot_arr = slot.split('/');
+				slot_arr = slot_arr.map(Number);
+				if (slot_arr[0] === slot_arr[1])
+				{
+					alert('Room is full! Cannot join.');
+					return;
+				}
+
+				const rj_confirm = confirm(`Join room created by ${host}? (ID : ${roomid})`);
+				if (!rj_confirm)
+					return;
+
+				//close modal
+				const modal = document.getElementById('modal-join');
+				const modal_bs = bootstrap.Modal.getInstance(modal);
+				if (modal_bs)
+					modal_bs.hide();
 
 				await WEB_SOCKET.closeSocket_liveChat();
 				await WEB_SOCKET.updateSocket_friendList('join');
@@ -291,6 +316,7 @@ class ModalRoomJoin
 
 	async room_display_board()
 	{
+		/*
 		const template = `
 			<div class="%rdb-c">
 				<div class="%rdttl-c">
@@ -307,6 +333,18 @@ class ModalRoomJoin
 						<div class="%nam-c" @att1>%nam-t</div>
 					</div>
 				</div>
+			</div>
+		`;
+		*/
+		const template = `
+			<div class="%rdb-c">
+				<div class="%rdttl-c">
+					<div class="%rdtt-status-c">%rdtt-status-t</div>
+					<div class="%rdtt-roomid-c">%rdtt-roomid-t</div>
+					<div class="%rdtt-slot-c">%rdtt-slot-t</div>
+					<div class="%rdtt-name-c">%rdtt-name-t</div>
+				</div>
+				<div class="%rdbl-c" id="%rdbl-id"></div>
 			</div>
 		`;
 		return template;
