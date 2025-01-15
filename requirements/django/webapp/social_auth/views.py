@@ -79,10 +79,10 @@ class CustomSocialLoginView(SocialLoginView):
 #class FortyTwoLogin(CustomSocialLoginView):
 class FortyTwoLogin(SocialLoginView):
     adapter_class = FortyTwoOAuth2Adapter
-    callback_url = 'https://localhost:443'
+    callback_url = 'https://localhost:1100'
     client_class = OAuth2Client
 
 class FortyTwoConnect(SocialConnectView):
     adapter_class = FortyTwoOAuth2Adapter
-    callback_url = 'https://localhost:443'
+    callback_url = 'https://localhost:1100'
     client_class = OAuth2Client

@@ -108,7 +108,7 @@ CHANNEL_LAYERS = {
 
 # maiman-m: add django-allauth settings for mandatory email verification on sign-up and allow password reset (prevents user_logged_in signal to follow user_signed_up)
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'https://ftpong.com:443'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'https://ftpong.com:1100'
 #ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 ACCOUNT_EMAIL_REQUIRED = True
@@ -118,8 +118,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[FT_PONG] ' # 42PONG
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 #ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD
-ACCOUNT_SIGNUP_REDIRECT_URL = 'https://localhost:443'
-#ACCOUNT_SIGNUP_REDIRECT_URL = 'https://ftpong.com:443'
+ACCOUNT_SIGNUP_REDIRECT_URL = 'https://localhost:1100'
+#ACCOUNT_SIGNUP_REDIRECT_URL = 'https://ftpong.com:1100'
 # register form validation
 #ACCOUNT_ADAPTER = 'user_auth.adapter.CustomAccountAdapter'
 ACCOUNT_USERNAME_BLACKLIST = ['admin', 'root', 'superuser', 'django', 'pong', '42', 'test', 'user', 'default', 'avatar', 'forty-two', 'fourty-two', 'fortytwo', 'fourtytwo']

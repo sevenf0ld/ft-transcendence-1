@@ -247,7 +247,7 @@ class fetch_intra
 			'u-s4t2ud-ebe5aa4d1068dc430477ebc2acfd2e267c8b3446ac0a5744cf8febc47aec5b8b'
 		);
 		this.redirect_uri = encodeURIComponent(
-			'https://localhost:443'
+			'https://localhost:1100'
 		);
 
 		this.re_value = '';
