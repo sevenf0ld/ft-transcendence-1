@@ -249,9 +249,6 @@ class fetch_intra
 		this.redirect_uri = encodeURIComponent(
 			'https://localhost:443'
 		);
-		this.client_secret = encodeURIComponent(
-			'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'
-		);
 
 		this.re_value = '';
 		this.fetch_obj = null;
