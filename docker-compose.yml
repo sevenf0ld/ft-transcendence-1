@@ -5,7 +5,7 @@ services:
 #        context: ./requirements/redis/.
 #      container_name: redis
 #      ports:
-#        - "6379:6379"
+#        - "6380:6380"
 #      restart: always
 #      networks:
 #        - net_trans
@@ -14,7 +14,7 @@ services:
       image: redis:6-alpine
       container_name: redis
       ports:
-        - "6379:6379"
+        - "6380:6380"
       networks:
         - net_trans
 
