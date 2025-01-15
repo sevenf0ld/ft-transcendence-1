@@ -144,7 +144,6 @@ class GameRoomConsumer(WebsocketConsumer):
     def disconnect(self, code):
         if code == 3003 or code == 3104 or code == 3105:
             return
-        print("------------------------------------ CODE", code, " by", self.user)
         if code == 1001:
             if self.group_id in self.in_room:
                 self.in_room[self.group_id].discard(self.user.username)
@@ -155,7 +154,6 @@ class GameRoomConsumer(WebsocketConsumer):
                     self.channel_name
                 )
             conn_by_host = async_to_sync(self.connection_is_host)()
-            print("------------------------------------ CODE", code, " by", self.user, "is_host", conn_by_host)
             if conn_by_host:
                 self.delete_room_object()
                 async_to_sync(self.channel_layer.group_send)(
