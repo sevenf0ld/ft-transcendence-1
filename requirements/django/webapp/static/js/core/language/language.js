@@ -708,10 +708,14 @@ class languageClass
 			{
 				if (!translated.includes(key.toLowerCase()))
 					continue;
-				while (translated.includes(key))
+				//while (translated.includes(key))
+				for (let i = 0; i < 5; i++)
 				{
-					const replace_words = i18next.t(target_words[key]);
-					translated = translated.replace(key, replace_words);
+					if (translated.includes(key))
+					{
+						const replace_words = i18next.t(target_words[key]);
+						translated = translated.replace(key, replace_words);
+					}
 				}
 			}
 			ctn.innerHTML = translated;
