@@ -298,6 +298,7 @@ class GameRoomConsumer(WebsocketConsumer):
                     'loser': text_json['loser']
                 }
             )
+            self.rid_delete_room_object(text_json['rid'])
 
     #=======================================================#
     #               ASYNC - CHANNEL LAYER COMMUNICATION
@@ -519,6 +520,16 @@ class GameRoomConsumer(WebsocketConsumer):
             winner=winner_data
         )
         match.save()
+
+    #@database_sync_to_async
+    #def has_started(self):
+    #    members = list(self.in_room[self.group_id])
+    #    for member in members:
+    #        if member != self.user.username
+    #            host = member
+    #            break
+    #    room = async_to_sync(self.rid_get_room_object(text_json['rid']))
+    #    return room.started
 
 class InvitationConsumer(WebsocketConsumer):
     #=================================#

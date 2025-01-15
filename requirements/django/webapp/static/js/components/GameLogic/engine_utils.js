@@ -175,6 +175,7 @@ class engineUtilsClass
 				WS.gr.ws.send(JSON.stringify({
 					'game_state': 'unexpected_end',
 					'loser': loser,
+					'rid': AN.rid,
 				}));
 			}
 			await EG_DATA.reset();

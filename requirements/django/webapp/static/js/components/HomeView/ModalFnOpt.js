@@ -143,6 +143,9 @@ class ModalFnOpt
 
 		event.preventDefault();
 		console.log('[BTN] unfriendClick');
+		const close_btn = document.getElementById('btn_chatbox_close');
+		if (close_btn !== null)
+			await close_btn.click();
 
 		if (await this.confirmation(`unfriend ${this.target}`) === false)
 			return false;
@@ -178,6 +181,10 @@ class ModalFnOpt
 
 		event.preventDefault();
 		console.log('[BTN] blockClick');
+		const close_btn = document.getElementById('btn_chatbox_close');
+		if (close_btn)
+			await close_btn.click();
+		alert('block');
 
 		if (await this.confirmation(`block ${this.target}`) === false)
 			return false;

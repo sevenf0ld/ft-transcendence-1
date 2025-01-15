@@ -141,10 +141,10 @@ class RoomList
 
 		if (this.gameType === 'online-pvp' || this.gameType === 'online-tour')
 		{
-			await WEB_SOCKETS.updateSocket_friendList('leave');
 			await WEB_SOCKETS.closeSocket_game();
 			await WEB_SOCKETS.closeSocket_lobby();
 		}
+		await WEB_SOCKETS.updateSocket_friendList('leave');
 
 		const HOME = HOME_VIEW;
 		await HOME.render();
