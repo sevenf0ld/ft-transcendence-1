@@ -1,0 +1,179 @@
+/* file : ModalRoomJoin.css */
+/* -------------------------------------------------- */
+/* join room button's modal */
+/* -------------------------------------------------- */
+#modal-join .modal-sm
+{
+	max-width: 25rem;
+}
+
+.join-room-main
+{
+	gap: 1rem;
+}
+
+#modal-join .modal-title
+{
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+
+/* -------------------------------------------------- */
+/* display board
+/* -------------------------------------------------- */
+.room-board
+{
+	height: 10rem;
+	width: 100%;
+	gap: 0.5rem;
+	font-family: monospace;
+}
+
+.room-board .list-title-gp
+{
+	color: var(--txt-8);
+}
+
+.room-board .list-title-gp .rdtt-status
+{
+	margin-right: 1.2rem;
+}
+
+.room-board .list-title-gp .rdtt-roomid
+{
+	margin-right: 3.1rem;
+}
+
+.room-board .list-title-gp .rdtt-slot
+{
+	margin-right: 2.6rem;
+}
+
+.room-board .room-board-list-group
+{
+	flex: 1;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--cor-5) var(--cor-4);
+	border: 1px solid var(--cor-4);
+}
+
+.room-board .room-board-list-group .room-board-list
+{
+	display: flex;
+	gap: 0.5rem;
+	font-size: 12px;
+	padding: 0.5rem;
+	background-color: var(--cor-4);
+	align-items: center;
+	justify-content: space-around;
+	cursor: pointer;
+}
+.room-board .room-board-list-group .room-board-list:hover
+{
+	background-color: var(--txt-4);
+}
+
+.room-board .room-board-list-group .room-board-list .rbl-status
+{
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+}
+
+.room-board .room-board-list .rbl-status[data-status="online"]
+{
+	background-color: var(--stus-1);
+}
+
+.room-board .room-board-list .rbl-status[data-status="offline"]
+{
+	background-color: var(--stus-2);
+}
+
+.room-board .room-board-list .rbl-status[data-status="playing"]
+{
+	background-color: var(--stus-3);
+}
+
+
+.room-board .room-board-list-group .room-board-list .rbl-roomid
+{
+	color: var(--txt-6);
+}
+
+.room-board .room-board-list-group .room-board-list .rbl-slot
+{
+}
+
+.room-board .room-board-list-group .room-board-list .rbl-name
+{
+	width: 7rem;
+}
+
+/* -------------------------------------------------- */
+/* join-room-desc */
+/* -------------------------------------------------- */
+.join-room-main .join-room-des
+{
+    font-family: monospace;
+    color: #8598ab;
+    text-transform: lowercase;
+}
+
+/* -------------------------------------------------- */
+/* input group */
+/* -------------------------------------------------- */
+/*
+.join-room-main .input-group
+{
+	gap: 0.5rem;
+	font-family: monospace;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.join-room-main .input-group input
+{
+	width: 13.5rem;
+	padding: 0.2rem;
+	text-align: center;
+	font-weight: bold;
+	font-size: 1.2rem;
+}
+
+.join-room-main .input-group input:focus
+{
+	outline: none;
+}
+
+.join-room-main .input-group .join-room-err
+{
+	color: var(--txt-5);
+	font-size: 12px;
+}
+
+.join-room-main .input-group .join-room-info
+{
+	color: var(--txt-6);
+	font-size: 12px;
+	text-align: center;
+}
+
+/* -------------------------------------------------- */
+/* go back button */
+/* -------------------------------------------------- */
+#btn_close_join_room_modal
+{
+    padding: 0.5rem 1rem;
+    background-color: #ffffff00;
+    box-shadow: none;
+    width: fit-content;
+    width: 1rem;
+    min-width: fit-content;
+    color: #454e58;
+    font-family: monospace;
+    margin-top: -0.2rem;
+}

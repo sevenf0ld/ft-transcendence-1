@@ -1,0 +1,120 @@
+/* file : main.css */
+/* -------------------------------------------------- */
+/* imports */
+/* -------------------------------------------------- */
+/* global */
+@import "./global/toolkits/bootstrap.css";
+@import "./global/reset.css";
+@import "./global/typography.css";
+@import "./global/button.css";
+@import "./global/input.css";
+
+/* layouts */
+@import "./layouts/intro.css";
+@import "./layouts/popup.css";
+@import "./layouts/primary.css";
+@import "./layouts/modal.css";
+
+/* components */
+@import "./components/loginCard.css";
+@import "./components/signupCard.css";
+@import "./components/HomeView/LeftUser.css";
+@import "./components/HomeView/MidPanel.css";
+@import "./components/HomeView/ModalRoomJoin.css";
+@import "./components/HomeView/ModalHistory.css";
+@import "./components/HomeView/RightFnList.css";
+@import "./components/HomeView/ModalAdd.css";
+@import "./components/HomeView/ModalFnOpt.css";
+@import "./components/HomeView/BotChatbox.css";
+@import "./components/HomeView/BotFriendPfp.css";
+@import "./components/HomeView/ModalSettings.css";
+@import "./components/GameView/GameGuide.css";
+@import "./components/GameView/ActionPanel.css";
+@import "./components/GameView/Announcer.css";
+@import "./components/GameView/RoomList.css";
+@import "./components/GameView/GameBoard.css";
+
+/* ...to be added */
+
+/* -------------------------------------------------- */
+/* core and global variables */
+/* -------------------------------------------------- */
+:root {
+	/* theme */
+	--cor-1: #212529; /* boostrap-dark */
+	--cor-2: #e8edf2; /* boostrap-light */
+	--cor-3: #BAA898; /* khaki */
+	--cor-4: #1e2226; /* dark-grey */
+	--cor-5: #0e1012; /* dar-dar-grey */
+	/* text */
+	--txt-1: white;
+	--txt-2: #212529; /* boostrap-dark */ 
+	--txt-3: #b7b8b9; /* placeholder-grey */
+	--txt-4: #333a40; /* placeholder-light-grey */
+	--txt-5: #ff4e4e; /* warning */
+	--txt-6: #557f87; /* info */
+	--txt-7: #c7c7c7; /* popup-input */
+	--txt-8: #2d3338; /* popup-input-placeholder */
+	--txt-9: #d8dadc; /* super-light-grey */
+	/* stat-dashboard */
+	--stat-1: #515253; /* light-grey */
+	--stat-2: #1b1e22; /* dark-grey */
+	/* status */
+	--stus-1: #00a700; /* online */
+	--stus-2: #515253; /* offline */
+	--stus-3: #ff2626; /* room-full */
+	/* badge */
+	--bdg-1: #6c4ac3; /* badge-purple */
+	--bdg-3: #007772; /* badge-green */
+	--bdg-4: #464646; /* badge-grey */
+	--bdg-5: #f68511; /* badge-orange */
+	--bdg-6: #e8c600; /* badge-yellow */
+	/* stat-friend */
+	--stfr-1: #00ff22; /* friend-online */
+	--stfr-2: #646464; /* friend-offline */
+	--stfr-3: #4a4a4a; /* friend-offline-txt */
+	--stfr-4: #00c7ff; /* friend-playing */
+	/* room-theme */
+	--roomTheme-local: #1e2226; /* room-theme-local */
+	--roomTheme-online: white; /* room-theme-online */
+	/* game */
+	--gm-cor-1: #292e32; /* game-txt-color */
+}
+
+html,
+body
+{
+	width: 100vw;
+	height: 100vh;
+	user-select: none;
+	color: var(--txt-1);
+	box-sizing: border-box;
+	background-color: var(--cor-1);
+	font-family: 'Noto Sans JP' ,sans-serif;
+}
+
+#load_page
+{
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	position: fixed;
+	top: 0;
+	left: 0;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--cor-1);
+	color: var(--txt-1);
+	z-index: 9999;
+	cursor: wait;
+  	animation: glow 1.5s infinite;
+}
+
+
+/* -------------------------------------------------- */
+/* media-related */
+/* -------------------------------------------------- */
+.ct-media-img
+{
+	max-width: 25rem;
+}

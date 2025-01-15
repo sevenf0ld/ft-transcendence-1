@@ -1,0 +1,102 @@
+/* file : LeftUser.css */
+/* -------------------------------------------------- */
+/*  profile picture */
+/* -------------------------------------------------- */
+.ct-main-lpanel .ct-left-user-ctn
+{
+	height: 100%;
+	width: 100%;
+	align-items: center;
+	gap: 1rem;
+}
+
+.ct-main-lpanel .ct-left-user-ctn .ct-lpanel-pfp
+{
+	height: 125px;
+	width: 125px;
+	border-radius: 50%;
+}
+
+.ct-main-lpanel .ct-left-user-ctn .ct-lpanel-username
+{
+	max-width: 125px;
+	font-weight: bold;
+}
+
+/* -------------------------------------------------- */
+/*  buttons */
+/* -------------------------------------------------- */
+.ct-main-lpanel .ct-left-user-ctn .ct-lpanel-btns
+{
+	flex: 1;
+	gap: 1rem;
+}
+
+.ct-lpanel-btns > #btn-history
+{
+	align-self: flex-start;
+}
+
+
+/* -------------------------------------------------- */
+/*  stats */
+/* -------------------------------------------------- */
+.ct-lpanel-stats
+{
+	background-color: var(--cor-1);
+	border-radius: 10px;
+	font-family: monospace;
+	gap: 1rem;
+}
+
+.ct-stats-mid
+{
+	flex: 1;
+}
+
+.ct-mid-container
+{
+	gap: 1rem;
+	flex: 1;
+	gap: 0.5rem;
+}
+
+.ct-mid-container > .ct-mid-title
+{
+	font-size: 0.8rem;
+	color: var(--stat-1);
+}
+
+.ct-stats-bot
+{
+	flex: 1;
+}
+
+.ct-stats-bot > .ct-bot-left
+{
+	flex: 1;
+	gap: 0.5rem;
+	padding: 1rem;
+	color: var(--stat-1);
+	border-radius: 10px 0 0 10px;
+	background-color: var(--stat-2);
+}
+
+.ct-stats-bot > .ct-bot-right
+{
+	flex: 1;
+	gap: 0.5rem;
+	padding: 1rem;
+	color: var(--stat-2);
+	border-radius: 0 10px 10px 0;
+	background-color: var(--stat-1);
+}
+
+.ct-stats-bot .ct-bot-title
+{
+	font-size: 0.8rem;
+}
+
+.ct-stats-bot .ct-bot-num
+{
+}

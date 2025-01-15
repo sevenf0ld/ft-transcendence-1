@@ -1,0 +1,93 @@
+/* file : ModalHistory.css */
+/* -------------------------------------------------- */
+/* history room button's modal */
+/* -------------------------------------------------- */
+#modal-history .modal-sm
+{
+	max-width: 40rem;
+}
+
+.history-main
+{
+	width: 100%;
+	gap: 1rem;
+	align-items: center;
+}
+
+#modal-history .history-player
+{
+	width: fit-content;
+	background-color: var(--bdg-1);
+	padding: 0.5rem;
+	border-radius: 0.5rem;
+	font-family: monospace;
+	font-weight: bold;
+}
+
+
+/* -------------------------------------------------- */
+/* history board */
+/* -------------------------------------------------- */
+#modal-history .hst-list-group
+{
+	height: 25rem;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 0px 1rem;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--cor-5) var(--cor-4);
+}
+
+#modal-history .hst-list-group-item
+{
+	display: flex;
+	font-family: monospace;
+	gap: 0.5rem;
+	background-color: var(--cor-4);
+}
+
+#modal-history .hst-list-group-item .history-date,
+#modal-history .hst-list-group-item .history-result,
+#modal-history .hst-list-group-item .history-type,
+#modal-history .hst-list-group-item .history-target,
+#modal-history .hst-list-group-item .history-des
+{
+	border-radius: 0.5rem;
+	padding: 0.5rem;
+}
+
+#modal-history .hst-list-group-item .history-date
+{
+	border-radius: 0rem;
+}
+
+#modal-history .hst-list-group-item .history-result.won
+{
+	background-color: var(--bdg-3);
+}
+
+#modal-history .hst-list-group-item .history-result.lost
+{
+	background-color: var(--bdg-4);
+}
+
+#modal-history .hst-list-group-item .history-type.pvp
+{
+	color: var(--txt-2);
+	background-color: var(--bdg-5);
+}
+
+#modal-history .hst-list-group-item .history-type.tour
+{
+	color: var(--txt-2);
+	background-color: var(--bdg-6);
+}
+
+#modal-history .hst-list-group-item .history-target
+{
+	background-color: var(--bdg-1);
+	max-width: 10rem;
+}

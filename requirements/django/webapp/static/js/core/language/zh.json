@@ -1,0 +1,138 @@
+{
+	"home": {
+		"sb": {
+			"play": "已玩",
+			"wr": "胜率",
+			"wins": "胜场",
+			"losses": "败场"
+		},
+		"btn": {
+			"history": "对战记录",
+			"settings": "设置",
+			"logout": "登出"
+		},
+		"gb": {
+			"title": "游戏模式",
+			"online": "线上",
+			"local": "线下",
+			"pvp": "一对一",
+			"pve": "AI对战",
+			"tour": "多人赛"
+		},
+		"fn": {
+			"title": "好友",
+			"added": "已添加",
+			"pending": "待确认",
+			"blocked": "已拉黑",
+			"add": "添加",
+			"empty": "(空)",
+			"botph": "(占位符)"
+		},
+		"mdset": {
+			"title": "设置",
+			"lang": "语言",
+			"acc": "账户",
+			"pfp": "头像",
+			"tfa": "双重认证",
+			"acc-usern": "用户名",
+			"acc-pass": "密码",
+			"acc-email": "邮箱",
+			"warn": "(内网登录用户不能更新)",
+			"pfp-submit": "确认",
+			"pfp-remove": "移除",
+			"tfa-status": "状态",
+			"tfa-en": "活跃",
+			"tfa-dis": "关闭",
+			"acc-curr-pass": "当前密码",
+			"acc-new-pass": "新密码",
+			"acc-conf-pass": "确认密码",
+			"submit": "更新",
+			"acc-curr-pass-ph": "输入当前密码",
+			"acc-new-pass-ph": "输入新密码",
+			"acc-conf-pass-ph": "确认新密码",
+			"tfa-on": "启用2FA",
+			"tfa-off": "关闭2FA"
+		},
+		"mdhis": {
+			"title": "对战记录",
+			"won": "胜",
+			"lost": "败",
+			"played": "对手",
+			"pvp": "一对一"
+		},
+		"chat": {
+			"inv": "邀请",
+			"dis": "目前无法聊天",
+			"ph": "在此处输入您的信息"
+		},
+		"fnpfp": {
+			"win": "胜",
+			"lose": "败",
+			"total": "总",
+			"wr": "胜率",
+			"hist": "对战记录"
+		},
+		"mdadd": {
+			"addfn": "添加好友",
+			"ph": "输入用户名"
+		},
+		"gr": {
+			"gr": "游戏房间",
+			"pve": "线下AI对战",
+			"pvp": "线下一对一",
+			"tour": "线下多人赛",
+			"gm": "游戏机制",
+			"gm-left": "左玩家",
+			"gm-right": "右玩家",
+			"gm-goal": "游戏目标",
+			"gm-obj": "游戏目的",
+			"gm-sys": "游戏系统",
+			"gm-diff": "难度",
+			"gm-rules": "游戏规则",
+			"gm-up": "(上)",
+			"gm-down": "(下)",
+			"gm-bo1": "一局制",
+			"gm-player": "玩家",
+			"gm-against": "对战",
+			"gm-local": "线下",
+			"gm-online": "线上",
+			"gm-match": "局",
+			"gm-will": "将会",
+			"gm-willnot": "将不会",
+			"gm-recorded": "被记录",
+			"gm-random": "随机",
+			"gm-hit": "将球击向对手的一侧",
+			"gm-last": "最后生存下来的",
+			"gm-wins": "获胜",
+			"gm-every": "每",
+			"gm-except": "除非发生意外断开连接",
+			"rl": "房间列表",
+			"start": "开始",
+			"restart": "重新",
+			"add": "添加玩家",
+			"ann": "公告",
+			"rid": "房间号",
+			"lobby": "大厅",
+			"playing": "游戏中",
+			"waiting": "等待中",
+			"elim": "淘汰",
+			"empty": "(空)",
+			"leave": "离开房间",
+			"opvp": "线上一对一"
+		},
+		"mdrj": {
+			"title": "加入房间",
+			"des": "输入房间号, 或",
+			"create": "创建房间",
+			"back": "返回"
+		},
+		"mdfo": {
+			"unfriend": "解除好友",
+			"block": "拉黑",
+			"unblock": "解除拉黑",
+			"cancel": "取消申请",
+			"accept": "接受申请",
+			"decline": "拒绝申请"
+		}
+	}
+}

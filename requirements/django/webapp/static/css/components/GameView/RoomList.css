@@ -1,0 +1,103 @@
+/* file : RoomList.css */
+
+.ct-main-rpanel .ct-gr-roomList-ctn
+{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+}
+
+.ct-main-rpanel .ct-gr-roomList-ctn .ct-gr-rl-title
+{
+	padding: 10px;
+	width: 100%;
+	text-align: center;
+	font-family: monospace;
+	font-weight: bold;
+	font-size: 1rem;
+}
+
+.ct-main-rpanel .ct-gr-roomList-ctn .ct-gr-rl-body
+{
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	width: 100%;
+    overflow-y: auto;
+    font-family: monospace;
+    background-color: var(--cor-4);
+    scrollbar-width: thin;
+    scrollbar-color: var(--cor-5) var(--cor-4);
+}
+
+.ct-main-rpanel .ct-gr-roomList-ctn .ct-gr-rl-btn
+{
+	width: 11rem;
+	text-align: center;
+}
+
+/* copy from homeview friendlist */
+.ct-gr-rl-body .category-ctn
+{
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.ct-gr-rl-body .category-ctn .category-title-ctn
+{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 10px;
+	background-color: #171b1e;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.ct-gr-rl-body .category-title-ctn .category-title
+{
+}
+
+.ct-gr-rl-body .category-ctn .category-title-ctn:hover
+{
+	background-color: #161a1e;
+}
+
+.ct-gr-rl-body .category-ctn .category-list-ctn
+{
+	display: flex;
+	flex-direction: column;
+}
+
+.ct-gr-rl-body .category-list-ctn .fnl-item-ctn .fnl-item-name
+{
+	margin-left: 0.5rem;
+	cursor: pointer;
+	min-height: 1rem;
+}
+
+.ct-gr-rl-body .category-list-ctn .fnl-item-ctn .fnl-item-icon
+{
+	width: 15px;
+	cursor: pointer;
+	margin-left: auto;
+}
+
+
+/* if empty */
+.empty-list
+{
+	text-align: center;
+	padding: 20px;
+	color: var(--txt-4);
+}
+
+/* game room's playing user name */
+.fnl-item-ctn > h2.fnl-item-name.playing
+{
+	color: white;
+}

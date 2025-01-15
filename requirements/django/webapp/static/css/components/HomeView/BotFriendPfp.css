@@ -1,0 +1,84 @@
+/* file : BotFriendPfp.css */
+
+.ct-fn-pfp-ctn
+{
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	font-family: monospace;
+}
+
+.ct-fn-pfp-ctn .ct-fn-pfp-hd
+{
+	display: flex;
+	justify-content: space-between;
+	background-color: var(--stat-2);
+	border-radius: 7px 7px 0 0;
+	align-items: center;
+	padding: 0.3rem 1rem;
+}
+
+.ct-fn-pfp-ctn .ct-fn-pfp-pic-ctn
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 1rem;
+	flex: 1;
+	gap: 0.5rem;
+}
+
+.ct-fn-pfp-ctn .ct-fn-pfp-title
+{
+	font-weight: bold;
+	max-width: 8rem;
+}
+
+.ct-fn-pfp-ctn .ct-fn-pfp-close
+{
+	cursor: pointer;
+	padding: 0.5rem;
+}
+
+.ct-fn-pfp-ctn .ct-fn-pfp-pic-img
+{
+	width: 5rem;
+	height: 5rem;
+	border-radius: 50%;
+}
+
+.ct-fn-pfp-ctn .ct-fn-pfp-stats-ctn
+{
+	display: flex;
+	flex-direction: column;
+	background-color: var(--stat-2);
+	padding: 1rem;
+	border-radius: 10px;
+	font-size: 0.7rem;
+	gap: 0.5rem;
+}
+
+.ct-fn-pfp-ctn .ct-fn-pfp-stats-ctn .ct-fn-stats-list
+{
+}
+
+.ct-fn-pfp-ctn .ct-fn-stats
+{
+	transform: scale(0.8);
+}
+
+.ct-fn-pfp-ctn .ct-fn-btn-ctn
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-bottom: 2rem;
+}
+
+.ct-fn-pfp-ctn .ct-fn-btn-ctn button
+{
+	width: fit-content;
+}
+
+

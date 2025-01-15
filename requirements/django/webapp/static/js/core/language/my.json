@@ -1,0 +1,138 @@
+{
+	"home": {
+		"sb": {
+			"play": "Jumlah",
+			"wr": "Kadar Menang",
+			"wins": "Menang",
+			"losses": "Kalah"
+		},
+		"btn": {
+			"history": "Sejarah Perlawanan",
+			"settings": "Tetapan",
+			"logout": "Keluar"
+		},
+		"gb": {
+			"title": "Mod Perlawanan",
+			"online": "Dalam Talian",
+			"local": "Lokal",
+			"pvp": "1 Lawan 1",
+			"pve": "1 Lawan AI",
+			"tour": "Pertandingan"
+		},
+		"fn": {
+			"title": "Rakan",
+			"added": "Ditambah",
+			"pending": "Menunggu",
+			"blocked": "Disekat",
+			"add": "Tambah",
+			"empty": "(Kosong)",
+			"botph": "(Pemegang Tempat)"
+		},
+		"mdset": {
+			"title": "Tetapan",
+			"lang": "Bahasa",
+			"acc": "Akaun",
+			"pfp": "Gambar Profil",
+			"tfa": "Pengesahan Dua Faktor",
+			"acc-usern": "Nama",
+			"acc-pass": "Kata Laluan",
+			"acc-email": "Emel",
+			"warn": "(Pengguna Intra tidak boleh kemaskini)",
+			"pfp-submit": "Sah",
+			"pfp-remove": "Hapus",
+			"tfa-status": "Status",
+			"tfa-en": "Aktif",
+			"tfa-dis": "Nyahaktif",
+			"acc-curr-pass": "Kata Laluan Semasa",
+			"acc-new-pass": "Kata Laluan Baru",
+			"acc-conf-pass": "Sahkan Kata Laluan",
+			"submit": "Kemaskini",
+			"acc-curr-pass-ph": "Masukkan kata laluan semasa",
+			"acc-new-pass-ph": "Masukkan kata laluan baru",
+			"acc-conf-pass-ph": "Sahkan kata laluan baru",
+			"tfa-on": "Aktifkan 2FA",
+			"tfa-off": "Nyahaktifkan 2FA"
+		},
+		"mdhis": {
+			"title": "Sejarah Perlawanan",
+			"won": "Menang",
+			"lost": "Kalah",
+			"played": "Lawan",
+			"pvp": "1 Lawan 1"
+		},
+		"chat": {
+			"inv": "Ajak",
+			"dis": "Perbualan tidak dibenarkan",
+			"ph": "Taip mesej anda di sini"
+		},
+		"fnpfp": {
+			"win": "Menang",
+			"lose": "Kalah",
+			"total": "Jumlah",
+			"wr": "Kadar Menang",
+			"hist": "Sejarah Perlawanan"
+		},
+		"mdadd": {
+			"addfn": "Tambah Rakan",
+			"ph": "Masukkan nama"
+		},
+		"gr": {
+			"gr": "Bilik Perlawanan",
+			"pve": "Lawan AI Secara Lokal",
+			"pvp": "Lawan 1 Secara Lokal",
+			"tour": "Pertandingan Lokal",
+			"gm": "Cara Perlawanan",
+			"gm-left": "Pemain Kiri",
+			"gm-right": "Pemain Kanan",
+			"gm-goal": "Matlamat Perlawanan",
+			"gm-obj": "Objektif Perlawanan",
+			"gm-sys": "Sistem Perlawanan",
+			"gm-diff": "Kesukaran",
+			"gm-rules": "Peraturan Perlawanan",
+			"gm-up": "(Atas)",
+			"gm-down": "(Bawah)",
+			"gm-bo1": "Terbaik dari 1",
+			"gm-player": "Pemain",
+			"gm-against": "Lawan",
+			"gm-local": "Lokal",
+			"gm-online": "dalam talian",
+			"gm-match": "Perlawanan",
+			"gm-will": "Akan",
+			"gm-willnot": "Tidak Akan",
+			"gm-recorded": "Direkodkan",
+			"gm-random": "Rawak",
+			"gm-hit": "Pukul bola ke arah pihak lawan",
+			"gm-last": "Yang terakhir",
+			"gm-wins": "menang",
+			"gm-every": "setiap",
+			"gm-except": "kecuali jika berlaku gangguan sambungan yang tidak dijangka",
+			"rl": "Senarai Bilik",
+			"start": "Mula",
+			"restart": "Semula",
+			"add": "Tambah Pemain",
+			"ann": "Pengumuman",
+			"rid": "No. Bilik",
+			"lobby": "Lobi",
+			"playing": "Berlawan",
+			"waiting": "Menunggu",
+			"elim": "Dikalahkan",
+			"empty": "(kosong)",
+			"leave": "Tinggalkan Bilik",
+			"opvp": "Lawan 1 Secara Dalam Talian"
+		},
+		"mdrj": {
+			"title": "Bilik Perlawanan 1",
+			"des": "tekan untuk masuk bilik, atau",
+			"create": "Cipta Bilik",
+			"back": "Pulang"
+		},
+		"mdfo": {
+			"unfriend": "Hapus Rakan",
+			"block": "Blok",
+			"unblock": "Buka Blok",
+			"cancel": "Batal Permintaan",
+			"accept": "Terima Permintaan",
+			"decline": "Tolak Permintaan"
+		}
+	}
+}

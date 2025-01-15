@@ -1,0 +1,138 @@
+{
+	"home": {
+		"sb": {
+			"play": "Played",
+			"wr": "Win Rate",
+			"wins": "Wins",
+			"losses": "Losses"
+		},
+		"btn": {
+			"history": "Match History",
+			"settings": "Settings",
+			"logout": "Logout"
+		},
+		"gb": {
+			"title": "Game Mode",
+			"online": "Online",
+			"local": "Local",
+			"pvp": "PVP",
+			"pve": "PVE",
+			"tour": "Tournament"
+		},
+		"fn": {
+			"title": "Friends",
+			"added": "Added",
+			"pending": "Pending",
+			"blocked": "Blocked",
+			"add": "Add",
+			"empty": "(Empty)",
+			"botph": "(placeholder)"
+		},
+		"mdset": {
+			"title": "Settings",
+			"lang": "Language",
+			"acc": "Account",
+			"pfp": "Profile Picture",
+			"tfa": "2FA",
+			"acc-usern": "Username",
+			"acc-pass": "Password",
+			"acc-email": "Email",
+			"warn": "(Intra user can't update)",
+			"pfp-submit": "Confirm",
+			"pfp-remove": "Remove",
+			"tfa-status": "Status",
+			"tfa-en": "Enabled",
+			"tfa-dis": "Disabled",
+			"acc-curr-pass": "Current Password",
+			"acc-new-pass": "New Password",
+			"acc-conf-pass": "Confirm Password",
+			"submit": "Update",
+			"acc-curr-pass-ph": "Enter current password",
+			"acc-new-pass-ph": "Enter new password",
+			"acc-conf-pass-ph": "Confirm new password",
+			"tfa-on": "Enable 2FA",
+			"tfa-off": "Disable 2FA"
+		},
+		"mdhis": {
+			"title": "Match History",
+			"won": "Won",
+			"lost": "Lost",
+			"played": "Played with",
+			"pvp": "PVP"
+		},
+		"chat": {
+			"inv": "Invite",
+			"dis": "Chat is unavailable",
+			"ph": "Type your message here"
+		},
+		"fnpfp": {
+			"win": "Won",
+			"lose": "Lost",
+			"total": "Total",
+			"wr": "W.Rate",
+			"hist": "Match History"
+		},
+		"mdadd": {
+			"addfn": "Add Friend",
+			"ph": "Enter username"
+		},
+		"gr": {
+			"gr": "Game Room",
+			"pve": "local-pve",
+			"pvp": "local-pvp",
+			"tour": "local-tour",
+			"gm": "Game Mechanics",
+			"gm-left": "Left Player",
+			"gm-right": "Right Player",
+			"gm-goal": "Game Goal",
+			"gm-obj": "Game Objective",
+			"gm-sys": "Game System",
+			"gm-diff": "Difficulty",
+			"gm-rules": "Game Rules",
+			"gm-up": "(UP)",
+			"gm-down": "(DOWN)",
+			"gm-bo1": "Best of 1",
+			"gm-player": "Player",
+			"gm-against": "against",
+			"gm-local": "Locally",
+			"gm-online": "Online",
+			"gm-match": "match",
+			"gm-will": "will be",
+			"gm-willnot": "will not be",
+			"gm-recorded": "recorded",
+			"gm-random": "Random",
+			"gm-hit": "Hit the ball to the opponent's side",
+			"gm-last": "Last standing",
+			"gm-wins": "wins",
+			"gm-every": "every",
+			"gm-except": "except when unexpected disconnection occurs",
+			"rl": "Room List",
+			"start": "Start",
+			"restart": "Restart Game",
+			"add": "Add Player",
+			"ann": "Announcement",
+			"rid": "Room ID",
+			"lobby": "Lobby",
+			"playing": "Playing",
+			"waiting": "Waiting",
+			"elim": "Eliminated",
+			"empty": "(Empty)",
+			"leave": "Leave Room",
+			"opvp": "online-pvp"
+		},
+		"mdrj": {
+			"title": "Available Rooms (PVP)",
+			"des": "click to join room, or",
+			"create": "Create Room",
+			"back": "Go Back"
+		},
+		"mdfo": {
+			"unfriend": "Unfriend",
+			"block": "Block",
+			"unblock": "Unblock",
+			"cancel": "Cancel Request",
+			"accept": "Accept Request",
+			"decline": "Decline"
+		}
+	}
+}

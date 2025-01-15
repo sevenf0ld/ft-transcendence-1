@@ -1,0 +1,126 @@
+/* file : primary.css */
+/* -------------------------------------------------- */
+/* page
+/* -------------------------------------------------- */
+.ct-page-width
+{
+	width:1300px;
+}
+/* -------------------------------------------------- */
+/* header-footer
+/* -------------------------------------------------- */
+header, footer
+{
+	font-family: 'Caveat', cursive;
+	background-color: var(--cor-1);
+}
+
+header h1
+{
+	width: fit-content;
+	cursor: pointer;
+	user-select: none;
+}
+
+footer p
+{
+	font-size: 1.1rem;
+	font-weight: bold;
+}
+/* -------------------------------------------------- */
+/* main and container
+/* -------------------------------------------------- */
+main
+{
+	flex: 1;
+	font-family: 'Kalam', cursive;
+}
+.ct-main
+{
+	height: 700px;
+	border-radius: 50px;
+	background-color: var(--cor-1);
+	box-shadow:  50px 50px 100px #0d0f10,
+				 -50px -50px 100px #353b42;
+}
+/* -------------------------------------------------- */
+/* main > left-panel
+/* -------------------------------------------------- */
+.ct-main > .ct-main-lpanel
+{
+	flex: 1;
+	gap: 1rem;
+	padding: 0.5rem;
+}
+/* -------------------------------------------------- */
+/* main > middle-panel
+/* -------------------------------------------------- */
+.ct-main > .ct-main-mpanel
+{
+	flex: 4;
+}
+/* -------------------------------------------------- */
+/* main > middle-panel > top
+/* -------------------------------------------------- */
+.ct-main-mpanel > .ct-mpanel-top
+{
+	flex: 3;
+}
+
+.ct-mpanel-top > .ct-top-title
+{
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.ct-mpanel-top > .ct-top-board
+{
+	width: 800px;
+	height: 320px;
+	gap: 1rem;
+	border-radius: 27px;
+	background: #212529;
+	box-shadow: inset 8px 8px 16px #1c1f23,
+				inset -8px -8px 16px #262b2f;
+	padding: 30px;
+}
+
+/* -------------------------------------------------- */
+/* main > middle-panel > bottom
+/* -------------------------------------------------- */
+.ct-main-mpanel > .ct-mpanel-bottom
+{
+	flex: 2;
+	gap: 15px;
+	height: 5rem;
+}
+/* -------------------------------------------------- */
+/* main > middle-panel > bottom > left
+/* -------------------------------------------------- */
+.ct-mpanel-bottom > .ct-bottom-left
+{
+	width: 245px;
+	border-radius: 7px;
+	background-color: var(--cor-4);
+}
+
+.ct-mpanel-bottom .ct-bottom-placeholder
+{
+	color: var(--txt-4);
+}
+/* -------------------------------------------------- */
+/* main > middle-panel > bottom > right
+/* -------------------------------------------------- */
+.ct-mpanel-bottom > .ct-bottom-right
+{
+	width: 540px;
+	border-radius: 7px;
+	background-color: var(--cor-4);
+}
+/* -------------------------------------------------- */
+/* main > right-panel
+/* -------------------------------------------------- */
+.ct-main .ct-main-rpanel
+{
+	flex: 1;
+}

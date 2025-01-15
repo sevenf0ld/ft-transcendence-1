@@ -1,0 +1,83 @@
+/* file : signupCard.css */
+
+.ct-signup-ctn
+{
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+/* -------------------------------------------------- */
+/* title
+/* -------------------------------------------------- */
+.ct-signup-header
+{
+	font-size: 2rem;
+	font-weight: bold;
+	font-family: 'Caveat', cursive;
+	margin-bottom: 1rem;
+}
+
+/* -------------------------------------------------- */
+/* form
+/* -------------------------------------------------- */
+.ct-su-form
+{
+	gap: 1rem;
+}
+
+.ct-su-form > button.btn.ct-btn-dark
+{
+	color: var(--txt-1);
+	background-color: var(--cor-1);
+}
+
+.ct-su-formdiv
+{
+	gap: 0.25rem;
+	color: var(--cor-1);
+}
+
+.ct-su-formdiv > input::placeholder
+{
+	color: var(--txt-3);
+}
+
+
+#err_signup_1,
+#err_signup_2,
+#err_signup_3,
+#err_signup_4
+{
+	font-size: 0.75rem;
+	color: #842029;
+	background-color: #f8d7da;
+	border: 1px solid #f5c2c7;
+	border-color: #f5c2c7;
+	padding: 0.2rem;
+	display: none;
+}
+
+/* -------------------------------------------------- */
+/* back-to-login-btn
+/* -------------------------------------------------- */
+#btn_back_to_login
+{
+	width: fit-content;
+	cursor: pointer;
+	margin: auto;
+	align-self: center;
+	text-decoration: none;
+	margin-top: 1rem;
+}
+
+/* -------------------------------------------------- */
+/* alert
+/* -------------------------------------------------- */
+#alert_register
+{
+	margin: 0px;
+	margin-top: 1rem;
+	font-size: 0.9rem;
+	padding: 0.5rem;
+	line-height: 1.3rem;
+}

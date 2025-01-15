@@ -1,0 +1,39 @@
+/* file : button.css */
+/* -------------------------------------------------- */
+/* neumorphism button */
+/* -------------------------------------------------- */
+.ct-btn-neau
+{
+	border: none;
+	padding: 1rem 1.5rem;
+	border-radius: 6px;
+	color: var(--cor-main-light);
+	background: var(--cor-main-dark);
+	box-shadow:  7px 7px 14px #1d2024,
+				 -7px -7px 14px #252a2e;
+}
+
+.ct-btn-neau:hover
+{
+	border-radius: 6px;
+	background: linear-gradient(145deg, #23282c, #1e2125);
+	box-shadow:  7px 7px 14px #1d2024,
+				 -7px -7px 14px #252a2e;
+}
+
+.ct-btn-neau:active
+{
+	color: #2f353a;
+	border-radius: 6px;
+	background: #212529;
+	box-shadow: inset 7px 7px 14px #1d2024,
+				inset -7px -7px 14px #252a2e;
+}
+
+button[data-disable="true"],
+button.disabled_btn,
+button:disabled
+{
+  cursor: not-allowed;
+  color: #2f353a;
+}

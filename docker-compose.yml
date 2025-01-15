@@ -1,0 +1,141 @@
+services:
+
+#    redis:
+#      build:
+#        context: ./requirements/redis/.
+#      container_name: redis
+#      ports:
+#        - "6380:6380"
+#      restart: always
+#      networks:
+#        - net_trans
+#      privileged: true
+    redis:
+      image: redis:6-alpine
+      container_name: redis
+      networks:
+        - net_trans
+
+    nginx:
+      build:
+        context: ./requirements/nginx/.
+      container_name: nginx
+      ports:
+        - "443:443"
+        - "80:80"
+      restart: on-failure
+      depends_on:
+        - django
+      volumes:
+        #- vol_django:/django/
+        - ./requirements/django/webapp/:/django/
+        - ./requirements/django/webapp/staticfiles/:/django/staticfiles
+        - ./requirements/django/webapp/media/:/django/media
+      networks:
+        - net_trans
+
+    django:
+      build:
+        context: ./requirements/django/.
+      container_name: django
+      expose:
+        - "8000"
+      restart: on-failure
+      depends_on:
+        - redis
+      volumes:
+        #- vol_django:/django/
+        - ./requirements/django/webapp/:/django/
+        - ./requirements/django/webapp/staticfiles/:/django/staticfiles
+        - ./requirements/django/webapp/media/:/django/media
+        - ./LOGGER/:/tmp/
+      networks:
+        - net_trans
+      env_file:
+        - .env
+
+    postgres:
+      image: postgres:latest
+      container_name: postgres
+      ports:
+        - "5432:5432"
+      restart: on-failure
+      volumes:
+        - vol_pg:/var/lib/postgresql/data
+      networks:
+        - net_trans
+      env_file:
+        - .env
+
+    elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+      container_name: elasticsearch
+      ports:
+        - "9200:9200"
+        - "9300:9300"
+      volumes:
+        - ./requirements/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+        - vol_es:/usr/share/elasticsearch/data
+      environment:
+        ES_JAVA_OPTS: "-Xmx1g -Xmx1g"
+        discovery.type: single-node
+        bootstrap.memory_lock: true
+      ulimits:
+        memlock:
+          soft: -1
+          hard: -1
+      networks:
+        - net_trans
+
+    logstash:
+      image: docker.elastic.co/logstash/logstash:7.14.0
+      container_name: logstash
+      ports:
+        - "5000:5000"
+      depends_on:
+        - elasticsearch
+      volumes:
+        - ./requirements/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+        - ./requirements/logstash/pipeline:/usr/share/logstash/pipeline:ro
+        - ./LOGGER/:/tmp/
+      networks:
+        - net_trans
+
+    kibana:
+      image: docker.elastic.co/kibana/kibana:7.14.0
+      container_name: kibana
+      ports:
+        - "5601:5601"
+      depends_on:
+        - elasticsearch
+      volumes:
+        - ./requirements/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+      networks:
+        - net_trans
+
+    kibana_setup:
+      build:
+        context: ./requirements/kibana/.
+      depends_on:
+        - kibana
+      volumes:
+        - ./requirements/kibana/tools/:/usr/local/bin/
+        - ./requirements/kibana/saved_objects/dashboard.ndjson:/usr/share/kibana/saved_objects/dashboard.ndjson
+      networks:
+       - net_trans
+
+volumes:
+
+    #vol_django:
+    #  driver: local
+    #  driver_opts:
+    #    type: none
+    #    o: bind
+    #    device: ~/data/vol_django
+    vol_pg:
+    vol_es:
+    vol_backup:
+
+networks:
+  net_trans:
+    driver: bridge
