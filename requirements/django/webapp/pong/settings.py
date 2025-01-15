@@ -47,7 +47,8 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 31536000
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_HOST = 'localhost'
+#SECURE_SSL_HOST = 'localhost'
+SECURE_SSL_HOST = 'ftpong.com'
 SECURE_SSL_REDIRECT = True
 
 # maiman-m: for allauth registration
@@ -117,7 +118,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[FT_PONG] ' # 42PONG
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 #ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD
-ACCOUNT_SIGNUP_REDIRECT_URL = 'https://localhost:443'
+#ACCOUNT_SIGNUP_REDIRECT_URL = 'https://localhost:443'
+ACCOUNT_SIGNUP_REDIRECT_URL = 'https://ftpong.com:443'
 # register form validation
 #ACCOUNT_ADAPTER = 'user_auth.adapter.CustomAccountAdapter'
 ACCOUNT_USERNAME_BLACKLIST = ['admin', 'root', 'superuser', 'django', 'pong', '42', 'test', 'user', 'default', 'avatar', 'forty-two', 'fourty-two', 'fortytwo', 'fourtytwo']
