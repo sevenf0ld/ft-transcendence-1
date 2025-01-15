@@ -144,6 +144,9 @@ class LoginCard
 		{
 			await LOADING.disable_all();
 			await LOADING.loading_page('show');
+			await new Promise((r) => setTimeout(r, 5000));
+			if (document.getElementById('load_page'))
+				alert('Please clear your browser to access the page again.');
 		}
 	}
 
