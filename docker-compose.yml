@@ -30,8 +30,7 @@ services:
         - "8000"
       restart: on-failure
       depends_on:
-        postgres:
-          condition: service_healthy
+        - postgres
       volumes:
         - ./requirements/django/webapp/:/django/
         - ./requirements/django/webapp/staticfiles/:/django/staticfiles
@@ -54,12 +53,6 @@ services:
         - net_trans
       env_file:
         - .env
-      healthcheck:
-        test: ["CMD", "pg_isready", "-U", "postgres"]
-        interval: 30s
-        retries: 3
-        start_period: 5s
-        timeout: 10s
 
 volumes:
 
