@@ -22,7 +22,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'django-insecure-(y+&u$qj$@+-$hn3kes!%*u*(5w%wwlw*6235b2x+9o@1_trp$'
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -316,58 +315,58 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 # https://docs.python.org/3/library/logging.html#logrecord-attributes
 # https://docs.djangoproject.com/en/5.1/topics/logging/#configuring-logging
 # https://docs.djangoproject.com/en/2.0/topics/logging/#django-request
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'json': {
-            'format': '{"time": "%(asctime)s", "name": "%(name)s", "level": "%(levelname)s", "message": "%(message)s"}',
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s',
-        },
-    },
-    'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        },
-        #'logstash': {
-        #    'level': 'INFO',
-        #    'class': 'logstash.TCPLogstashHandler',
-        #    'host': 'localhost',
-        #    'port': 5000,
-        #    'version': 1,
-        #    'message_type': 'logstash',
-        #    'fqdn': False,
-        #    'tags': ['django.request'], 
-        #},
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': '/tmp/trans.log',
-            'formatter': 'json',
-        },
-    },
-    'loggers': {
-        'django.request': {
-            #'handlers': ['console', 'logstash', 'file'],
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'django.server': {
-            #'handlers': ['console', 'logstash', 'file'],
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-    }
-}
+#LOGGING = {
+#    'version': 1,
+#    'disable_existing_loggers': False,
+#    'formatters': {
+#        'json': {
+#            'format': '{"time": "%(asctime)s", "name": "%(name)s", "level": "%(levelname)s", "message": "%(message)s"}',
+#        },
+#        'simple': {
+#            'format': '%(levelname)s %(message)s',
+#        },
+#    },
+#    'filters': {
+#        'require_debug_true': {
+#            '()': 'django.utils.log.RequireDebugTrue',
+#        },
+#    },
+#    'handlers': {
+#        'console': {
+#            'level': 'INFO',
+#            'filters': ['require_debug_true'],
+#            'class': 'logging.StreamHandler',
+#            'formatter': 'simple'
+#        },
+#        #'logstash': {
+#        #    'level': 'INFO',
+#        #    'class': 'logstash.TCPLogstashHandler',
+#        #    'host': 'localhost',
+#        #    'port': 5000,
+#        #    'version': 1,
+#        #    'message_type': 'logstash',
+#        #    'fqdn': False,
+#        #    'tags': ['django.request'], 
+#        #},
+#        'file': {
+#            'level': 'INFO',
+#            'class': 'logging.FileHandler',
+#            'filename': '/tmp/trans.log',
+#            'formatter': 'json',
+#        },
+#    },
+#    'loggers': {
+#        'django.request': {
+#            #'handlers': ['console', 'logstash', 'file'],
+#            'handlers': ['console', 'file'],
+#            'level': 'INFO',
+#            'propagate': False,
+#        },
+#        'django.server': {
+#            #'handlers': ['console', 'logstash', 'file'],
+#            'handlers': ['console', 'file'],
+#            'level': 'INFO',
+#            'propagate': False,
+#        },
+#    }
+#}
