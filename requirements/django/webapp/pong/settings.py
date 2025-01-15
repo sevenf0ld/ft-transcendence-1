@@ -29,7 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 #ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ftpong.com', 'api.ftpong.com', '0.0.0.0']
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ftpong.com', '0.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ftpong.com', '0.0.0.0', '*']
 #config('DJANGO_ALLOWED_HOSTS')
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
