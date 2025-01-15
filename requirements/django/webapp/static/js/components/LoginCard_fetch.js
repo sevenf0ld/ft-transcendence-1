@@ -247,7 +247,7 @@ class fetch_intra
 			'u-s4t2ud-ebe5aa4d1068dc430477ebc2acfd2e267c8b3446ac0a5744cf8febc47aec5b8b'
 		);
 		this.redirect_uri = encodeURIComponent(
-			'https://ftpong:443'
+			'https://localhost:443'
 		);
 		this.client_secret = encodeURIComponent(
 			'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'
