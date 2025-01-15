@@ -7,18 +7,9 @@ COMPOSE_FILE = ./docker-compose.yml
 
 CMD = docker compose -f
 
-PDF = docker-compose up --build
-
 run: $(NAME)
 
-pdf: setup
-	$(PDF)
-
-setup:
-	#mkdir -p $(HOME)/data/vol_django
-	mkdir -p ./LOGGER
-
-$(NAME): setup
+$(NAME):
 	$(CMD) $(COMPOSE_FILE) up
 
 down:
@@ -46,15 +37,6 @@ logs-postgres:
 logs-nginx:
 	$(CMD) $(COMPOSE_FILE) logs nginx
 
-logs-elasticsearch:
-	$(CMD) $(COMPOSE_FILE) logs elasticsearch
-
-logs-logstash:
-	$(CMD) $(COMPOSE_FILE) logs logstash
-
-logs-kibana:
-	$(CMD) $(COMPOSE_FILE) logs kibana
-
 #======================================#
 #===============RESTART================#
 #======================================#
@@ -67,15 +49,6 @@ r-postgres:
 r-nginx:
 	$(CMD) $(COMPOSE_FILE) restart nginx
 
-r-elasticsearch:
-	$(CMD) $(COMPOSE_FILE) restart elasticsearch
-
-r-logstash:
-	$(CMD) $(COMPOSE_FILE) restart logstash
-
-r-kibana:
-	$(CMD) $(COMPOSE_FILE) restart kibana
-
 #======================================#
 #===============SHELL==================#
 #======================================#
@@ -87,15 +60,6 @@ postgres:
 
 nginx:
 	docker exec -it nginx /bin/bash
-
-elasticsearch:
-	docker exec -it elasticsearch /bin/bash
-
-logstash:
-	docker exec -it logstash /bin/bash
-
-kibana:
-	docker exec -it kibana /bin/bash
 
 #======================================#
 #======================================#
